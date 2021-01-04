@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <f:subview id="subview_permit_check_dtls">
+        <ui:composition>
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="pmtCheckDetails">
+                    <p:panel>
+                        <f:facet name="header">                                        
+                            #{language.tax_details}
+                            <span class="float-right">
+                                <p:commandLink value="+ #{language.permit_details}" immediate="true" action="#{pmtDtlsBean.showTaxDetails()}" update="pmtDetailBasedOnTax" style="color: red"/>
+                            </span>
+                        </f:facet>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel value="#{language.pur_of_tax}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.taxPurCd}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.taxFrom}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.taxFrom}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.taxUpto}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.taxUpto}" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel value="#{language.tax_rcpt_no}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.taxRcptNo}" disabled="true"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:panel>
+                        <p:outputPanel rendered="#{pmtDtlsBean.renderGoodsPassengerTax}">
+                            <f:facet name="header">                                        
+                                Goods/Passenger Tax Details                            
+                            </f:facet>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section ">
+                                        <p:outputLabel value="Purpopse Of Tax"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.gptaxPurCd}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Tax Valid From"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.gptaxFrom}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Tax Valid Upto"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.gptaxUpto}" disabled="true"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section ">
+                                        <p:outputLabel value="Tax Receipt Number"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.gptaxRcptNo}" disabled="true"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:panel>
+
+                    <p:panel header="#{language.fit_details}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.fitnessValidUpto}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.fitValidTo}" disabled="true"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:panel  header="#{language .ins_dtls}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel value="#{language.ins_type}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.insType}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.insurance_from}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.insFrom}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.insurance_upto}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.insUpto}" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel value="#{language.company_name}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.insCmpyNo}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel value="#{language.ins_policy_no}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.insPolicyNo}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel value="#{language.ins_value}"/>
+                                </label>
+                                <p:inputText value="#{pmtDtlsBean.dtlsDobj.insIdv}" disabled="true"/>
+                                <p:commandLink style="color: red; display: block;" value="#{language.add_ins_dtls}" immediate="true" action="#{pmtDtlsBean.showInsDialog()}" update="insOutputPanel" rendered="#{!pmtDtlsBean.dtlsDobj.insValid}"/>
+                            </div>
+                        </div>
+                        <p:outputPanel id="insOutputPanel" >
+                            <p:dialog rendered="#{pmtDtlsBean.renderInsDialog}" header="Insurance Details" widgetVar="insDtls" resizable="false" closable="false">
+                                <ui:include src="/ui/form_ins_dtls.xhtml">
+                                    <ui:param name="ins_form" value="#{pmtDtlsBean}"/>
+                                </ui:include>
+                                <div class="ui-grid-col-12">
+                                    <f:facet name="footer">
+                                        <p:commandButton value="Save Insurance Details" immediate="true" action="#{pmtDtlsBean.insertIntoVaInsurance()}" 
+                                                         update="pmtCheckDetails" onclick="PF('blockCheckDetails').show();" oncomplete="PF('blockCheckDetails').hide();"/>
+                                        <p:commandButton value="Exit" immediate="true" action="#{pmtDtlsBean.exitInsDialog()}"/>
+                                    </f:facet>
+                                </div>
+                            </p:dialog>
+                        </p:outputPanel>
+                    </p:panel>
+
+                    <p:panel header="#{language.challanDetails}" styleClass="top-space bottom-space">
+<!--                        <p:outputPanel rendered="#{!pmtDtlsBean.dtlsDobj.chalPending}">-->
+                        <p:outputPanel rendered="false">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section ">
+                                        <p:outputLabel value="Challan No."/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.chalNo}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section ">
+                                        <p:outputLabel value="Challan Date"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.chalDate}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Challan Time"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.chalTime}" disabled="true"/>
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Challan Place"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.chalPlace}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section ">
+                                        <p:outputLabel value="Challan Officer"/>
+                                    </label>
+                                    <p:inputText value="#{pmtDtlsBean.dtlsDobj.chalOfficer}" disabled="true"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+<!--                        <p:outputPanel id="eChallanInfo" rendered="#{pmtDtlsBean.geteChallanInfo() ne null and pmtDtlsBean.geteChallanInfo().size() > 0 and pmtDtlsBean.dtlsDobj.chalPendingInService}">-->
+                        <p:outputPanel id="eChallanInfo" rendered="false">
+                            <p:dataTable value="#{pmtDtlsBean.geteChallanInfo()}" var="eChallan" rowIndexVar="index">
+                                <p:column headerText="Sr.No" width="10%">#{index +1}.</p:column>
+                                <p:column headerText="Challan No" width="15%">#{eChallan.challan_no}</p:column>
+                                <p:column headerText="Offence" width="50%">#{eChallan.offence}</p:column>
+                                <p:column headerText="Location" width="15%">#{eChallan.offence_place}</p:column>        
+                                <p:column headerText="Challan Date" width="10%">#{eChallan.challan_date_descr}</p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{pmtDtlsBean.dtlsDobj.chalPending and pmtDtlsBean.geteChallanInfo() eq null}">
+                            <p:outputLabel value="No Challan pending on this vehicle"/>
+                        </p:outputPanel>
+                    </p:panel>
+                    <p:blockUI block="pmtCheckDetails" widgetVar="blockCheckDetails">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+            </div>
+            <p:outputPanel id="pmtDetailBasedOnTax">
+                <p:dialog id="pmt_dtls" header="#{language.permitDetails}" widgetVar="pmtDtls" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Close" action="#{pmtDtlsBean.closePmtTaxPanle()}" immediate="true" icon="ui-icon-close"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section ">
+                                <p:outputLabel value="#{language.pmtType}"/>
+                            </label>
+                            <p:selectOneMenu id="pmtType" value="#{pmtDtlsBean.pmtType}" filter="true" effect="fold" disabled="true">
+                                <f:selectItem itemValue="-1" itemLabel="Select Permit Type"/>
+                                <f:selectItems value="#{pmtDtlsBean.arrayPmtType}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.pmtCatg}"/>
+                            </label>
+                            <p:selectOneMenu id="pmtCatg" value="#{pmtDtlsBean.pmtCatg}" filter="true"  effect="fold" disabled="true">
+                                <f:selectItem itemValue="-1" itemLabel="Select Permit Catagory"/>
+                                <f:selectItems value="#{pmtDtlsBean.arrayPmtCatg}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.serviceType}"/>
+                            </label>
+                            <p:selectOneMenu id="pso_ser_Type" value="#{pmtDtlsBean.serType}" filter="true" effect="fold" disabled="true">
+                                <f:selectItem itemValue="-1" itemLabel="Select Services Type"/>
+                                <f:selectItems value="#{pmtDtlsBean.arraySerType}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section ">
+                                <p:outputLabel value="#{language.route_length}"/>
+                            </label>
+                            <p:inputText value="#{pmtDtlsBean.routeLength}" disabled="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="No. Of trips"/>
+                            </label>
+                            <p:inputText value="#{pmtDtlsBean.noOfTrips}" disabled="true"/>
+                        </div>
+                    </div>
+                </p:dialog>
+            </p:outputPanel>
+        </ui:composition>
+    </f:subview>
+</html>

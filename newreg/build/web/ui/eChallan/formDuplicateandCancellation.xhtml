@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../masterLayoutPage.xhtml">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">
+        <h:form id="duplicateAndCanceForm" prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages id="msgId"/>
+                </div>
+            </div>
+            <div class="ui-grid-row center-position">
+                <span class=" header-main">Duplicate And Cancellation Of Challan</span>
+            </div>
+            <p:tabView id="challanCancellationtab">
+                <p:tab title="Duplicate Challan " id="duplicateChallanTab">
+                    <div class="ui-grid-row ">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no" value="Application No:"  />
+                            </label>
+                            <p:inputText id="appl_no" value="#{duplicateReport.applNo}"  styleClass="text-uppercase"  converter="toUpperCaseConverter"  maxlength="16"    required="true" requiredMessage="Please Enter Application Number"  >
+                                <!--                                <f:selectItem itemLabel="Select Application Number" itemValue="-1" noSelectionOption="true"/>
+                                                                <f:selectItems value="#{duplicateReport.applNoForDuplicateChallanList}" />-->
+
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton 
+                                    id="printDuplicateChallan"  onclick="PF('ajax_status').show()"
+                                    onsuccess="PF('ajax_status').hide()"
+                                    value="Print Report " 
+                                    action="#{duplicateReport.printDuplicateChallan()}"
+                                    process="duplicateChallanTab"
+                                    update=":duplicateAndCanceForm:msgId appl_no"  >
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:commandButton value="Back"  process="@this"  action="home"
+                                                 immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </div>
+                </p:tab> 
+                <p:tab title=" Challan Cancellation" id="challanCancellationTab">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-3">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no1" value="Application No:"  />
+                            </label>
+                            <p:inputText id="appl_no1" value="#{duplicateReport.applNo}"   styleClass="text-uppercase"  converter="toUpperCaseConverter"  maxlength="16"      required="true" requiredMessage="Please Enter Application Number"  >
+
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="reason" value="Cancellation Reason:"  />
+                            </label>
+                            <p:inputText
+                                id="reason" converter="toUpperCaseConverter"  styleClass="text-uppercase"
+                                value="#{duplicateReport.reason}" 
+                                required="true"
+                                maxlength="50"
+                                requiredMessage="Please Enter The Reason" >
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton 
+                                id="challanCancellation"  onclick="PF('ajax_status').show()"
+                                onsuccess="PF('ajax_status').hide()"
+                                value="Cancel Challan " 
+                                action="#{duplicateReport.cancelChallan()}"
+                                update=":duplicateAndCanceForm:msgId appl_no1 reason"  process="challanCancellationTab"  >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Back"  process="@this"  action="home"
+                                             immediate="true" onclick="PF('ajax_status').show()"
+                                             onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog> 
+                        </div>
+                    </div>
+                </p:tab> 
+            </p:tabView>
+            <p:blockUI block="duplicateAndCanceForm" widgetVar="ajax_status">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>           
+    </ui:define>
+
+
+</ui:composition>
+

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+
+    <ui:define name="contentCommonInformation">
+        <h:form>           
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{ndc_bean.appl_details}"/>            
+            </ui:include>   
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_noc" prependId="false">
+                <p:messages closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:outputPanel id="ins_dtls" styleClass="bottom-space">
+                    <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                </p:outputPanel> 
+                <p:panel id ="ndcDetailsPanel"  styleClass="top-space bottom-space" header="#{language.ndc_details}" >
+                    <p:outputPanel id="nDc_subview_panelgrid">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="state_to" value="#{language.state}"/>
+                                </label>
+                                <p:selectOneMenu id="state_to" value="#{ndc_bean.ndc_dobj.state_to}" disabled="true" filter="true" filterMatchMode="contains" >
+                                    <f:selectItems value="#{ndc_bean.state_list}"/>
+                                    <p:ajax event="change" listener="#{ndc_bean.updateRtoFromStateListener}" update="auth_to" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="auth_to" value="#{language.district}"/>
+                                </label>
+                                <p:selectOneMenu id="auth_to" value="#{ndc_bean.ndc_dobj.off_to}" filter="true" disabled="true" filterMatchMode="contains" required="true" 
+                                                 requiredMessage="#{language.district_empty_msg}">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9-/ ]/i" for="auth_to"/>
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                    <f:selectItems value="#{ndc_bean.office_list}"/>
+                                    <f:validator for="auth_to" validatorId="selectOneValidator_0"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">    
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="permit_no" value="#{language.permitNo}"/>
+                                </label>
+                                <p:inputText id="permit_no" value="#{ndc_bean.ndc_dobj.pmt_no}" disabled="true" converter="toUpperCaseConverter" required="true"
+                                             requiredMessage="#{language.blank_permit_no}" maxlength="100" autocomplete="off" styleClass="input">
+                                    <f:validateRequired for="remark"/>
+                                    <f:validateLength maximum="100" for="permit_no"/>
+                                </p:inputText>
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">    
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="ncrb_no" value="#{language.ncrbClearanceNo}"/>
+                                </label>
+                                <p:inputText id="ncrb_no" value="#{ndc_bean.ndc_dobj.ncrb_no}" converter="toUpperCaseConverter" required="true"
+                                             requiredMessage="#{language.blank_ncrb_no}" maxlength="25" autocomplete="off" styleClass="input">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9-/_/-]/i " for="dl_no"/>
+                                    <f:validateRequired for="dl_no"/>
+                                    <f:validateLength maximum="25" for="ncrb_no"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">    
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="dl_no" value="#{language.dl}"/>
+                                </label>
+                                <p:inputText id="dl_no" value="#{ndc_bean.ndc_dobj.dl_no}" converter="toUpperCaseConverter" required="true"
+                                             requiredMessage="#{language.blank_dl}" maxlength="25" autocomplete="off" styleClass="input">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9-/_/-]/i " for="dl_no"/>
+                                    <f:validateRequired for="dl_no"/>
+                                    <f:validateLength maximum="25" for="dl_no"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">    
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="badge_no" value="#{language.badge_no}"/>
+                                </label>
+                                <p:inputText id="badge_no" value="#{ndc_bean.ndc_dobj.badge_no}" converter="toUpperCaseConverter" required="true"
+                                             requiredMessage="#{language.blank_badge_no}" maxlength="25" autocomplete="off" styleClass="input">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9-///-]/i " for="dl_no"/>
+                                    <f:validateRequired for="badge_no"/>
+                                    <f:validateLength maximum="25" for="badge_no"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">    
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="dl_no" value="#{language.remarks}"/>
+                                </label>
+                                <p:inputText id="remark" value="#{ndc_bean.ndc_dobj.remark}" converter="toUpperCaseConverter" required="true"
+                                             requiredMessage="#{language.blank_remark}" maxlength="100" autocomplete="off" styleClass="input">
+                                    <f:validateRequired for="remark"/>
+                                    <f:validateLength maximum="100" for="remark"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+
+                <p:panel id="changedByPrevUser1" styleClass="top-space bottom-space"
+                         rendered="#{ndc_bean.prevChangedDataList.size()>0}" >
+                    <p:dataTable value="#{ndc_bean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="#{language.change_by_employee}" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+
+                        <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="#{language.changed_on}" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <p:outputPanel id="outputpanel_appdisapp" >       
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{ndc_bean}"/>
+                    </ui:include>  
+                </p:outputPanel>
+
+                <vahan:vahanMessages messages="#{ndc_bean.vahanMessages}"  rendered="#{ndc_bean.vahanMessages ne null}"/>
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

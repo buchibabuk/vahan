@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formReconciliationAuditPara" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Reconciliation Of Audit Para </h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+
+                <p:panel id="vehDtlsPanel">
+                    <p:focus context="vehDtlsPanel"/>
+                    <div class="ui-grid-row">
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfAuditType1" value="Audit Type"/>
+                            </label>
+                            <p:selectOneMenu id="tfAuditType1" required="true" value="#{reconciliationAuditPara.auditType}" style="width:125px" disabled="#{reconciliationAuditPara.audutTyDisabled}">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItem itemLabel="AG Audit" itemValue="2" />
+                                <f:selectItem itemLabel="Internal Audit" itemValue="1" />
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfParaNo1" value="Para No"/>
+                            </label>
+                            <p:inputText id="tfParaNo1" requiredMessage="Please Enter Para NO." required="true" value="#{reconciliationAuditPara.paraNo}" disabled="#{reconciliationAuditPara.paraNoDisabled}"/>
+
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfYear1" value="Year"/>
+                            </label>
+                            <p:inputText id="tfYear1" requiredMessage="Please Enter Para Year." required="true" value="#{reconciliationAuditPara.year}" disabled="#{reconciliationAuditPara.yearDisabled}" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="Vehicle Registration No."/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{reconciliationAuditPara.regn_no}"  disabled="#{reconciliationAuditPara.regnNoDisabled}"
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="Please Enter Registration No."
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details" action="#{reconciliationAuditPara.showDetails()}" disabled="#{reconciliationAuditPara.showDtlsBtnDisabled}"
+                                             update="formReconciliationAuditPara" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+
+                        </div>
+                    </div> 
+                    <p:keyFilter for="tfYear1" mask="num" /> 
+                    <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                </p:panel>
+
+                <p:outputPanel id="pnlRegnList" >
+
+                    <p:dataTable  id="tb_RegnNameList" rendered="#{reconciliationAuditPara.showRegList}"
+                                  value="#{reconciliationAuditPara.regnNameList}" var="regn"
+                                  rowIndexVar="index" >
+
+                        <p:column headerText="Sr. No" exportable="false" width="7%">
+                            <h:outputText value="#{index+1}" />
+                        </p:column>
+
+                        <p:column  headerText="Registration No.">
+                            <p:outputLabel value="#{regn.regn_no}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="Owner Name">
+                            <p:outputLabel value="#{regn.owner_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="State Name">
+                            <p:outputLabel value="#{regn.state_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="Office Name">
+                            <p:outputLabel value="#{regn.off_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column >
+                            <p:commandButton value="Show" action="#{vehicleDetails.getDetails(regn)}" update="@form"
+                                             onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"></p:commandButton>
+                        </p:column>
+
+
+                    </p:dataTable>
+
+                </p:outputPanel>
+
+                <p:panel id="vehDtlsPanel1" header="Audit Recovery Details" rendered="#{reconciliationAuditPara.showAuditRecoveryDetails}" styleClass="top-space">
+
+                    <p:outputPanel id="reg" styleClass="bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no" value="#{label.regn_no}"/>
+                                </label>
+                                <p:inputText id="regn_no" value="#{reconciliationAuditPara.ownerDetail.regnDateDescr}" disabled="true"/>                                
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_dt" value="#{label.regn_dt}"/>
+                                </label>
+                                <p:inputText id="regn_dt" value="#{reconciliationAuditPara.ownerDetail.regnDateDescr}" disabled="true"/>                                
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_name" value="#{label.owner_name}" />
+                                </label>
+                                <p:inputText id="tf_owner_name" value="#{reconciliationAuditPara.ownerDetail.owner_name}" disabled="true"/>
+                            </div>
+                        </div>  
+                        <div class="ui-grid-row">    
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_vh_class" value="#{label.vh_class}" />
+                                </label>
+                                <p:inputText id="tf_vh_class" value="#{reconciliationAuditPara.ownerDetail.vh_class_desc}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_amount" value="Amount" />
+                                </label>
+                                <p:inputText id="tf_amount" value="#{reconciliationAuditPara.auditRecoveryDobj.amount}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_period_From" value="From Date" />
+                                </label>
+                                <p:calendar id="tf_period_From" value="#{reconciliationAuditPara.auditRecoveryDobj.from_dt}" disabled="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" />
+                                </p:calendar>
+                            </div>                            
+                        </div>
+                        <div class="ui-grid-row"> 
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_period_To" value="To Date" />
+                                </label>
+                                <p:calendar id="tf_period_To" value="#{reconciliationAuditPara.auditRecoveryDobj.to_dt}" disabled="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_objection" value="Objection" />
+                                </label>
+                                <p:inputTextarea id="tf_objection" rows="5" cols="20" value="#{reconciliationAuditPara.auditRecoveryDobj.objection}" disabled="true"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:panel id="auditRecoveryDtls" header="Reconciliation" rendered="#{reconciliationAuditPara.showAuditRecoveryDetails}" styleClass="top-space">
+                    <p:outputPanel id="pnlAuditRecoveryDtls" styleClass="bottom-space">
+
+                        <div class="ui-grid-row">    
+                            <div class="ui-grid-col-4"></div>
+                            <div class="ui-grid-col-8">
+                                <p:selectOneRadio id="reconcilationChange" value="#{reconciliationAuditPara.reconcilationChange}" >
+                                    <f:selectItem itemLabel="Reconciliation Of Amount/Change Period" itemValue="1" />
+                                    <f:selectItem itemLabel="Drop Para" itemValue="2" />
+                                    <f:selectItem itemLabel="Stay With" itemValue="3" />
+                                    <p:ajax update="auditRecoveryDtls" event="valueChange" listener="#{reconciliationAuditPara.changeReconcilationType}" />
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+
+                        <p:outputPanel id="reconciliationDtlsUpdate" styleClass="bottom-space " rendered="#{reconciliationAuditPara.showReconcilitionDtls}" >
+                            <div class="ui-grid-row">    
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_amountNew" value="Amount" />
+                                    </label>
+                                    <p:inputText id="tf_amountNew" maxlength="6" value="#{reconciliationAuditPara.amount}" validatorMessage="Amount Must Be Greater Than Zero" required="true" requiredMessage="Please Provide Amount">
+                                        <p:keyFilter regEx="/[0-9]/i"/>
+                                        <f:validateLongRange minimum = "1" maximum = "999999" for="tf_amountNew"/>
+                                        <f:validateRequired for="tf_amountNew" />
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_period_From_new" value="From Date"  />
+                                    </label>
+                                    <p:calendar id="tf_period_From_new" value="#{reconciliationAuditPara.periodFrom}" pattern="dd-MMM-yyyy" required="true" requiredMessage="Please Select period From Date">
+                                        <p:ajax event="dateSelect" update="tf_period_To_new"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_period_To_new" value="To Date" />
+                                    </label>
+                                    <p:calendar id="tf_period_To_new" value="#{reconciliationAuditPara.periodTo}" mindate="#{reconciliationAuditPara.periodFrom}" disabled="#{reconciliationAuditPara.periodFrom eq null}" pattern="dd-MMM-yyyy" required="true" requiredMessage="Please Select period To Date"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">    
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_objection_new" value="Reason" />
+                                    </label>
+                                    <p:inputTextarea id="tf_objection_new" rows="5" cols="20"  styleClass="input" converter="toUpperCaseConverter" maxlength="200" value="#{reconciliationAuditPara.objection}" required="true" requiredMessage="Please Provide Reason"/>
+                                </div>
+                            </div>
+
+                            <p:keyFilter for="tf_amountNew" mask="num" /> 
+
+                        </p:outputPanel>
+                        <p:outputPanel id="reconciliationDtlsReason" styleClass="bottom-space " rendered="#{!reconciliationAuditPara.showReconcilitionDtls}" >
+                            <div class="ui-grid-row">    
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_objection_new1" value="Reason" />
+                                    </label>
+                                    <p:inputTextarea id="tf_objection_new1" rows="5" cols="20"  styleClass="input" converter="toUpperCaseConverter" maxlength="200" value="#{reconciliationAuditPara.objection}" required="true" requiredMessage="Please Provide Reason"/>
+                                </div>
+                            </div>
+
+
+
+                        </p:outputPanel>
+
+
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Save" action="#{reconciliationAuditPara.saveDetails()}"
+                                                 update="formReconciliationAuditPara" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                                <p:commandButton value="Reset" action="#{reconciliationAuditPara.reset()}"
+                                                 update="formReconciliationAuditPara" />
+
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog> 
+                <p:blockUI block="@form" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <!--                <p:blockUI widgetVar="ajax_status"/>-->
+            </h:form>
+        </div>
+
+    </ui:define>
+</ui:composition>

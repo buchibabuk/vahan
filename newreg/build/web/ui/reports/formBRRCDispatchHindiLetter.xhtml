@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">           
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/reports/formDownloadDispatch.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="tax" value="#{disReportBean.dispatchInfoReportDobjList}" >
+                <div class="center-position bottom-space-2">
+                    <p:graphicImage library="images/br" name="logo_br.png" alt="Bihar Logo" style="width: auto; height:110px;" />
+                </div>
+                <div class="center-position bottom-space-2 line-height-gap-2">
+                    <!--<span class="font-bold">बिहार सरकार</span><br />-->
+                    <span class="font-bold report-header">परिवहन विभाग</span><br />
+                    <span class="font-bold report-sub-header">जिला परिवहन पदाधिकारी <h:outputText value="#{tax.offName}" /> का कार्यालय<br /></span>
+                </div>
+                <div class="left-position bottom-space-2 dispatch-barcode ">
+                    <h:outputText value="*#{tax.dispatch_ref_no_for_display}*" />
+                </div>
+                <table class="datatable-panel-100 table-width-two bottom-space" style="font-size: 16px;">
+                    <tr>
+                        <td class="left-position">प्रिय वाहन स्वामी,	<br />		                       		
+                            <h:outputText value="Sh. #{tax.ownerName}"/><br />
+                            <h:outputText value=" C/o #{tax.fname}" /><br />
+                            <h:outputText value="#{tax.add1} #{tax.add2} #{tax.add3}" /><br />
+                            <h:outputText value="#{tax.city}, #{tax.stateName}-#{tax.pincode}," /><br />
+                            <h:outputText value="(M):91- #{tax.mobile_no}" /><br />
+                        </td>
+                        <td class="right-position">
+                            <div class=" right-space">
+                                निर्गत सं0 <h:outputText value="#{tax.regnNo}" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <p class="bottom-space line-height-gap-2" style="font-size: 16px;"> 
+                    आपके द्वारा क्रय किये गये वाहन के निबंधन हेतु प्राप्त अनुरोध के आलोक में आपको वाहन निबंधन स्मार्ट कार्ड प्रेषित किया जा रहा है । आपको आवंटित वाहन निबंधन संख्याः <h:outputText value="#{tax.regnNo}" /> है। रजिस्ट्रेशन कार्ड इस पत्र के साथ संलग्न है। यह एक महत्वपूर्ण वैधानिक दस्तावेज है,  जिसमें आपके द्वारा उपलब्ध करायी गई व्यक्तिगत सूचनाएँ दर्ज है। कृपया सभी दर्ज सूचनाओं की जाँच कर लें एवं किसी त्रुटि पर अधोहस्ताक्षरी  से सम्पर्क करें।
+                </p>
+
+                <p  class="bottom-space line-height-gap-2" style="font-size: 16px;">
+                    एक सजग एवं जिम्मेवार नागरिक के रूप में आपसे अपेक्षा है कि वाहन परिचालन के पूर्व संबंधित थर्ड पार्टी इंश्योरेंस, प्रदूषण प्रमाण पत्र की वैधता इत्यादि को हमेशा अद्यतन रखें एवं वाहन चलाते समय हेलमेट, सीट बेल्ट का प्रयोग नियंत्रित गति में वाहन का परिचालन, इत्यादि सड़क सुरक्षा नियमों का अनुपालन करेंगे।
+                </p>
+
+                <p  class="bottom-space line-height-gap-2" style="font-size: 16px;">
+                    आपकी सेवा में सदैव तत्पर|
+                </p>
+                <table class="datatable-panel-100 table-width-two bottom-space-2" style="font-size: 16px;">
+                    <tr>
+                        <td>
+                            <div class="center-position bottom-space" style="width:300px; height: 150px; border: 1px solid #000;">
+                                <div style=" margin-top: 50px;">कार्ड</div>
+                            </div>
+                        </td>
+                        <td>
+                            वाहन निबंधन पदाधिकारी
+                            <br />
+                            जिला परिवहन पदाधिकारी <h:outputText value="#{tax.offName}" />
+                        </td>
+                    </tr>
+                </table>
+                <div class="center-position bottom-space" style="border: 1px solid #000;">
+                    <div class="ui-grid">
+                        <div class="ui-grid-col-1"> 
+                            <p:graphicImage library="images/br" name="br-icon-road-safety.png" style="width: 32px; height: auto; padding: 4px;" />
+                        </div>
+                        <div class="ui-grid-col-10">
+                            <h1 class="header-subheader top-space" style="color: #000000;"> सड़क सुरक्षा-जीवन रक्षा  </h1>
+                        </div>
+                        <div class="ui-grid-col-1 resp-blank-height"></div>
+                    </div>
+                </div>
+
+                <div class="resp-blank-height bottom-space-25" style="border-bottom: 1px solid #000000"></div>
+                <p class="line-height-gap-2" style="font-size: 14px;">
+                    किसी भी प्रकार की समस्या होने पर जिला परिवहन कार्यालय के ई-मेल <h:outputText value="#{tax.email_id_offAdmin}" /> पर सम्पर्क करें।<br />
+                    विशेष जानकारी के लिए परिवहन विभाग, बिहार सरकार के बेबसाईट state.bihar.gov.in/transport पर सम्पर्क करें।</p>
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

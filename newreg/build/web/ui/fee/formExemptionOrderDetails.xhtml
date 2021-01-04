@@ -1,0 +1,120 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">    
+    <ui:define name="content">         
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="exemtionOrderDtls">                                        
+                <p:messages  showDetail="true" showSummary="false" closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Exemption Order Details</h1>
+                    </div>
+                </div>   
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">                            
+                        <h:panelGrid columns="2" styleClass="bottom-space" cellpadding="5" id="pg_selectOptions">
+                            <p:selectOneRadio id="selectedOption" value="#{exemBean.selectedOption}" 
+                                              disabled="#{exemBean.disableSelectedOption}">
+                                <f:selectItem itemLabel="Application No" itemValue="A" />
+                                <f:selectItem itemLabel="Registration No (For Tax Collection Only)" itemValue="R" />                                    
+                                <p:ajax listener="#{exemBean.selectedOptionListener}" update="appl_op regn_op getButton_op ownerInformationPanel"/>
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                    </div>
+                </div>
+                <div class="ui-grid-row" >
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="appl_op">
+                            <p:outputPanel id="applNoPanel" rendered="#{exemBean.renderApplPnl}">
+                                <p:focus context="applNoPanel"/>
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+
+                                <div class="ui-grid-col-4 ">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="applNo" value="Enter Application No:" />
+                                    </label>
+                                    <p:inputText  id="applNo" value="#{exemBean.applNo}" size="20" maxlength="16" 
+                                                  autocomplete="off" style="text-transform: uppercase" disabled="#{exemBean.renderAllPanel}"
+                                                  converter="toUpperCaseConverter"  >
+                                    </p:inputText>
+                                    <p:keyFilter mask="alphanum" for="applNo"/>
+                                </div>
+
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                        <p:outputPanel id="regn_op">
+                            <p:outputPanel id="regnNoPanel" rendered="#{exemBean.renderRegnPnl}">
+                                <p:focus context="regnNoPanel"/>
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4 ">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regnNo" value="Enter Registration No:" />
+                                    </label>
+                                    <p:inputText  id="regnNo" value="#{exemBean.regnNo}" size="20" maxlength="10" 
+                                                  autocomplete="off"   style="text-transform: uppercase" disabled="#{exemBean.renderAllPanel}"
+                                                  converter="toUpperCaseConverter"  >
+                                    </p:inputText>
+                                    <p:keyFilter mask="alphanum" for="regnNo"/>
+                                </div>
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </div>                                 
+                </div>
+                <p:outputPanel id="getButton_op">
+                    <p:outputPanel id="getButtonPanel" rendered="#{exemBean.renderApplPnl || exemBean.renderRegnPnl}">
+                        <div class="ui-grid-row center-position" >
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="getDetail" value="Get Details" onclick="PF('buiVar').show();" action="#{exemBean.getOwnerDetails}" rendered="#{!exemBean.renderAllPanel}"  update="exemtionOrderDtls:ownerInformationPanel applNoPanel regn_op getButtonPanel selectedOption" 
+                                                 oncomplete="PF('buiVar').hide()" />
+                                <p:button value="Back" rendered="#{!exemBean.renderAllPanel}" outcome="home" onclick="PF('buiVar').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <p:outputPanel id="ownerInformationPanel">
+                    <p:outputPanel   rendered="#{exemBean.renderAllPanel}">
+                        <ui:include src="../commonUI/form_owner_vehicle_dtls_mvtax.xhtml">
+                            <ui:param name="containerBean" value="#{exemBean}" />
+                        </ui:include>
+                        <div class="center-position">
+                            <h3 class="red font-bold">"Make Sure that exempted amount should not be more than the Fine/Penalty amount"</h3>
+                        </div>
+                        <ui:include src="/ui/tax/form_fee_fine_exemtion.xhtml">
+                            <ui:param name="taxContainerBean" value="#{exemBean}"/>
+                        </ui:include>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:outputPanel id="pg_save" styleClass="center-position">
+                                    <p:commandButton value="Add" action="#{exemBean.saveExemtionDetails()}" rendered="#{exemBean.renderAddBtn}" onclick="PF('buiVar').show();"
+                                                     oncomplete="PF('buiVar').hide();" update="@form" >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:commandButton  value="Modify" action="#{exemBean.updateExemtionDetails()}"
+                                                      rendered="#{exemBean.renderModifyBtn}" onclick="PF('buiVar').show();"
+                                                      oncomplete="PF('buiVar').hide();" update="@form" >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('buiVar').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <p:blockUI block=":masterLayout" widgetVar="buiVar">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="60%" width="30%"/>
+                </p:blockUI>
+            </f:subview>
+
+        </div>
+    </ui:define>
+</ui:composition>

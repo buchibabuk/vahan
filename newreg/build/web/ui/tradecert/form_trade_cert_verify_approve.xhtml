@@ -1,0 +1,1038 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content"> 
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="new_trade_cert_application_subview">
+                <p:dialog id="confirmationPopup" visible="#{not empty facesContext.messageList}"
+                          style="text-align:center" widgetVar="confirmationPopup"
+                          modal="true" draggable="false" closable="false" hideEffect="explode"
+                          header="Trade Certificate Application Confirmation Panel"> 
+                    <p:outputPanel id="confirm_panel1">
+                        <p:messages/>
+                        <p:outputLabel value="Do you want to continue"/><br></br>
+                        <br></br>
+
+                        <div style="text-align:center">
+                            <h:panelGrid columns="2">                       
+                                <p:spacer height="5"/><p:spacer height="5"/>
+                                <p:commandButton value="OK" onclick="PF('confirmationPopup').hide()" action="#{verifyApproveTradeCertBean.click}" icon="ui-icon-check" >
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog id="viewUploaded__dialogShowImage" modal="true" widgetVar="ShowImage" header="== Displaying D.M.S Utility : Uploaded Documents Viewier ==" closeOnEscape="true" closable="true" dynamic="true" draggable="false" resizable="false">
+                    <p:ajax event="close" listener="#{verifyApproveTradeCertBean.handleShowImageClose}" />
+                    <p:outputPanel id="scandocument">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <iframe  src="#{verifyApproveTradeCertBean.dmsFileServerAPIString}"  height="550" width="1200" frameborder="0" scrolling="yes" marginheight="1" marginwidth="1"/>
+                            </div> 
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog id="deficiencyMailGeneratePopupTC"  responsive="true" closeOnEscape="true" maximizable="true"   
+                          widgetVar="mailGenerateDlgTradeCert" width="60%" height="100%" minimizable="true"
+                          modal="true" closable="true" hideEffect="explode"
+                          header="Trade Certificate Application Receive Deficiency Mail Generation Panel..."> 
+
+
+                    <p:outputPanel id="mail_panel_tc">
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                            <div class="ui-grid-col-5">
+                                <h:outputText  value="To: &#160;&#160;" styleClass="font-bold"/>
+                                <h:outputText value="#{verifyApproveTradeCertBean.applicantMailId}" />
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <h:outputText  value="From: &#160;&#160;" styleClass="font-bold"/>
+                                <h:outputText value="nic-vahandl@nic.in via nic.in" />
+
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                            <div class="ui-grid-col-10">
+                                <label class="field-label resp-label-section">
+                                    <h:outputText  value="Subject: &#160;&#160; #{verifyApproveTradeCertBean.deficiencyMailSubject}" styleClass="font-bold"/>
+                                </label>
+                                <p:outputLabel id="deficiencyMailSubject" value="" />
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                            <div class="ui-grid-col-10">
+                                <h:outputText id="deficiencyMailContentToBeSent" value="#{verifyApproveTradeCertBean.deficiencyMailContent}" escape="false"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                            <div class="ui-grid-col-11">
+                                <p:inputTextarea id="rejectionReasons" value="#{verifyApproveTradeCertBean.rejectionReasons}" rows="4" cols="120" maxlength="400" autoResize="false"/>
+                            </div>
+                        </div>
+
+
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                            <div class="ui-grid-col-10">
+
+                                <div class="text-info bottom-space">** Allowed to enter 400 characters having {0-9}, {a-z}, {A-Z}, {space}, {coma}, {forward-slash}, {back-slash}, {colon}, {semi-colon}, {square-brackets}, {parentheses}, {hyphen}, {underscore}, {period}, {single-quote}, {double-quote}, {curly-braces}, {dollar}, {percentage}, {^},(ampersant), {star}, {plus}, {tilt}, {Exclamation-point}</div>                               
+                                <div class="text-info bottom-space">** Not Allowed to enter {|}, {=}, {escape-sequences [\n,\t,\r....]}</div>
+                                <div>Best Regards,<br/>
+                                    Transport Department
+                                    <h:outputText id="stateNameMentionedInDeficiencyMail_txt" value="Government Of #{verifyApproveTradeCertBean.stateNameMentionedInDeficiencyMail}" styleClass="bottom-space inline-section font-bold" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="deficiencyMailGenerationDlgButton" value="Send" action="#{verifyApproveTradeCertBean.sendRejectionMessages()}" oncomplete="PF('mailGenerateDlgTradeCert').hide();PF('mailGenerationBlocker').hide();"
+                                                 icon="ui-icon-mail-closed" onclick="PF('mailGenerationBlocker').show();" />
+                                <p:commandButton value="Cancel" oncomplete="PF('mailGenerateDlgTradeCert').hide();"  icon="ui-icon-close" />
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position red">
+                                *** <span class="font-bold">NOTE: </span> This is a system generated email, please do not reply. ***
+                            </div>
+
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>   
+                <!-- _________________________________________________________RECEIVE APPLICATION____________________________________________________________________ -->
+
+                <p:outputPanel id="receive_application" rendered="#{verifyApproveTradeCertBean.renderReceiveOnlineApplication}">
+
+
+                    <p:dialog id="backwardGeneratePopupTC" 
+                              widgetVar="backwardGeneratePopupTC"
+                              modal="true" draggable="false" closable="false" hideEffect="explode"
+                              header="Trade Certificate Application Receive Backward Remarks Panel..."> 
+
+
+                        <p:outputPanel id="backward_remarks_panel_tc">
+                            <div class="ui-grid-row top-space bottom-space">
+                                <div class="ui-grid-col-12">
+                                    Please enter the reasons for reverting back the application to rectification stage:-
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space bottom-space">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:inputTextarea id="backwardRemarks" value="#{verifyApproveTradeCertBean.backwardRemark}" rows="10" cols="150" autoResize="false"/><br/><br/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="backwardRemarksGenerationDlgButton" value="Revert" action="#{verifyApproveTradeCertBean.revertPendingApplication()}" oncomplete="PF('backwardRemarksGenerationBlocker').hide();PF('backwardGeneratePopupTC').hide();"
+                                                     icon="ui-icon-circle-arrow-w" onclick="PF('backwardRemarksGenerationBlocker').show();">
+                                    </p:commandButton>
+                                    <p:commandButton value="Cancel"  oncomplete="PF('backwardGeneratePopupTC').hide();"
+                                                     icon="ui-icon-close" >
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:outputPanel id="trade_panel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <h1 class="header-main">Receive Online Application for Trade Certificate</h1> 
+                            </div>
+                        </div>
+                        <p:outputPanel rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"> 
+                            <br/>
+                            <h:outputText value="*Working with the form:-" styleClass="text-info bottom-line"/>
+                            <br/>
+                            <h:outputText value="Step 1: Click on 'Hard Copy Physically Received' to log the latest timestamp of receiving the hard copies of [Fee-Receipt,Undertaking By Applicant,Form-16/18]" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 2: Click on 'Open Uploaded Documents' to check all the uploaded attached documents" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 3: If any deficiency found, click on 'Compose Deficiency Mail' to send deficiency mail to the applicant before reverting the application" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 4: If any deficiency found, click on 'Revert Application For Rectification' to revert the application to the applicant" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 5: To forward the application to verifier, click on 'File Movement' -> 'Forward the application to next seat' to forward the application to the verifier" styleClass="green"/>
+                            <br/>
+                        </p:outputPanel>
+                        <p:panel header="Receive Trade Certificate Application" id="receive_trade_cert" visible="#{verifyApproveTradeCertBean.detailsShown}" styleClass="top-space bottom-space" >
+                            <p:outputPanel id="action_btns" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"> 
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-9">
+                                        <p:commandButton id="hardCopyPhysicallyReceivedBtn"  rendered="#{verifyApproveTradeCertBean.showHardCopyReceivedButton}" value="Hard Copy Physically Received" icon="ui-icon-circle-check" action="#{verifyApproveTradeCertBean.markHardCopyReceived}" onclick="PF('bui').show();" update="action_btns">
+                                            <p:confirm header="Confirmation" message="Have you received the hard copies of all the mandatory documents ?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:commandButton id ="open_uploaded_documents" value="Open Uploaded Documents"  ajax="true" immediate="true"  onclick="PF('documentViewerBlocker').show();"
+                                                         oncomplete="PF('documentViewerBlocker').hide();" onsuccess="PF('documentViewerBlocker').hide();"
+                                                         actionListener="#{verifyApproveTradeCertBean.openUploadedDocuments()}" icon="ui-icon-folder-open" />
+                                        <p:commandButton id ="mail" value="Compose Deficiency Mail"  ajax="true" immediate="true"  onclick="PF('composeMailBlocker').show();" 
+                                                         oncomplete="PF('mailGenerateDlgTradeCert').show();PF('composeMailBlocker').hide();" 
+                                                         onsuccess="PF('mailGenerateDlgTradeCert').show();PF('composeMailBlocker').hide();" 
+                                                         actionListener="#{verifyApproveTradeCertBean.generateDeficiencyMailOpeningMatter()}" icon="ui-icon-script" update="@form"/>
+
+                                    </div>
+                                    <div class="ui-grid-col-3 right-position">
+                                        <p:commandButton id="revertReceivedOnlineApplicationBtn" value="Revert Application For Rectification" icon="ui-icon-circle-arrow-w" action="#{verifyApproveTradeCertBean.preRevertOperation()}" onclick="PF('bui_revert_application').show();">
+                                            <p:confirm header="Confirmation" message="The displayed online application will now be revert back for rectification. Would you like to continue ?" icon="ui-icon-alert"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+
+                                <p:outputPanel id ="markHardCopyReceivedOutputPanel" rendered ="#{verifyApproveTradeCertBean.hardCopiesReceived and verifyApproveTradeCertBean.showHardCopyReceivedButton}">
+                                    <div class="ui-grid-row top-space bottom-space">
+                                        <div class="ui-grid-col-12 green font-bold">
+                                            Hard copies(self-attested) of all mandatory documents have been received at <h:outputText id="hardCopyPhysicallyReceivedTimeStamp" value="#{verifyApproveTradeCertBean.currentTimeStampAsMarkHardCopyReceivedInStringFormat}" styleClass="red font-bold"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>
+
+
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-4">
+                                    <h:outputText  id="lb_appl" value="#{label.appl_no}: " styleClass="right-space inline-section" />
+                                    <h:outputText  id="lb_appl_no" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applNo}" styleClass="font-bold"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <h:outputText id="lb_dealer_label_for_name" value="#{label.dealer}: " styleClass="right-space inline-section"/>
+                                    <h:outputText id="lb_dealer_name" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="font-bold"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <h:outputText id="lb_trade_cert_type_label" value="#{label.appl_trade_cert_type}: " styleClass="right-space inline-section"/>
+                                    <h:outputText id="lb_trade_cert_type" value="#{verifyApproveTradeCertBean.tradeCertType}" styleClass="font-bold"/>
+                                </div>
+                            </div>
+                            <p:panel header="Section 1:  Applicant Basic Details" id="section_1_basic_details_panel_verify"  styleClass="bottom-space">
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth bottom-space">
+                                    <h:outputLabel value="Applicant Name: " styleClass="right-space bottom-space inline-section" />
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Son / Wife / Daughter of: "  styleClass="right-space bottom-space inline-section" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.individual}"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.applicantRelation}" styleClass="right-space bottom-space inline-section font-bold" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.individual}"/> 
+                                    <h:outputLabel value="Applicant Address: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerAdd1}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Category:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applicantTypeDescription}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant State: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.stateName}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Pincode: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerPincode}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Contact Number: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.contactNo}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Email-Id: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.emailId}" styleClass="right-space bottom-space inline-section font-bold"/>
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Section 2:  Applicant Affiliated Details" id="section_2_affiliation_details_panel_verify"  styleClass="bottom-space">                            
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth">
+                                    <h:outputLabel value="RTO For Registration Of Applicant: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.officeName}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Category Of Motor Vehicle(s) In Which Authorized To Deal:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.vchClass}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Applicant Affiliated With Manufacturers: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.maker}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Registration Number(Applicant Code): "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant GSTIN: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.tin_NO}" styleClass="right-space bottom-space inline-section font-bold" />
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Section 3: Trade Certificate Details" id="section_3_tc_details_panel_verify"   styleClass="bottom-space">
+                                <p:dataTable selection="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj}" rowKey="#{verifyApproveTradeCertDobj.srNo}" var="verifyApproveTradeCertDobj" id="application_section3_data_table_receive" styleClass="top-space bottom-space" value="#{verifyApproveTradeCertBean.applicationSectionsList}"  paginator="false" >
+                                    <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                        <h:outputLabel id="lb_sr_no" value="#{verifyApproveTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <c:if test="#{verifyApproveTradeCertBean.tradeCertType ne 'NEW'}">    
+                                        <p:column headerText="#{label.trade_cert_no_label}" width="15%">
+                                            <h:outputLabel  id="lb_cert_no" value="#{verifyApproveTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="15%">
+                                            <h:outputLabel  id="dt_valid_upto" value="#{verifyApproveTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                    </c:if>
+                                    <p:column headerText="#{label.vh_catg}">
+                                        <h:outputLabel  id="lb_veh_category_for" value="#{verifyApproveTradeCertDobj.vehCatgName}"/>
+                                    </p:column>
+                                    <p:column headerText="No of T.C. " width="15%" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                        <h:outputLabel  id="lb_no_of_allowed_vehicles_editable" value="#{verifyApproveTradeCertDobj.noOfAllowedVehicles}"/>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:outputPanel rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 right-position right-space">
+                                            Grand total of trade certificates applied by '<h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="font-bold"/>': &#160;&#160;&#160;&#160;&#160;&#160;
+                                            <h:outputLabel id="tf_grand_total_verify_for_receive" value="#{verifyApproveTradeCertBean.noOfVehGrandTotal}" styleClass="font-bold welcome-sub-heading-size" />
+                                        </div>
+                                    </div>
+                                </p:outputPanel>    
+                            </p:panel>
+
+                            <p:panel id="applicantTCFeePanel_receive" header = "Section 4: Trade Certificate Fee Details" styleClass="bottom-space">
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText id="lb_dealer_for_receive" value="Applicant [ Code ] : " styleClass="font-bold"/>
+                                        <h:outputText id="lb_dealer_name_receive" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ]" />
+                                    </div>
+                                    <div class="ui-grid-col-4 ">
+                                        <h:outputText id="lb_temp_app_no_receive" value="Application Number : " styleClass="font-bold"/>
+                                        <h:outputText id="lb_temp_app_no_val_receive" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applNo}" />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText id="lb_trade_cert_type_label_receive" value="#{label.appl_trade_cert_type} :" styleClass="font-bold"/>
+                                        <h:outputText id="lb_trade_cert_type_receive" value="#{verifyApproveTradeCertBean.tradeCertType}"/>
+                                    </div>
+                                </div>
+                                <p:dataTable rendered="#{!verifyApproveTradeCertBean.displayCalculatedFeeAndOtherFeeVariables}" var="verifyApproveTradeCertDobj" id="application_section4_data_table_receive" styleClass="top-space bottom-space" value="#{verifyApproveTradeCertBean.applicationSectionsList}"  paginator="false" >
+                                    <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                        <h:outputLabel id="lb_sr_no_receive" value="#{verifyApproveTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <c:if test="#{verifyApproveTradeCertBean.tradeCertType ne 'NEW'}">    
+                                        <p:column headerText="#{label.trade_cert_no_label}" width="15%">
+                                            <h:outputLabel  id="lb_cert_no_receive" value="#{verifyApproveTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="15%">
+                                            <h:outputLabel  id="dt_valid_upto_receive" value="#{verifyApproveTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                    </c:if>
+                                    <p:column headerText="#{label.vh_catg}">
+                                        <h:outputLabel  id="lb_veh_category_for_receive" value="#{verifyApproveTradeCertDobj.vehCatgName}"/>
+                                    </p:column>
+                                    <p:column headerText="No of T.C. " width="15%" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                        <h:outputLabel  id="lb_no_of_allowed_vehicles_editable_receive" value="#{verifyApproveTradeCertDobj.noOfAllowedVehicles}"/>
+                                    </p:column>
+                                    <p:column headerText="Fee Per Vehicle Category" width="15%">
+                                        <p:outputLabel  id="lb_total_1_receive" value="#{verifyApproveTradeCertDobj.feesCollected}/-" styleClass="right-position right-space"/>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:dataTable rendered="#{verifyApproveTradeCertBean.displayCalculatedFeeAndOtherFeeVariables}" id="tablefee_receive" var="fee" value="#{verifyApproveTradeCertBean.dobjList}" rowIndexVar="index" 
+                                             editable="false">
+                                    <f:facet name="header">
+                                        <p:outputLabel value="Fee Structure"/>
+                                    </f:facet>
+                                    <p:column headerText="S.No." id="headerText" styleClass="collumn-width center-position"> 
+                                        <p:outputLabel value="#{index +1}."/>
+                                    </p:column>
+                                    <p:column headerText="Description" id="feeText" >
+                                        <p:outputLabel value="#{fee.vch_class_appliedDescr}" styleClass="right-position"/>
+                                    </p:column>
+
+                                    <p:column headerText="No Of Trade Certificate" id="noOfVehicle">
+                                        <p:outputLabel value="#{fee.no_of_tc_required}" styleClass="right-position"/>
+                                    </p:column>
+                                    <p:column headerText="Fee Amount" id="feeAmount">
+                                        <p:outputLabel value="#{fee.feeAmount}" styleClass="right-position"/>
+                                    </p:column>
+                                    <!--                                <p:column headerText="Fine Amount" id="fineAmount" >  
+                                                                        <p:outputLabel  value="# {fee.fineAmount}" styleClass="right-position" />
+                                                                    </p:column>-->
+                                    <p:column headerText="Tax Amount" id="taxAmount">  
+                                        <p:outputLabel  value="#{fee.taxAmount}" styleClass="right-position" />     
+                                    </p:column>
+                                    <p:column headerText="Surcharge" id="surCharge">  
+                                        <p:outputLabel  value="#{fee.surCharge}" styleClass="right-position" />     
+                                    </p:column>
+                                    <!--                                <p:column headerText="Service Charge" id="serviceCharge" rendered="true">
+                                                                         <p:outputLabel  value="# {fee.serviceCharge}" styleClass="right-position" />
+                                                                    </p:column>-->
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+                                            <p:column colspan="2" styleClass="right-position" footerText="Grand Total:" />
+                                            <p:column styleClass="right-position" footerText="#{verifyApproveTradeCertBean.tradeDobj.totalNoOfVehicles}"/>
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalFeeAmount}" styleClass="right-position"/>
+                                            <!--                                        <p:column footerText="# {publicApplicationTradeCertBean.tradeDobj.totalFineAmount}" styleClass="right-position" />-->
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalTaxAmount}" styleClass="right-position"/>
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalSurcharge}" styleClass="right-position"/>                                                                              
+                                        </p:row>
+                                    </p:columnGroup>
+                                </p:dataTable> 
+
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel id="lb_total_no_of_tc_required_receive" value="Total Number Of Trade Certificates Required :" styleClass="font-bold" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"/>
+                                    </div>
+                                    <div class="ui-grid-col-1">
+                                        <h:outputText id="lb_total_no_of_tc_required_value_receive" value="#{verifyApproveTradeCertBean.noOfVehGrandTotal}" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"/>
+                                    </div>
+                                    <div class="ui-grid-col-7 right-position right-space ">
+                                        <h:outputText id="lb_total_fee_collected_receive" value=" Grand total of fee to be paid by " styleClass="inline-section green right-space" />
+                                        <h:outputText value=" '#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ] ' :: " styleClass="font-bold inline-section"/>
+                                    </div>
+                                    <div class="ui-grid-col-1 left-position right-space top-align">
+                                        <h:outputText id="lb_total_fee_collected_value_receive" value="#{verifyApproveTradeCertBean.totalAmountInCommaSeperatedString}/-" styleClass="font-bold welcome-sub-heading-size" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12 ">
+                                        <h:outputText id="lb_total_fee_collected_words_receive" value=" Grand total of fee in words (Rs)" styleClass="inline-section green right-space" />
+                                        <h:outputText id="lb_total_fee_collected_value_words_receive" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.grandTotalInWords}" styleClass="font-bold italic" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <span class="green">*Fee Receipt will be generated after collection of fee from </span> '<h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ] " styleClass="font-bold"/>' <span class="green">with the receipt number.</span>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <span class="green">*Date of application shall be considered only after submission of application along-with requisite self attested documents (in hard copies) to the concerned registering authority.</span>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:panel id="applicantTCInspectionPanel_receive" header = "Section 4: Inspection Details" styleClass="bottom-space" rendered="#{verifyApproveTradeCertBean.renderInspectionPanel}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                                    <div class="ui-grid-col-3">
+                                        <h:outputLabel value="Inspection By: " styleClass="right-space bottom-space " />
+                                        <p:selectOneMenu value="#{verifyApproveTradeCertBean.inspectionBy}" filter="true" filterMatchMode="contains">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-SELECT-" />
+                                            <f:selectItems value="#{verifyApproveTradeCertBean.listOfAllInspectionOfficiers}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-3">
+                                        <h:outputLabel value="Inspection On: "  styleClass="right-space bottom-space " />
+                                        <p:calendar id="inspection_off_date" value="#{verifyApproveTradeCertBean.inspectionOn}" 
+                                                    pattern="dd-MMM-yyyy" placeholder="Inspection Date" navigator="true" maxdate="#{verifyApproveTradeCertBean.currentDate}">
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                                    <div class="ui-grid-col-8">
+                                        <h:outputLabel value="Inspection Remark: "  styleClass="right-space bottom-space"/>
+                                        <p:inputTextarea id="inspection_off_remark" value="#{verifyApproveTradeCertBean.inspectionRemark}" rows="10" cols="150" autoResize="false"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+
+                        </p:panel>
+
+                    </p:outputPanel>
+
+                    <p:blockUI block="trade_panel" widgetVar="bui_revert_application" >
+                        Opening backward remarks entry section... please wait
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="backward_remarks_panel_tc" widgetVar="backwardRemarksGenerationBlocker">
+                        Saving backward remarks and reverting the application to pending stage... please wait<br />
+                        <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="trade_panel" widgetVar="bui" >
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>                   
+                    <p:blockUI block="@form" widgetVar="receiveApplicationBlocker" >
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="trade_panel" widgetVar="documentViewerBlocker">
+                        Opening the uploaded documents... please wait<br />
+                        <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="trade_panel" widgetVar="composeMailBlocker">
+                        Opening the compose deficiency mail dialog box... please wait<br />
+                        <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+
+                </p:outputPanel> 
+
+                <!-- _________________________________________________________VERIFY APPLICATION_____________________________________________________________________ -->
+
+                <p:outputPanel id="verify_application" rendered="#{verifyApproveTradeCertBean.renderVerifyOnlineApplication}">
+
+                    <p:outputPanel id="trade_panel_for_verify">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <h1 class="header-main">Verify Online Application for Trade Certificate</h1> 
+                            </div>
+                        </div>
+                        <p:outputPanel rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                            <br/>
+                            <h:outputText value="*Working with the form:-" styleClass="text-info bottom-line"/>
+                            <br/>
+                            <h:outputText value="Step 1: Click on 'Hard Copy Physically Received' to log the latest timestamp of receiving the hard copies of [Fee-Receipt,Undertaking By Applicant,Form-16/18]" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 2: Click on 'Open Uploaded Documents' to check all the uploaded attached documents" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 3: If any deficiency found, click on 'Compose Deficiency Mail' to send deficiency mail to the applicant before reverting the application" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 4: If any deficiency found, click on 'File Movement' -> 'Revert back to previous seat' to revert the application to the receiver" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 5: To forward the application to approver, click on 'File Movement' -> 'Forward the application to next seat' to forward the application to the approver" styleClass="green"/>
+                            <br/>
+                        </p:outputPanel>
+
+                        <p:panel header=" Verify Details Of Received Online Application For Trade Certificate" id="verify_trade_cert"  visible="#{verifyApproveTradeCertBean.detailsShown}" styleClass="top-space bottom-space" >
+                            <p:outputPanel id="verify_action_btns" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                <div class="ui-grid-row bottom-space-50">
+                                    <div class="ui-grid-col-7 ">
+                                        <p:commandButton id="hardCopyPhysicallyReceivedBtn_for_verify" rendered="#{verifyApproveTradeCertBean.showHardCopyReceivedButton}" value="Hard Copy Physically Received" icon="ui-icon-circle-check" action="#{verifyApproveTradeCertBean.markHardCopyReceived}" onclick="PF('bui').show();" update="verify_action_btns">
+                                            <p:confirm header="Confirmation" message="Have you received the hard copies of all the mandatory documents ?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:outputPanel id ="markHardCopyReceivedOutputPanel_for_verify" rendered="#{verifyApproveTradeCertBean.hardCopiesReceived and verifyApproveTradeCertBean.showHardCopyReceivedButton}">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12 green font-bold">
+                                                    Hard copies(self-attested) of all mandatory documents have been received at <h:outputText id="hardCopyPhysicallyReceivedTimeStamp_for_verify" value="'#{verifyApproveTradeCertBean.currentTimeStampAsMarkHardCopyReceivedInStringFormat}'" styleClass="red font-bold"/>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel> 
+                                    </div>
+                                    <div class="ui-grid-col-3 right-position">
+                                        <p:commandButton id ="open_uploaded_documents_for_verify" value="Open Uploaded Documents"  ajax="true" immediate="true"  onclick="PF('documentViewerBlocker').show();" 
+                                                         actionListener="#{verifyApproveTradeCertBean.openUploadedDocuments()}" icon="ui-icon-folder-open" />
+                                    </div>
+                                    <div class="ui-grid-col-2 ">
+                                        <p:commandButton id ="mail_for_verify" value="Compose Deficiency Mail"  ajax="true" immediate="true"  onclick="PF('composeMailBlocker').show();" 
+                                                         oncomplete="PF('mailGenerateDlgTradeCert').show();PF('composeMailBlocker').hide();" 
+                                                         onsuccess="PF('mailGenerateDlgTradeCert').show();PF('composeMailBlocker').hide();" 
+                                                         actionListener="#{verifyApproveTradeCertBean.generateDeficiencyMailOpeningMatter()}" icon="ui-icon-script" update="@form"/>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-4">
+                                    <h:outputText  id="lb_appl_for_verify" value="#{label.appl_no}: " styleClass="right-space inline-section" />
+                                    <h:outputText  id="lb_appl_no_for_verify" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applNo}" styleClass="font-bold"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <h:outputText id="lb_dealer_label_for_name_for_verify" value="#{label.dealer}: " styleClass="right-space inline-section"/>
+                                    <h:outputText id="lb_dealer_name_for_verify" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="font-bold"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <h:outputText id="lb_trade_cert_type_label_for_verify" value="#{label.appl_trade_cert_type}: " styleClass="right-space inline-section"/>
+                                    <h:outputText id="lb_trade_cert_type_for_verify" value="#{verifyApproveTradeCertBean.tradeCertType}" styleClass="font-bold"/>
+                                </div>
+
+                            </div>
+                            <p:panel header="Section 1:  Applicant Basic Details" id="section_1_basic_details_panel_for_verify"   styleClass="bottom-space">
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth bottom-space">
+                                    <h:outputLabel value="Applicant Name: " styleClass="right-space bottom-space inline-section" />
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Son / Wife / Daughter of: "  styleClass="right-space bottom-space inline-section" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.individual}"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.applicantRelation}" styleClass="right-space bottom-space inline-section font-bold" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.individual}"/> 
+                                    <h:outputLabel value="Applicant Address: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerAdd1}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Category:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applicantTypeDescription}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant State: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.stateName}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Pincode: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerPincode}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Contact Number: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.contactNo}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Email-Id: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.emailId}" styleClass="right-space bottom-space inline-section font-bold"/>
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Section 2:  Applicant Affiliated Details" id="section_2_affiliation_details_panel_for_verify"  styleClass="bottom-space">                            
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth">
+                                    <h:outputLabel value="RTO For Registration Of Applicant: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.officeName}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Category Of Motor Vehicle(s) In Which Authorized To Deal:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.vchClass}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Applicant Affiliated With Manufacturers: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.maker}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Registration Number(Applicant Code): "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant GSTIN: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.tin_NO}" styleClass="right-space bottom-space inline-section font-bold" />
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Section 3: Trade Certificate Details" id="section_3_tc_details_panel_for_verify"   styleClass="bottom-space">
+                                <p:dataTable selection="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj}" rowKey="#{verifyApproveTradeCertDobj.srNo}" var="verifyApproveTradeCertDobj" id="application_section3_data_table_for_verify" styleClass="top-space bottom-space" value="#{verifyApproveTradeCertBean.applicationSectionsList}"  paginator="false" >
+                                    <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                        <h:outputLabel id="lb_sr_no" value="#{verifyApproveTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <c:if test="#{verifyApproveTradeCertBean.tradeCertType ne 'NEW'}">    
+                                        <p:column headerText="#{label.trade_cert_no_label}" width="15%">
+                                            <h:outputLabel  id="lb_cert_no" value="#{verifyApproveTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="15%">
+                                            <h:outputLabel  id="dt_valid_upto" value="#{verifyApproveTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                    </c:if>
+                                    <p:column headerText="#{label.vh_catg}">
+                                        <h:outputLabel  id="lb_veh_category_for" value="#{verifyApproveTradeCertDobj.vehCatgName}"/>
+                                    </p:column>
+                                    <p:column headerText="No of T.C. " width="15%" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                        <h:outputLabel  id="lb_no_of_allowed_vehicles_editable" value="#{verifyApproveTradeCertDobj.noOfAllowedVehicles}"/>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:outputPanel rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 right-position right-space">
+                                            Grand total of trade certificates applied by '<h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="font-bold"/>': &#160;&#160;&#160;&#160;&#160;&#160;
+                                            <h:outputLabel id="tf_grand_total_for_verify" value="#{verifyApproveTradeCertBean.noOfVehGrandTotal}" styleClass="font-bold welcome-sub-heading-size" />
+                                        </div>
+                                    </div>
+                                </p:outputPanel>     
+                            </p:panel>
+
+                            <p:panel id="applicantTCFeePanel_verify" header = "Section 4: Trade Certificate Fee Details" styleClass="bottom-space">
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText id="lb_dealer_for_verify" value="Applicant [ Code ] : " styleClass="font-bold"/>
+                                        <h:outputText id="lb_dealer_name_verify" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ]" />
+                                    </div>
+                                    <div class="ui-grid-col-4 ">
+                                        <h:outputText id="lb_temp_app_no_verify" value="Application Number : " styleClass="font-bold"/>
+                                        <h:outputText id="lb_temp_app_no_val_verify" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applNo}" />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText id="lb_trade_cert_type_label_verify" value="#{label.appl_trade_cert_type} :" styleClass="font-bold"/>
+                                        <h:outputText id="lb_trade_cert_type_verify" value="#{verifyApproveTradeCertBean.tradeCertType}"/>
+                                    </div>
+                                </div>
+                                <p:dataTable rendered="#{!verifyApproveTradeCertBean.displayCalculatedFeeAndOtherFeeVariables}" var="verifyApproveTradeCertDobj" id="application_section4_data_table_verify" styleClass="top-space bottom-space" value="#{verifyApproveTradeCertBean.applicationSectionsList}"  paginator="false" >
+                                    <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                        <h:outputLabel id="lb_sr_no_verify" value="#{verifyApproveTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <c:if test="#{verifyApproveTradeCertBean.tradeCertType ne 'NEW'}">    
+                                        <p:column headerText="#{label.trade_cert_no_label}" width="15%">
+                                            <h:outputLabel  id="lb_cert_no_verify" value="#{verifyApproveTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="15%">
+                                            <h:outputLabel  id="dt_valid_upto_verify" value="#{verifyApproveTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                    </c:if>
+                                    <p:column headerText="#{label.vh_catg}">
+                                        <h:outputLabel  id="lb_veh_category_for_verify" value="#{verifyApproveTradeCertDobj.vehCatgName}"/>
+                                    </p:column>
+                                    <p:column headerText="No of T.C. " width="15%" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                        <h:outputLabel  id="lb_no_of_allowed_vehicles_editable_verify" value="#{verifyApproveTradeCertDobj.noOfAllowedVehicles}"/>
+                                    </p:column>
+                                    <p:column headerText="Fee Per Vehicle Category" width="15%">
+                                        <p:outputLabel  id="lb_total_1_verify" value="#{verifyApproveTradeCertDobj.feesCollected}/-" styleClass="right-position right-space"/>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:dataTable rendered="#{verifyApproveTradeCertBean.displayCalculatedFeeAndOtherFeeVariables}" id="tablefee_verify" var="fee" value="#{verifyApproveTradeCertBean.dobjList}" rowIndexVar="index" 
+                                             editable="false">
+                                    <f:facet name="header">
+                                        <p:outputLabel value="Fee Structure"/>
+                                    </f:facet>
+                                    <p:column headerText="S.No." id="headerText" styleClass="collumn-width center-position"> 
+                                        <p:outputLabel value="#{index +1}."/>
+                                    </p:column>
+                                    <p:column headerText="Description" id="feeText" >
+                                        <p:outputLabel value="#{fee.vch_class_appliedDescr}" styleClass="right-position"/>
+                                    </p:column>
+
+                                    <p:column headerText="No Of Trade Certificate" id="noOfVehicle">
+                                        <p:outputLabel value="#{fee.no_of_tc_required}" styleClass="right-position"/>
+                                    </p:column>
+                                    <p:column headerText="Fee Amount" id="feeAmount">
+                                        <p:outputLabel value="#{fee.feeAmount}" styleClass="right-position"/>
+                                    </p:column>
+                                    <!--                                <p:column headerText="Fine Amount" id="fineAmount" >  
+                                                                        <p:outputLabel  value="# {fee.fineAmount}" styleClass="right-position" />
+                                                                    </p:column>-->
+                                    <p:column headerText="Tax Amount" id="taxAmount">  
+                                        <p:outputLabel  value="#{fee.taxAmount}" styleClass="right-position" />     
+                                    </p:column>
+                                    <p:column headerText="Surcharge" id="surCharge">  
+                                        <p:outputLabel  value="#{fee.surCharge}" styleClass="right-position" />     
+                                    </p:column>
+                                    <!--                                <p:column headerText="Service Charge" id="serviceCharge" rendered="true">
+                                                                         <p:outputLabel  value="# {fee.serviceCharge}" styleClass="right-position" />
+                                                                    </p:column>-->
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+                                            <p:column colspan="2" styleClass="right-position" footerText="Grand Total:" />
+                                            <p:column styleClass="right-position" footerText="#{verifyApproveTradeCertBean.tradeDobj.totalNoOfVehicles}"/>
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalFeeAmount}" styleClass="right-position"/>
+                                            <!--                                        <p:column footerText="# {publicApplicationTradeCertBean.tradeDobj.totalFineAmount}" styleClass="right-position" />-->
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalTaxAmount}" styleClass="right-position"/>
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalSurcharge}" styleClass="right-position"/>                                                                              
+                                        </p:row>
+                                    </p:columnGroup>
+                                </p:dataTable> 
+
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel id="lb_total_no_of_tc_required_verify" value="Total Number Of Trade Certificates Required :" styleClass="font-bold" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"/>
+                                    </div>
+                                    <div class="ui-grid-col-1">
+                                        <h:outputText id="lb_total_no_of_tc_required_value_verify" value="#{verifyApproveTradeCertBean.noOfVehGrandTotal}" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"/>
+                                    </div>
+                                    <div class="ui-grid-col-7 right-position right-space ">
+                                        <h:outputText id="lb_total_fee_collected_verify" value=" Grand total of fee to be paid by " styleClass="inline-section green right-space" />
+                                        <h:outputText value=" '#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ] ' :: " styleClass="font-bold inline-section"/>
+                                    </div>
+                                    <div class="ui-grid-col-1 left-position right-space top-align">
+                                        <h:outputText id="lb_total_fee_collected_value_verify" value="#{verifyApproveTradeCertBean.totalAmountInCommaSeperatedString}/-" styleClass="font-bold welcome-sub-heading-size" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12 ">
+                                        <h:outputText id="lb_total_fee_collected_words_verify" value=" Grand total of fee in words (Rs)" styleClass="inline-section green right-space" />
+                                        <h:outputText id="lb_total_fee_collected_value_words_verify" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.grandTotalInWords}" styleClass="font-bold italic" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <span class="green">*Fee Receipt will be generated after collection of fee from </span> '<h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ] " styleClass="font-bold"/>' <span class="green">with the receipt number.</span>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <span class="green">*Date of application shall be considered only after submission of application along-with requisite self attested documents (in hard copies) to the concerned registering authority.</span>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:panel header="Section 4: Inspection Details" id="applicantTCInspectionPanel_verify" styleClass="bottom-space" rendered="#{verifyApproveTradeCertBean.renderInspectionPanel}">                            
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth">
+                                    <h:outputLabel value="Inspection By: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.inspectionByAsString}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Inspection On:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.inspectionOnAsString}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Inspection Remark:  " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.inspectionRemark}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                </h:panelGrid>
+                            </p:panel>
+
+
+                        </p:panel>
+
+
+                    </p:outputPanel>
+
+                    <p:blockUI block="trade_panel_for_verify" widgetVar="bui" >
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="trade_panel_for_verify" widgetVar="documentViewerBlocker">
+                        Opening the uploaded document... please wait<br />
+                        <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="trade_panel_for_verify" widgetVar="composeMailBlocker">
+                        Opening the compose deficiency mail dialog box... please wait<br />
+                        <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+
+                </p:outputPanel>
+
+                <!-- _________________________________________________________APPROVE APPLICATION____________________________________________________________________ -->
+
+                <p:outputPanel id="approve_application" rendered="#{verifyApproveTradeCertBean.renderApproveOnlineApplication}">
+
+                    <p:outputPanel id="trade_panel_for_approve">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <h1 class="header-main">Approve Online Application for Trade Certificate</h1> 
+                            </div>
+                        </div>
+
+                        <p:outputPanel rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                            <br/>
+                            <h:outputText value="*Working with the form:-" styleClass="text-info bottom-line"/>
+                            <br/>
+                            <h:outputText value="Step 1: Click on 'Hard Copy Physically Received' to log the latest timestamp of receiving the hard copies of [Fee-Receipt,Undertaking By Applicant,Form-16/18]" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 2: Click on 'Open Uploaded Documents' to check all the uploaded attached documents" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 3: If any deficiency found, click on 'Compose Deficiency Mail' to send deficiency mail to the applicant before reverting the application" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 4: If any deficiency found, click on 'File Movement' -> 'Revert back to previous seat' to revert the application to the verifier" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 5: To forward the application, click on 'File Movement' -> 'Forward the application to next seat' to grant and print T.C" styleClass="green"/>
+                            <br/>
+                        </p:outputPanel>
+
+                        <p:panel header=" Approve Details Of Received Online Application For Trade Certificate" id="approve_trade_cert"  visible="#{verifyApproveTradeCertBean.detailsShown}" styleClass="top-space bottom-space" >
+                            <p:outputPanel id="approve_action_btns" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                <div class="ui-grid-row bottom-space-50">
+                                    <div class="ui-grid-col-7">
+                                        <p:commandButton id="hardCopyPhysicallyReceivedBtn_for_approve" rendered="#{verifyApproveTradeCertBean.showHardCopyReceivedButton}" value="Hard Copy Physically Received" icon="ui-icon-circle-check" action="#{verifyApproveTradeCertBean.markHardCopyReceived}" onclick="PF('bui').show();" update="approve_action_btns">
+                                            <p:confirm header="Confirmation" message="Have you received the hard copies of all the mandatory documents ?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:outputPanel id ="markHardCopyReceivedOutputPanel_for_approve" rendered ="#{verifyApproveTradeCertBean.hardCopiesReceived and verifyApproveTradeCertBean.showHardCopyReceivedButton}">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12 green font-bold">
+                                                    Hard copies(self-attested) of all mandatory documents have been received at <h:outputText id="hardCopyPhysicallyReceivedTimeStamp_for_approve" value="'#{verifyApproveTradeCertBean.currentTimeStampAsMarkHardCopyReceivedInStringFormat}'" styleClass="red font-bold"/>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel> 
+                                    </div>
+                                    <div class="ui-grid-col-3 left-position">
+                                        <p:commandButton id ="open_uploaded_documents_for_approve" value="Open Uploaded Documents"  ajax="true" immediate="true"  onclick="PF('documentViewerBlocker').show();" 
+                                                         actionListener="#{verifyApproveTradeCertBean.openUploadedDocuments()}" icon="ui-icon-folder-open" />
+                                    </div>
+                                    <div class="ui-grid-col-2 ">
+                                        <p:commandButton id ="mail_for_approve" value="Compose Deficiency Mail"  ajax="true" immediate="true"  onclick="PF('composeMailBlocker').show();" 
+                                                         oncomplete="PF('mailGenerateDlgTradeCert').show();PF('composeMailBlocker').hide();" 
+                                                         onsuccess="PF('mailGenerateDlgTradeCert').show();PF('composeMailBlocker').hide();" 
+                                                         actionListener="#{verifyApproveTradeCertBean.generateDeficiencyMailOpeningMatter()}" icon="ui-icon-script" update="@form"/>
+                                    </div>
+                                </div>
+                            </p:outputPanel>    
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-4">
+                                    <h:outputText  id="lb_appl_for_approve" value="#{label.appl_no}: " styleClass="right-space inline-section" />
+                                    <h:outputText  id="lb_appl_no_for_approve" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applNo}" styleClass="font-bold"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <h:outputText id="lb_dealer_label_for_name_for_approve" value="#{label.dealer}: " styleClass="right-space inline-section"/>
+                                    <h:outputText id="lb_dealer_name_for_approve" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="font-bold"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <h:outputText id="lb_trade_cert_type_label_for_approve" value="#{label.appl_trade_cert_type}: " styleClass="right-space inline-section"/>
+                                    <h:outputText id="lb_trade_cert_type_for_approve" value="#{verifyApproveTradeCertBean.tradeCertType}" styleClass="font-bold"/>
+                                </div>
+
+                            </div>
+                            <p:panel header="Section 1:  Applicant Basic Details" id="section_1_basic_details_panel_for_approve"   styleClass="bottom-space">
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth bottom-space">
+                                    <h:outputLabel value="Applicant Name: " styleClass="right-space bottom-space inline-section" />
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Son / Wife / Daughter of: "  styleClass="right-space bottom-space inline-section" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.individual}"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.applicantRelation}" styleClass="right-space bottom-space inline-section font-bold" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.individual}"/> 
+                                    <h:outputLabel value="Applicant Address: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerAdd1}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Category:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applicantTypeDescription}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant State: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.stateName}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Pincode: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerPincode}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Contact Number: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.contactNo}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Email-Id: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.emailId}" styleClass="right-space bottom-space inline-section font-bold"/>
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Section 2:  Applicant Affiliated Details" id="section_2_affiliation_details_panel_for_approve"  styleClass="bottom-space">                            
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth">
+                                    <h:outputLabel value="RTO For Registration Of Applicant: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.officeName}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Category Of Motor Vehicle(s) In Which Authorized To Deal:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.vchClass}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Applicant Affiliated With Manufacturers: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.maker}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant Registration Number(Applicant Code): "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                    <h:outputLabel value="Applicant GSTIN: "  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.tin_NO}" styleClass="right-space bottom-space inline-section font-bold" />
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel header="Section 3: Trade Certificate Details" id="section_3_tc_details_panel_for_approve"   styleClass="bottom-space">
+                                <p:dataTable rendered="#{!verifyApproveTradeCertBean.displayCalculatedFeeAndOtherFeeVariables}" selection="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj}" rowKey="#{verifyApproveTradeCertDobj.srNo}" var="verifyApproveTradeCertDobj" id="application_sections_data_table_for_approve" styleClass="top-space bottom-space" value="#{verifyApproveTradeCertBean.applicationSectionsList}"  paginator="false" >
+                                    <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                        <h:outputLabel id="lb_sr_no" value="#{verifyApproveTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <c:if test="#{verifyApproveTradeCertBean.tradeCertType ne 'NEW'}">    
+                                        <p:column headerText="#{label.trade_cert_no_label}" width="15%">
+                                            <h:outputLabel  id="lb_cert_no" value="#{verifyApproveTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="15%" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                            <h:outputLabel  id="dt_valid_upto" value="#{verifyApproveTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                    </c:if>
+                                    <p:column headerText="#{label.vh_catg}">
+                                        <h:outputLabel  id="lb_veh_category_for" value="#{verifyApproveTradeCertDobj.vehCatgName}"/>
+                                    </p:column>
+                                    <p:column headerText="No of T.C. " width="15%" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                        <h:outputLabel  id="lb_no_of_allowed_vehicles_editable" value="#{verifyApproveTradeCertDobj.noOfAllowedVehicles}"/>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:outputPanel rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 right-position right-space">
+                                            Grand total of trade certificates applied by '<h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName}" styleClass="font-bold"/>': &#160;&#160;&#160;&#160;&#160;&#160;
+                                            <h:outputLabel id="tf_grand_total_for_approve" value="#{verifyApproveTradeCertBean.noOfVehGrandTotal}" styleClass="font-bold welcome-sub-heading-size" />
+                                        </div>
+                                    </div>
+                                </p:outputPanel>    
+                            </p:panel>
+
+                            <p:panel id="applicantTCFeePanel_approve" header = "Section 4: Trade Certificate Fee Details" styleClass="bottom-space">
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText id="lb_dealer_for_approve" value="Applicant [ Code ] : " styleClass="font-bold"/>
+                                        <h:outputText id="lb_dealer_name_approve" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ]" />
+                                    </div>
+                                    <div class="ui-grid-col-4 ">
+                                        <h:outputText id="lb_temp_app_no_approve" value="Application Number : " styleClass="font-bold"/>
+                                        <h:outputText id="lb_temp_app_no_val_approve" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.applNo}" />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText id="lb_trade_cert_type_label_approve" value="#{label.appl_trade_cert_type} :" styleClass="font-bold"/>
+                                        <h:outputText id="lb_trade_cert_type_approve" value="#{verifyApproveTradeCertBean.tradeCertType}"/>
+                                    </div>
+                                </div>
+                                <p:dataTable rendered="#{!verifyApproveTradeCertBean.displayCalculatedFeeAndOtherFeeVariables}" var="verifyApproveTradeCertDobj" id="application_sections_data_table_approve" styleClass="top-space bottom-space" value="#{verifyApproveTradeCertBean.applicationSectionsList}"  paginator="false" >
+                                    <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                        <h:outputLabel id="lb_sr_no_approve" value="#{verifyApproveTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <c:if test="#{verifyApproveTradeCertBean.tradeCertType ne 'NEW'}">    
+                                        <p:column headerText="#{label.trade_cert_no_label}" width="15%">
+                                            <h:outputLabel  id="lb_cert_no_approve" value="#{verifyApproveTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="15%">
+                                            <h:outputLabel  id="dt_valid_upto_approve" value="#{verifyApproveTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                    </c:if>
+                                    <p:column headerText="#{label.vh_catg}">
+                                        <h:outputLabel  id="lb_veh_category_for_approve" value="#{verifyApproveTradeCertDobj.vehCatgName}"/>
+                                    </p:column>
+                                    <p:column headerText="No of T.C. " width="15%" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}">
+                                        <h:outputLabel  id="lb_no_of_allowed_vehicles_editable_approve" value="#{verifyApproveTradeCertDobj.noOfAllowedVehicles}"/>
+                                    </p:column>
+                                    <p:column headerText="Fee Per Vehicle Category" width="15%">
+                                        <p:outputLabel  id="lb_total_1_approve" value="#{verifyApproveTradeCertDobj.feesCollected}/-" styleClass="right-position right-space"/>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:dataTable rendered="#{verifyApproveTradeCertBean.displayCalculatedFeeAndOtherFeeVariables}" id="tablefee_approve" var="fee" value="#{verifyApproveTradeCertBean.dobjList}" rowIndexVar="index" 
+                                             editable="false">
+                                    <f:facet name="header">
+                                        <p:outputLabel value="Fee Structure"/>
+                                    </f:facet>
+                                    <p:column headerText="S.No." id="headerText" styleClass="collumn-width center-position"> 
+                                        <p:outputLabel value="#{index +1}."/>
+                                    </p:column>
+                                    <p:column headerText="Description" id="feeText" >
+                                        <p:outputLabel value="#{fee.vch_class_appliedDescr}" styleClass="right-position"/>
+                                    </p:column>
+
+                                    <p:column headerText="No Of Trade Certificate" id="noOfVehicle">
+                                        <p:outputLabel value="#{fee.no_of_tc_required}" styleClass="right-position"/>
+                                    </p:column>
+                                    <p:column headerText="Fee Amount" id="feeAmount">
+                                        <p:outputLabel value="#{fee.feeAmount}" styleClass="right-position"/>
+                                    </p:column>
+                                    <!--                                <p:column headerText="Fine Amount" id="fineAmount" >  
+                                                                        <p:outputLabel  value="# {fee.fineAmount}" styleClass="right-position" />
+                                                                    </p:column>-->
+                                    <p:column headerText="Tax Amount" id="taxAmount">  
+                                        <p:outputLabel  value="#{fee.taxAmount}" styleClass="right-position" />     
+                                    </p:column>
+                                    <p:column headerText="Surcharge" id="surCharge">  
+                                        <p:outputLabel  value="#{fee.surCharge}" styleClass="right-position" />     
+                                    </p:column>
+                                    <!--                                <p:column headerText="Service Charge" id="serviceCharge" rendered="true">
+                                                                         <p:outputLabel  value="# {fee.serviceCharge}" styleClass="right-position" />
+                                                                    </p:column>-->
+                                    <p:columnGroup type="footer">
+                                        <p:row>
+                                            <p:column colspan="2" styleClass="right-position" footerText="Grand Total:" />
+                                            <p:column styleClass="right-position" footerText="#{verifyApproveTradeCertBean.tradeDobj.totalNoOfVehicles}" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"/>
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalFeeAmount}" styleClass="right-position"/>
+                                            <!--                                        <p:column footerText="# {publicApplicationTradeCertBean.tradeDobj.totalFineAmount}" styleClass="right-position" />-->
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalTaxAmount}" styleClass="right-position"/>
+                                            <p:column footerText="#{verifyApproveTradeCertBean.tradeDobj.totalSurcharge}" styleClass="right-position"/>                                                                              
+                                        </p:row>
+                                    </p:columnGroup>
+                                </p:dataTable>
+
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel id="lb_total_no_of_tc_required_approve" value="Total Number Of Trade Certificates Required :" styleClass="font-bold" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"/>
+                                    </div>
+                                    <div class="ui-grid-col-1">
+                                        <h:outputText id="lb_total_no_of_tc_required_value_approve" value="#{verifyApproveTradeCertBean.noOfVehGrandTotal}" rendered="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.stateCd ne 'CG'}"/>
+                                    </div>
+                                    <div class="ui-grid-col-7 right-position right-space ">
+                                        <h:outputText id="lb_total_fee_collected_approve" value=" Grand total of fee to be paid by " styleClass="inline-section green right-space" />
+                                        <h:outputText value=" '#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ] ' :: " styleClass="font-bold inline-section"/>
+                                    </div>
+                                    <div class="ui-grid-col-1 left-position right-space top-align">
+                                        <h:outputText id="lb_total_fee_collected_value_approve" value="#{verifyApproveTradeCertBean.totalAmountInCommaSeperatedString}/-" styleClass="font-bold welcome-sub-heading-size" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12 ">
+                                        <h:outputText id="lb_total_fee_collected_words_approve" value=" Grand total of fee in words (Rs)" styleClass="inline-section green right-space" />
+                                        <h:outputText id="lb_total_fee_collected_value_words_approve" value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.grandTotalInWords}" styleClass="font-bold italic" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <span class="green">*Fee Receipt will be generated after collection of fee from </span> '<h:outputText value="#{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerName} [ #{verifyApproveTradeCertBean.verifyApproveTradeCertDobj.dealerMasterDobj.dealerRegnNo} ] " styleClass="font-bold"/>' <span class="green">with the receipt number.</span>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <span class="green">*Date of application shall be considered only after submission of application along-with requisite self attested documents (in hard copies) to the concerned registering authority.</span>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:panel header="Section 4: Inspection Details" id="applicantTCInspectionPanel_approve" styleClass="bottom-space" rendered="#{verifyApproveTradeCertBean.renderInspectionPanel}">                            
+                                <h:panelGrid columns="2" styleClass="datatable-panel-100 table-width-oneforth">
+                                    <h:outputLabel value="Inspection By: " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.inspectionByAsString}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Inspection On:"  styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.inspectionOnAsString}" styleClass="right-space bottom-space inline-section font-bold"/> 
+                                    <h:outputLabel value="Inspection Remark:  " styleClass="right-space bottom-space inline-section"/>
+                                    <h:outputText  value="#{verifyApproveTradeCertBean.inspectionRemark}" styleClass="right-space bottom-space inline-section font-bold" /> 
+                                </h:panelGrid>
+                            </p:panel>
+
+                        </p:panel>
+                    </p:outputPanel>
+
+
+                    <p:blockUI block="trade_panel_for_approve" widgetVar="bui" >
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="trade_panel_for_approve" widgetVar="documentViewerBlocker">
+                        Opening the uploaded document... please wait<br />
+                        <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:blockUI block="trade_panel_for_approve" widgetVar="composeMailBlocker">
+                        Opening the compose deficiency mail dialog box... please wait<br />
+                        <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+
+                <p:panel id="controlButtonsReceiveApplicationPanel" >
+
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel rendered="#{verifyApproveTradeCertBean.renderFileMovement}" id="control_buttons_file_mov" styleClass="bottom-space top-space">
+                                <ui:include src="/ui/role/file_movement_app_disapp.xhtml" >
+                                    <ui:param name="app_disapp" value="#{verifyApproveTradeCertBean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+
+                </p:panel>
+                <p:blockUI block="mail_panel_tc" widgetVar="mailGenerationBlocker">
+                    Sending the generated deficiency mail... please wait<br />
+                    <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+            </f:subview>
+
+
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            <div class="center-position inline-section">
+                                Application No. :- <h:outputText value="#{printDocXHTML.passPmtDobj.applNo}" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="center-position">
+                <p:button value="Back" outcome="#{printDocXHTML.redirect()}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{printDocXHTML.image_logo}" style="width: 100px;" rendered="#{printDocXHTML.show_image_logo}" />
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position ">
+                            <span class="font-bold report-subheader"> <h:outputText value="GOVERNMENT OF #{printDocXHTML.passPmtDobj.state_cd}"/> </span>
+                        </div>
+                        <div class="center-position ">
+                            <span class="font-bold report-subheader"> <h:outputText value="OFFICE OF THE STATE/REGIONAL TRANSPORT AUTHORITY"/> </span>
+                        </div>
+                        <div class="center-position bottom-space">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}"/> </span>
+                        </div>
+                    </td>
+                    <br/>
+                    <td class="right-position" style="width: 70px;">
+                        <div class="inline-section qrcode-position-absolute">
+                            <pe:qrCode rendered="true"
+                                       renderMethod="canvas" 
+                                       renderMode="0" 
+                                       text="#{printDocXHTML.textQRcode}" 
+                                       label="QR Code"
+                                       size="110"
+                                       fillColor="000000" 
+                                       ecLevel="H" 
+                                       radius="0.5"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{printDocXHTML.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{printDocXHTML.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <br/>
+            <br/>
+            <div class="top-space  datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space"></td>
+                        <td class="right-position "> 
+                            <div class="position-relative">
+                                <h:outputText value="File No:................................" styleClass="font-bold" rendered="#{printDocXHTML.isSTAOffice and printDocXHTML.renderPmtnoAndRoutedtl}"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td class="left-position left-space">
+                            <h:outputText value="Offer/Memo NO. : #{printDocXHTML.passPmtDobj.offer_no}" rendered="#{printDocXHTML.interStateName eq null or printDocXHTML.interStateName eq ''}" styleClass="font-bold"/>
+                            <h:outputText value="Offer/Memo NO. : #{printDocXHTML.passPmtDobj.offer_no}/#{printDocXHTML.interStateName}" rendered="#{printDocXHTML.interStateName ne null and printDocXHTML.interStateName ne ''}" styleClass="font-bold"/>
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <h:outputText value="DATE : #{printDocXHTML.ownerPmtDobj.currentDateInString}" styleClass="font-bold"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="top-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            <h:outputText value="TO:" styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="top-space  datatable-panel"  style="margin-left:auto;">
+                <table>
+                    <tr>
+                        <td class="left-position">
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.owner_name}" styleClass="font-bold "/><BR/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.f_name}" styleClass="font-bold"/><BR/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add1}" styleClass="font-bold"/><BR/>
+                        </td>
+                    </tr>
+                </table>
+            </div>    
+            <div class="top-space  datatable-panel">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                                <h:outputText value="No. of Seat : #{printDocXHTML.ownerPmtDobj.seat_cap}" rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'MZ'}" styleClass="font-bold "/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="left-position">
+                            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                                <h:outputText value="Vehicle Class : #{printDocXHTML.pmtFeeDobj.vh_class}" styleClass="font-bold "/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="left-position">
+                            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                                <h:outputText value="Fuel Type : #{printDocXHTML.pmtFeeDobj.fuel}" rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'MZ'}" styleClass="font-bold "/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="left-position">
+                            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                                <h:outputText value="Old Regn No. : #{printDocXHTML.pmtFeeDobj.old_regn_no}" rendered="#{printDocXHTML.pmtFeeDobj.old_regn_no ne null and printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}" styleClass="font-bold "/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd == 'DL'}">
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <h:outputText value="Ref: Application for issuance of #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) in the NCT of Delhi under section 73 of the Motor Vehicles Act, 1988. " styleClass="font-bold"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <br/>
+                <p:outputPanel styleClass="top-space">
+                    <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="Sir,"/>
+                    </div>
+                </p:outputPanel>
+                <div class="top-space bottom-space datatable-panel"  style="margin-left:auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value="This letter of intent is issued on the basis of declaration that you will comply and abide with the permit conditions framed on 08/08/2012 for purchase of new vehicle from any manufacturer through their authorized dealer in State. If at any stage it is found that you have provided wrong information and obtained this LOI, the department shall cancel the LOI and registration of vehicle (if registered on the basis of this LOI) and legal action shall be initiated against you. Any loss occurred for obtaining the LOI by means of fraud or misrepresentation, you will be solely responsible."/>
+                    </table>
+                </div>
+                <br/><br/><br/><br/><br/><br/><br/><br/>
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <div class="center-position inline-section">
+                                    <br/>
+                                    <h:outputText value="Prepared by name and signature" /><br/>
+                                    Printed on :  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                                </div>
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <br/>
+                                    Secretary<br/>
+                                    MLO Registering Authority <br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}"/><br/> 
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <h:outputText value="Note: This LOI is valid for 30 days from the date of issuance."/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'DL' and printDocXHTML.ownerPmtDobj.state_cd ne 'UP'}" styleClass="top-space">
+                <div class="datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <h:outputText value="SUB : Offer letter for grant of a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) " rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'MZ' and 'RJ' }" styleClass="font-bold"/>
+                                <h:outputText value="SUB : Offer letter for grant of a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) on Vehicle #{printDocXHTML.ownerPmtDobj.regn_no}" rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'RJ'}" styleClass="font-bold"/>
+                                <h:outputText value="SUB : Provisional Permit for grant of a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg})" rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'MZ'}" styleClass="font-bold"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <p:outputPanel rendered="#{printDocXHTML.renderWBPrint}" styleClass="top-space">                 
+                    <h:outputText value="Sub: OFFER LETTER for grant of Permanent Stage Carriage Permit (Inter-State/ Inter-Region)" />                
+                </p:outputPanel>
+                <p:outputPanel rendered="#{printDocXHTML.passPmtDobj.region_covered ne null}" styleClass="top-space">
+                    <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="In Region :   #{printDocXHTML.passPmtDobj.region_covered}" styleClass="font-bold "/>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel rendered="#{printDocXHTML.routedata ne null}" styleClass="top-space">
+                    <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="Route Detail :   #{printDocXHTML.routeData}" styleClass="font-bold "/>
+                    </div>
+                </p:outputPanel>
+                <div class="top-space bottom-space datatable-panel"  style="margin-left:auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value=" With reference to your application Ref No. #{printDocXHTML.passPmtDobj.applNo} Dated #{printDocXHTML.ownerPmtDobj.state_cd eq 'WB' ? printDocXHTML.passPmtDobj.applDateInString : printDocXHTML.ownerPmtDobj.currentDateInString} on the subject noted
+                                      above it is informed that STA/RTA/RTO, has decided in the meeting held on #{printDocXHTML.passPmtDobj.validUptoInString} vide resolution No. #{printDocXHTML.passPmtDobj.order_no}
+                                      to grant a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) in
+                                      his favour for #{printDocXHTML.passPmtDobj.period} #{printDocXHTML.passPmtDobj.period_mode} ." rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'WB'}"/>
+
+                        <h:outputText value="         With reference to your application Ref No. #{printDocXHTML.passPmtDobj.applNo} Dated #{printDocXHTML.passPmtDobj.applDateInString} on the subject noted
+                                      above it is informed that STA, has decided in the meeting held on #{printDocXHTML.passPmtDobj.validUptoInString} vide resolution No. #{printDocXHTML.passPmtDobj.order_no}
+                                      to grant a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) in
+                                      his favour." rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'WB' and !printDocXHTML.renderWBPrint and !printDocXHTML.isSTAOffice}"/>
+                        <h:outputText value="         With reference to your application Ref No. #{printDocXHTML.passPmtDobj.applNo} Dated #{printDocXHTML.passPmtDobj.applDateInString} on the subject noted
+                                      above it is informed that STA, has decided vide resolution No. #{printDocXHTML.passPmtDobj.order_no}
+                                      to grant a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) in
+                                      his favour." rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'WB' and !printDocXHTML.renderWBPrint and printDocXHTML.isSTAOffice}}"/>
+                        <h:outputText value="Sir / Madam," styleClass="font-bold text-uppercase" rendered="#{printDocXHTML.renderWBPrint}"/><br/><br/>
+                        <h:outputText value=" With reference to your application no.#{printDocXHTML.passPmtDobj.applNo} Dated #{printDocXHTML.ownerPmtDobj.state_cd eq 'WB' ? printDocXHTML.passPmtDobj.applDateInString : printDocXHTML.ownerPmtDobj.currentDateInString}
+                                      on the subject noted above, Iam directed to say that the S.T.A West Bengal in its meeting held on ………………. vide Agenda no #{printDocXHTML.passPmtDobj.order_no} Sl No. ……was pleased to consider for granting of a Permanent Stage Carriage Permit (Inter State/ Inter Region) for 5(five) years in your favour as per the provisions of the M.V. Act 1988 and the W.B.M.V Rules, 1989 subject to the following terms and conditions." rendered="#{printDocXHTML.renderWBPrint}"/>
+                        <h:outputText value="This letter is to be treated as an offer letter."/>
+                    </table>
+                </div>
+
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value="APPLICANT : " rendered="#{!printDocXHTML.renderWBPrint}" styleClass="font-bold text-uppercase"/>
+                    </table>
+                </div>
+                <div class="top-space bottom-space datatable-panel"  style="margin-left:auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value="He is requested to place a #{printDocXHTML.ownerPmtDobj.vch_catg} compliant Vehicle with specifications as given
+                                      overleaf within #{printDocXHTML.offer_validity_days} days from the date of issue of this offer letter and furnish to this
+                                      office the following documents within the aforesaid date for taking necessary action to issue
+                                      permit on realization of prescribed fees by this office." rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'WB' and !printDocXHTML.renderWBPrint}"/>
+                        <h:outputText value="Applicant is requested to submit/complied the following documents (self attested/original)as per terms and conditions mentioned below invariably within 30 (thirty days) from the date of issue of this offer letter. This Authority desires these documents following 
+                                      the provision of 141 of West Bengal Motor Vehicles Rules, 1989" rendered="#{printDocXHTML.renderWBPrint and !printDocXHTML.isSTAOffice}"/>
+                        <h:outputText value="Applicant is requested to submit/complied the following documents (self attested/original)as per terms and conditions mentioned below invariably within 180 (one hundred eighty days) from the date of issue of this offer letter. This Authority desires these documents following 
+                                      the provision of 141 of West Bengal Motor Vehicles Rules, 1989" rendered="#{printDocXHTML.renderWBPrint and printDocXHTML.isSTAOffice}"/>
+                        <h:outputText value="He is requested to place a #{printDocXHTML.ownerPmtDobj.vch_catg} compliant Vehicle with specifications as given
+                                      overleaf within #{printDocXHTML.offer_validity_days} days from the date of issue of this offer letter and furnish to this
+                                      office the following documents within the aforesaid date for taking necessary action to issue
+                                      permit on realization of prescribed fees by this office." rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'WB'}"/>
+                    </table>
+                </div>
+
+
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value="Terms and Conditions : " rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'MZ' and !printDocXHTML.renderWBPrint}" styleClass="font-bold text-uppercase"/>     
+                    </table>
+                </div>
+                <div class="table-width-two datatable-panel" style="margin: 0 auto; font-size: 10px;">
+                    <!--<h:panelGrid columns="1" styleClass="datatable-panel-100">-->
+
+                    <ol type="I">
+                        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'MH'}">
+                            <li> Registration Certificate.</li>
+                            <li> Applicant shall have valid Transport category Autorickshaw / Taxi driving license and public service vehicle authorization (Badge) for Autorickshaw/Taxi.</li>
+                            <li> Applicant shall produce character certificate (Antecedents) from Police Department.</li>
+                            <li> Applicant shall produce self-declaration stating that he/she is not employed with Government/Semi Government/Private Company or any other organization/firm  (organized sector).</li>
+                            <li> Applicant shall produce self-declaration stating that he/she is not holding another  autorickshaw/taxi permit in his/her name.</li>
+                            <li> In MMRTA and in Pune/PimpriChinchwadMunicipal Corporation areas autorickshaw to be endorsed on the permit shall use either CNG/LPG or Electric Power as fuel. Autorickshaw in Other Municipal Corporation areas shall use Petrol/LPG or Electric Power as fuel. In remaining regions autorickshaws using any fuel may be registered.</li>
+                            <li> In MMRTA areas and other municipal corporation areas, the vehicle to be endorsed on the permit shall be a new autorickshaw. In other areas autorickshaws registered in non-transport category may be accepted.</li>
+                            <li> In MMRTA areas taxi to be registered shall use either PETROL/CNG or Electric Power only. In case of other regions decisions of respective Regional Transport Authorities with regards to type of fuel to be used shall prevail.</li>
+                            <li> Wherever such orders are passed by Government, it shall be mandatory for the permit holder of autorickshaw / taxi to install GPS/GPRS and RFID Tag. </li>
+                            <li> Since SEC (Certificate of Domicile) has been submitted while obtaining badge (PSVA), it will not be necessary to submit SEC while obtaining Letter Of Intent/Permit.</li>
+                            <li> Fitment of digital electronic fare meter of approved type is mandatory for Electric Autorickshaw.</li>
+                            <li> The restrictions/conditions laid now in respect of three wheeled  sixseater autorickshaws and jeep type, Black and Yellow Taxies shall continue to remain.</li>
+                            <li> This permit is issued subject to the final disposal of all applications pending before different Hon’ble Courts in the State of Maharashtra.</li>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd != 'MH' and printDocXHTML.ownerPmtDobj.state_cd ne 'MZ' and printDocXHTML.ownerPmtDobj.state_cd ne 'TN' and !printDocXHTML.renderWBPrint}">
+                            <li> Valid Registration, Fitness, Insurance, Tax, Pollution Certificate </li>
+                            <li> Attested copies of the following Certificates should be furnished along with the acceptance letters:-
+                                Citizenship Certificates / Permanent Resident Certificate / Insurance Certificate/ O.B.C Certificates / ITC / PTC / SC / ST / Ex -Serviceman / Aadhar Card etc.</li>
+                            <li> For Auto Rickshaw :- Right side Auto be with iron grill. Type objection rating for safety of the passengers.</li>
+                            <li> Fitted With LPG/CNG Cylinder are permitted for this LOI. </li>
+                            <li> Fitment of Digital Electronic Meter is Mandatory &amp; Service will be rendered only on Meter basis.</li>
+                            <li> In Future as per rules &amp; regulations applied, GPS, GPRS, RFID will be activated with owner's fund.</li>
+                            <li> As per RTA/STA resolution, roof Light is Mandatory on top.</li>
+                            <li> Duplicate LOI will not be issued, in any case.</li>
+                            <h:outputText rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'RJ'}" value="9. I am fully aware of the conditions of TRA/STA &amp; if I Failed to fulfill the same my permit will be Cancelled &amp; necessary actions will be taken against me."/>
+                            <li> 'School Bus' must be prominently written on the back and front of every Bus carrying school children.</li>
+                            <li> If it is a hired Bus, 'on School Duty' should be prominently displayed.</li>
+                            <li> No Bus belonging Educational Institution bus should carry children in excess of its permitted seating capacity.</li>
+                            <li> Bus must have a First Aid Box.</li>
+                            <li> Windows of the Bus must be fitted with horizontal Bar.</li>
+                            <li> There must be a fire extinguisher in every Bus.</li>
+                            <li> School name and telephone number must be written on the Bus.</li>
+                            <li> Doors of the Bus should be fitted with reliable locks.</li>
+                            <li> Every driver of a school bus must have a minimum 5 years of experience of driving heavy transport vehicles, and must not have any previous record of traffic offenses.</li>
+                            <li> To keep school bags safely, there should be space provided under the seat.</li>
+                            <li> Conductors must have the list of students alongwith their blood group.</li>
+                            <li> Failing any of the above condition the permit will be cancelled  &amp; necessary actions will be taken against same.</li>
+                        </p:outputPanel>                        
+                        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'TN'}">
+                            <li> The vehicle to be produced with valid Records.</li>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'MZ' and 'RJ'}">
+                            <li> Speed limit of the buses should be restricted to 40KM with the help of an in built mechanism.</li>
+                            <li> There must be safety doors and sufficient moving spaces in all buses.</li>
+                        </p:outputPanel>
+                    </ol>
+                    <!--</h:panelGrid>-->
+                </div> 
+
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <p>
+                            <h:outputText rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'MZ' and 'RJ'}" value="This offer-letter will be treated as cancelled, if no vehicle, as per specification given
+                                          above, is placed within the stipulated period, unless the offer letter is extended by STA /RTA/RTO under certain conditions." />
+                            <h:outputText rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'RJ'}" value="Unless the offer-letter is extended by STA /RTA/RTO under certain conditions, it will be treated as cancelled,
+                                          if no vehicle is placed with the stipulated period as per specification given above." />
+                        </p>
+                    </table>
+                </div>
+
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <br/>
+                                    <h:outputText value="#{printDocXHTML.footerSignature}"/><br/>
+                                    <h:outputText value="State/Regional Transport Authority/RTO" rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'WB'}"/><br/>
+                                    <h:outputText value="#{printDocXHTML.main_footer}" rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'WB'}"/><br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="table-width-two datatable-panel"  style="margin: 0 auto; font-size: 9px;" >
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'MH'}">
+                        <span class="font-bold report-subheader">
+                            <h:outputLabel value="Note : DL details Validated through Sarathi Database" styleClass="right-space bottom-space" />
+                            <h:outputLabel value=" Disclaimer : This is Computer generated document and no signature is required" styleClass="right-space bottom-space" />
+                        </span>
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'UP'}" styleClass="top-space">
+                <div class="datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <h:outputText value="SUB : Sanction letter for grant of a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) "  styleClass="font-bold"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <p:outputPanel rendered="#{printDocXHTML.passPmtDobj.region_covered ne null}" styleClass="top-space">
+                    <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="In Region :   #{printDocXHTML.passPmtDobj.region_covered}" styleClass="font-bold "/>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel rendered="#{printDocXHTML.routedata ne null}" styleClass="top-space">
+                    <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="Route Detail :   #{printDocXHTML.routeData}" styleClass="font-bold "/>
+                    </div>
+                </p:outputPanel>
+                <div class="top-space bottom-space datatable-panel"  style="margin-left:auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value="         With reference to your application Ref No. #{printDocXHTML.passPmtDobj.applNo} Dated #{printDocXHTML.ownerPmtDobj.currentDateInString}.
+                                      it is informed that STA/RTA, has decided 
+                                      to grant a Permanent #{printDocXHTML.passPmtDobj.pmt_type} (#{printDocXHTML.passPmtDobj.pmtCatg}) in
+                                      your favour for #{printDocXHTML.passPmtDobj.period} #{printDocXHTML.passPmtDobj.period_mode} ."/>
+                    </table>
+                </div>
+
+
+                <div class="top-space bottom-space datatable-panel"  style="margin-left:auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value="you are requested to produce Registration Certificate (RC) of vehicle and all relevant documents with specifications as per terms and conditions
+                                      within ___________ days, otherwise grant will automatically revoke." />
+                    </table>
+                </div>
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <h:outputText value="Terms and Conditions : " styleClass="font-bold text-uppercase"/>     
+                    </table>
+                </div>
+                <div class="table-width-two datatable-panel" style="margin: 0 auto; font-size: 15px;">
+                    <ol type="I">
+                        <li> As per Attached List.</li>
+                    </ol>
+                </div> 
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <br/>
+                                    <h:outputText value="#{printDocXHTML.footerSignature}"/><br/>
+                                    State/Regional Transport Authority <br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="table-width-two datatable-panel"  style="margin: 0 auto; font-size: 9px;" >
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'MH'}">
+                        <span class="font-bold report-subheader">
+                            <h:outputLabel value="Note : DL details Validated through Sarathi Database" styleClass="right-space bottom-space" />
+                            <h:outputLabel value=" Disclaimer : This is Computer generated document and no signature is required" styleClass="right-space bottom-space" />
+                        </span>
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <ui:include src="/ui/permitreports/formTermsConditionOfferLetter.xhtml"/>
+        </h:form>
+    </h:body>
+</html>
+

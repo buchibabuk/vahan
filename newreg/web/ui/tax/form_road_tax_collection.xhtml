@@ -1,0 +1,314 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-col-12">
+                <f:subview id="new_veh_fee_subview">
+                    <p:outputPanel rendered="#{!roadTaxCollectionBean.taxAssesment}">
+                        <ui:include src="/ui/recpt/form_current_rcpt_no.xhtml"/>
+                    </p:outputPanel>
+
+                    <p:dialog id="confirmationPopup" 
+                              style="text-align:center" header="#{language.paymentCollDtls}"
+                              widgetVar="confDlgTax"
+                              modal="true" draggable="false" >                  
+                        <p:outputLabel value="#{language.doYouWantToCont}"/><br></br>
+                        <p:outputLabel style="font-weight: bold" value="#{language.totalAmountInCash}#{roadTaxCollectionBean.paymentCollectionBean.isCashSelected?roadTaxCollectionBean.totalTaxAmount:roadTaxCollectionBean.totalBalanceAmount}"/>
+                        <p:outputLabel rendered="#{roadTaxCollectionBean.renderExcessDraft}" style="font-weight: bold" value="#{roadTaxCollectionBean.excessDraftMessage}"/>
+                        <br></br>
+                        <br/><br/>
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="#{language.confirmPayment}" oncomplete="PF('confDlgTax').hide();" 
+                                             update="ownerInformationPanel regnNoPanel 
+                                             new_veh_fee_subview:tf_current_rcptno new_veh_fee_subview:tf_running_rcpt_no"
+                                             action="#{roadTaxCollectionBean.saveTaxDetails()}" icon="ui-icon-check" ajax="false" >
+                            </p:commandButton>
+                            <p:commandButton value="#{language.cancel}" oncomplete="PF('confDlgTax').hide();" icon="ui-icon-close" >
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:dialog> 
+                    <p:outputPanel>
+                        <p:autoUpdate/>
+                        <p:dialog id="msgDialog" header="#{language.alert}" closable="true" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">                            
+                            <p:messages showDetail="true" showSummary="false" closable="true">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </p:dialog>
+                    </p:outputPanel>
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">#{roadTaxCollectionBean.headerDescription}</h1>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row" >
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel id="regnNoPanel">
+                                <p:focus context="regnNoPanel"/>
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4 ">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_regn_no" value="#{language.enter_regn_no}" />
+                                    </label>
+                                    <p:inputText  id="tf_regn_no" value="#{roadTaxCollectionBean.regn_no}" size="20" maxlength="10" 
+                                                  autocomplete="off"   style="text-transform: uppercase" disabled="#{roadTaxCollectionBean.renderAllPanel}"
+                                                  converter="toUpperCaseConverter"  >
+                                    </p:inputText>
+                                    <p:keyFilter mask="alphanum" for="tf_regn_no"/>
+                                </div>
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                            </p:outputPanel>
+                        </div>                                 
+                    </div>
+                    <p:outputPanel id="getButtonPanel">
+                        <div class="ui-grid-row center-position" >
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="getDetail" value="#{language.getDetails}" onclick="PF('buiVar').show();" action="#{roadTaxCollectionBean.regnNo_focusLost}" rendered="#{!roadTaxCollectionBean.renderAllPanel}"  update="ownerInformationPanel regnNoPanel getButtonPanel onlineUserCrednlMsgPanel onlinepaymentCrednMsgPanel dialogDupRegNo" 
+                                                 oncomplete="PF('buiVar').hide()" />
+                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('buiVar').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="onlinepaymentCrednMsgPanel">
+                        <p:outputPanel  rendered="#{roadTaxCollectionBean.renderUserAndPasswored}" styleClass="center-position top-space bottom-space">
+                            <h:outputText value="#{roadTaxCollectionBean.onlineUserCredentialmsg}"  styleClass="report-header" escape="false"/>
+                            <br />
+                            <h:outputText class="green font-bold" value="#{language.credentialsOnMobile}" />
+                        </p:outputPanel>                   
+                    </p:outputPanel>
+                    <p:dialog id="dialogDupRegNo" header="#{language.roadTaxMultipleRecords}" widgetVar="varDupRegNo" 
+                              closable="true" modal="true" dynamic="true" width="90%" style="margin: 0 auto !important">
+                        <h:outputLabel value="#{language.ContactToOfficeAdmin}" rendered="#{roadTaxCollectionBean.renderMoveToHistoryButton}" styleClass="red font-bold" />
+                        <p:dataTable id="duplicateRegn" value="#{roadTaxCollectionBean.dupRegnList}" var="dupRegn"
+                                     rowIndexVar="index" rendered="#{roadTaxCollectionBean.dupRegnList.size()>1}">
+
+                            <f:facet name="header">
+                                <h:outputText value="#{language.duplicateRecord}"/>
+                            </f:facet>
+
+                            <p:column headerText="#{language.user_srno}" styleClass="center-position collumn-width">#{index +1}.</p:column>
+
+                            <p:column headerText="#{language.regn_no}" style="word-break: keep-all;">#{dupRegn.regn_no}</p:column>
+
+                            <p:column headerText="#{language.ownerSrNo}." style="word-break: keep-all;" width="6%">#{dupRegn.owner_sr}</p:column>
+
+                            <p:column headerText="#{language.owner_name}" width="12%">#{dupRegn.owner_name}</p:column>
+
+                            <p:column headerText="#{language.SWD}" width="12%">#{dupRegn.f_name}</p:column>
+
+                            <p:column headerText="#{language.user_office}" width="13%">#{dupRegn.off_name}(#{dupRegn.state_cd}#{dupRegn.off_cd})</p:column>
+
+                            <p:column headerText="#{language.financierName}" style="word-break: keep-all;">#{dupRegn.hpaDobj.fncr_name}</p:column>  
+
+                            <p:column headerText="#{language.status}">#{dupRegn.statusDescr}</p:column>  
+
+                            <p:column headerText="#{language.last_rcptdate}" style="word-break: keep-all;">#{dupRegn.lastRcptDt}</p:column>  
+
+                            <p:column headerText="#{language.movetoHistory}" rendered="#{!roadTaxCollectionBean.renderMoveToHistoryButton}" style="word-break: keep-all;" width="12%">
+                                <p:commandButton value="#{language.movetoHistory}" rendered="#{dupRegn.off_cd != roadTaxCollectionBean.currentOffCd}"
+                                                 action="#{roadTaxCollectionBean.delDuplicateVehDetails(dupRegn)}" update="new_veh_fee_subview:confirmDialog"
+                                                 immediate="true" styleClass="center-position">
+                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}"  icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                        <p:confirmDialog global="true"   >
+                            <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                            <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>                            
+                    </p:dialog>
+
+                    <p:dialog id="dialogAlreadyInwardedAppl" header="#{language.applicationNotInward}" widgetVar="varInwardedApplNo" 
+                              closable="true" modal="true" dynamic="true" height="200" width="800" resizable="false">
+                        <h:form id="alreadyInwaredApplNo">
+                            <p:dataTable value="#{roadTaxCollectionBean.statusList}" var="applnInwarded"
+                                         rendered="#{roadTaxCollectionBean.statusList.size()>0}"
+                                         rowIndexVar="srlNo">
+                                <f:facet name="header">
+                                    <h:outputText value="#{language.applicationNoPendingForApproval}"/>
+                                </f:facet>    
+                                <p:column headerText="#{language.user_srno}" width="5%">#{srlNo +1}.</p:column>
+                                <p:column headerText="#{language.home_rightpanelApplno}">#{applnInwarded.getAppl_no()}</p:column> 
+                                <p:column headerText="#{language.home_rightpanelregno}">#{applnInwarded.regn_no} </p:column>
+                                <p:column headerText="#{language.purpose}">#{applnInwarded.purCdDescr}</p:column>
+                                <p:column headerText="#{language.user_office}">#{applnInwarded.offName}</p:column>
+                                <p:column headerText="#{language.user_state}">#{applnInwarded.stateName}</p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </p:dialog>
+
+                    <p:outputPanel id="ownerInformationPanel">
+                        <p:outputPanel rendered="#{roadTaxCollectionBean.renderAllPanel}">
+                            <p:outputPanel>
+                                <!--<p:outputLabel value="#{roadTaxCollectionBean.registrationDetails}"/>--> 
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{roadTaxCollectionBean.registrationDetails}" styleClass="font-bold"  style="color: #FF0000 !important;"/>
+                                </label>
+                            </p:outputPanel>
+
+                            <ui:include src="../commonUI/form_owner_vehicle_dtls_mvtax.xhtml"  >
+                                <ui:param name="containerBean" value="#{roadTaxCollectionBean}" />
+                            </ui:include>
+
+                            <p:outputPanel>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4"> 
+                                        <p:outputPanel rendered="#{roadTaxCollectionBean.renderModelCost}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_model_cost" value="#{language.modelCostForTaxCalculation}" styleClass="font-bold"  style="color: #FF0000 !important;"/>
+                                            </label>
+                                            <p:inputText id="tf_model_cost" maxlength="9" size="20"
+                                                         value="#{roadTaxCollectionBean.ownerDobj.sale_amt}">
+                                                <p:ajax/>
+                                                <p:keyFilter rendered="#{roadTaxCollectionBean.renderModelCost}" mask="pint" for="tf_model_cost"/>
+                                            </p:inputText>
+                                            <!--<p:keyFilter rendered="#{roadTaxCollectionBean.renderModelCost}" mask="pint" for="tf_model_cost"/>--> 
+                                        </p:outputPanel>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="vm_other_criteria" value="#{language.other_criteria}"/>
+                                        </label>
+                                        <p:selectOneMenu id="vm_other_criteria" value="#{roadTaxCollectionBean.ownerDobj.other_criteria}" filter="true">
+                                            <f:selectItem itemLabel="Not Applicable" itemValue="0"/>
+                                            <f:selectItems value="#{owner_bean.list_other_criteria}"/>
+                                            <p:ajax/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:outputPanel rendered="#{roadTaxCollectionBean.renderPermitPanel}" styleClass="top-space">
+                                <ui:include src="/ui/permit/form_permit_panel.xhtml" >
+                                    <ui:param name="permitFormPanel" value="#{roadTaxCollectionBean.permitPanelBean}"/>                                
+                                </ui:include>
+                            </p:outputPanel>
+                            <p:outputPanel  id="taxpanel" styleClass="top-space">
+                                <p:commandButton value="#{language.refreshTaxDetails}" onclick="PF('buiVar').show();"
+                                                 oncomplete="PF('buiVar').hide();" actionListener="#{roadTaxCollectionBean.refreshTaxMode()}"                                                 
+                                                 update="taxpanel  :masterLayout:new_veh_fee_subview:totalPaybaleAmountPanel :masterLayout:new_veh_fee_subview:userChargesPaybaleAmountPanel"/>
+                                <h:outputLabel value="#{roadTaxCollectionBean.taxPaidLabel}" rendered="#{roadTaxCollectionBean.is_taxPaid}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{roadTaxCollectionBean.addTaxPaidLabel}" rendered="#{roadTaxCollectionBean.is_addtaxPaid}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{roadTaxCollectionBean.taxClearLabel}" rendered="#{roadTaxCollectionBean.is_taxClear}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{roadTaxCollectionBean.addTaxClearLabel}" rendered="#{roadTaxCollectionBean.is_addtaxClear}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{roadTaxCollectionBean.taxExempLabel}" rendered="#{roadTaxCollectionBean.isTaxExemp}" styleClass="font-bold red"/>
+                                <ui:include src="/ui/tax/form_tax_details.xhtml" >
+                                    <ui:param name="taxContainerBean" value="#{roadTaxCollectionBean}"/>
+                                    <ui:param name="parentTotalPayableAmount" value=":masterLayout:new_veh_fee_subview:totalPaybaleAmountPanel :masterLayout:new_veh_fee_subview:userChargesPaybaleAmountPanel"/>
+                                </ui:include>
+
+                            </p:outputPanel>
+
+                            <p:outputPanel rendered="#{roadTaxCollectionBean.showCommonChargesForAll}">
+                                <ui:include src="/ui/registration/FormCommonChargesForAll.xhtml" >
+                                </ui:include>
+                            </p:outputPanel>
+
+                            <p:outputPanel rendered="#{!roadTaxCollectionBean.taxAssesment}">
+
+                                <ui:include src="/ui/fee/form_payment_collection.xhtml">
+                                    <ui:param name="paymentBean" value="#{roadTaxCollectionBean.paymentCollectionBean}"/>
+                                </ui:include>
+
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-4">
+                                        <p:outputPanel id="userChargesPaybaleAmountPanel" rendered="#{roadTaxCollectionBean.renderUserChargesAmountPanel}" styleClass="top-space bottom-space">
+                                            <div class="ui-grid-row top-space">
+                                                <div class="ui-grid-col-12">
+                                                    <h:outputText value="#{language.user_ser_charge}" styleClass="font-bold"/>
+                                                    <h:outputText  id="totalUserAmt" value="#{roadTaxCollectionBean.totalUserChrg}" styleClass="font-bold"/>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <p:outputPanel id="totalPaybaleAmountPanel" styleClass="top-space bottom-space">
+                                            <div class="ui-grid-row top-space">
+                                                <div class="ui-grid-col-12">
+                                                    <h:outputText value="#{language.totalPayableAmountInRs}" styleClass="font-bold"/>
+                                                    <h:outputText  id="totalamount" value="#{roadTaxCollectionBean.totalTaxAmount}" styleClass="font-bold"/>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                    </div>                           
+
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>                            
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:outputPanel id="pg_save" styleClass="center-position">
+                                            <p:commandButton  value="#{language.save}" update="confirmationPopup"
+                                                              action="#{roadTaxCollectionBean.validateForm('RtoPayment')}" rendered="#{roadTaxCollectionBean.btn_save}"> 
+                                            </p:commandButton>
+                                            <p:commandButton  value="#{language.reset}" actionListener="#{roadTaxCollectionBean.reset()}"  update="ownerInformationPanel regnNoPanel"
+                                                              action="/ui/tax/form_road_tax_collection.xhtml?faces-redirect=true" immediate="true" icon="ui-icon-refresh"/>
+                                            <p:button value="#{language.login_back}" outcome="home" onclick="PF('buiVar').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                                            <p:commandButton value="#{language.login_online_payment}" action ="#{roadTaxCollectionBean.validateForm('OnlinePayment')}"  styleClass="button" update="confirmationPopup"  rendered="#{roadTaxCollectionBean.renderOnlinePayBtn}"/>
+                                            <p:commandButton value="#{language.cancelOnlinePayment}"  action ="#{roadTaxCollectionBean.cancelOnlinePayment()}" update="pg_save" rendered="#{roadTaxCollectionBean.renderCancelPayment}">
+                                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>
+                                            </p:commandButton>                                          
+                                        </p:outputPanel>
+                                        <p:outputPanel id="onlineUserCrednlMsgPanel" rendered="#{roadTaxCollectionBean.renderUserAndPasswored}">
+                                            <h:outputText value="#{language.noteTax}" class="font-bold" />
+                                            <h:outputText value=" #{language.msgOnlinePayment}"  class="red font-bold"/>
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+
+                            </p:outputPanel>
+                            <div class="center-position">
+                                <p:outputPanel id="taxAssesmentReset" rendered="#{roadTaxCollectionBean.taxAssesment}"  styleClass="inline-section">
+                                    <div class="center-position">
+                                        <p:button value="#{language.reset}" outcome="form_road_tax_collection.xhtml" onclick="PF('buiVar').show();" icon="ui-icon-refresh"/>
+                                    </div>
+                                </p:outputPanel>
+                                <p:outputPanel id="taxDefListID" styleClass="inline-section">
+                                    <p:outputPanel rendered="#{roadTaxCollectionBean.taxDefList}">
+                                        <p:commandButton value="#{language.taxDefaulterList}" action="#{roadTaxCollectionBean.printTaxDefaulterList()}"  onclick="PF('buiVar').show();" oncomplete="PF('buiVar').hide()" icon="ui-icon-print" ajax="false"/>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                            </div>
+                        </p:outputPanel>                        
+
+                    </p:outputPanel>
+                    <p:outputPanel id="confirmDialog">
+                        <p:dialog  widgetVar="confirmDialogVar" resizable="false" modal="true"
+                                   draggable="false" closable="false" hideEffect="explode" header="#{language.home_confirm}">  
+                            <div class="bottom-space center-position">
+                                <span class="ui-button-icon-left ui-icon ui-c ui-icon-alert inline-section"></span> 
+                                <span>#{language.foundFinancedby} #{roadTaxCollectionBean.moveToHistoryOwnerDtls.hpaDobj.fncr_name} in office #{roadTaxCollectionBean.moveToHistoryOwnerDtls.off_name}.</span>
+                                <br/>
+                                <span class="font-bold center-position">#{language.moveFinancierToOffice}#{roadTaxCollectionBean.currentOfficeName}?</span>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position top-space">
+                                    <p:commandButton value="#{language.yes}" action="#{roadTaxCollectionBean.moveHistoryDuplicateVehDetails('true')}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="PF('buiVar').show();
+                                        PF('confirmDialogVar').hide();"
+                                                     onsuccess="PF('buiVar').hide();" />
+                                    <p:commandButton value="#{language.no}" action="#{roadTaxCollectionBean.moveHistoryDuplicateVehDetails('false')}" 
+                                                     styleClass="ui-confirmdialog-no" icon="ui-icon-close" onclick="PF('buiVar').show();
+                                        PF('confirmDialogVar').hide();"
+                                                     onsuccess="PF('buiVar').hide();" />
+                                </div>
+                            </div>
+                        </p:dialog>
+                    </p:outputPanel>
+
+
+
+                    <p:blockUI block=":masterLayout" widgetVar="buiVar">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </f:subview>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

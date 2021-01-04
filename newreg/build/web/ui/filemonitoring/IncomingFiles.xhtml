@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <p:dialog id="popup" visible="#{not empty facesContext.messageList}"
+                      styleClass="center-position"
+                      widgetVar="dlg1"
+                      modal="true" draggable="false" closable="false">  
+                <p:messages/>
+                <p:commandButton value="OK" action="#{incommingFiles.getResetTables()}" oncomplete="PF('dlg1').hide();" onclick="PF('dlgdocumentselection').hide();" update="tblreceivefile tblavailable reasoninputBox selectDealer" />
+            </p:dialog> 
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Dealer Pending File(s)</h1>
+                </div>
+            </div>
+            <p:outputPanel id="pnlfileincommiing">
+                <div class="ui-grid-row bottom-space">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <p:outputLabel  value="Select Dealer" styleClass="field-label-mandate"/>
+                        <p:selectOneMenu  id="selectDealer" filter="true" filterMatchMode="contains" value="#{incommingFiles.dealerName}">
+                            <f:selectItem itemLabel="---Select Dealer---"  itemValue="-1"/>
+                            <f:selectItems  value="#{incommingFiles.dearlist}"/>
+                            <p:ajax event="change" listener="#{incommingFiles.getPendingFiles()}" update="tblreceivefile popup" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" partialSubmit="true"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <p:outputPanel id="datatablepanel">
+                    <p:dataTable  var="receivefiles"    id="tblreceivefile"  value="#{incommingFiles.filelist}" filteredValue="#{incommingFiles.filterfilelist}" >
+                        <p:column headerText="Sr. No." styleClass="collumn-width center-position">
+                            <h:outputText value="#{receivefiles.srNo}"/>
+                        </p:column>
+                        <p:column headerText="File Number" filterBy="#{receivefiles.appl_no}" filterMatchMode="contains">
+                            <h:outputText value="#{receivefiles.appl_no}"/>
+                        </p:column>
+                        <p:column headerText="Status" >
+                            <h:outputText value="#{receivefiles.status}"/>
+                        </p:column>
+                        <p:column headerText="Pending Days" styleClass="center-position"  >
+                            <h:outputText value="#{receivefiles.pendingDays}"/>
+                        </p:column>
+                        <p:column headerText="Sent Date" >
+                            <h:outputText value="#{receivefiles.receiveDate}"/>
+                        </p:column>
+                        <p:column headerText="Click" styleClass="center-position" >
+                            <p:commandButton  value="Submit Document"  action="#{incommingFiles.fetchFileNo()}" id="btn"  onstart="PF('bui').show();" oncomplete="PF('bui').hide();" >
+                                <f:param name="filenumber" value="#{receivefiles.fileNo}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </p:outputPanel> 
+        </div>
+        <p:blockUI block="dialogdocsPnl" widgetVar="bui">
+            <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+        <p:dialog  header="Documents List" widgetVar="dlgdocumentselection"  id="dialogdocs" modal="true" closable="false"  height="530" width="900" >
+            <p:outputPanel id="dialogdocsPnl">
+                <p:dataTable var="filenamevar"  id="tblavailable" value="#{incommingFiles.moduleServiceDataList}" styleClass="top-space" >
+                    <f:facet name="header">
+                        <div class="right-position right-space">
+                            <p:commandButton value="All" onclick="$('.ui-chkbox-box').click()"/>
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Sr. No. " styleClass="center-position collumn-width" >
+                        <h:outputText id="serial" value="#{filenamevar.serialNo}"/>
+                    </p:column>
+                    <p:column headerText="Documents">
+                        <h:outputText id="lserial" value="#{filenamevar.serviceName}"/>
+                    </p:column>
+                    <p:column headerText="Select"  styleClass="center-position collumn-width ">
+                        <p:selectBooleanCheckbox id="selectpagel" value="#{filenamevar.enter}" style="margin-top: 5px;"/>
+                    </p:column>
+                </p:dataTable>
+                <div class="ui-grid-row ">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton  id="bt_submit" value="Submit"  actionListener="#{incommingFiles.submitFile()}"  icon="ui-icon-disk" update="popup"  onstart="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                        <p:commandButton  id="bt_Reject" value="Reject"   icon="ui-icon-disk" actionListener="#{incommingFiles.rejectFile()}" update="popup"  onstart="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                        <p:commandButton  id="bt_Cancel" value="Cancel"   icon="ui-icon-disk" onclick="PF('dlgdocumentselection').hide();" actionListener="#{incommingFiles.getSessionFileNumber()}" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" update="reasoninputBox tblavailable selectDealer"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <label>
+                            <span class="field-label-mandate">Other Reason:</span>   <span class="red">(Mandatory in case of File Rejection)</span>
+                        </label>
+                        <p:inputText styleClass="text-uppercase" id="reasoninputBox" value="#{incommingFiles.reason}"  converter="toUpperCaseConverter" autocomplete="off"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

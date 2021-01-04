@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+--> 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title><ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert></title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="stylesheet.min.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+        <h:outputScript library="js" name="utils.js" />
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+    </h:head> 
+
+    <h:body>  
+
+        <h:form id="form_eapp">
+            <div class="ui-grid ui-grid-responsive">
+                <ui:insert name="heading">
+                    <ui:include src="/leftMenuPanel.xhtml"/>
+                </ui:insert>
+
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                    <div class="ui-grid-col-8">
+                        <p:commandButton id="instructionBtn" value="Instructions For #{eapplicationBean.descr}" type="button" />
+                        <p:overlayPanel id="imagePanel" for="instructionBtn" hideEffect="fade">
+                            <h:outputText value="#{eapplicationBean.msg}" escape="false"/>
+                        </p:overlayPanel>  
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                    <div class="ui-grid-col-8">
+                        <p:messages closable="true" rendered="#{!eapplicationBean.render}">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panel id="pnlgrd_eapp" header="Submit Online Application (#{eapplicationBean.descr})" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row top-space bottom-space">
+                                <div class="ui-grid-col-2 resp-blank-height">&#160;</div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_reg_no" value="#{label.regn_no}"/>
+                                    </label>
+                                    <p:inputText id="tf_reg_no" value="#{eapplicationBean.eApplication_Dobj.regn_no}" maxlength="10" converter="toUpperCaseConverter"
+                                                 required="true" requiredMessage="Registration no. can not be empty" size="15"  autocomplete="off" styleClass="input"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_chasis_no" value="Chassis No.(Last 5 digit)"/>
+                                    </label>
+                                    <p:inputText id="tf_chasis_no"  value="#{eapplicationBean.eApplication_Dobj.chasis_no}" maxlength="5" converter="toUpperCaseConverter"
+                                                 required="true" requiredMessage="Chassis no. can not be empty" size="5" autocomplete="off" styleClass="input"/>
+                                </div>
+                                <div class="ui-grid-col-2 resp-blank-height">&#160;</div>
+                            </div>
+                            <div class="ui-grid-row top-space bottom-space">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-2 resp-blank-height">&#160;</div>
+                                    <div class="ui-grid-col-8">
+                                        <vahan:vahanCaptcha labelName="Enter Verification Code:"/>
+                                    </div>
+                                    <div class="ui-grid-col-2 resp-blank-height">&#160;</div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Show Details" action="#{eapplicationBean.showResult()}" 
+                                                     onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" update=":pnl_show form_eapp pnlgrd_eapp">
+                                        <p:resetInput target="pnlgrd_eapp"/>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:keyFilter for="tf_reg_no" mask="alphanum"/>
+                        <p:keyFilter regEx="#{constant.CHASIS_REG_EXPR}" for="tf_chasis_no"/>
+                        <p:blockUI block="pnlgrd_eapp" widgetVar="block_panel">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+                    </div>
+                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                </div>
+            </div>
+        </h:form>    
+
+
+        <p:outputPanel id="pnl_show">
+            <h:panelGroup id="pg_show" rendered="#{eapplicationBean.render}">
+                <ui:include src="#{eapplicationBean.src}">
+                    <ui:param name="eApp" value="#{eapplicationBean.eApplication_Dobj}"/>                    
+                </ui:include>            
+            </h:panelGroup>
+        </p:outputPanel>
+    </h:body>
+</html>

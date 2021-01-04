@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      >
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/permit/form_newPermit_Print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            
+            <div class="center-position">
+                <h:outputText value="TRANSPORT DEPARTMENT,#{printDocXHTML.passPmtDobj.state_cd}" styleClass="font-bold report-header text-uppercase"/><br/>
+            </div>
+            <div class="center-position ">
+                <span class="font-bold report-subheader"> <h:outputText value="FORM 47"/> </span>
+            </div>
+            <div class="center-position bottom-space">
+                <span class="font-bold report-subheader"> <h:outputText value="[See Rule 87(2) of CMVR-1989]"/> </span>
+            </div>
+            <div class="center-position">
+                <span class="report-subheader text-uppercase bottom-space" > 
+                    <h:outputText value="AUTHORISATION CERTIFICATE OF N.P.(GOODS)" />  
+                </span>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="1.  National Permit Authorization No " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.passPmtDobj.npAuthNo}     Dated: #{printDocXHTML.pmtFeeDobj.npIssueDate}" styleClass="font-bold"/>
+                    <h:outputLabel value="2. Name Of The Permit Holder " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.owner_name}" styleClass="font-bold"/>
+                    <h:outputLabel value="3. Address   " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add1} #{printDocXHTML.ownerPmtDobj.c_add2} #{printDocXHTML.ownerPmtDobj.c_add3}, #{printDocXHTML.ownerPmtDobj.c_state} #{printDocXHTML.ownerPmtDobj.districtInString}-#{printDocXHTML.ownerPmtDobj.c_pincode}" />
+                    <h:outputLabel value="4. Registration Mark of the Vehicle " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" />
+                    <h:outputLabel value="5. Date of Registration" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.regnDateInString}" />
+                    <h:outputLabel value="6. Maker/Model/Year of Manufacturer " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.makerName}/#{printDocXHTML.ownerPmtDobj.modelName}/#{printDocXHTML.ownerPmtDobj.manuYearInString}" />
+                    <h:outputLabel value="7. Engine Number" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.engnNo}"  />
+                    <h:outputLabel value="8. Chassis Number" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.chasi_no}"  />
+                    <h:outputLabel value="9. Validity of NP Authorization " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.passPmtDobj.validUptoInString}" styleClass="font-bold"/>
+                    <h:outputLabel value="10. Validity of Basic Goods Permit " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.period}" />
+                    <h:outputLabel value="11. Type of Vehicle :" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.vh_class} " />
+                    <h:outputLabel value="12. GVW(in Kgs)" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.ld_wt} " />
+                    <h:outputLabel value="13. Unladen Weight(in Kgs)" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.unld_wt} " />
+                    <h:outputLabel value="14. Seating Capacity " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.seat_cap}" />
+                </h:panelGrid>
+            </div>
+            <br/>
+
+            <p:outputPanel styleClass="top-space">
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="left-position datatable-panel-100">
+                        <h:outputText value="This authorization is issued on #{printDocXHTML.pmtFeeDobj.npIssueDate} and valid throughout the territory of India upto #{printDocXHTML.passPmtDobj.validUptoInString}." />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+
+
+            <br/>
+            <p:outputPanel styleClass="top-space">
+                <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="left-position datatable-panel-100">
+                        <h:outputText value="Certified that the National Permit holder has paid the consolidated fee of Rs. #{printDocXHTML.pmtFeeDobj.amount1}/- through Internet Banking
+                                      vide Transaction Id: #{printDocXHTML.pmtFeeDobj.transactionNo}, Bank Reference No #{printDocXHTML.pmtFeeDobj.bankRefNo} dated: #{printDocXHTML.pmtFeeDobj.npTransactionDate}
+                                      at State Bank of India " />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+
+            <br/>
+            <br/>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+
+                <p:outputPanel >
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                <br/>
+                                Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <h:outputText value="State/Regional Transport Authority" /><br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}"/><br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </p:outputPanel>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

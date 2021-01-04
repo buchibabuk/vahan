@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content22">
+        <h:form id="PMT_APP_FEE" prependId="false">
+            <ui:include id="fee_recpt_no" src="/ui/recpt/form_current_rcpt_no.xhtml" />
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class=" header-main">Fee - Permit Application</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                        <p:autoUpdate/>  
+                    </p:growl>
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/> 
+                    </p:messages>
+                </div>
+            </div>
+
+            <p:panel header="Vehicle Details" id="vehicleDetailsPanel">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  value="Application Number:"/>
+                        </label>
+                        <p:inputText value="#{pmt_appl_fee.appl_no}" readonly="true" styleClass="text-uppercase"/>
+                    </div>
+
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Owner Name:"/>
+                        </label>
+                        <p:inputText id="tf_owner_name" value="#{pmt_appl_fee.owner_name}" styleClass="text-uppercase" maxlength="35"  readonly="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_f_name" value="Father Name:"/>
+                        </label>
+                        <p:inputText id="tf_f_name" value="#{pmt_appl_fee.f_name}" styleClass="text-uppercase" maxlength="30"  readonly="true"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_regn_no" value="Registration Number:"/>
+                        </label>
+                        <p:inputText id="tf_regn_no" value="#{pmt_appl_fee.regn_no}" readonly="true"/>   
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="sm_pmt_type" value="Permit Type:"/>
+                        </label>
+                        <p:selectOneMenu id="sm_pmt_type" value="#{pmt_appl_fee.pmt_type}" filter="true" disabled="true" >
+                            <f:selectItems value="#{pmt_appl_fee.pmt_type_array}" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  value="#{pmtLabel.pmt_catg}"/>
+                        </label>
+                        <p:selectOneMenu id="sm_pmt_catg" value="#{pmt_appl_fee.pmt_catg}" filter="true" disabled="true" >
+                            <f:selectItems value="#{pmt_appl_fee.pmt_catg_array}" />                         
+                        </p:selectOneMenu> 
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Vehicle Class:"/> 
+                        </label>
+                        <p:selectOneMenu id="sm_vhClass" value="#{pmt_appl_fee.vh_class}" filter="true" disabled="true" >
+                            <f:selectItems value="#{pmt_appl_fee.vh_class_array}" />                         
+                        </p:selectOneMenu>  
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_seat_cap" value="#{label.seat_cap}"/>
+                        </label>
+                        <p:inputText id="tf_seat_cap" value="#{pmt_appl_fee.seat_cap}" readonly="true"/>   
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label  class="field-label resp-label-section">
+                            <p:outputLabel for="pmrSubType" value="Permit Sub Type"/>
+                        </label>
+                        <p:inputText id="pmrSubType" value="#{pmt_appl_fee.pmtSubType}" disabled="true"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:panel header="Route and Area Details" toggleable="true"  styleClass="top-space bottom-space" rendered="#{pmt_appl_fee.routedata ne null or pmt_appl_fee.region_covered ne null}">
+                <p:outputPanel rendered="#{pmt_appl_fee.routedata ne null}">
+                    <div class="left-position">
+                        <h:outputText value="Route Detail" styleClass="font-bold report-header text-uppercase"/>
+                    </div>
+                    <div class="datatable-panel" style="margin: 0 auto;">
+                        <p:dataTable var="routeDtls" value="#{pmt_appl_fee.routedata}" styleClass="datatable-panel-100">
+                            <p:column headerText="Route Code" styleClass="center-position">
+                                <h:outputText value="#{routeDtls.rout_code}" />
+                            </p:column>
+                            <p:column headerText="From">
+                                <h:outputText value="#{routeDtls.floc}" />
+                            </p:column>
+                            <p:column headerText="To">
+                                <h:outputText value="#{routeDtls.tloc}" />
+                            </p:column>
+                            <p:column headerText="Via" width="35%">
+                                <h:outputText value="#{routeDtls.start_POINT}" />
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel rendered="#{pmt_appl_fee.region_covered ne null}" styleClass="top-space">
+                    <h:panelGrid columns="2" styleClass="left-position">
+                        <h:outputLabel value="Area Details : " styleClass="font-bold report-header text-uppercase"/>
+                        <h:outputText value="#{pmt_appl_fee.region_covered}"/>
+                    </h:panelGrid>
+                </p:outputPanel>
+            </p:panel>
+
+            <p:outputLabel id="payAndFeePanel">
+                <p:outputPanel id="permitFee" style="margin-top:10px">
+                    <ui:include src="/ui/permit/form_permit_show_fee_Details.xhtml">
+                    </ui:include>
+                </p:outputPanel>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <ui:include src="/ui/fee/form_payment_collection.xhtml">
+                            <ui:param name="paymentBean" value="#{pmt_appl_fee.paymentBean}"/>
+                            <ui:param name="headerName" value="payment"/>
+                            <ui:param name="totalPayableAmount" value="#{pmt_appl_fee.feePanelBean.totalAmount}"/>
+                        </ui:include> 
+                    </div>
+                </div>                      
+            </p:outputLabel>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="pg_button" styleClass="center-position">                     
+                        <p:commandButton value="Save"  action="#{pmt_appl_fee.validateForm()}"   >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:commandButton value="Back" action ="/home.xhtml?faces-redirect=true"/>                   
+                    </p:outputPanel>                     
+                </div>
+            </div>
+
+            <p:dialog id="app_num_id" header="Application Fee Submitted Successfully" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h:outputLabel value="#{pmt_appl_fee.app_no_msg}" />
+                        <f:facet name="footer">
+                            <p:commandButton value="Exit for Another Application" action="seatwork"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:dialog id="popup" widgetVar="confDlgFee" modal="true" draggable="false" closable="false" header="Do you want to continue">  
+                <div class="center-position bottom-space top-space">
+                    <h:outputText value="Total Amount to paid in Cash"/>
+                </div>
+                <div class="font-bold center-position bottom-space">
+                    <h:outputText value="In Rupees: #{pmt_appl_fee.paymentBean.isCashSelected?pmt_appl_fee.paymentBean.balanceAmount:pmt_appl_fee.paymentBean.balanceAmount}"/>
+                </div>
+                <div class="center-position bottom-space">
+                    <p:commandButton value="Yes" onsuccess="PF('confDlgFee').hide();"  
+                                     icon="ui-icon-check" ajax="false"
+                                     action="#{pmt_appl_fee.saveFeeDetails()}" update="app_num_id" />
+                    <p:commandButton  value="No"  onsuccess="PF('confDlgFee').hide();" icon="ui-icon-close"  />
+                </div>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

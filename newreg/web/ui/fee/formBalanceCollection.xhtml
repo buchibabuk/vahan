@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="form_registered_vehicle_fee">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">FEES / TAX BALANCE COLLECTION</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <ui:include src="/ui/recpt/form_current_rcpt_no.xhtml" />                       
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:dialog id="popup" widgetVar="confDlgFee" draggable="false" 
+                                  closable="false" closeOnEscape="false" header="Do you want to continue">  
+                            <p:panel id="popupSavePanel">
+                                <div class="center-position bottom-space top-space">
+                                    <h:outputText value="#{balanceCollection.paymentMsg}"/>
+                                </div>
+                                <div class="font-bold center-position bottom-space">
+                                    <h:outputText value="In Rupees: #{balanceCollection.paymentBean.isCashSelected?balanceCollection.totalAmountPayable:balanceCollection.paymentBean.balanceAmount}"/>
+                                </div>
+                                <div class="center-position bottom-space">
+                                    <p:commandButton value="Yes" onclick="PF('bui').show();
+                                            PF('buiVarNoImage').hide();" oncomplete="PF('confDlgFee').hide(); PF('bui').hide();"  
+                                                     icon="ui-icon-check"  
+                                                     action="#{balanceCollection.saveFeeDetails}" update="form_registered_vehicle_fee vehicleDetailsPanel payAndFeePanel vehNoPanelGrid " />
+                                    <p:commandButton value="No" onclick="PF('confDlgFee').hide();
+                                            PF('buiVarNoImage').hide();" icon="ui-icon-close"  />
+                                </div>
+                            </p:panel>
+                            <!--                            <P:BLOCKUI BLOCK="POPUPSAVEPANEL" WIDGETVAR="BUI">
+                                                            <P:GRAPHICIMAGE NAME="# {IMAGENAME.AJAXLOADER}" LIBRARY="IMAGES" HEIGHT="40%" WIDTH="30%"/>
+                                                        </P:BLOCKUI>-->
+                        </p:dialog>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-8 center-position">
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5" id="pg_selectOptions">
+                                    <p:selectOneRadio id="selectedOption" value="#{balanceCollection.selectedOption}" 
+                                                      disabled="#{balanceCollection.disableSelectedOption}">
+                                        <c:if test="#{!balanceCollection.optionCCarrierRegistration}">
+                                            <f:selectItem itemLabel="Application No" itemValue="A" />
+                                            <f:selectItem itemLabel="Registration No" itemValue="R" />
+                                            <f:selectItem itemLabel="Temporary Registration No" itemValue="T" />
+                                            <c:if test="#{!balanceCollection.optionForMizoram}">
+                                                <f:selectItem itemLabel="Carrier Registration" itemValue="C"/>
+                                            </c:if>
+                                            <f:selectItem itemLabel="Other Region/State Vehicle" itemValue="O" />
+                                            <c:if test="#{balanceCollection.optionRePostalFee}"> 
+                                                <f:selectItem itemLabel="RC Re-Post Fee" itemValue="D" />
+                                            </c:if>
+                                        </c:if>
+                                        <p:ajax listener="#{balanceCollection.selectedOptionListener}" event="change" update="vehNoPanelGrid vehicleDetailsPanel panTaxDiff"/>
+                                    </p:selectOneRadio>
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <p:outputPanel id="vehNoPanelGrid" styleClass="bottom-space">
+                            <p:focus for="tf_appl_no"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="tf_regn_no"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="tf_appl_no"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="tf_otherstateregn"/>
+                            <p:keyFilter regEx="/[0-9]/i" for="tf_otherstateMobile"/>
+                            <p:keyFilter regEx="/[0-9]/i" for="tf_carrierMobile"/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="op_options">
+                                        <p:outputPanel id="op_applNo" rendered="#{balanceCollection.renderApplNo}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_appl_no" value="Application No:"/>
+                                            </label>
+                                            <p:inputText id="tf_appl_no" value="#{balanceCollection.appl_no}"  
+                                                         size="20" maxlength="16"
+                                                         required="true" requiredMessage="Application No Can not be Blank"
+                                                         autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                         disabled="#{balanceCollection.disableApplNo}"/>
+                                        </p:outputPanel>
+
+                                        <p:outputPanel id="op_regnNo" rendered="#{balanceCollection.renderRegnNo}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_regn_no" value="Registration No:"/>
+                                            </label>
+                                            <p:inputText id="tf_regn_no" value="#{balanceCollection.regn_no}"  
+                                                         size="20" maxlength="10"
+                                                         required="true" requiredMessage="Registration No Can not be Blank"
+                                                         autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                         disabled="#{balanceCollection.disableApplNo}"/>
+                                        </p:outputPanel>
+                                        <p:outputPanel id="op_TempregnNo" rendered="#{balanceCollection.renderTempRegnNo}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_temp_regn_no" value="Temporary Registration No:"/>
+                                            </label>
+                                            <p:inputText id="tf_temp_regn_no" value="#{balanceCollection.regn_no}"  
+                                                         size="20" maxlength="20"
+                                                         required="true" requiredMessage="Temporary Registration No Can not be Blank"
+                                                         autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                         disabled="#{balanceCollection.disableApplNo}"/>
+                                        </p:outputPanel>
+                                        <p:outputPanel id="op_carrierregn" rendered="#{balanceCollection.carrierRegnPanel}">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_carrier_owner" value="Owner Name:"/>
+                                                </label>
+                                                <p:inputText id="tf_carrier_owner" value="#{balanceCollection.ownerName}"  
+                                                             size="35" maxlength="35"
+                                                             required="true" requiredMessage="Owner Name Can not be Blank"
+                                                             autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                             disabled="#{balanceCollection.disableApplNo}"/>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_carrierMobile" value="Mobile No:"/>
+                                                </label>
+                                                <p:inputText id="tf_carrierMobile" value="#{balanceCollection.mobileNo}"  
+                                                             maxlength="10" required="true" requiredMessage="Blank Mobile No." autocomplete="off" 
+                                                             disabled="#{balanceCollection.disableApplNo}">
+                                                    <f:validator validatorId="mobileNoValidator"/>
+                                                    <p:ajax event="blur" process="@this" update="@this"  partialSubmit="true"/>
+                                                </p:inputText>
+                                            </div>
+                                        </p:outputPanel> 
+                                        <p:outputPanel id="op_carrier_flow" rendered="#{balanceCollection.carrierFlowRegnPanel}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_carrier_flow" value="Application Number:"/>
+                                            </label>
+                                            <p:inputText id="tf_carrier_flow" value="#{balanceCollection.ownerName}"  
+                                                         size="35" maxlength="35"
+                                                         required="true" requiredMessage="Owner Name Can not be Blank"
+                                                         autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                         disabled="#{balanceCollection.disableApplNo}"/>
+                                        </p:outputPanel> 
+                                        <p:outputPanel id="op_otherstate" rendered="#{balanceCollection.otherStatePanel}">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_otherstateregn" value="Registration No:"/>
+                                                    </label>
+                                                    <p:inputText id="tf_otherstateregn" value="#{balanceCollection.regn_no}"  
+                                                                 size="20" maxlength="10"
+                                                                 required="true" requiredMessage="Registration No Can not be Blank"
+                                                                 autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                                 disabled="#{balanceCollection.disableApplNo}"/>
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_otherstateOwner" value="Owner Name:"/>
+                                                    </label>
+                                                    <p:inputText id="tf_otherstateOwner" value="#{balanceCollection.ownerName}"  
+                                                                 size="35" maxlength="35"
+                                                                 required="true" requiredMessage="Owner Name Can not be Blank"
+                                                                 autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                                 disabled="#{balanceCollection.disableApplNo}"/>
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_otherstateMobile" value="Mobile No:"/>
+                                                    </label>
+                                                    <p:inputText id="tf_otherstateMobile" value="#{balanceCollection.mobileNo}"  
+                                                                 maxlength="10" required="true" requiredMessage="Blank Mobile No." autocomplete="off" 
+                                                                 disabled="#{balanceCollection.disableApplNo}">
+                                                        <f:validator validatorId="mobileNoValidator"/>
+                                                        <p:ajax event="blur" process="@this" update="@this"  partialSubmit="true"/>
+                                                    </p:inputText>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="bt_ShowDetail" value="Show" 
+                                                     action="#{balanceCollection.showDetails()}"
+                                                     ajax="false"
+                                                     onclick="PF('bui').show()"
+                                                     oncomplete="PF('bui').hide()"  
+                                                     disabled="#{balanceCollection.disableApplNo}"  
+                                                     rendered="#{!balanceCollection.optionCCarrierRegistration}"
+                                                     update="vehNoPanelGrid vehicleDetailsPanel payAndFeePanel userChargesPaybaleAmountPanel"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                        <p:outputPanel rendered="#{balanceCollection.checkFeeTax ne null}">
+                            <ui:include  src="/ui/form_check_e_amount.xhtml">
+                                <ui:param name="ePay" value="#{balanceCollection.checkFeeTax}"/>  
+                            </ui:include>  
+                        </p:outputPanel>
+
+                        <p:panel header="Vehicle Details" id="vehicleDetailsPanel" rendered="#{balanceCollection.vehicleDtlsPanel}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{label.chasi_no}:"/>
+                                    </label>
+                                    <p:inputText id="tf_chasi_no" value="#{balanceCollection.ownerDobj.chasi_no}" maxlength="30"  readonly="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{balanceCollection.selectedOption eq 'T' ? 'Temp. Valid From' : 'Registration Date:'}"/>
+                                    </label>
+                                    <p:inputText id="cal_regn_dt" value="#{balanceCollection.ownerDobj.regn_dt}"  readonly="true"/>   
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Owner Name:"/>
+                                    </label>
+                                    <p:inputText id="tf_owner_name" value="#{balanceCollection.ownerDobj.owner_name}" maxlength="35"  readonly="true"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{balanceCollection.selectedOption eq 'T' ? 'Temp. Valid Upto' : 'Fitness Validity:'}"/>
+                                    </label>
+                                    <p:inputText id="cal_fit_dt" value="#{balanceCollection.ownerDobj.fit_upto}"  readonly="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Vehicle Class:"/> 
+                                    </label>
+                                    <p:inputText id="sm_vhClass" disabled="true" value="#{balanceCollection.ownerDobj.vh_class_desc}"  >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel> 
+                        <p:outputPanel id="payFeeTaxAndBtnPanel" rendered="#{balanceCollection.payFeeTaxAndBtnPanel}">
+                            <p:outputPanel id="payAndFeePanel">  
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-12">
+                                        <ui:include src="form_fee_panel.xhtml">
+                                            <ui:param name="containerBean" value="#{balanceCollection}"/>
+                                            <ui:param name="vehCatg" value="#{balanceCollection.ownerDobj.vch_catg}"/>
+                                            <ui:param name="vehClass" value="#{balanceCollection.ownerDobj.vh_class}"/>
+                                            <ui:param name="parentTotalPayableAmount" value=":masterLayout:form_registered_vehicle_fee:totalAmount :masterLayout:form_registered_vehicle_fee:userChargesPaybaleAmountPanel"/>
+                                        </ui:include>
+                                    </div>
+                                </div>
+                                <br/>
+                                <h:outputLabel value="#{balanceCollection.taxPaidLabel}" rendered="#{balanceCollection.renderTaxPaid}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{balanceCollection.addTaxPaidLabel}" rendered="#{balanceCollection.renderAddtaxPaid}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{balanceCollection.taxClearLabel}" rendered="#{balanceCollection.renderTaxClear}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{balanceCollection.addTaxClearLabel}" rendered="#{balanceCollection.renderAddtaxClear}" styleClass="font-bold red"/>
+                                <h:outputLabel value="#{balanceCollection.taxExempLabel}" rendered="#{balanceCollection.renderTaxExemp}" styleClass="font-bold red"/>
+                                <h:outputLabel value= "#{balanceCollection.vow4_started_message}" styleClass="font-bold red"/>
+                                <p:outputPanel id="panTaxDiff">
+                                    <p:panel rendered="#{balanceCollection.isTaxDiffDetails}">
+                                        <div class="ui-grid-row top-space">
+                                            <div class="ui-grid-col-12">
+                                                <ui:include src="/ui/tax/form_tax_diffrance.xhtml">
+                                                    <ui:param name="containerBean" value="#{balanceCollection}"/>
+                                                    <ui:param name="parentTotalPayableAmount" value=":masterLayout:form_registered_vehicle_fee:totalAmount :masterLayout:form_registered_vehicle_fee:userChargesPaybaleAmountPanel"/>
+                                                </ui:include>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-2">
+                                        <p:outputPanel id="userChargesPaybaleAmountPanel" >
+                                            <p:outputPanel id="userChargesPaybaleAmountPanel1" rendered="#{balanceCollection.renderUserChargesAmountPanel}" styleClass="top-space bottom-space">
+                                                <div class="ui-grid-row top-space">
+                                                    <div class="ui-grid-col-12">
+                                                        <h:outputText value="User/Service Charges: " styleClass="font-bold"/>
+                                                        <h:outputText  id="totalUserAmt" value="#{balanceCollection.totalUserChrg}" styleClass="font-bold"/>
+                                                    </div>
+                                                </div>
+                                            </p:outputPanel>
+                                        </p:outputPanel>
+                                    </div>
+
+                                    <div class="ui-grid-col-2">
+                                        <p:outputPanel  styleClass="top-space bottom-space">
+                                            <div class="ui-grid-row top-space">
+                                                <div class="ui-grid-col-12">
+                                                    <h:outputText value="Total Payable Amount (In Rs): " styleClass="font-bold"/>
+                                                    <h:outputText  id="totalAmount" value="#{balanceCollection.totalAmountPayable}" styleClass="font-bold"/>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <ui:include src="form_payment_collection.xhtml">
+                                            <ui:param name="paymentBean" value="#{balanceCollection.paymentBean}"/>
+                                            <ui:param name="headerName" value="payment"/>
+                                            <ui:param name="totalPayableAmount" value="#{balanceCollection.feePanelBean.totalAmount}"/>
+                                        </ui:include> 
+                                    </div>
+                                </div>  
+                            </p:outputPanel>
+                            <p:outputPanel id="rmk_pnl" >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label">
+                                            <p:outputLabel for="rmk_fld" value="Remarks (If any):" />
+                                        </label>
+                                        <p:inputText id="rmk_fld" autocomplete="off" value="#{balanceCollection.balfeeremark}" styleClass="text-uppercase" maxlength="90"/>                    
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="pg_button" styleClass="center-position">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton value="Save" id="btn_save" action="#{balanceCollection.validateForm('cash')}" rendered="#{balanceCollection.btn_save}" 
+                                                         update="form_registered_vehicle_fee:tf_current_rcptno form_registered_vehicle_fee:tf_running_rcpt_no" />
+                                        <p:commandButton  value="Reset" actionListener="#{balanceCollection.reset()}"  update="vehicleDetailsPanel payAndFeePanel vehNoPanelGrid payFeeTaxAndBtnPanel"
+                                                          action="/ui/fee/formBalanceCollection.xhtml?faces-redirect=true" immediate="true" icon="ui-icon-refresh" rendered="#{balanceCollection.btn_reset}" />
+                                        <p:button value="Back" id="btn_cancel" outcome="/home.xhtml?faces-redirect=true" onclick="PF('bui').show();"/>   
+                                        <p:commandButton update="form_registered_vehicle_fee:onlinePaymentTaxDialog" value="Online Payment" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" action ="#{balanceCollection.validateForm('onlinePayment')}"  styleClass="button" rendered="#{balanceCollection.renderOnlinePayBtn}" />
+                                        <p:commandButton value="Cancel Online Payment" action="#{balanceCollection.cancelOnlinePay()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" styleClass="button" rendered="#{balanceCollection.renderOnlineCancelBtn}" update="@form" >
+                                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <h:outputText value="#{balanceCollection.onlineUserCredentialmsg}" class="red font-bold bottom-space right-position"/>
+                                        <br/>
+                                        <h:outputText value="Note:" class="font-bold top-space right-position" rendered="#{balanceCollection.renderOnlinePayBtn}"/>
+                                        <h:outputText value=" If Vehicle Owner wants to pay through ONLINE Payment Gateway / DEBIT Card then Cashier can opt for that option. 
+                                                      The Owner will get the Credentials on his Registered Mobile No for Online Payment." rendered="#{balanceCollection.renderOnlinePayBtn}"  class="red font-bold top-space right-position"/>
+                                    </div>
+                                </div>
+                            </p:outputPanel>   
+                        </p:outputPanel>
+                        <p:outputPanel id="onlinePaymentTaxDialog" >
+                            <p:dialog id="sdfasd" draggable="false" widgetVar="onlinePaymentTaxvar" 
+                                      header="Online Payment Details" dynamic="true">  
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position bottom-space">
+                                        <h:outputText value="#{balanceCollection.onlineUserCredentialmsg}" styleClass="font-bold"/>
+                                        <br/>
+                                        The above mentioned credentials has been sent to vehicle owner mobile no.
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position bottom-space">                            
+                                        <p:button value="OK" onclick="PF('onlinePaymentTaxvar').hide();
+                                            PF('buiVarNoImage').hide();" outcome="home" />
+                                    </div>
+                                </div>                        
+                            </p:dialog>
+                        </p:outputPanel>
+                        <p:blockUI block=":masterLayout" widgetVar="buiVarNoImage" />
+                        <p:blockUI block=":masterLayout" widgetVar="bui">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI> 
+                    </div>
+                </div>
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>

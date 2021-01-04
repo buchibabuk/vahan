@@ -1,0 +1,989 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form id="CompoundingInOffice" prependId="false"> 
+            <p:blockUI block="comp_fee_tab_view:cort_det_penal" widgetVar="bui_fancy">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <span class="header-main">Compounding In Office</span>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="messageid" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>
+                <!--                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:messages id="messageid"/>  
+                                    </div>
+                                </div>-->
+                <p:tabView id="comp_fee_tab_view">
+                    <p:tab title="Vehicle Details" id="imroj">
+                        <div class="ui-grid-row">
+                            <div class="bottom-space right-position">
+                                <p:commandButton id="btHoldChallan"  value="Unhold Challan" rendered="#{settlement.challanHoldEnable}"  >
+                                    <p:ajax event="click" listener="#{settlement.holdChallanDialog()}"   process="btHoldChallan" update=":CompoundingInOffice:holdChallanDailog"></p:ajax>
+                                </p:commandButton>
+                            </div>
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tf_applicationNo" value="Application No.:"/>
+                                </label>
+                                <p:inputText id="tf_applicationNo" value="#{settlement.applicationNo}" maxlength="50" required="true" requiredMessage="Please Enter The Application No">
+                                    <p:ajax process="tf_applicationNo "
+                                            event="blur"
+                                            listener="#{settlement.getSettlementTabData(11404)}" 
+                                            update="Challan_data_table panelFeesDetais
+                                            compound_data_table tax_frm tx_upto chasis cln_officer own_name cln_time vh_rto cln_dt vh_stat nccr_no veh_no  
+                                            clr slpr ladn seat_capacity std_capacity fuel  vh_cls cln_place Document_data_table crt_name hear_dt comp_fee
+                                            :CompoundingInOffice:messageid total_fee imp_dt imp_place sez_no off_no total_fee comp_fee 
+                                            :CompoundingInOffice:save_comp_button taxPenalCompFee settalmentTaxPenal tf_applicationNo"
+                                            onstart ="PF('bui_fancy').show();" 
+                                            onerror ="PF('bui_fancy').hide();" 
+                                            oncomplete="PF('bui_fancy').hide()" 
+                                            disabled="true"
+                                            />
+                                </p:inputText>
+
+                            </div>
+                        </div>
+
+                        <p:panel header="Challan Details" styleClass="top-space bottom-space" id="challanDetails"> 
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="veh_no" value="Vehicle No.:"/>
+                                    </label>
+                                    <p:inputText id="veh_no"  value ="#{settlement.regn_no}" size="6"  disabled="#{settlement.disableOwnerDetails}"/>                                    
+
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="nccr_no" value="NC/CR No.:"/>
+                                    </label>
+                                    <p:inputText id="nccr_no" value="#{settlement.ncCrNo}" disabled="#{settlement.disableOwnerDetails}"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="vh_stat" value="State Of Vehicle:"/>
+                                    </label>
+                                    <p:selectOneMenu id="vh_stat" value="#{settlement.stateCd}" disabled="#{settlement.disableOwnerDetails}" styleClass="bottom-space" required="true" requiredMessage="Please Select The State">  
+                                        <f:selectItems value="#{settlement.stateCode}" noSelectionValue="true"/>  
+                                        <f:ajax execute="vh_stat" event="change" listener="#{settlement.showRtoList()}" render="vh_rto"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="cln_dt" value="Challan Date:"/>
+                                    </label>
+                                    <p:inputText id="cln_dt"  value="#{settlement.challanDt}" disabled="#{settlement.disableOwnerDetails}"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="vh_rto" value="RTO Of Vehicle:"/>
+                                    </label>
+                                    <p:selectOneMenu id="vh_rto" value="#{settlement.rtoCd}" disabled="#{settlement.disableOwnerDetails}" required="true" requiredMessage="Please Select The RTO">  
+                                        <f:selectItems value="#{settlement.rtoCode}" noSelectionValue="true"/>  
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="cln_time" value="Challan Time:"/>
+                                    </label>
+                                    <p:inputText id="cln_time" value="#{settlement.challanTime}" disabled="#{settlement.disableOwnerDetails}"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="own_name" value="Owner's Name:"/>
+                                    </label>
+                                    <p:inputText id="own_name"  maxlength="50" value="#{settlement.ownerName}" styleClass="text-uppercase" disabled="#{settlement.disableOwnerDetails}" required="true" requiredMessage="Please Enter Owner's Name."/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <p:outputLabel for="cln_officer" value="Challan_Officer:"/>
+                                    </label>
+                                    <p:inputText id="cln_officer"  value="#{settlement.challanOfficer}" disabled="#{settlement.disableOwnerDetails}"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="chasis" value="#{label.chasi_no}:" />
+                                    </label>
+                                    <p:inputText id="chasis" value="#{settlement.chasiNo}" disabled="#{settlement.disableOwnerDetails}"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="cln_place" value="Challan Place:"/>
+                                    </label>   
+                                    <p:inputText id="cln_place" value="#{settlement.challanPlace}" disabled="#{settlement.disableOwnerDetails}"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="vh_cls" value="Vehicle Class:"/>
+                                    </label>
+                                    <p:selectOneMenu id="vh_cls" value="#{settlement.vhClass}" disabled="#{settlement.disableOwnerDetails}" required="true" requiredMessage="Please Select The Vehicle Class" >  
+                                        <f:selectItems value="#{settlement.vehclass}"/>  
+                                    </p:selectOneMenu>
+                                </div>
+
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="fuel" value="Fuel:"/>
+                                    </label>
+
+                                    <p:selectOneMenu id="fuel" disabled="#{settlement.disableOwnerDetails}" value="#{settlement.fuel}" required="true" requiredMessage="Please Select The Fuel" filter="true" >  
+                                        <f:selectItems value="#{save.fuelList}" noSelectionValue="true"/>  
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <p:outputLabel for="std_capacity" value="Standing Capacity:"/>
+                                    </label>
+                                    <p:inputText id="std_capacity" value="#{settlement.standCap}" disabled="#{settlement.disableOwnerDetails}" maxlength="3" required="true" requiredMessage="Please Enter Standing Capacity."/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="seat_capacity" value="Seating Capacity:"/>
+                                    </label>
+                                    <p:inputText id="seat_capacity" value="#{settlement.seatCap}" disabled="#{settlement.disableOwnerDetails}" maxlength="3" required="true" requiredMessage="Please Enter Seating Capacity."/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <p:outputLabel for="ladn" value="Laden:"/>
+                                    </label>
+                                    <p:inputText id="ladn" value="#{settlement.ladenWt}" disabled="#{settlement.disableOwnerDetails}" maxlength="6" required="true" requiredMessage="Please Enter Laden Weight."/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="slpr" value="Sleeper Capacity:"/>
+                                    </label>
+                                    <p:inputText id="slpr" value="#{settlement.sleepCap}" disabled="#{settlement.disableOwnerDetails}" required="true" maxlength="2" requiredMessage="Please Enter Sleeper Capacity."/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="clr" value="Color:"/>
+                                    </label>
+                                    <p:inputText id="clr" value="#{settlement.color}" maxlength="15" styleClass="text-uppercase" disabled="#{settlement.disableOwnerDetails}" required="true" requiredMessage="Please Enter Color."/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="coming_from" value="Coming From:" rendered="#{not empty settlement.coming_from}"/>
+                                    </label>
+                                    <p:inputText id="coming_from" value="#{settlement.coming_from}" maxlength="15" styleClass="text-uppercase" disabled="#{settlement.disableOwnerDetails}" rendered="#{not empty settlement.coming_from}" required="true" requiredMessage="Please Enter Color."/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="going_to" value="Going To:" rendered="#{not empty settlement.going_to}"/>
+                                    </label>
+                                    <p:inputText id="going_to" value="#{settlement.going_to}" maxlength="15" styleClass="text-uppercase" disabled="#{settlement.disableOwnerDetails}"  rendered="#{not empty settlement.going_to}" />
+                                </div>
+                            </div>
+
+                        </p:panel>
+                        <p:keyFilter for="own_name" mask="alpha"></p:keyFilter>
+                        <p:keyFilter for="ladn" mask="num"></p:keyFilter>
+                        <p:keyFilter for="seat_capacity" mask="num"></p:keyFilter>
+                        <p:keyFilter for="std_capacity" mask="num"></p:keyFilter>
+                        <p:keyFilter for="slpr" mask="num"></p:keyFilter>
+                        <p:keyFilter for="clr" mask="alpha"></p:keyFilter>
+                        <p:panel header="Court Details" id="cort_det_penal" styleClass="top-space bottom-space" rendered="#{not empty settlement.courtName}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="crt_name" value="Court Name:"/>
+                                    </label>
+                                    <p:inputText id="crt_name" value="#{settlement.courtName}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hear_dt" value="Hearing Date:"/>
+                                    </label>
+                                    <p:inputText id="hear_dt" value="#{settlement.hearDate}" disabled="true"/>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:panel header="Vehicle Impounding Details" styleClass="top-space bottom-space" rendered="#{not empty settlement.seizureNo}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <p:outputLabel for="imp_dt" value="Impounding Date:"/>
+                                    </label>
+                                    <p:inputText id="imp_dt" value="#{settlement.impoundDate}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="imp_place" value="Place Of Impound:"/>
+                                    </label>
+                                    <p:inputText id="imp_place" value="#{settlement.impoundPlace}" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="sez_no" value="Sezure No.:"/>
+                                    </label>
+                                    <p:inputText id="sez_no" value="#{settlement.seizureNo}" disabled="true"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="off_no" value="Officer To Contanct:"/>
+                                    </label>
+                                    <p:inputText id="off_no" value="#{settlement.contactOfficer}" disabled="true"/>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab> 
+                    <p:tab title="Settlement Details" id="nitin" >
+
+                        <p:panel header="Offence Details On Vehicle" styleClass="top-space bottom-space" id="a">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="Challan_data_table" value="#{settlement.vehOffenceList}" var="offDetail"  widgetVar="50">
+                                        <p:column headerText="Accu Catg.">
+                                            <h:outputText value="#{offDetail.accusedDescR}"/>
+                                        </p:column>
+                                        <p:column headerText="Offence Desc">
+                                            <h:outputText value="#{offDetail.offenceDesc}"/>
+                                        </p:column>
+                                        <p:column headerText="Offence Section">
+                                            <h:outputText value="#{offDetail.offenceSec}"/>
+                                        </p:column>                                    
+                                        <p:column headerText=" Penalty ">
+                                            <h:outputText value="#{offDetail.penalty}"/>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                            <div class="bottom-space right-position">
+                                <p:commandButton id="btChangeOffence" rendered="#{settlement.disableChangeButton}"  value="Change Offence"  >
+                                    <p:ajax event="click" listener="#{settlement.changeOffenceDialog()}"   process="btChangeOffence" update=":CompoundingInOffice:OffenceDetailsPenal"></p:ajax>
+                                </p:commandButton>
+                            </div>
+                        </p:panel>
+                        <p:panel header="Offence Settlement" visible="#{settlement.hideMissfeepanel}"  styleClass="top-space bottom-space" id="b">
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="set_fee" value="Settlement Fee:"/>
+                                    </label>
+                                    <p:inputText id="set_fee" value="#{settlement.sattelmentAmount}" maxlength="5" >
+                                        <p:keyFilter mask="num"></p:keyFilter>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="misc_fee" value="Miscellaneous Fee:"/>
+                                    </label>
+                                    <p:inputText id="misc_fee" value="#{settlement.miscFee}" maxlength="5">
+                                        <p:keyFilter mask="num"></p:keyFilter>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="misc_fee_reason" value=" Reason Of Miscellaneous Fee:"/>
+                                    </label>
+                                    <p:inputText id="misc_fee_reason" value="#{settlement.reasonOfMiscellaneousFees}" maxlength="50" styleClass="text-uppercase"  converter="toUpperCaseConverter" >
+
+                                    </p:inputText>
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton 
+                                        id="bt_save"  
+                                        value="Add Miscellaneous Fee" 
+                                        action="#{settlement.addParkingFee()}"
+                                        process="@this,set_fee,misc_fee,comp_fee,misc_fee_reason"
+                                        update="Challan_data_table total_fee :CompoundingInOffice:messageid"  />
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:panel  header="Compounding Fee Details" visible="#{settlement.hidefeepanel}" styleClass="top-space bottom-space" id="panelFeesDetais">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="comp_fee" value="Compounding Fee:"/>
+                                    </label>
+                                    <p:inputText id="comp_fee" value="#{settlement.compoundFee}"  disabled="true"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="adv_comp_fee" value="Advance Compounding Fee:"/>
+                                    </label>
+                                    <p:inputText id="adv_comp_fee" value="#{settlement.advcompFee}" disabled="true">
+                                    </p:inputText>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="total_fee" value="Total Fee:"/>
+                                    </label>
+                                    <p:inputText id="total_fee" value="#{settlement.totalFee}">
+
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4" >
+                                    <p:outputPanel id="outputAtcourt" rendered="#{settlement.disablePayAtCourt}">
+                                        <label class="field-label resp-label-section" >
+                                            <p:outputLabel for="cbx_paidAtCOurt" value="Paid At Court"/>
+                                        </label>
+                                        <p:selectBooleanCheckbox id="cbx_paidAtCOurt" value="#{settlement.cbxFeePaidAtCOurt}" >
+                                            <p:ajax process="cbx_paidAtCOurt" event="change" listener="#{settlement.showPaidAtCourt()}" update="paidAtCourtPanel"/>
+                                        </p:selectBooleanCheckbox>
+                                    </p:outputPanel>
+                                </div>
+                                <div class="ui-grid-col-4" >
+                                    <p:outputPanel id="outputAtAuthority" rendered="#{settlement.disablePayAtAuthority}">
+                                        <label class="field-label resp-label-section" >
+                                            <p:outputLabel for="cbx_authories" value="Paid At Authorty"/>
+                                        </label>
+                                        <p:selectBooleanCheckbox id="cbx_authories" value="#{settlement.cbxAuthorties}" >
+                                            <p:ajax process="cbx_authories" event="change" listener="#{settlement.showAuthortyPanel()}" update="paidAtAuthorty"/>
+                                        </p:selectBooleanCheckbox>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+
+                        </p:panel>
+
+                        <p:panel id="paidAtCourtPanel" header="Paid At Court" visible="#{settlement.showFeePaidAtCourtPanel}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="tf_recieptNo" value="Court Receipt No:" />
+                                        </label>
+                                        <p:inputText id="tf_recieptNo" value="#{settlement.courtRecieptNo}" styleClass="text-uppercase"  converter="toUpperCaseConverter" />
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="cal_CourtRecieptDate" value="Court Receipt Date:" />
+                                        </label>
+                                        <p:calendar 
+                                            id="cal_CourtRecieptDate" 
+                                            value="#{settlement.courtRecieptDate}"
+                                            maxdate="#{settlement.maxdate}"
+                                            pattern="dd-MMM-yy"
+                                            /> 
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="tf_AmountPaidAtCourt" value="Amount Paid At Court(Rs):" />
+                                        </label>
+                                        <p:inputText id="tf_AmountPaidAtCourt" value="#{settlement.courtPaidAmount}" >
+                                            <p:ajax process="tf_AmountPaidAtCourt" event="blur" listener="#{settlement.upadetTotalFeeOnTheBaisisOfCourt()}" update="total_fee"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="tf_CourtDecision" value="Court Decision:" />
+                                    </label>
+                                    <p:inputText id="tf_CourtDecision" value="#{settlement.courtDecision}" styleClass="text-uppercase"  converter="toUpperCaseConverter" />
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:panel id="paidAtAuthorty" header="Paid At Authorty" visible="#{settlement.showFeePaidAtAuthorty}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="authortyOffence" value="Offence:" />
+                                        </label>
+                                        <p:selectOneMenu id="authortyOffence"  value="#{settlement.authortyOffence}" required="true" requiredMessage="Please Select The Offence" filter="true">  
+                                            <f:selectItem itemLabel="----Select----" itemValue="-1"/>  
+                                            <f:selectItems value="#{settlement.authOffenceList}" noSelectionValue="true"/>  
+                                            <p:ajax process="authortyOffence" event="change" listener="#{settlement.getAuthDetails()}" update="authorty cal_authortyReferDate"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="authorty" value="Authorty" />
+                                        </label>
+                                        <p:selectOneMenu id="authorty"  value="#{settlement.authorties}" required="true" requiredMessage="Please Select The Authorty">  
+                                            <f:selectItem itemLabel="----Select----" itemValue="-1"/>  
+                                            <f:selectItems value="#{settlement.authortyList}" noSelectionValue="true"/>  
+
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="cal_authortyReferDate" value=" Date:" />
+                                        </label>
+                                        <p:calendar 
+                                            id="cal_authortyReferDate" 
+                                            value="#{settlement.authortyReferDate}"
+                                            pattern="dd-MMM-yy"
+                                            maxdate="#{settlement.maxdate}"
+                                            > 
+                                            <f:convertDateTime pattern="dd-MMM-yy"  />
+                                        </p:calendar>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="authortyDecision" value="Authorty Decision:" />
+                                        </label>
+                                        <p:inputText id="authortyDecision" value="#{settlement.authortyDecision}" styleClass="text-uppercase"  converter="toUpperCaseConverter" >
+
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="decisionDate" value="Decision Date:" />
+                                        </label>
+                                        <p:calendar 
+                                            id="decisionDate" 
+                                            value="#{settlement.authDecisionDate}"
+                                            pattern="dd-MMM-yy"
+                                            maxdate="#{settlement.maxdate}"
+                                            >
+
+                                            <f:convertDateTime pattern="dd-MMM-yy"  />
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton 
+                                        id="save_auth"  
+                                        value="Add " 
+                                        action="#{settlement.addAuthDetail()}"
+                                        process="paidAtAuthorty"
+                                        update="authtable :CompoundingInOffice:messageid"  />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="authtable" value="#{settlement.addAuthDetails}" var="auth"  widgetVar="50">
+                                        >
+                                        <p:column headerText="Offence ">
+                                            <h:outputText value="#{auth.offenceDescr}"/>
+                                        </p:column>
+                                        <p:column headerText="Authority">
+                                            <h:outputText value="#{auth.authoritydescr}"/>
+                                        </p:column>                                    
+                                        <p:column headerText=" Refer Date ">
+                                            <h:outputText value="#{auth.referDate}" >
+                                                <f:convertDateTime pattern="dd-MMM-yy"  />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText=" Authority Decision ">
+                                            <h:outputText value="#{auth.authority_decision}"/>
+                                        </p:column>
+                                        <p:column headerText=" Authority Decision Date ">
+                                            <h:outputText value="#{auth.decision_date}">
+                                                <f:convertDateTime pattern="dd-MMM-yy"  />
+                                            </h:outputText>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:panel id="taxPenalCompFee" header="Compounding Tax Details" visible="#{settlement.hidetaxListPenal}"  styleClass="top-space bottom-space">
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="compound_data_table" value="#{settlement.taxDetailList}" var="taxDetail">
+
+                                        <p:column headerText="Tax Type">
+                                            <h:outputText value="#{taxDetail.taxType}"/>
+                                        </p:column>
+                                        <p:column headerText="Tax From">
+                                            <h:outputText value="#{taxDetail.taxFrom}"/>
+                                        </p:column>
+                                        <p:column headerText="Tax Upto">
+                                            <h:outputText value="#{taxDetail.taxUpto}"/>
+                                        </p:column>
+                                        <p:column headerText="Receipt No:">
+                                            <h:outputText value="#{taxDetail.taxRcptNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Receipt Date:">
+                                            <h:outputText value="#{taxDetail.taxRcptDate}"/>
+                                        </p:column>
+                                        <p:column headerText="CF Tax">
+                                            <h:outputText value="#{taxDetail.cfTax}"/>
+                                        </p:column>                                    
+
+                                        <p:column headerText="CF Penalty">
+                                            <h:outputText value="#{taxDetail.cfPeanlty}"/>
+                                        </p:column>
+
+                                        <p:column headerText="CF Interest">
+                                            <h:outputText value="#{taxDetail.cfInterest}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:panel id="settalmentTaxPenal" header="Challan Tax Settlement" visible="#{settlement.hidetaxsettlementpanel}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tax_type" value="Tax Type:"/>
+                                    </label>
+                                    <p:selectOneMenu id="tax_type" value="#{settlement.taxType}" >
+                                        <f:selectItems itemValue="select" value="#{settlement.taxTypeList}" />
+
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"><p:outputLabel for="tax_frm" value="Tax From:"/>
+                                    </label>
+                                    <p:calendar  id="tax_frm" 
+                                                 size="20" 
+                                                 navigator="true" 
+                                                 autocomplete="off" maxdate="#{settlement.maxdate}"
+                                                 value="#{settlement.taxFrom}"
+                                                 pattern="dd-MMM-yyyy" >
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" />
+                                        <p:ajax event="dateSelect"  listener="#{settlement.setFromDt}" update="comp_fee_tab_view:tx_upto" > </p:ajax>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tx_upto" value="Tax Upto:"/>
+                                    </label>
+                                    <p:calendar  id="tx_upto" 
+                                                 size="20" 
+                                                 pattern="dd-MMM-yyyy"
+                                                 navigator="true" 
+                                                 autocomplete="off" mindate="#{settlement.taxFrom}"
+                                                 value="#{settlement.taxUpto}" >
+                                        <f:convertDateTime   pattern="dd-MMM-yyyy"  />
+                                    </p:calendar>
+
+
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="set_ctax" value=" Compounding Tax:"/>
+                                    </label>
+                                    <p:inputText id="set_ctax" value="#{settlement.settleCompTax}" maxlength="5">
+                                        <p:keyFilter mask="num"></p:keyFilter>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="set_cpenalty" value=" Compounding Penalty:"/>
+                                    </label>
+                                    <p:inputText id="set_cpenalty" value="#{settlement.settleCompPenalty}" maxlength="5">
+                                        <p:keyFilter mask="num"></p:keyFilter>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="set_cint" value=" Compounding Interest:"/>
+                                    </label>
+                                    <p:inputText id="set_cint" value="#{settlement.settleCompInterest}" maxlength="5">
+                                        <p:keyFilter mask="num"></p:keyFilter>
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Add" action="#{settlement.addTaxSettlementDataTable}"  
+                                                     update="settax_data_table settalmentTaxPenal" />
+                                    <p:commandButton value="Delete"  />
+
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="settax_data_table" value="#{settlement.settleTaxDetail}" var="settleTax" styleClass="top-space bottom-space">
+                                        <f:facet name="header"> 
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6 left-position"><h:outputText value="Challan Tax Settlement" styleClass="inline-section top-space font-bold" /></div>
+
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column headerText="Sl No">
+                                            <h:outputText value="#{settleTax.slNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Tax Type">
+                                            <h:outputText value="#{settleTax.taxType}"/>
+                                        </p:column>
+                                        <p:column headerText="Tax From">
+                                            <h:outputText value="#{settleTax.taxFrom}"/>
+                                        </p:column>
+                                        <p:column headerText="Tax Upto">
+                                            <h:outputText value="#{settleTax.taxUpto}"/>
+                                        </p:column>
+                                        <p:column headerText="Settled Com Tax">
+                                            <h:outputText value="#{settleTax.setComTax}"/>
+                                        </p:column>                                    
+                                        <p:column headerText="Settled Com Penalty">
+                                            <h:outputText value="#{settleTax.setComPenalty}"/>
+                                        </p:column>
+                                        <p:column headerText="Settled Com Interest">
+                                            <h:outputText value="#{settleTax.setComInterst}"/>
+                                        </p:column>                                                   
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                    </p:tab> 
+                    <p:tab title="Document Impounded Details" id="pawan" rendered="#{settlement.documentPanel}">
+                        <p:panel header="Document Impounded Details" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="Document_data_table" value="#{settlement.docImndList}" var="docImpnd">
+
+                                        <f:facet name="header"> 
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6 left-position"><h:outputText value="Document Impounded Details" styleClass="inline-section top-space font-bold" /></div>
+
+                                            </div>
+                                        </f:facet>
+                                        <p:column headerText="Accused">
+                                            <h:outputText value="#{docImpnd.accusedDescR}"/>
+                                        </p:column>
+                                        <p:column headerText="Document">
+                                            <h:outputText value="#{docImpnd.document}"/>
+                                        </p:column>
+                                        <p:column headerText="Doc No.">
+                                            <h:outputText value="#{docImpnd.docNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Issuing Authority">
+                                            <h:outputText value="#{docImpnd.issueAuth}"/>
+                                        </p:column>
+                                        <p:column headerText="Valid Upto">
+                                            <h:outputText value="#{docImpnd.validUpto}"/>
+                                        </p:column>   
+                                        <p:column headerText="Other Documents">
+                                            <h:outputText value="#{docImpnd.otherDocName}"/>
+                                        </p:column>   
+                                    </p:dataTable>
+
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab> 
+                    <p:tab title="Witness Details" id="Witness" rendered="#{settlement.witnessPanel}">
+                        <p:panel header="Witness Details" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="Witness_data_table" value="#{settlement.witnessDetails}" var="witness">
+
+                                        <f:facet name="header"> 
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6 left-position"><h:outputText value="Witness Details" styleClass="inline-section top-space font-bold" /></div>
+
+                                            </div>
+                                        </f:facet>
+                                        <p:column headerText="Witness Name">
+                                            <h:outputText value="#{witness.witnessName}"/>
+                                        </p:column>
+                                        <p:column headerText="Witness Contact No">
+                                            <h:outputText value="#{witness.witnessContactNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Witness Address">
+                                            <h:outputText value="#{witness.witnessAddress}"/>
+                                        </p:column>
+                                        <p:column headerText="Witness Police Station">
+                                            <h:outputText value="#{witness.policeStation}"/>
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab> 
+                    <p:tab title="Accused Details" id="Accused" rendered="#{settlement.accusedPanel}">
+                        <p:panel  styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="accused_data_table" value="#{settlement.accusedDetails}" var="accused">
+
+                                        <f:facet name="header"> 
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6 left-position"><h:outputText value="Accused Details" styleClass="inline-section top-space font-bold " /></div>
+
+                                            </div>
+                                        </f:facet>
+                                        <p:column headerText="Accuse Name">
+                                            <h:outputText value="#{accused.accName}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Type">
+                                            <h:outputText value="#{accused.accCatergory}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Addresss">
+                                            <h:outputText value="#{accused.accAddress}"/>
+                                        </p:column>
+                                        <p:column headerText="DL/Bladge No">
+                                            <h:outputText value="#{accused.accDLBladgeNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Police Station">
+                                            <h:outputText value="#{accused.accPoliceStation}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse City">
+                                            <h:outputText value="#{accused.accCity}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Flag">
+                                            <h:outputText value="#{accused.accFlag}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Pincode">
+                                            <h:outputText value="#{accused.accPincode}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab>
+                </p:tabView>
+                <p:panel style="margin-top:10px;"  rendered="#{settlement.showApproveDisApprovePanelForSave}">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{settlement}"/>
+                    </ui:include>
+                </p:panel>
+                <p:panel  rendered="#{settlement.showPanelForSave}" styleClass="top-space bottom-space"> 
+                    <div class="ui-grid-row center-position top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton 
+                                id="save_comp_button"
+                                value="Save" 
+                                action="#{settlement.saveSettleData}"
+                                process="@this,@form"
+                                update=":CompoundingInOffice:messageid :CompoundingInOffice:comp_fee_tab_view:own_name :CompoundingInOffice:comp_fee_tab_view:vh_rto :CompoundingInOffice:comp_fee_tab_view:vh_stat
+                                :CompoundingInOffice:comp_fee_tab_view:fuel :CompoundingInOffice:comp_fee_tab_view:std_capacity :CompoundingInOffice:comp_fee_tab_view:seat_capacity 
+                                :CompoundingInOffice:comp_fee_tab_view:ladn :CompoundingInOffice:comp_fee_tab_view:slpr :CompoundingInOffice:comp_fee_tab_view:clr" 
+
+                                >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Reset" resetValues="true" action="#{settlement.reset}" process="@this,@form" update="CompoundingInOffice"  />
+
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">                                     
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog>
+                            <p:confirmDialog global="true" widgetVar="cortDetailsDialog" showEffect="fade" hideEffect="explode" header="Do you want to save without court details">                                     
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:dialog id="OffenceDetailsPenal" widgetVar="OffenceAddPanel"   header="Offence Details" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <div class="ui-grid-col-3 resp-blank-height">&#160;</div>
+
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <h:outputLabel for="sm_accused_type" value="Accused Type:"/>
+                                </label>
+                                <p:selectOneMenu id="sm_accused_type" value="#{settlement.accusedName}" styleClass="bottom-space"> 
+                                    <f:selectItems value="#{settlement.accusedType}"/>  
+                                    <p:ajax process="sm_accused_type" event="change" listener="#{settlement.getOffenceAccordingAccuse()}" update="sm_offence_sel"></p:ajax>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <h:outputLabel for="sm_offence_sel" value="Offence:"/>
+                                </label>
+                                <p:selectOneMenu id="sm_offence_sel" value="#{settlement.offenceCode}" styleClass="bottom-space"> 
+                                    <f:selectItems value="#{settlement.accusedWiseOffenceList}"/> 
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-3 resp-blank-height">&#160;</div>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton 
+                                id="bt_addOffence"
+                                value="ADD OFFENCE" 
+                                >
+                                <p:ajax 
+                                    event="click"
+                                    process="OffenceDetailsPenal"
+                                    listener="#{settlement.getPenaltyWithOffenc()}" 
+                                    update="Challan_data_table2 :CompoundingInOffice:comp_fee_tab_view:Challan_data_table :CompoundingInOffice:comp_fee_tab_view:comp_fee :CompoundingInOffice:comp_fee_tab_view:total_fee" ></p:ajax>   
+                            </p:commandButton>
+
+                        </div>
+                    </div>
+                    <p:panel  header="Current Offence Details " styleClass="top-space bottom-space" id="CurrentOffence">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable id="Challan_data_table2" value="#{settlement.vehOffenceList}" var="offDetail"  widgetVar="50">
+                                    <f:facet name="header"> 
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6 left-position"><h:outputText value="Current Offence Details" styleClass="inline-section top-space font-bold" /></div>
+
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="Accu Catg.">
+                                        <h:outputText value="#{offDetail.accusedDescR}"/>
+                                    </p:column>
+                                    <p:column headerText="Offence Desc">
+                                        <h:outputText value="#{offDetail.offenceDesc}"/>
+                                    </p:column>
+                                    <p:column headerText="Offence Section">
+                                        <h:outputText value="#{offDetail.offenceSec}"/>
+                                    </p:column>                                    
+                                    <p:column headerText=" Penalty ">
+                                        <h:outputText value="#{offDetail.penalty}"/>
+                                    </p:column>
+                                    <p:column headerText=" Option ">
+                                        <p:commandButton id="btDelete" value="Delete" >
+                                            <p:ajax event="click" listener="#{settlement.deleteOffence(offDetail)}" update=":CompoundingInOffice:messageid :CompoundingInOffice:Challan_data_table1 Challan_data_table2 :CompoundingInOffice:comp_fee_tab_view:Challan_data_table :CompoundingInOffice:comp_fee_tab_view:comp_fee :CompoundingInOffice:comp_fee_tab_view:total_fee "/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel  header="Previous Offence Details " styleClass="top-space bottom-space" id="PreviousOffence">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable id="Challan_data_table1" value="#{settlement.vehPrevOffenceList}" var="prevOffDetail"  widgetVar="50">
+                                    <f:facet name="header"> 
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6 left-position"><h:outputText value="Previous Offence Details " styleClass="inline-section top-space font-bold" /></div>
+
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="Accu Catg.">
+                                        <h:outputText value="#{prevOffDetail.accusedDescR}"/>
+                                    </p:column>
+                                    <p:column headerText="Offence Desc">
+                                        <h:outputText value="#{prevOffDetail.offenceDesc}"/>
+                                    </p:column>
+                                    <p:column headerText="Offence Section">
+                                        <h:outputText value="#{prevOffDetail.offenceSec}"/>
+                                    </p:column>                                    
+                                    <p:column headerText=" Penalty ">
+                                        <h:outputText value="#{prevOffDetail.penalty}"/>
+                                    </p:column>
+                                    <p:column headerText=" Change By ">
+                                        <h:outputText value="#{prevOffDetail.moved_by}"/>
+                                    </p:column>
+                                    <p:column headerText=" Change On ">
+                                        <h:outputText value="#{prevOffDetail.moved_on}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:dialog>
+
+                <p:dialog id="holdChallanDailog" widgetVar="holdChallanDailogs"   header="Hold Challan" styleClass="top-space bottom-space">
+
+                    <p:panel header="Challan Hold Details" id="holdChallanPanel" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-8 ">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="application_No1" value="Application No:"/>
+                                </label>
+                                <p:inputText id="application_No1" value="#{settlement.applicationNo}"  styleClass="text-uppercase"  maxlength="11" disabled="true" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  value="Status"/>
+                                </label>
+                                <p:selectOneMenu id="hold_active" value="#{settlement.dobj.challanHoldStatus}" 
+                                                 required="true" requiredMessage="Please Select Status." >
+                                    <f:selectItem itemLabel="Select Status" itemValue="-1" />
+                                    <f:selectItems   value="#{settlement.statusList}"/>
+                                    <p:ajax event="change" process="@this" update="messageid"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Reason "/>
+                                </label>
+
+                                <p:inputText id="hold_reason"  value="#{settlement.dobj.holdReason}" >
+                                    <p:ajax event="change" process="@this" update="messageid"/>
+                                </p:inputText>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Save" id="save_data"
+                                                 >
+                                    <p:ajax event="click" process="holdChallanPanel"  listener="#{settlement.holdAndActiveChallan()}" update=" hold_reason,hold_active,CompoundingInOffice:comp_fee_tab_view:btHoldChallan"/>
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                </p:dialog>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

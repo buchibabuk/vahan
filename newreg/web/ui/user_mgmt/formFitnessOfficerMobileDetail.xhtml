@@ -1,0 +1,125 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content22"> 
+        <h:form id="formFitMobDtls" prependId="false">     
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div> 
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.fitOffDeviceVerification}</h1>
+                    </div>
+                </div> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.selectFitOff}"/>
+                        </label>
+                        <p:selectOneMenu id="fit_off" filter="true" filterMatchMode="contains" styleClass="bottom-space" value="#{fitoffmobdtls.dobj.user_id}" >
+                            <f:selectItem itemLabel="#{language.select_case}" itemValue="0"/>
+                            <f:selectItems value="#{fitoffmobdtls.fitofflist}"/>
+                            <p:ajax event="change" process="@this" update="formFitMobDtls" listener="#{fitoffmobdtls.fitnessListener}" partialSubmit="true"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+
+                <p:panel id="fitoffDtls" header="#{language.fitOffDeviceDtls}" styleClass="bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.user_userID}"/>
+                            </label>
+                            <p:inputText id="userId" value="#{fitoffmobdtls.dobj.user_id}" disabled="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.user_username}"/>
+                            </label>
+                            <p:inputText id="usrName" value="#{fitoffmobdtls.dobj.userName}" disabled="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.user_mobileNo}"/>
+                            </label>
+                            <p:inputText id="mobNo" value="#{fitoffmobdtls.dobj.mobileNo}" disabled="true"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.deviceId}"/>
+                            </label>
+                            <p:inputText id="deviceId" value="#{fitoffmobdtls.dobj.device_id}" disabled="true" autocomplete="off" maxlength="20"/>
+                        </div>
+                        <!--                        <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel value="# {language.latitude}"/>
+                                                    </label>
+                                                    <p:inputText value="# {fitoffmobdtls.dobj.latitude}" disabled="true" autocomplete="off" maxlength="25"/>
+                                                </div>-->
+                        <!--                        <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel value="# {language.longitude}"/>
+                                                    </label>
+                                                    <p:inputText value="# {fitoffmobdtls.dobj.longitude}" disabled="true" autocomplete="off" maxlength="25" />
+                                                </div>-->
+                    </div>
+                </p:panel>
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton value="#{language.verifyDeviceDtls}" action="#{fitoffmobdtls.saveFitnessMobileDtls()}" update="formFitMobDtls" rendered="#{fitoffmobdtls.rendredSaveButton}"  />
+                        <p:commandButton value="Reject Request" rendered="#{fitoffmobdtls.rendredRejectButton}" action="#{fitoffmobdtls.rejectFitnessMobileDtls}" update="formFitMobDtls" icon="ui-icon-cancel" />
+                        <p:button  value="#{language.home}" outcome="home" icon="ui-icon-home"/>  
+                    </div>                
+                </div> 
+
+                <p:outputPanel  styleClass="bottom-space" id="handleDeviceDtls">
+                    <p:dataTable  styleClass="top-space" var="dobj" id="locDtlsTable_list" value="#{fitoffmobdtls.handleDeviceList}" 
+                                  rowIndexVar="index" 
+                                  emptyMessage="No Record Available"
+                                  rendered="#{fitoffmobdtls.handleDeviceList ne null and fitoffmobdtls.handleDeviceList.size() > 0}" 
+                                  paginator="true" paginatorPosition="bottom" rows="6">
+                        <f:facet name="header">Handled Fitness Officer Device Record </f:facet>
+                        <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index+1}."/>
+                        </p:column>
+                        <p:column headerText="User ID"  >
+                            <h:outputText value="#{dobj.user_id}" />
+                        </p:column>
+                        <p:column headerText="User Name" >
+                            <h:outputText value="#{dobj.userName}" />
+                        </p:column>
+                        <p:column headerText="Device ID"  >
+                            <h:outputText value="#{dobj.device_id}" />
+                        </p:column>
+                        <p:column headerText="Mobile Number"  >
+                            <h:outputText value="#{dobj.mobileNo}" />
+                        </p:column>
+                        <p:column headerText="#{language.action}">
+                            <p:commandButton value="Delete Record" action="#{fitoffmobdtls.deleteHandledRecord(dobj)}" update="handleDeviceDtls" process="@this" ajax="false"  onclick="PF('block_panel').show()" onsuccess="PF('block_panel').hide()"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </div>
+            <p:blockUI block="formFitMobDtls" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

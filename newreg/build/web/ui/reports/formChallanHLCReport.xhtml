@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body>
+        <h:form prependId="false">
+
+            <div class="center-position">
+                <p:button value="Back" id="back" outcome="/ui/eChallan/formListOfPendingChallanReport.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rcpt_heading}" class="font-bold report-subheader bottom-line"/>
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rcpt_sub_heading}" class="font-bold report-subheader bottom-line" escape="false"/>
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rto_name}" class="font-bold report-subheader bottom-line"/>
+            </div>
+            <br/>
+            <div class="inline-section qrcode-position-absolute left-space ">
+                <pe:qrCode 
+                    renderMethod = "canvas"
+                    text="#{listOfPendingChallanBean.dobj.vehicle_no}"
+                    label="#{listOfPendingChallanBean.dobj.regn_dt}"
+                    size="110"
+                    ecLevel="H"       
+                    radius="0.5"
+                    fillColor="#000000"/>
+            </div>
+            <br/>
+            <br/>
+            <div class="table-width-four datatable-panel top-space" style="margin: 0 auto;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 bottom-space">
+                    <h:outputLabel value="No. :" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.vcr_no}" styleClass="font-bold" />
+                    <h:outputLabel value="Date :" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.currentDate}"  />
+                    <h:outputLabel value="Vehicle No. :" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.vehicle_no}" />
+                    <h:outputLabel value="Vehicle Type :" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.vh_class}" />
+                </h:panelGrid>
+            </div>
+
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <br/>
+                <div class="position-relative"> 
+                    In The Office of Duty Officer, HQ/Before the concerned Court
+                </div>
+            </div>
+            <br/>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                Sir/Madam,
+            </div>
+            <br/>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                It has been reported that owner / driver of the above vehicle has commited offence mentioned below 
+                on : <h:outputText value="#{listOfPendingChallanBean.dobj.chal_date} at #{listOfPendingChallanBean.dobj.chal_time} at #{listOfPendingChallanBean.dobj.chal_place}"  styleClass="font-bold"/>.
+            </div>
+            <br/>
+            <div class="datatable-panel bottom-space-50" style="margin: 0px auto;">
+                <p:dataTable value="#{listOfPendingChallanBean.challanOffenceList}" styleClass="border-transparent" var="list" rowIndexVar="rowIndex">
+
+                    <p:column headerText="Offence"  >
+                        <h:outputText value="#{list.offence}" />
+                    </p:column>
+
+                    <p:column headerText="Section" >
+                        <h:outputText value="#{list.section}" />
+                    </p:column>
+
+                    <p:column headerText="NO.Of Time" >
+                        <h:outputText value="" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <br/>
+
+            <div class="datatable-panel" style="margin: 0 auto;">
+                The above mentioned offence is a violation of permit condition.
+            </div>
+            <br/>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                A notice U/S 133 MV Act was isued to the registered owner <h:outputText value="#{listOfPendingChallanBean.dobj.owner_name},#{listOfPendingChallanBean.dobj.owner_address}"  styleClass="font-bold"/>  to furnish the required 
+                information but he/she failed to do so.
+            </div>
+            <br/>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                Therefore, this court is requested to prosecute the said owner U/S &amp; section / under rules <h:outputText value="" /> read
+                with section 18/ MV Act and to punish him as per law.
+            </div>
+            <br/>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <span class="font-bold">Witness:</span>
+            </div>
+
+            <div class="table-width-oneforth datatable-panel top-space" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 bottom-space">
+                    <h:outputLabel value="1. Challanning Officer:" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.chal_officer}" />
+                    <h:outputLabel value="2. HLC Staff:" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="" />
+                    <h:outputLabel value="3." styleClass="bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.witness_name},#{listOfPendingChallanBean.dobj.witness_address}" />
+                </h:panelGrid>
+            </div>
+
+            <div class="right-position right-space">
+                <br />
+                <br /> #{listOfPendingChallanBean.dobj.chal_officer}
+                <br /> (Name &amp; Seal of Challaning Officer)
+            </div>
+
+        </h:form>
+    </h:body>
+</html>

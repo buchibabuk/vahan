@@ -1,0 +1,933 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22" >
+        <h:form id="permitForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main"><p:outputLabel value="#{PasPermitDtls.header}" /></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="true" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 left-position">
+                        <p:outputLabel rendered="#{!PasPermitDtls.showHide}" styleClass="inline-section right-space">
+                            <h3 class="open-counter counter-button inline-section center-position" title="Validity">
+                                <span class="glyphicon glyphicon-ok right-space"></span> #{PasPermitDtls.validityMsg}
+                            </h3>                        
+                        </p:outputLabel>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 right-position">
+                        <p:outputLabel styleClass="inline-section right-space">
+                            <h:outputText value="#{PasPermitDtls.msgForRemarks}" class="report-header font-bold red" />
+                        </p:outputLabel>
+                    </div>
+                </div>
+                <p:panel id="newRegnDtls"  rendered="#{PasPermitDtls.pmtDialogeVisible}">
+                    <p:outputPanel rendered="#{PasPermitDtls.offLTRender}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="offerNo" value="Enter Offer No."/>
+                                </label>
+                                <p:inputText id="offerNo" value="#{PasPermitDtls.offerLetterNo}" styleClass="text-uppercase" autocomplete="off" maxlength="25"/>
+                            </div>
+                            <div class="ui-grid-col-6 top-space-25">
+                                <p:commandButton value="Check Offer Letter" icon="ui-icon-check"
+                                                 action="#{PasPermitDtls.checkOffNumber()}" update="newRegnDtls" style="margin-top: 0px !important;"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{PasPermitDtls.regnNoRender}">
+                        <p:separator/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="new_regn_no" value="#{label.regn_no}"/>
+                                </label>
+                                <p:inputText id="new_regn_no" value="#{PasPermitDtls.new_regn_no}" styleClass="text-uppercase" autocomplete="off" maxlength="10"/>
+                            </div>
+                            <div class="ui-grid-col-4 top-space-25">
+                                <p:commandButton value="Check Vehicle"
+                                                 icon="ui-icon-check" action="#{PasPermitDtls.check_regn_no()}"
+                                                 update="newRegnDtls All_detail" style="margin-top: 0px !important;" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="new_o_name" value="#{label.owner_name}" />
+                                </label>
+                                <p:inputText id="new_o_name" value="#{PasPermitDtls.new_o_name}" styleClass="text-uppercase" autocomplete="off" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="new_f_name" value="#{label.f_name}"/>
+                                </label>
+                                <p:inputText id="new_f_name" value="#{PasPermitDtls.new_f_name}" styleClass="text-uppercase" autocomplete="off"  disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="new_vh_class" value="#{label.vh_class}"/>
+                                </label>
+                                <p:selectOneMenu id="new_vh_class" value="#{PasPermitDtls.new_vh_class}" disabled="true">
+                                    <f:selectItem itemValue="-1" itemLabel="Select Vehicle Class"/>
+                                    <f:selectItems value="#{PasPermitDtls.newVhClassType}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <!--                    <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 center-position">
+                                                <p:separator/>
+                                                <p:commandButton value="Save" action="#{PasPermitDtls.savePermitDtlsIfRegnNoNew()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" disabled="#{PasPermitDtls.disableRegnNo}">
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                </p:commandButton>
+                                                <p:commandButton value="Back" action="seatwork" icon="ui-icon-arrowreturnthick-1-w"/>
+                                            </div>
+                                        </div>-->
+                </p:panel>
+
+                <p:outputPanel id="recp_function">
+                    <p:outputPanel id="panel_regn" rendered="#{PasPermitDtls.showHide}" styleClass="top-space bottom-space">
+                        <p:outputPanel  styleClass="top-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:selectOneRadio id="select_task" value="#{PasPermitDtls.selectOneRadio}">
+                                        <f:selectItem itemLabel="Permit for Registered Vehicle" itemValue="1"/> 
+                                        <f:selectItem itemLabel="Permit by Name" itemValue="2"/>
+                                        <!--                                        <f:selectItem itemLabel="Having Offer Letter" itemValue="3"/>-->
+                                        <p:ajax event="click" listener="#{PasPermitDtls.booleanRegisterVehicle}" partialSubmit="true" update="panel_regn data"/>
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <!--<p:focus for='uer_regn_no,offerNoId'/>-->
+                        <p:outputPanel rendered="#{PasPermitDtls.regn_know}" styleClass="top-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Vehicle Number:" />
+                                    </label>
+                                    <p:inputText id="uer_regn_no" required="true" styleClass="text-uppercase"
+                                                 value="#{PasPermitDtls.user_regn_no}" autocomplete="off"
+                                                 maxlength="10" size="28">
+                                        <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>                                                             
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{PasPermitDtls.offerNumberRender}" styleClass="top-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Offer Number:" />
+                                    </label>
+                                    <p:inputText id="offerNoId" required="true" styleClass="text-uppercase"
+                                                 value="#{PasPermitDtls.offerNumber}" autocomplete="off"
+                                                 maxlength="25" size="28">
+                                        <p:keyFilter regEx="/[a-zA-Z0-9/\s_]/i"/>                                                             
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{PasPermitDtls.renderGetDetails}" styleClass="top-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Get Details" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                     action="#{PasPermitDtls.bt_get_Details()}" update="data,bt_function,recp_function" />
+                                    <p:button value="Reset" outcome="Passenger_Permit_Details"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </p:outputPanel>
+                <p:outputPanel  id="data">
+                    <marquee onMouseOver="this.stop();" onMouseOut="this.start()"  behavior="scroll" direction="left" scrollamount="4" >
+                        <p:outputLabel   value="#{PasPermitDtls.feeMsgIfPaidAtTymOfRegn}" styleClass="content-note red"/>
+                    </marquee>    
+                    <p:tabView id="All_detail" dynamic="true" styleClass="top-space bottom-space" activeIndex="#{PasPermitDtls.tabIndex}">
+                        <p:ajax event="tabChange" listener="#{PasPermitDtls.onTabChange}" partialSubmit="true"
+                                update="permit_details pmtReservation" onstart="PF('bui').show();" onsuccess="PF('bui').hide();"/>
+                        <p:tab id="Owner_Details" title="Owner Detail">
+                            <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml"/>                              
+                        </p:tab>
+                        <p:tab id="pmtFillDetails" title="Permit Detail" disabled="#{PasPermitDtls.but_function}">
+                            <p:panel header="Permit Details">
+                                <p:outputPanel id="permit_details">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="vech_no" value="#{label.regn_no}" />
+                                            </label>
+                                            <p:inputText id="vech_no" readonly="true" value="#{PasPermitDtls.regn_no}"
+                                                         disabled="#{PasPermitDtls.regnNoDisable}" autocomplete="off" size="10"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmt_action" value="#{pmtLabel.pmt_action}" />
+                                            </label>
+                                            <p:selectOneMenu id="pmt_action"  value="#{PasPermitDtls.pmtPurCode}" filter="true" disabled="true">
+                                                <f:selectItems value="#{PasPermitDtls.paction}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmt_type" value="#{pmtLabel.pmt_type}" styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:selectOneMenu id="pmt_type"  value="#{PasPermitDtls.pmtType}" disabled="#{PasPermitDtls.pmtTypeDisable}" filter="true">
+                                                <f:selectItem itemValue="-1" itemLabel="Select Permit Type"/>
+                                                <f:selectItems value="#{PasPermitDtls.pmt_mast}"/>
+                                                <p:ajax event="change" listener="#{PasPermitDtls.onSelectPermitType(PasPermitDtls.regn_domain)}" 
+                                                        partialSubmit="true" onstart="PF('bui').show();" onsuccess="PF('bui').hide()"
+                                                        update="permit_cate area_details route_details auth_details pmtReservation period_mode period repDate otherOffRoute"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="period_mode" value="#{pmtLabel.period_mode}" styleClass="field-label-mandate" />
+                                            </label>
+                                            <p:selectOneMenu id="period_mode"  value="#{PasPermitDtls.periodMode}" disabled="#{PasPermitDtls.periodModeDisable}" filter="true">
+                                                <f:selectItem itemValue="-1" itemLabel="Select Period"/>
+                                                <f:selectItems value="#{PasPermitDtls.period}"/>
+                                                <p:ajax listener="#{PasPermitDtls.check_Time_Period()}" partialSubmit="true" update="All_detail:period"/>
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="period" value="#{pmtLabel.period}" />
+                                            </label>
+                                            <p:inputText id="period" value="#{PasPermitDtls.periodValue}" disabled="#{PasPermitDtls.periodValueDisable}" autocomplete="off"
+                                                         maxlength="2" size="8">
+                                                <p:keyFilter regEx="/[\d\-]/"/>
+                                            </p:inputText>
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="permit_cate" value="#{pmtLabel.pmt_catg}" />
+                                            </label>
+                                            <p:selectOneMenu id="permit_cate" value="#{PasPermitDtls.pmtcatg}" disabled="#{PasPermitDtls.pmtCatgDisable}" filter="true" effect="fold">
+                                                <f:selectItem itemValue="-1" itemLabel="Select Premit Category"/>
+                                                <f:selectItems value="#{PasPermitDtls.pmtCategory}"/>
+                                                <p:ajax listener="#{PasPermitDtls.checkReservation}" 
+                                                        partialSubmit="true" onstart="PF('bui').show();" onsuccess="PF('bui').hide()"
+                                                        update="pmtReservation repDate area_details route_details period period_mode state_to_panel"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="repDate" value="#{pmtLabel.date_Of_Replace}"/>
+                                            </label>
+                                            <p:calendar id="repDate" value="#{PasPermitDtls.dateOfReplacement}" navigator="true" pattern="dd-MMM-yyyy" mindate="#{PasPermitDtls.minReplacementDate}"
+                                                        disabled="#{PasPermitDtls.replacementDateDisable}" readonlyInput="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pso_serviceType" value="#{pmtLabel.ser_type}"/>
+                                            </label>
+                                            <p:selectOneMenu id="pso_serviceType" value="#{PasPermitDtls.services_type}" disabled="#{PasPermitDtls.servicesTypeDisable}" filter="true"
+                                                             effect="fold" >
+                                                <f:selectItem itemValue="-1" itemLabel="Select Services Type"/>
+                                                <f:selectItems value="#{PasPermitDtls.ser_type}"/>
+                                            </p:selectOneMenu>
+                                        </div> 
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmtSubType" value="Permit Sub Type" rendered="#{PasPermitDtls.pmtSubTypeRender}"/>
+                                            </label>
+                                            <p:inputText id="pmtSubType" value= "#{PasPermitDtls.pmtSubType}"  disabled="true" rendered="#{PasPermitDtls.pmtSubTypeRender}"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row float-right" >
+                                        <p:commandLink action="#{PasPermitDtls.editPmtTyeAndCatg()}" value="Edit Permit Type and Category." rendered="#{PasPermitDtls.pmtTypeDisable}"
+                                                       update="pmt_type permit_cate" immediate="true" style="color: blue" styleClass="font-bold">
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                        </p:commandLink>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 right-position">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="ptmfromdate" value="Permit Valid From" rendered="#{PasPermitDtls.render_valid_from}"/>
+                                            </label>
+                                            <p:calendar id="ptmfromdate" value="#{PasPermitDtls.pmt_valid_from}" navigator="true" rendered="#{PasPermitDtls.render_valid_from}" pattern="dd-MMM-yyyy" mindate="#{PasPermitDtls.currenDate}"
+                                                        readonlyInput="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section" rendered="#{PasPermitDtls.showOwnerDLAndVoterId}">
+                                                <p:outputLabel for="dl_no" value="Driving Licence No." styleClass="field-label-mandate" rendered="#{PasPermitDtls.showOwnerDLAndVoterId}"/>
+                                            </label>
+                                            <p:inputText id="dl_no" value="#{pmt_owner_dtls.dl_no}" 
+                                                         maxlength="20" autocomplete="off" rendered="#{PasPermitDtls.showOwnerDLAndVoterId}">                                               
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section" rendered="#{PasPermitDtls.showOwnerDLAndVoterId}">
+                                                <p:outputLabel for="voter_id" value="PAN/Aadhar/Passport/VoterId No." rendered="#{PasPermitDtls.showOwnerDLAndVoterId}"/>
+                                            </label>
+                                            <p:inputText id="voter_id" value="#{pmt_owner_dtls.voter_id}"                                             
+                                                         maxlength="100" autocomplete="off" size="20" rendered="#{PasPermitDtls.showOwnerDLAndVoterId}">                                                                                  
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+
+                                <p:outputPanel id="pmtReservation">
+                                    <p:panel header="Permit Reservation Details" rendered="#{not empty PasPermitDtls.resList}" styleClass="top-space bottom-space">
+                                        <p:dataTable var="reservation" value="#{PasPermitDtls.resList}">
+                                            <p:column headerText="permit Type" >#{reservation.pmt_type_descr}</p:column>
+                                            <p:column headerText="Permit Category" >#{reservation.pmt_catg_descr}</p:column>
+                                            <p:column headerText="Owner Category" >#{reservation.owner_ctg_descr}</p:column>
+                                            <p:column headerText="Running Number" >#{reservation.running_no}</p:column>
+                                            <p:column headerText="Maximum Number">#{reservation.max_no}</p:column>
+                                        </p:dataTable>
+                                    </p:panel>
+                                </p:outputPanel>
+
+                                <p:outputPanel id="pmtPaidFeeDtls">
+                                    <ui:include src="/ui/permit/formPermitPaidFeeDtls.xhtml"/>
+                                </p:outputPanel>
+
+                                <p:panel header="Previous Permit Details" rendered="#{PasPermitDtls.pmt_render}" styleClass="top-space bottom-space" >
+                                    <ui:include src="/ui/permit/form_permit_dtls.xhtml"/>
+                                    <p:separator/>
+                                    <p:outputLabel id="PreAuthDtls" value="#{PasPermitDtls.prvAuthoDtls}" escape="true"/>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmtArea1" value="Area-Details" rendered="#{PasPermitDtls.showRegionCovered}"/>
+                                            </label>
+                                            <p:selectOneMenu id="pmtArea1" filter="true" value="#{PasPermitDtls.regionCovered}" rendered="#{PasPermitDtls.showRegionCovered}" disabled="true">
+                                                <f:selectItems value="#{PasPermitDtls.regionCoveredListNP}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                </p:panel> 
+                                <p:outputPanel id="hypthDtls" styleClass="top-space" rendered="#{PasPermitDtls.renderhypth}">
+                                    <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+                                </p:outputPanel>
+
+                                <p:panel id="state_to_panel" styleClass="top-space bottom-space"  >
+                                    <p:outputPanel id="state_to_outputpanel" rendered="#{PasPermitDtls.visibleInterStateRouteDtls}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="state_to" value="StateTo Name" styleClass="field-label-mandate"/>
+                                                </label>
+                                                <p:selectOneMenu id="state_to"  value="#{PasPermitDtls.state_to}" filter="true" >
+                                                    <f:selectItem itemValue="-1" itemLabel="Select Any State" />                                                
+                                                    <f:selectItems value="#{PasPermitDtls.stateToList}" /> 
+                                                    <p:ajax event="change" listener="#{PasPermitDtls.onSelectStateTo()}" 
+                                                            partialSubmit="true" 
+                                                            update="state_to_outputpanel pickListOtherState"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>                                       
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <p:pickList id="pickListOtherState" styleClass="text-uppercase" filterMatchMode="contains"
+                                                            value="#{PasPermitDtls.otherStateRouteManage}" showSourceFilter="true" showTargetFilter="true" 
+                                                            effect="none" var="oth_route_mast" itemLabel="#{oth_route_mast.value}" itemValue="#{oth_route_mast.key}" >
+                                                    <p:ajax event="transfer" listener="#{PasPermitDtls.onTransferOtherStateRoute}" partialSubmit="true" update="pmtReservation via Length trips oth_via"/>
+                                                </p:pickList>
+                                            </div>
+
+                                            <div class="ui-grid-col-8">
+                                                <p:outputPanel id="oth_via">
+                                                    <div class="route-details-header">Selected Route Direction</div>
+                                                    <div class="left-position">
+                                                        <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                                            <p:outputLabel escape="false" id="oth_route_via" value="#{PasPermitDtls.via_route_oth}" />
+                                                        </p:scrollPanel>
+                                                    </div>
+                                                </p:outputPanel>
+                                            </div>
+
+                                        </div>                                   
+                                    </p:outputPanel>
+                                </p:panel>
+
+                                <p:panel id="area_details" header="Area-Details" styleClass="top-space bottom-space"  visible="#{PasPermitDtls.visibleAreaDtls}">
+                                    <p:pickList id="Area_pickList" styleClass="text-uppercase" filterMatchMode="contains"
+                                                value="#{PasPermitDtls.areaManage}" showSourceFilter="true" showTargetFilter="true" disabled="#{PasPermitDtls.disableAreaDtls}"
+                                                effect="none" var="area_mast" itemLabel="#{area_mast.value}" itemValue="#{area_mast.key}" >
+                                        <p:ajax event="transfer" listener="#{PasPermitDtls.onAreaTransfer}" partialSubmit="true" update="pmtReservation"/>
+                                    </p:pickList>
+                                </p:panel>
+                                <p:panel id="route_details" header="Route-Details" styleClass="top-space bottom-space" visible="#{PasPermitDtls.visibleRouteDtls}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <p:pickList id="pickList" styleClass="text-uppercase" filterMatchMode="contains"
+                                                        value="#{PasPermitDtls.routeManage}" showSourceFilter="true" showTargetFilter="true" disabled="#{PasPermitDtls.disableRoutDtls}"
+                                                        effect="none" var="route_mast" itemLabel="#{route_mast.value}" itemValue="#{route_mast.key}" >
+                                                <p:ajax event="transfer" listener="#{PasPermitDtls.onTransfer}" partialSubmit="true" update="pmtReservation via Length trips"/>
+                                            </p:pickList>
+                                        </div>
+
+                                        <div class="ui-grid-col-8">
+                                            <p:outputPanel id="via">
+                                                <div class="route-details-header">Selected Route Direction</div>
+                                                <div class="left-position">
+                                                    <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                                        <p:outputLabel escape="false" id="route_via" value="#{PasPermitDtls.via_route}" />
+                                                    </p:scrollPanel>
+                                                </div>
+                                            </p:outputPanel>
+                                        </div>
+
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel id="Length">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="routeLength" value="Route Length" rendered="#{PasPermitDtls.noOfTripsrendered}"/>
+                                                </label>
+                                                <p:inputText id="routeLength" maxlength="5" autocomplete="off" value="#{PasPermitDtls.routeLength}" size="3" rendered="#{PasPermitDtls.noOfTripsrendered}" disabled="#{PasPermitDtls.noOfTripsrendered}">
+                                                    <p:keyFilter regEx="/[\d\-]/"/>
+                                                </p:inputText>
+                                            </p:outputPanel>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel id="trips">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="no_trips" value="#{pmtLabel.no_of_trips}" rendered="#{PasPermitDtls.noOfTripsrendered}"/>
+                                                </label>
+                                                <p:inputText id="no_trips" maxlength="3" autocomplete="off" value="#{PasPermitDtls.no_of_trip}" size="3" rendered="#{PasPermitDtls.noOfTripsrendered}">
+                                                    <p:keyFilter regEx="/[\d\-]/"/>
+                                                    <p:ajax event="change" partialSubmit="true" update="trips"/>
+                                                </p:inputText>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+                                    <p:panel id="tt_details" header="TimeTable-Details" styleClass="top-space bottom-space" rendered="#{PasPermitDtls.showTimeTableDetails}">
+                                        <p:selectBooleanCheckbox value="#{PasPermitDtls.showTimeTable}">
+                                            <p:ajax event="change" listener="#{PasPermitDtls.showTimeTablePage}" 
+                                                    partialSubmit="true" onstart="PF('bui').show();" onsuccess="PF('bui').hide()"
+                                                    update="tt_details pmttimetable"/>
+                                        </p:selectBooleanCheckbox>  
+                                        <p:outputPanel id="pmttimetable" rendered="#{PasPermitDtls.showTimeTable}" styleClass="top-space bottom-space">                      
+                                            <ui:include src="/ui/permit/form_permit_timetable.xhtml" >
+                                                <ui:param name="passPermitDtls" value="#{PasPermitDtls}"/>
+                                            </ui:include>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                </p:panel>
+                                <p:panel id="officeroute" header="Other offices route details" rendered="#{PasPermitDtls.selectedRouteString ne null and PasPermitDtls.selectedRouteString ne ''}">
+                                    <p:outputLabel id="routeselect" value="#{PasPermitDtls.selectedRouteString}"/>
+                                </p:panel>
+                                <p:panel id="otherOffRoute" header="Other offices route details" styleClass="top-space bottom-space"  visible="#{PasPermitDtls.showOtherRoute}" >
+                                    <h:panelGrid columns="2">
+                                        <h:outputLabel for="menu" value="Office Name :" />
+                                        <p:selectCheckboxMenu id="menu" value="#{PasPermitDtls.selectedOffice}"  label="Select Office" disabled="false"
+                                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                                            <f:selectItems value="#{PasPermitDtls.officeList}" />
+                                        </p:selectCheckboxMenu>
+                                        <p:commandButton value="Get Route details of Selected office" action="#{PasPermitDtls.onSelectOfficeName()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" update="routeTaken" disabled="false"/>
+                                    </h:panelGrid>
+
+                                    <p:outputPanel id="routeTaken" styleClass="top-space bottom-space">
+                                        <c:if test="true">
+
+                                            <p:fragment autoUpdate="true">
+                                                <p:dataTable styleClass="table-no-select-all" var="dobj"
+                                                             rowKey="#{dobj.rowKey}"
+                                                             paginator="#{PasPermitDtls.route_list.size() gt 10}"
+                                                             rows="10" paginatorPosition="bottom"
+                                                             rendered="#{PasPermitDtls.route_list ne null}"
+                                                             value="#{PasPermitDtls.route_list}"
+                                                             selection="#{PasPermitDtls.selectedRouteList}"
+                                                             disabledTextSelection="true"
+                                                             disabledSelection="false" reflow="true"
+                                                             emptyMessage="There are no routes to be select related to your vehicle (Against Selected Permit Type and Category)">
+                                                    <f:facet name="header">
+                                                        <p:outputLabel value="Route-Details" />
+                                                    </f:facet>
+                                                    <p:ajax event="rowSelectCheckbox"
+                                                            listener="#{PasPermitDtls.onSelectRoute}" />
+                                                    <p:ajax event="rowUnselectCheckbox"
+                                                            listener="#{PasPermitDtls.onSelectRoute}" />
+                                                    <p:ajax event="toggleSelect"
+                                                            listener="#{PasPermitDtls.onSelectRouteUnknowing}" />
+                                                    <p:ajax event="rowSelect"
+                                                            listener="#{PasPermitDtls.onSelectRouteUnknowing}" />
+                                                    <p:ajax event="rowUnselect"
+                                                            listener="#{PasPermitDtls.onSelectRouteUnknowing}" />
+                                                    <p:column selectionMode="multiple"
+                                                              style="width:25px;text-align:center" />
+                                                    <p:column headerText="office Name" filterBy="#{dobj.off_cd_descr}" filterMatchMode="contains">
+                                                        <p:outputLabel value="#{dobj.off_cd_descr}" />
+                                                    </p:column>
+                                                    <p:column headerText="Route Code" filterBy="#{dobj.route_code}" filterMatchMode="contains">
+                                                        <p:outputLabel value="#{dobj.route_code}" />
+                                                    </p:column>
+                                                    <p:column headerText="Route Starts From">
+                                                        <p:outputLabel value="#{dobj.from_loc}" />
+                                                    </p:column>
+                                                    <p:column headerText="Via">
+                                                        <p:outputLabel value="#{dobj.via}" />
+                                                    </p:column>
+                                                    <p:column headerText="Route Ends Upto">
+                                                        <p:outputLabel value="#{dobj.to_loc}" />
+                                                    </p:column>
+                                                    <p:column headerText="Route Length in KM">
+                                                        <p:outputLabel value="#{dobj.length}" />
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:fragment>
+                                        </c:if>
+                                    </p:outputPanel>
+                                </p:panel>
+                                <p:outputPanel id="auth_details">
+                                    <p:panel styleClass="top-space" rendered="#{PasPermitDtls.visibleAuthDetails}">
+                                        <f:facet name="header">                                        
+                                            Authorization Details
+                                            <span class="float-right">
+                                                <p:selectBooleanCheckbox id="homeDetailDisable" value="#{PasPermitDtls.notFillHomeAuth}">
+                                                    <p:ajax event="change" listener="#{PasPermitDtls.notFillHomeAuthDetails}" partialSubmit="true" update="auth_details"/>
+                                                </p:selectBooleanCheckbox>
+                                                <h:outputText value=" If you are not fill the Authorisation details." />
+                                            </span>
+                                        </f:facet>
+                                        <div class="ui-grid-row">
+                                            <ui:include src="/ui/permit/formNationalPermitDetails.xhtml">
+                                            </ui:include>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel value="Authorisation No." styleClass="field-label-mandate"/>
+                                                </label>
+                                                <p:inputText value="#{PasPermitDtls.auth_dobj.authNo}" styleClass="text-uppercase" disabled="#{PasPermitDtls.notFillHomeAuth}"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="auth_from" value="Authorisation From" styleClass="field-label-mandate"/>
+                                                </label>
+                                                <p:calendar id="auth_from" value="#{PasPermitDtls.auth_dobj.authFrom}"  pattern="dd-MMM-yyyy" readonlyInput="true" disabled="#{PasPermitDtls.notFillHomeAuth}">
+                                                    <p:ajax event="dateSelect" listener="#{PasPermitDtls.dateSelectEvent()}" partialSubmit="true" update="auth_upto"/>
+                                                </p:calendar>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="auth_upto" value="Authorisation Upto"/>
+                                                </label>
+                                                <p:calendar id="auth_upto" value="#{PasPermitDtls.auth_dobj.authUpto}"  pattern="dd-MMM-yyyy" disabled="#{PasPermitDtls.notFillHomeAuth}"/>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tax_From" value="Tax From"/>
+                                                </label>
+                                                <p:calendar id="tax_From" value="#{PasPermitDtls.auth_dobj.taxFrom}"  pattern="dd-MMM-yyyy" disabled="true"/>
+                                            </div>
+
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tax_upto" value="Tax Upto"/>
+                                                </label>
+                                                <p:calendar id="tax_upto" value="#{PasPermitDtls.auth_dobj.taxUpto}" pattern="dd-MMM-yyyy" disabled="true"/>
+                                            </div>
+
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="all_state" value="State"/>
+                                                </label>
+                                                <p:inputText id="all_state" value="AI - All INDIA" readonly="true" disabled="#{PasPermitDtls.notFillHomeAuth}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="pmtArea" value="Area-Details"/>
+                                                </label>
+                                                <p:selectOneMenu id="pmtArea" filter="true" value="#{PasPermitDtls.auth_dobj.regionCoveredNP}">
+                                                    <f:selectItems value="#{PasPermitDtls.regionCoveredListNP}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="auth_periodmode" value="Period Mode" rendered="#{PasPermitDtls.renderAuthPeriod}" styleClass="field-label-mandate"/>
+                                                </label>
+                                                <p:selectOneMenu id="auth_periodmode" filter="true" value="#{PasPermitDtls.auth_periodMode}" rendered="#{PasPermitDtls.renderAuthPeriod}" disabled="#{PasPermitDtls.disableAuthPeriod}">
+                                                    <f:selectItem itemLabel="Select Period Mode" itemValue="-1"/>
+                                                    <f:selectItem itemLabel="Days" itemValue="D"/>
+                                                    <f:selectItem itemLabel="Months" itemValue="M"/>
+                                                    <f:selectItem itemLabel="Year" itemValue="Y"/>
+                                                    <p:ajax listener="#{PasPermitDtls.check_Time_Period_auth()}" partialSubmit="true" update="auth_period auth_details"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="auth_period" value="Period " rendered="#{PasPermitDtls.renderAuthPeriod}" styleClass="field-label-mandate"/>
+                                                </label>
+
+                                                <p:selectOneMenu id="auth_period" filter="true" value="#{PasPermitDtls.auth_period}" rendered="#{PasPermitDtls.renderAuthPeriod}" disabled="#{PasPermitDtls.disableAuthPeriod}">
+                                                    <f:selectItem itemLabel="Select Period" itemValue="-1"/>
+                                                    <f:selectItems value="#{PasPermitDtls.auth_period_list}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div class="ui-grid-row">
+                                            <ui:include src="/ui/permit/formAITPStateCovered.xhtml"/>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+
+                                <p:panel header="Optional Details"  styleClass="top-space bottom-space">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="park_plce" value="Parking Place" rendered="#{PasPermitDtls.state_cd ne 'BR'}"/>
+                                                <p:outputLabel for="park_plce" value="Parking Place / Conditions" rendered="#{PasPermitDtls.state_cd eq 'BR'}"/>
+                                            </label>
+                                            <p:inputTextarea counter="display" id="park_plce" value="#{PasPermitDtls.parking}" maxlength="100"
+                                                             counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase" disabled="#{PasPermitDtls.parkingDisabled}">
+                                                <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                            </p:inputTextarea>
+                                            <h:inputHidden/>
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText id="display"/>
+                                            </label>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pup_jour" value="Purpose of Journey"/>
+                                            </label>
+                                            <p:inputTextarea counter="purJourDisplay" id="pup_jour" value="#{PasPermitDtls.joreny_PURPOSE}" maxlength="300"
+                                                             counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase" disabled="#{PasPermitDtls.jorenyPurposedDisabled}">
+                                                <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                            </p:inputTextarea>
+                                            <h:inputHidden/>
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText id="purJourDisplay"/>
+                                            </label>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="good_carry" value="Nature of goods to be carried"/>
+                                            </label>
+                                            <p:inputTextarea counter="GoodsCarry" id="good_carry" value="#{PasPermitDtls.goodsToCarry}" maxlength="40"
+                                                             counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase" disabled="#{PasPermitDtls.goodsToCarryDisabled}">
+                                                <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                            </p:inputTextarea>
+                                            <h:inputHidden/>
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText id="GoodsCarry"/>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:panel>
+                        </p:tab>
+                        <p:tab id="Other_Veh_Info" title="Other Vehicle Information" disabled="#{!PasPermitDtls.disableOtherVehicleDtls}">
+                            <ui:include src="/ui/permit/form_permit_check_Details.xhtml">
+                                <ui:param name="Other_Veh_Info" value="#{PasPermitDtls}"/>
+                            </ui:include>
+                        </p:tab>
+                        <p:tab id="Upload" title="View/Upload Documents" rendered="#{PasPermitDtls.renderDocUploadTab}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 top-space-25">
+                                    <p:commandButton value="View/Upload Documents"
+                                                     icon="ui-icon-check" action="#{PasPermitDtls.openModifyUploadedDocumentService}"
+                                                     style="margin-top: 0px !important;" update="test_opnFrame"  />
+                                </div>    
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+                    <p:panel id="vari_panal" styleClass="top-space bottom-space" rendered="#{PasPermitDtls.offerApprovalPanelRendered}">
+                        <f:facet name="header">                                        
+                            <p:selectOneRadio id="App_Disapp" value="#{PasPermitDtls.app_disapp}">
+                                <f:selectItem itemLabel="Approve" itemValue="A"/>
+                                <f:selectItem itemLabel="Disapprove" itemValue="D" />
+                                <p:ajax event="change" listener="#{PasPermitDtls.changeReasonmodule}" partialSubmit="true" update="vari_panal"/>
+                            </p:selectOneRadio>
+                        </f:facet>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="order_by" value="Order By:"/>
+                                </label>
+                                <p:inputText id="order_by" value="#{PasPermitDtls.order_by}" autocomplete="off" 
+                                             styleClass="text-uppercase"  required="true" disabled="#{PasPermitDtls.disableOrderDtls}"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="order_no" value="Order No:"/>
+                                </label>
+                                <p:inputText id="order_no" value="#{PasPermitDtls.order_no}" autocomplete="off" 
+                                             styleClass="text-uppercase" required="true" disabled="#{PasPermitDtls.disableOrderDtls}">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="order_dt" value="Order Date:" />
+                                </label>
+                                <p:calendar id="order_dt" value="#{PasPermitDtls.order_dt}" pattern="dd-MMM-yyyy" maxdate="#{PasPermitDtls.currenDate}" readonlyInput="true" required="true" disabled="#{PasPermitDtls.disableOrderDtls}"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="lb_reason" value="Reason:" rendered="#{PasPermitDtls.reasonRendered}"/>
+                                </label>
+                                <p:inputText id="reason" value="#{PasPermitDtls.reason}" styleClass="text-uppercase" rendered="#{PasPermitDtls.reasonRendered}"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <p:commandLink action="#{PasPermitDtls.editOrderInfo()}" value="Edit the order information." immediate="true" style="color: blue" styleClass="font-bold" update="order_by order_no order_dt">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandLink>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+
+
+                <p:outputPanel id="bt_function" styleClass="top-space bottom-space center-position" rendered="#{PasPermitDtls.showHide}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Save" action="#{PasPermitDtls.save_details()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" update="app_num_id">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:button value="Reset" outcome="Passenger_Permit_Details" rendered="#{PasPermitDtls.but_function}"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel  escape="false"  value="#{PasPermitDtls.app_no_msg}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Exit for Another Application" immediate="true" action="#{PasPermitDtls.redirectFrom()}"/>
+                                <p:commandButton value="Print Acknowledgement" immediate="true" action="#{PasPermitDtls.printAck()}" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </f:facet>
+                        </div>
+                    </div>
+                </p:dialog>
+
+                <p:dialog id="in_Tax" header="In-Valid Vehicle" widgetVar="inValidTax" modal="true" resizable="false" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel value="#{PasPermitDtls.errorShowMsg}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Exit for Another Application" immediate="true" action="#{PasPermitDtls.redirectFrom()}"/>
+                            </f:facet>
+                        </div>
+                    </div>
+                </p:dialog>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:panel id="changedByPrevUser" rendered="#{PasPermitDtls.prevChangedDataList.size()>0}"
+                                 toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                            <p:dataTable value="#{PasPermitDtls.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="Changed by Employee" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="Changed on" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel> 
+                    </div>
+                </div>
+
+                <p:outputPanel rendered="#{!PasPermitDtls.eApplshowHide}" styleClass="top-space bottom-space">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{PasPermitDtls}"/>
+                    </ui:include>
+                </p:outputPanel>
+
+                <p:outputPanel id="outputpanel_eAppSave" rendered="#{PasPermitDtls.render}">          
+                    <p:panel id="panelMoveCancel"  styleClass="bottom-space center-position top-space"> 
+                        <p:commandButton  value="Save" action="#{PasPermitDtls.saveEApplication()}" 
+                                          ajax="true" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" icon="ui-icon-disk">
+                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            <p:blockUI block="outputpanel_eAppSave" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:commandButton>  
+                        <p:button id="btPassBack" value="Back" outcome="/masterHome.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog> 
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog> 
+                <p:dialog id="no_Of_pmt" header="Number Of Permit" widgetVar="noOfPmt" modal="true" resizable="false" closable="false">
+                    <p:dataTable id="permitDetails"  value="#{PasPermitDtls.multiPermitDetails}" paginatorAlwaysVisible="false" var="virtual" rows="10"
+                                 paginator="true" widgetVar="seatWorkList" styleClass="top-space bottom-space"
+                                 emptyMessage="" >
+                        <p:column headerText="Regn No.">
+                            #{virtual.regnNo}
+                        </p:column>
+                        <p:column headerText="Permit No.">
+                            #{virtual.pmt_no}
+                        </p:column>
+                        <p:column headerText="Purpose Type">
+                            #{virtual.paction}
+                        </p:column>
+                        <p:column headerText="Permit Type">
+                            #{virtual.pmt_type_code}
+                        </p:column>
+                        <p:column headerText="Get Detail">
+                            <p:commandButton value="Action" action="#{PasPermitDtls.getPermitDetailThroughDataTable}" oncomplete="PF('noOfPmt').hide();" > 
+                                <f:setPropertyActionListener target="#{PasPermitDtls.selectedValue}" value="#{virtual}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:dialog>
+                <p:blockUI block="permitForm" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+                <!--                <p:dialog id="newRegnDtls" header="Check Some Details" widgetVar="newRegnDtls"  modal="true" dynamic="true" closable="false" draggable="false"  height="60%" width="50%">
+                                    <p:outputPanel rendered="# {PasPermitDtls.offLTRender}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="offerNo" value="Enter Offer No."/>
+                                                </label>
+                                                <p:inputText id="offerNo" value="# {PasPermitDtls.offerLetterNo}" styleClass="text-uppercase" autocomplete="off" maxlength="25"/>
+                                            </div>
+                                            <div class="ui-grid-col-6 top-space-25">
+                                                <p:commandButton value="Check Offer Letter" icon="ui-icon-check"
+                                                                 action="# {PasPermitDtls.checkOffNumber()}" update="newRegnDtls" style="margin-top: 0px !important;"/>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel>
+                
+                                    <p:outputPanel rendered="# {PasPermitDtls.regnNoRender}">
+                                        <p:separator/>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="new_regn_no" value="#{label.regn_no}"/>
+                                                </label>
+                                                <p:inputText id="new_regn_no" value="# {PasPermitDtls.new_regn_no}" styleClass="text-uppercase" autocomplete="off" maxlength="10"/>
+                                            </div>
+                                            <div class="ui-grid-col-4 top-space-25">
+                                                <p:commandButton value="Check Vehicle"
+                                                                 icon="ui-icon-check" action="# {PasPermitDtls.check_regn_no()}"
+                                                                 update="newRegnDtls" style="margin-top: 0px !important;" />
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="new_o_name" value="#{label.owner_name}" />
+                                                </label>
+                                                <p:inputText id="new_o_name" value="# {PasPermitDtls.new_o_name}" styleClass="text-uppercase" autocomplete="off" disabled="true"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="new_f_name" value="#{label.f_name}"/>
+                                                </label>
+                                                <p:inputText id="new_f_name" value="# {PasPermitDtls.new_f_name}" styleClass="text-uppercase" autocomplete="off"  disabled="true"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="new_vh_class" value="#{label.vh_class}"/>
+                                                </label>
+                                                <p:selectOneMenu id="new_vh_class" value="# {PasPermitDtls.new_vh_class}" disabled="true">
+                                                    <f:selectItem itemValue="-1" itemLabel="Select Vehicle Class"/>
+                                                    <f:selectItems value="# {PasPermitDtls.newVhClassType}"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:separator/>
+                                            <p:commandButton value="Save" action="# {PasPermitDtls.savePermitDtlsIfRegnNoNew()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" disabled="#{PasPermitDtls.disableRegnNo}">
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                            </p:commandButton>
+                                            <p:commandButton value="Back" action="seatwork" icon="ui-icon-arrowreturnthick-1-w"/>
+                                        </div>
+                                    </div>
+                                </p:dialog>-->
+
+                <p:outputPanel id="test_opnFrame">
+                    <p:dialog widgetVar="ifrmDlg" modal="true" header="Upload Document">
+                        <p:ajax event="close" />
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <iframe id="iframeCenter" src="#{PasPermitDtls.dmsUrl}"
+                                        height="600" width="1200" frameborder="0" scrolling="auto"
+                                        marginheight="1" marginwidth="1"> </iframe>
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:outputLabel id="printDocument">
+                    <p:dialog widgetVar="successDialog" modal="true" closable="false" resizable="false" draggable="false" header="Print Document">
+                        <p:outputLabel value="#{PasPermitDtls.msgOfPrintDocument}" escape="false"/>
+                        <div class="center-position">
+                            <p:button value="Ok" onclick="PF('successDialog').hide();" outcome="home" icon="ui-icon-check"/>
+                            <p:commandButton value="#{PasPermitDtls.valueOfCommandButton}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();"                                           
+                                             action="#{PasPermitDtls.printDocument()}" icon="ui-icon-print" />
+                        </div>
+                    </p:dialog>
+                </p:outputLabel>
+            </div>
+            <vcomponent:vahanMessages messages="#{PasPermitDtls.vahanMessages}"  rendered="#{PasPermitDtls.vahanMessages ne null}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

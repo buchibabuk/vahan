@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <div class="ui-grid ui-grid-responsive">   
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <h:inputHidden value="#{vehicleHistory_bean.regnNo}" />
+            </div>
+        </div>
+        <div class="ui-grid-row bottom-space">
+            <div class="ui-grid-col-4 resp-blank-height"></div>
+            <div class="ui-grid-col-4">
+                <p:selectOneMenu id="cm_selection" value="#{vehicleHistory_bean.historyList}" filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="--Select Vehicle History --"  itemValue="-1" noSelectionOption="true"  /> 
+                    <f:selectItems value="#{vehicleHistory_bean.selectionArrayList}"/>
+                    <p:ajax event="change" listener="#{vehicleHistory_bean.selectionChangeListener}" update="pnl_vehicleHistory" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                </p:selectOneMenu>
+            </div>
+        </div>
+        <p:panel id="pnl_vehicleHistory" visible="#{vehicleHistory_bean.showHistoryPanel}">
+            <div class="ui-grid-row top-space bottom-space">
+                <div class="ui-grid-col-12 center-position">
+                    <h:outputText value="#{vehicleHistory_bean.msg}" styleClass="red font-bold"/>
+                </div>
+            </div>
+
+            <p:dataTable id="table" value="#{vehicleHistory_bean.TArray}" var="item" 
+                         scrollable="true" rowIndexVar="index"
+                         paginator="#{vehicleHistory_bean.isExceedPage}" rows="50" paginatorPosition="bottom"> 
+                <p:column headerText="Sr.No" width="10%">
+                    <h:outputText value="#{index +1}." />                                
+                </p:column>
+                <c:forEach var="i" begin="1" end="${vehicleHistory_bean.columnCount}" >
+
+                    <p:column filterBy="#{item[i-1]}"  width="150" filterMatchMode="contains">                             
+                        <f:facet name="header">
+                            <p:outputLabel value="#{vehicleHistory_bean.columnNameArray[i-1]}"/>
+                        </f:facet>                               
+                        <p:outputLabel value="#{item[i-1]}" />                                                               
+                    </p:column>
+                </c:forEach>
+            </p:dataTable>
+        </p:panel>
+
+        <p:blockUI block="@form" widgetVar="bui">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI> 
+    </div>
+</html>

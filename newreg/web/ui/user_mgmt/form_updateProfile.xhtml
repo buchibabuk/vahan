@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <f:view locale="#{languageBean.language}">
+        <h:head>
+            <h:outputStylesheet library="css" name="layout.min.css"/>
+            <h:outputStylesheet library="css" name="grid-css.css"/>
+        </h:head>
+        <h:body>
+
+            <h:form id="updateProfileForm">
+                <div class="ui-grid ui-grid-responsive">
+                    <nav class="navbar navbar-default navigation-background" role="navigation">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a>
+                                <h:link id="homeId1">
+                                    <p:graphicImage library="images" name="logo_e-vahan.png" alt="Parivahan Sewa" style="width: auto; height: 40px;"/>
+                                </h:link>
+                            </a>
+                        </div>
+                        <div class="collapse navbar-collapse" id="navbar">
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <h:link id="welcomeUserId" >
+                                        <h:outputText  value="#{language.home_welcome} #{session.getAttribute('emp_name')}
+                                                       , #{session.getAttribute('desig_name')}, 
+                                                       #{session.getAttribute('state_name')}"
+                                                       style="font-size:10px; font-weight: bold;"/>
+                                    </h:link>
+                                </li>
+                                <li>
+                                    <p:commandLink  id="logout" action="#{updateProfileBean.logout}" value="#{language.home_logout}"  ajax="false" 
+                                                    immediate="true" styleClass="glyphicon glyphicon-log-out">
+                                    </p:commandLink> 
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">#{language.home_profile}</h1>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages closable="true" showDetail="false">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </div>
+                    </div>
+                    <div class="red font-bold report-header center-position">
+                        #{language.user_emailPhnMsg}  
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-7">
+                            <p:panel header="#{language.home_profile}" id="updateProPanel">
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="user_id" value="#{language.user_userID}"/>
+                                    </div>
+                                    <div class="ui-grid-col-5">
+                                        <p:inputText id="user_id" value="#{updateProfileBean.updateDobj.user_id}" required="true" requiredMessage="#{language.user_userIdmsg}"
+                                                     disabled="true" autocomplete="off" styleClass="input">
+                                            <f:ajax event="blur" execute="@this" render="@this" />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="userName" value="#{language.user_username}"/>
+                                    </div>
+                                    <div class="ui-grid-col-5">
+                                        <p:inputText id="userName" value="#{updateProfileBean.updateDobj.userName}" required="true" requiredMessage="#{language.user_blankusername}"
+                                                     disabled="true" autocomplete="off" styleClass="input">
+                                            <f:ajax event="blur" execute="@this" render="@this" />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="offph" value="#{language.user_offcphn}"/>
+                                    </div>
+                                    <div class="ui-grid-col-5">
+                                        <p:inputText id="offph" value="#{updateProfileBean.updateDobj.offNo}" maxlength="10"
+                                                     autocomplete="off" validatorMessage="Phone Number should contain only digits !!!">
+                                            <f:validateRegex pattern="^[0-9]*$" />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="mobNo" value="#{language.user_mobileNo}"/>
+                                    </div>
+                                    <div class="ui-grid-col-5">
+                                        <p:inputText id="mobNo" value="#{updateProfileBean.updateDobj.mobileNo}" required="true" styleClass="inline-section" requiredMessage="Blank : Mobile No"
+                                                     autocomplete="off" validatorMessage="Invalid Mobile Number !!!"
+                                                     maxlength="10">
+                                            <f:validator for="mobNo" validatorId="mobileNoValidator"/>
+                                            <!--                                        <p:ajax event="blur" listener="# {updateProfileBean.compareMobileNo}" process="@this" update="updateProPanel"/>-->
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-1">
+                                        <p:graphicImage library="images" name="verify.png" rendered="#{updateProfileBean.verifyCheck}" styleClass="inline-section" style="width: 34px; height: 25px;"/>
+                                        <p:graphicImage library="images" name="notverify.png" rendered="#{!updateProfileBean.verifyCheck}" styleClass="inline-section" style="width: 34px; height: 25px;"/>
+                                    </div>
+                                    <div class="ui-grid-col-3">
+
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="email" value="#{language.user_email}"/>
+                                    </div>
+                                    <div class="ui-grid-col-5">
+                                        <p:inputText id="email" value="#{updateProfileBean.updateDobj.emailID}" required="true" requiredMessage="Blank : Email ID"
+                                                     autocomplete="off" validatorMessage="#{language.user_invalidemail} !!!">
+                                            <f:validator for="email" validatorId="emailValidator"/>
+                                        </p:inputText>
+                                    </div>
+                                    <!-- For email id verification-->
+                                    <div class="ui-grid-col-1">
+                                        <p:graphicImage library="images" name="verify.png" rendered="#{updateProfileBean.emailCheck}" styleClass="inline-section" style="width: 34px; height: 25px;"/>
+                                        <p:graphicImage library="images" name="notverify.png" rendered="#{!updateProfileBean.emailCheck}" styleClass="inline-section" style="width: 34px; height: 25px;"/>
+                                    </div>
+
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-3 resp-blank-height"></div> 
+                                    <div class="ui-grid-col-5">
+                                        <vahan:vahanCaptcha  labelName="#{language.login_enter_verification_code}" catpchaRefresh="true"/>
+                                    </div>
+                                </div>
+                                <!-- end -->
+
+
+                                <!--                            <div class="ui-grid-row bottom-space center-position">
+                                                                <div class="ui-grid-col-12">
+                                                                    <p:commandButton value="Update" action="# {updateProfileBean.saveUserData()}" disabled="# {updateProfileBean.disableUpdateBtn}" update="updateProPanel" resetValues="true">
+                                                                    </p:commandButton>
+                                                                </div>
+                                                            </div>-->
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position top-space right-space ">
+                                        <p:commandButton  value="#{language.verifyMobilebutton}"  
+                                                          action="#{updateProfileBean.generateOTP()}" >
+                                            <f:param name="otpGenReason" value="new"/>
+                                            <f:param name="verifyType" value="mobileno"/>
+                                        </p:commandButton>
+                                        <p:commandButton  value="#{language.verifyEmailIdbutton}"  
+                                                          action="#{updateProfileBean.generateOTP()}" >
+                                            <f:param name="otpGenReason" value="new"/>
+                                            <f:param name="verifyType" value="email"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </div>
+                    </div>
+                </div>
+
+                <p:dialog id="otpDialog" widgetVar="otp" modal="true" dynamic="true" closable="false" 
+                          width="300" showEffect="fade" hideEffect="fade" >
+                    <f:facet name="header">
+                        #{language.otp_confirmation}
+                    </f:facet>
+                    <p:messages>
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">                        
+                            <div class="ui-grid-col-12">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="otpText" value="#{language.otp_provide}"/>
+                                </label>
+                                <p:inputText id="otpText" value="#{updateProfileBean.otp}" autocomplete="off" maxlength="6" required="true" requiredMessage="#{language.otp_provide}"
+                                             placeholder="#{language.login_enter_otp}"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">                        
+                            <div class="ui-grid-col-12 center-position top-space">
+                                <p:commandButton value="#{language.verify}" action="#{updateProfileBean.validateOTP}" update="updateProPanel otpText"/>
+                                <p:commandButton value="#{language.login_resend_otp}" action="#{updateProfileBean.generateOTP()}" update="otpText">
+                                    <f:param name="otpGenReason" value="resend"/>
+                                </p:commandButton>
+                                <p:commandButton value="#{language.close}" onclick="PF('otp').hide();" immediate="true" update="@form"/>
+                            </div>
+                        </div>
+                    </div>
+                </p:dialog>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>

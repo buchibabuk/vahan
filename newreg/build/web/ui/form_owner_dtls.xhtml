@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:panel header="Permit Loi No " rendered="#{owner_bean.ownerDobj.newLoiNo ne null}">
+                    <p:outputPanel id="pn_new_loi_new" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tx_new_loi_new" value="#{language.loi_number} "/>
+                                </label>
+                                <p:inputText id="tx_new_loi_new" value="#{owner_bean.ownerDobj.newLoiNo}" 
+                                             size="20" maxlength="30" autocomplete="off" converter="toUpperCaseConverter"
+                                             required="true" requiredMessage="#{language.blank} #{language.loi_number}"
+                                             validatorMessage="#{language.loi_valid_msg}" 
+                                             style="text-transform: uppercase"  >
+                                    <f:validateLength minimum="5" maximum="30"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:panel id="owner_details" header="#{language.owner_information}">  
+
+
+                    <p:outputPanel id="reg" styleClass="bottom-space">
+                        <p:outputPanel id="op_prevCurAdd" rendered="#{owner_bean.renderPrevCurrentAdd}">
+                            <p:outputLabel value="#{language.previous_address}: #{owner_bean.prevCurrAdd}" styleClass="inline-section" style="width: 49% !important; color: #FF0000 !important;" />
+                        </p:outputPanel>
+
+                        <div class="ui-grid-row">
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_type" value="#{language.regn_type}"/>
+                                </label>
+                                <p:selectOneMenu id="regn_type" value="#{owner_bean.ownerDobj.regn_type}" disabled="#{owner_bean.disableRegnType}"
+                                                 filter="true" filterMatchMode="contains" styleClass="bottom-space">
+                                    <f:selectItem itemLabel="#{language.select_case}" itemValue="0"/>
+                                    <f:selectItems value="#{owner_bean.list_regn_type}"/>
+                                    <p:ajax event="change" listener="#{owner_bean.regn_TypeSelectEvent}" process="@this" update="exArmyVehicleDetails workbench_tabview" partialSubmit="true"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="purchase_dt" value="#{language.purchase_dt}"/>
+                                </label>
+                                <p:calendar id="purchase_dt"  value="#{owner_bean.ownerDobj.purchase_dt}" required="true" 
+                                            requiredMessage="#{language.blank} #{language.purchase_dt}"
+                                            pattern="dd-MMM-yyyy" navigator="true" maxdate="#{owner_bean.currentDate}" mindate="#{owner_bean.minPurchaseDate}"
+                                            disabled="#{owner_bean.disablePurchaseDt}" 
+                                            readonlyInput="true" yearRange="#{owner_bean.yearRange}">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" for="purchase_dt"/> 
+                                    <f:validateRequired for="purchase_dt"/>
+                                    <p:ajax event="dateSelect" process="@this" listener="#{owner_bean.purchaseDateListener}" update="tf_VoucherDate" partialSubmit="true"/>
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_name" value="#{language.owner_name}" />
+                                </label>
+                                <p:inputText id="tf_owner_name" value="#{owner_bean.ownerDobj.owner_name}"  required="true" 
+                                             disabled="#{owner_bean.disableOwnerName}"
+                                             style="text-transform: uppercase"
+                                             requiredMessage="#{language.owner_name_empty_msg}" maxlength="35" autocomplete="off" 
+                                             converter="toUpperCaseConverter" validator="#{validateFunction.validateOwnerName}">
+                                    <p:ajax partialSubmit="true"/>
+                                    <f:validateRequired for="tf_owner_name"/>
+                                    <f:validateLength maximum="35" for="tf_owner_name"/>
+                                </p:inputText>
+                            </div>
+                        </div>  
+
+                        <p:outputPanel id="temp_regn_type" rendered="#{owner_bean.renderTempOwner}">
+
+                            <div class="ui-grid-row" >
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tempPurpose" value="#{language.temp_regn_purpose}"/>
+                                    </label>
+                                    <p:selectOneMenu id="tempPurpose" value="#{owner_bean.temp_dobj.purpose}"
+                                                     required="true"
+                                                     filter="true" filterMatchMode="contains" 
+                                                     styleClass="bottom-space">
+                                        <f:selectItem itemLabel="#{language.select_case}" itemValue="0"/>
+                                        <f:selectItems value="#{owner_bean.listTempReasons}"/>
+                                        <p:ajax event="change" listener="#{owner_bean.tempPurposeListner}" process="@this" update="temp_regn_type" partialSubmit="true"/>
+                                        <f:validator validatorId="selectOneValidator_0" for="tempReason"/>  
+                                    </p:selectOneMenu>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="pn_tmpBodyBuild" rendered="#{owner_bean.renderTempBodyBuilding}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_bodyBuilding" value="#{language.body_building} #{language.maker} #{language.address}"/>
+                                        </label>
+                                        <p:inputText  id="tf_bodyBuilding" value="#{owner_bean.temp_dobj.bodyBuilding}"  required="true" 
+                                                      requiredMessage="#{language.blank} #{language.body_building}" maxlength="50" autocomplete="off"
+                                                      style="text-transform: uppercase" converter="toUpperCaseConverter">
+                                            <f:validateRequired for="tf_c_add1"/>
+                                            <f:validateLength maximum="50" for="tf_bodyBuilding"/>                              
+                                            <p:ajax partialSubmit="true"/>
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                </div>
+
+                            </div>
+
+                            <p:outputPanel id="op_tempOther" rendered="#{owner_bean.renderTempOther}">
+
+                                <div class="ui-grid-row" >
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="state_to" value="#{language.state_to}"/>
+                                        </label>
+                                        <p:selectOneMenu id="state_to" value="#{owner_bean.temp_dobj.state_cd_to}"
+                                                         required="true"
+                                                         filter="true" filterMatchMode="contains" 
+                                                         styleClass="bottom-space" disabled="#{owner_bean.disableTempStateTo}">
+                                            <f:selectItem itemLabel="#{language.select_case}" itemValue="0"/>
+                                            <f:selectItems value="#{owner_bean.list_c_state_to}"/>
+                                            <p:ajax event="change" listener="#{owner_bean.stateToListner}" process="@this" update="office_to" partialSubmit="true"/>
+                                            <f:validator validatorId="selectOneValidator_0" for="state_to"/>  
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="office_to" value="#{label.off_to}"/>
+                                        </label>
+                                        <p:selectOneMenu id="office_to" value="#{owner_bean.temp_dobj.off_cd_to}"
+                                                         required="true"
+                                                         filter="true" filterMatchMode="contains" styleClass="bottom-space">
+                                            <f:selectItem itemLabel="#{language.select_case}" itemValue="0"/>
+                                            <f:selectItems value="#{owner_bean.list_office_to}"/>
+                                            <f:validator validatorId="selectOneValidator_0" for="office_to"/>
+                                            <p:ajax event="change" listener="#{owner_bean.allowTempRegistrationForDealer()}" process="@this" update="office_to" partialSubmit="true"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                        </p:outputPanel>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_cd" value="#{language.owner_cd}"/>
+                                </label>
+                                <p:selectOneMenu id="tf_owner_cd" value="#{owner_bean.ownerDobj.owner_cd}" 
+                                                 required="true" filter="true" filterMatchMode="contains" 
+                                                 styleClass="bottom-space" disabled="#{owner_bean.disableOwnerCd}">
+                                    <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                    <f:selectItems value="#{owner_bean.list_owner_cd}"/>
+                                    <p:ajax event="change" listener="#{owner_bean.vehOwner_cdListener}" update="tf_f_name op_owner_id" partialSubmit="true"/>
+                                    <!--workbench_tabview:ins_details:ins_type-->
+                                    <f:validator validatorId="selectOneValidator" for="tf_owner_cd"/>   
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_f_name" value="#{language.f_name}"/>
+                                </label>
+                                <p:inputText id="tf_f_name" value="#{owner_bean.ownerDobj.f_name}" readonly="#{owner_bean.disableFName}"
+                                             required="true" style="text-transform: uppercase" 
+                                             requiredMessage="#{language.father_husband_empty_msg}" maxlength="35" autocomplete="off"
+                                             converter="toUpperCaseConverter" validator="#{validateFunction.validateFtName}">
+                                    <f:validateRequired for="tf_f_name"/>
+                                    <f:validateLength maximum="35" for="tf_f_name"/>
+                                    <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_sr" value="#{language.owner_sr}"/>
+                                </label>
+                                <p:inputText id="tf_owner_sr"  value="#{owner_bean.ownerDobj.owner_sr}"
+                                             required="true" readonly="#{owner_bean.disableOwnerSr}"
+                                             requiredMessage="#{language.blank} #{language.owner_sr}" maxlength="2" autocomplete="off">
+                                    <f:validateRequired for="tf_owner_sr"/>
+                                    <f:validateLength maximum="2" for="tf_owner_sr"/> 
+                                    <p:keyFilter mask="pint"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+
+                    </p:outputPanel>
+                    <p:outputPanel id="op_owner_id">
+                        <ui:include src="/ui/form_ownerIdentification.xhtml">
+                            <ui:param name="owner_identification" value="#{owner_bean.owner_identification}"/>  
+                            <ui:param name="listOwnerCategory" value="#{owner_bean.listOwnerCatg}"/>
+                            <ui:param name="listOwnerCdDept" value="#{owner_bean.listOwnerCdDept}"/>                            
+                        </ui:include>                        
+                    </p:outputPanel>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <p:panel id="caddress_panel" header="#{language.current_add}" styleClass="datatable-panel" >
+                                <p:outputPanel id="caddress">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_add1" value="#{language.address1}"/>
+                                            </label>
+                                            <p:inputText  id="tf_c_add1" value="#{owner_bean.ownerDobj.c_add1}" disabled="#{owner_bean.blnAdvancedRegNo}" required="true" 
+                                                          requiredMessage="#{language.blank} #{language.current_add}" maxlength="35" autocomplete="off"
+                                                          style="text-transform: uppercase" converter="toUpperCaseConverter" validator="#{validateFunction.validateAddress}">
+                                                <f:validateRequired for="tf_c_add1"/>
+                                                <f:validateLength maximum="35" for="tf_c_add1"/>                              
+                                                <p:ajax partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_add2" value="#{language.address2}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_add2" value="#{owner_bean.ownerDobj.c_add2}" disabled="#{owner_bean.blnAdvancedRegNo}" 
+                                                         required="true" requiredMessage="#{language.blank} #{language.address2}"
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase"
+                                                         converter="toUpperCaseConverter" validator="#{validateFunction.validateAddress}">
+                                                <f:validateLength maximum="35" for="tf_c_add2"/>
+                                                <p:ajax partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_add3" value="#{language.address3}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_add3" value="#{owner_bean.ownerDobj.c_add3}" disabled="#{owner_bean.blnAdvancedRegNo}" 
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter">
+                                                <f:validateLength maximum="35" for="tf_c_add3"/>
+                                                <p:ajax partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_state" value="#{language.state}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_c_state"  value="#{owner_bean.ownerDobj.c_state}" 
+                                                             filter="true" filterMatchMode="contains" required="true"  disabled="#{owner_bean.blnAdvancedRegNo}"
+                                                             >                                  
+                                                <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                                <f:selectItems value="#{owner_bean.list_c_state}" />  
+                                                <p:ajax event="change" listener="#{owner_bean.vehC_StateListener}" update="tf_c_district" partialSubmit="true"/>
+                                                <f:validator validatorId="selectOneValidator" for="tf_c_state"/>  
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_district" value="#{language.district}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_c_district"  value="#{owner_bean.ownerDobj.c_district}" filter="true" filterMatchMode="contains" required="true" disabled="#{owner_bean.blnAdvancedRegNo}">                                  
+                                                <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                                <f:selectItems value="#{owner_bean.list_c_district}" />  
+                                                <!--<p:ajax event="change" listener="#{owner_bean.vehDistListener}" />-->
+                                                <f:validator validatorId="selectOneValidator" for="tf_c_district"/>  
+                                                <p:ajax partialSubmit="true"/>
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_pincode" value="#{language.pin}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_pincode" value="#{owner_bean.ownerDobj.c_pincode}" disabled="#{owner_bean.blnAdvancedRegNo}"
+                                                         size="10" maxlength="6" autocomplete="off"
+                                                         required="true" requiredMessage="#{language.blank} #{language.pin}">
+                                                <f:validateLength maximum="6" for="tf_c_pincode"/>
+                                                <f:validator validatorId="pinCodeValidator" for="tf_c_pincode"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                                <p:keyFilter mask="pint"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:panel>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:panel id="paddress_panel"> 
+                                <f:facet name="header">                                        
+                                    #{language.permanent_add}
+                                    <span class="float-right">
+                                        <p:outputPanel id="render_same_add" rendered="#{owner_bean.samePermAdd_Rend}">
+                                            <p:selectBooleanCheckbox id="samePermAdd" value="#{owner_bean.samePermAddress}"  disabled="#{owner_bean.disableSamePerm}">
+                                                <p:ajax event="change" listener="#{owner_bean.samePermAddressListener}" 
+                                                        update="paddress_panel" partialSubmit="true"/>
+                                            </p:selectBooleanCheckbox>
+                                            <h:outputText value="#{language.same_as_currAdd}" />
+                                        </p:outputPanel>
+                                    </span>
+                                </f:facet>
+
+                                <p:outputPanel id="paddress">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add1" value="#{language.address1}"/>
+                                            </label> 
+                                            <p:inputText  id="tf_p_add1" value="#{owner_bean.ownerDobj.p_add1}" disabled="#{owner_bean.disablePermanentAddress}" size="35" required="true" style="text-transform: uppercase"
+                                                          requiredMessage="#{language.blank} #{language.permanent_add}" maxlength="35" autocomplete="off"
+                                                          converter="toUpperCaseConverter" validator="#{validateFunction.validateAddress}">
+                                                <f:validateRequired for="tf_p_add1"/>
+                                                <f:validateLength maximum="35" for="tf_p_add1"/>
+                                                <p:ajax partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add2" value="#{language.address2}"/>
+                                            </label> 
+
+                                            <p:inputText id="tf_p_add2" value="#{owner_bean.ownerDobj.p_add2}" disabled="#{owner_bean.disablePermanentAddress}" size="35" required="true" requiredMessage="#{language.blank} #{language.address2}"
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter" validator="#{validateFunction.validateAddress}">                                      
+                                                <f:validateLength maximum="35" for="tf_p_add2"/>  
+                                                <p:ajax partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add3" value="#{language.address3}"/>
+                                            </label>
+                                            <p:inputText id="tf_p_add3" value="#{owner_bean.ownerDobj.p_add3}"  disabled="#{owner_bean.disablePermanentAddress}" size="35"
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter">   
+
+                                            </p:inputText>
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_state" value="#{language.state}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_p_state" value="#{owner_bean.ownerDobj.p_state}" disabled="#{owner_bean.disablePermanentAddress}" filter="true" filterMatchMode="contains" required="true">   
+                                                <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                                <f:selectItems value="#{owner_bean.list_p_state}" />
+                                                <p:ajax event="change" listener="#{owner_bean.vehP_StateListener}" update="tf_p_district" partialSubmit="true"/>
+                                                <f:validator validatorId="selectOneValidator" for="tf_p_state"/>  
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_district" value="#{language.district}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_p_district" value="#{owner_bean.ownerDobj.p_district}" disabled="#{owner_bean.disablePermanentAddress}" filter="true" filterMatchMode="contains" required="true">   
+                                                <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                                <f:selectItems value="#{owner_bean.list_p_district}" />
+                                                <!--<p:ajax event="change" listener="#{owner_bean.vehP_DistListener}" />-->
+                                                <f:validator validatorId="selectOneValidator" for="tf_p_district"/>  
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_pincode" value="#{language.pin}"/>
+                                            </label>
+                                            <p:inputText id="tf_p_pincode" value="#{owner_bean.ownerDobj.p_pincode}" disabled="#{owner_bean.disablePermanentAddress}"
+                                                         size="10" maxlength="6" autocomplete="off" 
+                                                         required="true" requiredMessage="#{language.blank} #{language.pin}">
+                                                <f:validateLength maximum="6" for="tf_p_pincode"/>  
+                                                <f:validator validatorId="pinCodeValidator" for="tf_p_pincode"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                            <p:keyFilter mask="pint" for="tf_p_pincode"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:panel>
+                        </div>
+                    </div>
+
+                    <h:panelGroup id="exArmyVehicleDetails">
+                        <p:outputPanel rendered="#{owner_bean.exArmyVehicle_Visibility_tab}"
+                                       styleClass="top-space bottom-space">
+                            <ui:include src="/ui/form_ExArmyVehicle.xhtml">
+                                <ui:param name="owner_bean" value="#{owner_bean}"/>
+                            </ui:include>
+                        </p:outputPanel>
+                    </h:panelGroup>
+
+                    <p:outputPanel id="partialSaveBtnPnl">
+                        <p:outputPanel id="pn_partialSaveBtnPnl" rendered="#{owner_bean.renderOwnerDtlsPartialBtn}">
+                            <!--****Vehicle Class****-->
+                            <p:panel styleClass="top-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="partial_vh_type" value="#{language.vh_type}"/>
+                                        </label>
+                                        <p:selectOneMenu id="partial_vh_type" value="#{owner_bean.vehType}"  disabled="#{owner_bean.vehicleComponentEditable}" required="true" requiredMessage="#{language.select_vehicle_type}">
+                                            <f:selectItems value="#{owner_bean.list_veh_type}"/>
+                                            <p:ajax event="change" listener="#{owner_bean.vehTypeListener_partial()}" update="partial_vh_class partial_vh_catg partial_vh_type"  partialSubmit="true"/>
+                                            <f:validator validatorId="selectOneValidator" for="partial_vh_type"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="partial_vh_class" value="#{language.user_vehClass}"/>
+                                        </label>
+                                        <p:selectOneMenu id="partial_vh_class" value="#{owner_bean.ownerDobj.vh_class}" filter="true" 
+                                                         filterMatchMode="contains" required="true" requiredMessage="#{language.veh_class_msg}"
+                                                         disabled="#{owner_bean.vehicleComponentEditable}">
+                                            <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                            <f:selectItems value="#{owner_bean.list_vh_class}" />
+                                            <f:validateRequired for="partial_vh_class"/>
+                                            <p:ajax event="change" listener="#{owner_bean.vehClassListener_partial()}" update="partial_vh_catg partialSaveBtnPnl op_owner_id"  partialSubmit="true"/>
+                                            <f:validator validatorId="selectOneValidator" for="partial_vh_class"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="partial_vh_catg" value="#{language.vh_catg}"/>
+                                        </label>
+                                        <p:selectOneMenu id="partial_vh_catg" value="#{owner_bean.ownerDobj.vch_catg}" filter="true" filterMatchMode="contains" required="true" requiredMessage="#{language.veh_catg_msg}">
+                                            <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                            <f:selectItems value="#{owner_bean.list_vm_catg}"/>                                        
+                                            <f:validator validatorId="selectOneValidator" for="partial_vh_catg"/>
+                                            <p:ajax event="change" listener="#{owner_bean.vchCatgListener_partial()}" partialSubmit="true" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:outputPanel id="chassi_os_Pnl" rendered="#{owner_bean.renderChasiOs}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="chasi_no_os" value="#{language.chasi_no}"/>
+                                        </label>
+                                        <p:inputText id="chasi_no_os" value="#{owner_bean.ownerDobj.chasi_no}" 
+                                                     size="20" maxlength="30" autocomplete="off" converter="toUpperCaseConverter"
+                                                     required="true" requiredMessage="#{language.chassis_blank_msg}"
+                                                     validatorMessage="#{language.chassis_valid_msg}" 
+                                                     style="text-transform: uppercase" disabled="#{owner_bean.disableChasiNo}">
+                                            <f:validateLength minimum="5" maximum="30"/>
+                                            <p:ajax event="blur" listener="#{owner_bean.homoDataListener}" onstart="PF('ajax_status').show()" oncomplete="PF('ajax_status').hide()" partialSubmit="true"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="pn_new_loi" rendered="#{owner_bean.renderNewLoi}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tx_new_loi" value="#{language.loi_number}"/>
+                                        </label>
+                                        <p:inputText id="tx_new_loi" value="#{owner_bean.ownerDobj.newLoiNo}"   disabled="#{owner_bean.vehicleComponentEditable}"
+                                                     size="20" maxlength="30" autocomplete="off" converter="toUpperCaseConverter"
+                                                     required="true" requiredMessage="#{language.blank} #{language.loi_number}"
+                                                     validatorMessage="#{language.loi_valid_msg}" 
+                                                     style="text-transform: uppercase"  >
+                                            <f:validateLength minimum="5" maximum="30"/>
+                                            <p:ajax event="blur" listener="#{owner_bean.loiListener_partial}" onstart="PF('ajax_status').show()" 
+                                                    oncomplete="PF('ajax_status').hide()"  update="owner_details op_owner_id partialSaveBtnPnl"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="pnl_homologation_dtls" rendered="#{owner_bean.isHomologationData.length() > 0}">
+                                <ui:include src="/ui/formHomoDetails.xhtml">                                
+                                    <ui:param name="owner_bean" value="#{owner_bean}"/>
+                                </ui:include> 
+                            </p:outputPanel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <!--                                    <p:commandButton id = "ownerBeanPartial"   partialSubmit="true" process="owner_details" update="owner_details" value="Inward Application(Partial Save)"
+                                                                                         actionListener="# {comparisonBean.save_ActionListener}" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();" >
+                                                                            <f:param name="saveType" value="partial" />
+                                                                        </p:commandButton> -->
+                                    <p:commandButton id = "ownerBeanPartial"   partialSubmit="true" process="owner_details" update="owner_details" value="Inward Application(Partial Save)"
+                                                     action="#{comparisonBean.sendOtpAndVerifyOwnerMobileNo('sendOtp')}" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();" >
+                                        <f:param name="saveType" value="partial" />
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>                       
+                    </p:outputPanel>
+                    <!-- OTP for Owner Mobile Verification-->
+                    <p:outputPanel id="otp_confirmation">
+                        <p:dialog id="otp_dialog" widgetVar="otp_confrm" header="#{language.otp_verify_header}"  closable="false"  modal="true" dynamic="true" >
+                            <p:messages showDetail="true" showSummary="false" >
+                                <p:autoUpdate/>
+                            </p:messages>
+                            <p:outputLabel value="#{comparisonBean.mobileNoCountMessage}" escape="false"></p:outputLabel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 red">
+                                    #{language.otp_sent_msg}.#{owner_bean.owner_identification.mobile_no}
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-3">
+                                    <label>
+                                        <p:outputLabel value="#{language.login_enter_otp}"/>
+                                    </label>  
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:inputText value="#{comparisonBean.enteredOwnerMobVerifyOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                                </div>
+                                <div class="ui-grid-col-5">
+                                    <p:commandLink value="#{language.login_resend_otp}" action="#{comparisonBean.sendOtpAndVerifyOwnerMobileNo('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                                   onsuccess="PF('ajax_status').hide()"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:commandButton value="#{language.partial_save} " action="#{comparisonBean.sendOtpAndVerifyOwnerMobileNo('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                                     onsuccess="PF('ajax_status').hide();" >
+                                        <f:param name="saveType" value="partial" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Cancel" action="#{comparisonBean.resetRegardingOTPMsg()}"  
+                                                     process="@this"  immediate="true" 
+                                                     onclick="PF('otp_confrm').hide()" icon="ui-icon-arrowreturnthick-1-w"/>  
+                                </div>
+                            </div>
+                        </p:dialog>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="drivingLicense">
+                        <p:dialog id="dLId" widgetVar="drivingLicense_dlg1" header="#{language.licence_auth}" modal="true" closable="false" dynamic="true" >
+                            <p:panel id="panel_licence">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <h:outputText styleClass="red font-bold report-header" value="#{owner_bean.errorMsg}" rendered="#{owner_bean.errorMsg ne null}" />
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <h:outputText styleClass="red font-bold" value="#{language.otp_sent_msg_reg}" rendered="#{owner_bean.renderedConfirmBtn and owner_bean.errorMsg eq null}" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.license_type} "/>
+                                        </label>
+                                        <p:selectOneRadio id="ll_dl_id"  value="#{owner_bean.licenseType}" >
+                                            <f:selectItem itemLabel="#{language.learning_license}" itemValue="LL" />
+                                            <f:selectItem itemLabel="#{language.driving_license}" itemValue="DL" />
+                                            <p:ajax event="change" update="panel_licence" listener="#{owner_bean.changeLicenceEvent()}" />
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:outputPanel rendered="#{owner_bean.renderAuthenticateBtn or owner_bean.renderedConfirmBtn or owner_bean.renderGenerateOTPBtn}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{owner_bean.licenseType eq 'LL' ? 'Learning Licence' : 'Driving Licence' }" for="driving_license" />
+                                            </label>
+                                            <p:inputText id="driving_license" value="#{owner_bean.owner_identification.dl_no}" required="true" 
+                                                         style="text-transform: uppercase" disabled="#{owner_bean.owner_identification.dlDisabled}"
+                                                         requiredMessage="#{language.license_empty_msg}" maxlength="35" autocomplete="off" converter="toUpperCaseConverter">
+                                                <f:validateRequired for="driving_license"/>
+                                                <f:validateLength maximum="25" for="driving_license"/>
+                                            </p:inputText>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{owner_bean.licenseType eq 'DL' and owner_bean.renderAuthenticateBtn}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{language.dob}" for="dob_id" />
+                                            </label>
+                                            <p:inputMask id="dob_id" value="#{owner_bean.DOBDate}" mask="9999-99-99" required="true" requiredMessage="#{language.dob_blank_msg}" placeholder="YYYY-MM-DD" />
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+                                <p:outputPanel rendered="#{!owner_bean.renderAuthenticateBtn}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{language.user_mobileNo}" for="otp_tf_mobNo" />
+                                            </label>
+                                            <p:inputText id="otp_tf_mobNo" value="#{owner_bean.owner_identification.mobile_no}" maxlength="10" required="true" 
+                                                         requiredMessage="#{language.blank} #{language.user_mobileNo}" autocomplete="off" >
+                                                <f:validator validatorId="mobileNoValidator"/>
+                                                <p:ajax event="blur" process="@this" update="@this"  partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputLabel value="#{language.login_enter_otp}" for="otp_id" rendered="#{owner_bean.renderedConfirmBtn}" />
+                                        </label>
+                                        <p:inputText id="otp_id" value="#{owner_bean.enteredOTP}" maxlength="6" rendered="#{owner_bean.renderedConfirmBtn}" 
+                                                     validatorMessage="#{language.enter_valid_otp}" placeholder="#{language.login_enter_otp}" required="true" 
+                                                     requiredMessage="#{language.otp_provide}" autocomplete="off" >
+                                            <p:keyFilter for="otp_id" mask="num" />
+                                            <f:validateLength maximum="6" minimum="6" />
+                                            <p:ajax event="blur" process="@this" update="@this"  partialSubmit="true"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="#{language.authenticate_btn}" onclick="PF('ajax').show();" oncomplete="PF('ajax').hide(); PF('drivingLicense_dlg1').show();" update="panel_licence" action="#{owner_bean.authenticateLlNo()}" rendered="#{owner_bean.renderAuthenticateBtn}">
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:commandButton value="Generate OTP" onclick="PF('ajax').show();" oncomplete="PF('ajax').hide();" action="#{owner_bean.generateOtp('generate')}" update="panel_licence" rendered="#{owner_bean.renderGenerateOTPBtn}" >
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:commandButton value="Confirm OTP" onclick="PF('ajax').show();" oncomplete="PF('ajax').hide();" action="#{owner_bean.generateOtp('confirm')}" update="panel_licence" rendered="#{owner_bean.renderedConfirmBtn}" >
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:commandButton value="#{language.close}" onclick="PF('ajax').show();" oncomplete="PF('ajax').hide();" action="#{owner_bean.resetVehClass()}" update="partialSaveBtnPnl pn_partialSaveBtnPnl" />
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 right-position" >
+                                        <p:commandLink styleClass="red font-bold"  value="Re-Se" onclick="PF('ajax').show();" oncomplete="PF('ajax').hide();" action="#{owner_bean.generateOtp('regenerate')}" rendered="#{owner_bean.renderedConfirmBtn}" update="panel_licence" >
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                        </p:commandLink>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:dialog>
+                    </p:outputPanel>
+                    <p:dialog header="#{language.home_confirm}" widgetVar="onAuthComplete" closeOnEscape="false" closable="false" draggable="false" modal="true">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 right-position" >
+                                <h:outputText value="#{language.dl_auth_msg}" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="#{language.ok}" update="@form" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                        <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                        <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                    </p:confirmDialog>
+                    <p:blockUI block=":masterLayout" widgetVar="ajax">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                    <!--<p:keyFilter regEx="/[a-zA-Z ]/i" for="tf_f_name"/>-->
+                    <!--#############################################################################################-->
+                </p:panel>
+            </div>
+        </div>
+    </div>
+</html>

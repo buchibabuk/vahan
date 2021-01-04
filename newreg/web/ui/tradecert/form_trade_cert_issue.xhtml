@@ -1,0 +1,305 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content"> 
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="new_trade_cert_subview">
+                <p:dialog id="confirmationPopup" visible="#{not empty facesContext.messageList}"
+                          style="text-align:center" widgetVar="confDlgTradeCert"
+                          modal="true" draggable="false" closable="false" hideEffect="explode"
+                          header="Trade Certificate Application Confirmation Panel"> 
+                    <p:outputPanel id="confirm_panel1">
+                        <p:messages />
+                        <p:outputLabel value="Do you want to continue"/><br/> 
+                        <br />
+
+                        <div class="center-position">
+                            <p:commandButton value="OK" onclick="PF('bui').show();" oncomplete="PF('bui').hide();PF('confDlgTradeCert').hide();"
+                                             update="trade_panel"  action="#{issueTradeCert.click}"
+                                             icon="ui-icon-check"  >
+                            </p:commandButton>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:outputPanel id="trade_panel">
+                    <!-- __________________________________________MH DMS WORK [START]________________________________________________________________________________ -->
+
+
+                    <p:dialog id="viewUploaded__dialogShowImage" modal="true" widgetVar="ShowImage" header="== Displaying D.M.S Utility : Uploaded Documents Viewier ==" closeOnEscape="true" closable="true" dynamic="true" draggable="false" resizable="false">
+                        <p:ajax event="close" listener="#{issueTradeCert.handleShowImageClose}" />
+                        <p:outputPanel id="scandocument">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <iframe  src="#{issueTradeCert.dmsFileServerAPIString}"  height="550" width="1200" frameborder="0" scrolling="yes" marginheight="1" marginwidth="1"/>
+                                </div> 
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+                    <p:dialog id="deficiencyMailGeneratePopupTC"  responsive="true" closeOnEscape="true" maximizable="true"   
+                              widgetVar="mailGenerateDlgTradeCert" width="60%" height="100%" minimizable="true"
+                              modal="true" closable="true" hideEffect="explode"
+                              header="Trade Certificate Application Receive Deficiency Mail Generation Panel..."> 
+
+
+                        <p:outputPanel id="mail_panel_tc">
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText  value="To: &#160;&#160;" styleClass="font-bold"/>
+                                    <h:outputText value="#{issueTradeCert.applicantMailId}" />
+                                </div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText  value="From: &#160;&#160;" styleClass="font-bold"/>
+                                    <h:outputText value="nic-vahandl@nic.in via nic.in" />
+
+
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+                                    <label class="field-label resp-label-section">
+                                        <h:outputText  value="Subject: &#160;&#160; #{issueTradeCert.deficiencyMailSubject}" styleClass="font-bold"/>
+                                    </label>
+                                    <p:outputLabel id="deficiencyMailSubject" value="" />
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+                                    <h:outputText id="deficiencyMailContentToBeSent" value="#{issueTradeCert.deficiencyMailContent}" escape="false"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-11">
+                                    <p:inputTextarea id="rejectionReasons" value="#{issueTradeCert.rejectionReasons}" rows="4" cols="120" maxlength="400" autoResize="false"/>
+                                </div>
+                            </div>
+
+
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+
+                                    <div class="text-info bottom-space">** Allowed to enter 400 characters having {0-9}, {a-z}, {A-Z}, {space}, {coma}, {forward-slash}, {back-slash}, {colon}, {semi-colon}, {square-brackets}, {parentheses}, {hyphen}, {underscore}, {period}, {single-quote}, {double-quote}, {curly-braces}, {dollar}, {percentage}, {^},(ampersant), {star}, {plus}, {tilt}, {Exclamation-point}</div>                               
+                                    <div class="text-info bottom-space">** Not Allowed to enter {|}, {=}, {escape-sequences [\n,\t,\r....]}</div>
+                                    <div>Best Regards,<br/>
+                                        Transport Department
+                                        <h:outputText id="stateNameMentionedInDeficiencyMail_txt" value="Government Of #{issueTradeCert.stateNameMentionedInDeficiencyMail}" styleClass="bottom-space inline-section font-bold" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="deficiencyMailGenerationDlgButton" value="Send" action="#{issueTradeCert.sendRejectionMessages()}" oncomplete="PF('mailGenerateDlgTradeCert').hide();PF('mailGenerationBlocker').hide();"
+                                                     icon="ui-icon-mail-closed" onclick="PF('mailGenerationBlocker').show();" />
+                                    <p:commandButton value="Cancel" oncomplete="PF('mailGenerateDlgTradeCert').hide();"  icon="ui-icon-close" />
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position red">
+                                    *** <span class="font-bold">NOTE: </span> This is a system generated email, please do not reply. ***
+                                </div>
+
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+                    <!-- __________________________________________MH DMS WORK [END]________________________________________________________________________________ -->
+                    <!--                    <p:growl id="msgs" showDetail="true"  autoUpdate="true" showSummary="false" life="3000"/>
+                                        <p:messages autoUpdate="true" showDetail="true" showSummary="false" closable="true"/>-->
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <h1 class="header-main"> Issue Of Trade Certificate </h1>
+                        </div>
+                    </div>
+
+                    <p:panel header="Trade Certificate Application Details" id="appl_no_pnl" styleClass="top-space bottom-space" visible="#{issueTradeCert.visibleTradeCertificateApplicationPanel}">
+                        <!-- __________________________________________MH DMS WORK [START]________________________________________________________________________________ -->
+                        <p:outputPanel rendered="#{issueTradeCert.tmConfigDobj.tmTradeCertConfigDobj.documentsUploadNRevert 
+                                                   and !issueTradeCert.rtoSideAppl
+                                                   and issueTradeCert.issueTradeCertDobj.getNewRenewalTradeCert() ne issueTradeCert.ENDORSEMENT_CONSTANT_VAL}">
+                            <br/>
+                            <h:outputText value="*Working with the form:-" styleClass="text-info bottom-line"/>
+                            <br/>
+                            <h:outputText value="Step 1: Click on 'Hard Copy Physically Received' to log the latest timestamp of receiving the hard copies of [Fee-Receipt, Uploaded mandatory Document(s), Form-16]" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 2: Click on 'Open Uploaded Documents' to check all the uploaded attached documents" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 3: (If deficiency found in the uploaded documents):" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="|----> Click on 'Compose Deficiency Mail' to send deficiency mail to the applicant" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="|----> Click on 'Save-Options' -> 'File Movement' -> 'Revert Back for Rectification' in order to revert the application for reverification" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 4: (If NO deficiency found in the uploaded documents):" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="|----> Click on 'Save-Options' -> 'File Movement' -> 'Proceed to Next Seat' in order to forward the application for grant and print T.C" styleClass="green"/>
+                            <br/>
+                            <div class="ui-grid-row bottom-space-50">
+
+                                <div class="ui-grid-col-7 ">
+                                    <p:commandButton id="hardCopyPhysicallyReceivedBtn_for_verify"  rendered="#{issueTradeCert.showHardCopyReceivedButton}" value="Hard Copy Physically Received" icon="ui-icon-circle-check" action="#{issueTradeCert.markHardCopyReceived}"  update="appl_no_pnl" disabled="#{issueTradeCert.disableSaveButton}">
+                                        <p:confirm header="Confirmation" message="Have you received the hard copies of all the mandatory documents ?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                    <p:outputPanel id ="markHardCopyReceivedOutputPanel_for_verify" rendered="#{issueTradeCert.currentTimeStampAsMarkHardCopyReceivedInStringFormat ne '' and issueTradeCert.showHardCopyReceivedButton}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 green font-bold">
+                                                Hard copies(self-attested) of all mandatory documents have been received at <h:outputText id="hardCopyPhysicallyReceivedTimeStamp_for_verify" value="'#{issueTradeCert.currentTimeStampAsMarkHardCopyReceivedInStringFormat}'" styleClass="red font-bold"/>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel> 
+                                </div>
+
+                                <div class="ui-grid-col-3 right-position">
+                                    <p:commandButton id ="open_uploaded_documents_for_verify" value="Open Uploaded Documents"  ajax="true" immediate="true"  onclick="PF('bui_fancy').show();" 
+                                                     actionListener="#{issueTradeCert.openUploadedDocuments()}" update="viewUploaded__dialogShowImage" icon="ui-icon-folder-open"  disabled="#{issueTradeCert.disableSaveButton}"/>
+                                </div>
+
+                                <div class="ui-grid-col-2 ">
+                                    <p:commandButton id ="mail_for_verify" value="Compose Deficiency Mail"  ajax="true" immediate="true"  onclick="PF('bui_fancy').show();" 
+                                                     oncomplete="PF('mailGenerateDlgTradeCert').show();PF('bui_fancy').hide();" 
+                                                     onsuccess="PF('mailGenerateDlgTradeCert').show();PF('bui_fancy').hide();" 
+                                                     actionListener="#{issueTradeCert.generateDeficiencyMailOpeningMatter()}" icon="ui-icon-script" update="deficiencyMailGeneratePopupTC" disabled="#{issueTradeCert.disableSaveButton}"/>
+                                </div>
+
+
+                            </div>
+                        </p:outputPanel>
+                        <!-- __________________________________________MH DMS WORK [END]________________________________________________________________________________ -->
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-1 right-position right-space">
+                                <p:outputLabel  id="lb_appl" value="#{label.appl_no}" />
+                            </div>
+                            <div class="ui-grid-col-1">
+                                <h:outputText id="lb_appl_no" value="#{issueTradeCert.issueTradeCertDobj.applNo}" styleClass="font-bold"/>
+                            </div>
+                            <div class="ui-grid-col-1 right-position right-space">
+                                <p:outputLabel id="lb_dealer_for" value="#{label.applicant}"/>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <h:outputText id="lb_dealer_name" value="#{issueTradeCert.issueTradeCertDobj.dealerName}" styleClass="font-bold"/>
+                            </div>
+                            <div class="ui-grid-col-2 right-position right-space">
+                                <p:outputLabel id="lb_trade_cert_type_label" value="#{label.appl_trade_cert_type}"/>
+                            </div>
+                            <div class="ui-grid-col-1">
+                                <h:outputText id="lb_trade_cert_type" value="#{issueTradeCert.tradeCertType}" styleClass="font-bold"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:panel header="Application Sections Details" id="application_sections_panel" visible="#{issueTradeCert.visibleApplicationDetailPanel}">
+                                    <p:dataTable selection="#{issueTradeCert.issueTradeCertDobj}" rowKey="#{issueTradeCertDobj.srNo}" var="issueTradeCertDobj" id="application_sections_data_table" styleClass="top-space bottom-space" value="#{issueTradeCert.applicationSectionsList}"  paginator="false" >
+                                        <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                            <h:outputText  id="lb_sr_no" value="#{issueTradeCertDobj.srNo}" />
+                                        </p:column>
+                                        <c:if test="#{issueTradeCert.renew or issueTradeCert.duplicate}">
+                                            <p:column headerText="#{label.trade_cert_no_label}" width="15%">
+                                                <h:outputText  id="lb_cert_no" value="#{issueTradeCertDobj.tradeCertNo}" />
+                                            </p:column>
+                                        </c:if>
+                                        <p:column headerText="#{label.vh_catg}">
+                                            <h:outputText  id="lb_veh_catg_for" value="#{issueTradeCertDobj.vehCatgName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{label.fuel}" rendered="#{issueTradeCert.displayFuel}" width="15%">
+                                            <p:outputLabel  id="lb_fuel_type_for" value="#{issueTradeCertDobj.fuelTypeName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{label.no_of_allowed_vehicles}" width="15%" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                            <h:outputText  id="lb_no_of_allowed_vehicles" value="#{issueTradeCertDobj.noOfAllowedVehicles}"/>
+                                        </p:column>
+                                        <c:if test="#{issueTradeCert.renew or issueTradeCert.duplicate}">
+                                            <p:column headerText="#{label.prev_valid_upto}" style="width: 10%;">
+                                                <h:outputText  id="lb_valid_upto" value="#{issueTradeCertDobj.validUptoAsString}"/>
+                                            </p:column>
+                                        </c:if>
+                                    </p:dataTable>
+                                    <p:outputPanel rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 right-position right-space">
+                                                Total number of trade certificates issued to '<h:outputText value="#{issueTradeCert.issueTradeCertDobj.dealerName}" styleClass="font-bold"/>': &#160;&#160;&#160;&#160;&#160;&#160;
+                                                <h:outputText id="tf_grand_total" value="#{issueTradeCert.noOfVehGrandTotal}" styleClass="font-bold welcome-sub-heading-size" />
+                                            </div>
+                                        </div>
+                                    </p:outputPanel>  
+                                </p:panel>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <c:choose>
+                                    <c:when test="#{(!(issueTradeCert.renew or issueTradeCert.duplicate)) and (issueTradeCert.tcForEachVehCatg)}">
+                                        Trade Certificate(s) have been issued with respect to the submitted application no:: '<h:outputText value="#{issueTradeCert.issueTradeCertDobj.applNo}" styleClass="font-bold"/>' to the dealer:: '<h:outputText value="#{issueTradeCert.issueTradeCertDobj.getDealerName()}" styleClass="font-bold"/>' 
+                                        <br/>
+                                        <br/>
+                                        <div class="bottom-space datatable-panel top-space left-position" >
+                                            <h:outputLabel value="Trade certificate numbers allocated for each and every vehicle category are as follows: " /> 
+                                        </div>
+                                        <p:panel header="Trade Certificate Number Categorization" id="trade_certificate_number_categorization_panel">
+                                            <p:dataTable rowKey="#{issueTradeCertDobj.srNo}" var="issueTradeCertDobj" id="trade_certificate_number_categorization_table" styleClass="datatable-panel-100 top-space bottom-space-50" value="#{issueTradeCert.applicationSectionsList}"  paginator="true" >
+                                                <p:column headerText="#{label.sr_no}" styleClass="center-position collumn-width font-bold right-space">
+                                                    <h:outputText  id="lb_sr_no" value="#{issueTradeCertDobj.srNo}" />
+                                                </p:column>
+                                                <p:column headerText="#{label.vh_catg}" styleClass="left-position font-bold">
+                                                    <h:outputText  id="lb_veh_catg_for" value="#{issueTradeCertDobj.vehCatgName}"/>
+                                                </p:column>
+                                                <p:column headerText="#{label.fuel}" rendered="#{issueTradeCert.displayFuel}" styleClass="left-position font-bold">
+                                                    <p:outputLabel  id="lb_fuel_type_for" value="#{issueTradeCertDobj.fuelTypeName}"/>
+                                                </p:column>
+                                                <p:column headerText="#{label.no_of_allowed_vehicles}" styleClass="left-position font-bold" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                                    <h:outputText  id="lb_no_of_allowed_vehicles" value="#{issueTradeCertDobj.noOfAllowedVehicles}"/>
+                                                </p:column>
+                                                <p:column headerText="#{label.trade_cert_no_label}" styleClass="left-position font-bold">
+                                                    <h:outputText  id="lb_cert_no" value="#{issueTradeCertDobj.tradeCertNo}"/>
+                                                </p:column>
+                                                <p:column headerText="Trade Certificate Range" styleClass="left-position font-bold" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                                    <h:outputText  id="lb_cert_no_range" value="#{issueTradeCertDobj.tradeCertNo}/1 - #{issueTradeCertDobj.tradeCertNo}/#{issueTradeCertDobj.noOfAllowedVehicles}" rendered="#{issueTradeCertDobj.noOfAllowedVehicles > 1}"/>
+                                                    <h:outputText  id="lb_cert_no_range_NA" value="#{issueTradeCertDobj.tradeCertNo}/1" rendered="#{issueTradeCertDobj.noOfAllowedVehicles == 1}"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:panel>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:if test="#{ (!(issueTradeCert.renew or issueTradeCert.duplicate))and (not empty issueTradeCert.issueTradeCertDobj.tradeCertNo)}">
+                                            Trade Certificate issued with respect to the submitted application no:: '<h:outputText value="#{issueTradeCert.issueTradeCertDobj.applNo}" styleClass="font-bold"/>' to the dealer:: '<h:outputText value="#{issueTradeCert.issueTradeCertDobj.getDealerName()}" styleClass="font-bold"/>' with the number : &#160;&#160;&#160;&#160;&#160;&#160;
+                                            <h:outputText id="tf_trade_cert_no" value="#{issueTradeCert.issueTradeCertDobj.tradeCertNo}" styleClass="font-bold red"/>
+                                        </c:if>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel id="outPnlSaveAndMoveBack">
+                                <ui:include src="/ui/role/file_movement_app_disapp.xhtml">
+                                    <ui:param name="app_disapp" value="#{issueTradeCert}"/>
+                                </ui:include>        
+                            </p:outputPanel>    
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:blockUI block="mail_panel_tc" widgetVar="mailGenerationBlocker">
+                    Sending the generated deficiency mail... please wait<br />
+                    <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </f:subview>
+            <p:blockUI block="new_trade_cert_subview:trade_panel" widgetVar="bui_fancy" >
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <p:blockUI block="new_trade_cert_subview:confirmationPopup" widgetVar="bui" >
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+
+        </div>
+    </ui:define>
+</ui:composition>

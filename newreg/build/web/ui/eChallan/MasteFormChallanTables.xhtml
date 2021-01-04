@@ -1,0 +1,1432 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content22">
+        <h:form prependId="false">
+            <h:body>
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <span class="header-main">Master Challan Management</span>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="error_msg"  ></p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:panel id="mastertable">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section center-position">
+                                                <p:outputLabel id="selectLabel" value="SELECT MASTER TABLE" styleClass="caption dialogTitle-text"/>
+                                            </label>
+                                            <p:selectOneMenu id="combo" value="#{challanbean.combovalue}" widgetVar="Select" >
+                                                <f:selectItems value="#{challanbean.combofilllist}" />
+                                                <p:ajax event="change" listener="#{challanbean.checkcombovalues()}" update="error_msg panelchallan panelcourt panelda paneldapenalty  panelexsch paneloffence paneloffpenalty  panelovrloadsch" />  
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row center-position top-space bottom-space">
+                                        <div class="ui-grid-col-12">
+                                            <p:commandButton value="Add New Record" >
+                                                <p:ajax event="click"  listener="#{challanbean.hideandshowpanel(challanbean.combovalue)}" update="error_msg,dialog_Panel"/>
+                                            </p:commandButton> 
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p:outputPanel id="dialog_Panel">
+
+                    <p:dialog id="select" widgetVar="select">  
+                        <div class="top-space bottom-space left-space right-space">
+                            Please select the value from "Select Master Table" drop down
+                        </div> 
+                    </p:dialog>
+                    <p:dialog id="CHALLANBOOK"  widgetVar="echallan.vm_challan_book"  header="CHALLAN BOOK MASTER" width="1000px" minWidth="500" height="350px" modal="true" dynamic="true" closeOnEscape="true" >
+                        <p:ajax event="close"  update="CHALLANBOOK"/>
+                        <p:messages id="chlnmsg"  ></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                <h:outputLabel id="owncodemsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  for="emp_cd"  value="User Code"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:selectOneMenu id="emp_cd" value="#{challanbean.VM_CHALLANBOOKEMPCODE}"  filterMatchMode="contains"    required="true" requiredMessage="Please Select The User Name" filter="true" >
+                                    <f:selectItem itemLabel="Select" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItems value="#{challanbean.userCodeList}" />
+                                    <f:ajax execute="emp_cd" event="change" listener="#{challanbean.showOfficeList()}" render="chlnoffcd"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Book No"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="book_no" value="#{challanbean.VM_CHALLANBOOKNO}"  maxlength="4" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The Book No">
+                                    <p:ajax event="blur"  listener="#{challanbean.isBookNoExist()}"  update="chlnmsg book_no"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel   value="Challan No From"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText  id="chaln_no_from" value="#{challanbean.VM_CHALLANBOOK_NOFROM}"  maxlength="6"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter Challan No from">
+                                    <p:ajax event="change" immediate="true" process="@this" update="chlnmsg" />
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Challan No Upto"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="chaln_no_upto" value="#{challanbean.VM_CHALLANBOOK_NOUPTO}"  maxlength="6"   onkeypress="return checkIt(event);"   required="true"  requiredMessage="Please Enter Challan No Upto ">
+                                    <p:ajax event="blur" process="@this" update="chlnmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Challan No Curr."/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="curr_chaln_no" value="#{challanbean.VM_CHALLANBOOK_NOCURRENT}"  maxlength="6"   onkeypress="return checkIt(event);"   required="true"  requiredMessage="Please Enter Current Challan No ">
+                                    <p:ajax event="blur" process="@this" update="chlnmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Expired"/>  
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:selectOneMenu id="isexpired" value="#{challanbean.VM_CHALLANBOOK_EXPIRED}" filter="true" filterMatchMode="contains"  required="true" requiredMessage="Please Select Expired" >
+                                    <f:selectItem itemLabel="Select" itemValue="-1"  noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                    <f:selectItem itemLabel="NO" itemValue="N"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Issue Date"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:calendar id="chlndate" value="#{challanbean.VM_CHALLANBOOK_ISSDATE1}" pattern="dd/MM/yyyy HH:mm:ss" required="true" requiredMessage="Please Enter Issue Date ">  
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="GMT+5"/>
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Issue By"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="chlnissby" value="#{challanbean.VM_CHALLANBOOK_ISSBY}" maxlength="10"  required="true" styleClass="text-uppercase" requiredMessage="Please Enter Issue By">
+                                    <p:ajax event="blur" process="@this" update="chlnmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Office Code"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+
+                                <p:selectOneMenu id="chlnoffcd" value="#{challanbean.VM_CHALLANBOOK_OFFICECODE}"   required="true" requiredMessage="Please Select The Emp Code" filter="true"  filterMatchMode="contains" >
+                                    <f:selectItem  itemLabel="Select" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItems value="#{challanbean.officeList}" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12"> 
+                                <p:commandButton id="chlnbksave" value="Save"  actionListener="#{challanbean.addNewRecordTable}" styleClass="buttonlabel"  update="chlnmsg challantable emp_cd book_no chaln_no_from chaln_no_upto curr_chaln_no isexpired chlndate chlnissby chlnoffcd "  process="CHALLANBOOK">                                
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dialog>                
+                    <p:dialog id="COURT" widgetVar="echallan.vm_courts"  header="COURT MASTER" width="1000px" minWidth="500" height="250px" modal="true" dynamic="true" closeOnEscape="true" >
+                        <p:messages id="courtmsg"  ></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                <h:outputLabel id="courterrmsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="COURT CODE"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="courtcd" value="#{challanbean.VM_COURT_CODE}"  maxlength="5"   onkeypress="return checkIt(event);"  required="true"  requiredMessage="Please Enter The Court Code">
+                                    <p:ajax event="blur" process="@this" update="courtmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="COURT NAME"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="courtname" value="#{challanbean.VM_COURT_NAME}" maxlength="30"   required="true" styleClass="text-uppercase" requiredMessage="Please Enter The Court Name">
+                                    <p:ajax event="blur" process="@this" update="courtmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12"> 
+                                <p:commandButton id="courtcdsave" value="Save" actionListener="#{challanbean.addNewRecordTable}"   styleClass="buttonlabel" update=" courtmsg  courttable courtcd courtname "   process="COURT">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dialog>                
+                    <p:dialog id="DAMASTER" widgetVar="echallan.vm_da"  header="DA MASTER" width="1000px" minWidth="500" height="250px" modal="true" dynamic="true" closeOnEscape="true" >
+                        <p:messages id="damsg"  ></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                <h:outputLabel id="daerrmsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value=" Code"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dacode" value="#{challanbean.VM_DA_CODE}"  maxlength="3"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Da Code" >
+                                    <p:ajax event="blur" process="@this" update="damsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Description"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dadescr" value="#{challanbean.VM_DA_DESCR}" maxlength="50"  styleClass="text-uppercase"   required="true" requiredMessage="Please Enter The Da Description" >
+                                    <p:ajax event="blur" process="@this" update="damsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Offence Code"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:selectOneMenu id="daoffcd" value="#{challanbean.VM_DA_OFFCODE}" filter="true" filterMatchMode="contains"
+                                                 required="true" requiredMessage="Please Select The Da Offence Code">
+                                    <f:selectItem itemLabel="Select" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItems value="#{challanbean.offenceList}" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Da Schedule"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="daschd" value="#{challanbean.VM_DA_SCHEDULE}" maxlength="50"  required="true" styleClass="text-uppercase" requiredMessage="Please Enter The Da Schedule" >
+                                    <p:ajax event="blur" process="@this" update="damsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Da Sub Schedule"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dasubsch" value="#{challanbean.VM_DA_SUB_SCHEDULE}"  maxlength="50" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The Da Sub Schedule" >
+                                    <p:ajax event="blur" process="@this" update="damsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12"> 
+                                <p:commandButton id="dasave" value="Save" actionListener="#{challanbean.addNewRecordTable}"    styleClass="buttonlabel" update="damsg  Datable dacode dadescr daoffcd daschd dasubsch "   process="DAMASTER">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dialog>   
+
+                    <p:dialog id="DAPENALTY" widgetVar="echallan.vm_da_penalty"  header="DA PENALTY MASTER" width="1000px" minWidth="500" height="370px" modal="true" dynamic="true" closeOnEscape="true" >
+                        <p:messages id="dapenaltymsg"  ></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                <h:outputLabel id="dapenaltyerrmsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Sr No"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapsrno" value="#{challanbean.VM_DA_PENALTY_SRNO}"  maxlength="5"  disabled="true" onkeypress="return checkIt(event);"  required="true"  requiredMessage="Please Enter The Sr.No">
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Da Code"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapcode" value="#{challanbean.VM_DA_PENALTY_DACODE}"  maxlength="3"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Da Code">
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Vh Class"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:selectOneMenu id="dapnlvhclass" value="#{challanbean.VM_DA_PENALTY_VHCLASS}"  filterMatchMode="contains" filter="true" 
+                                                 required="true" requiredMessage="Please Select The Vehicle Class" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                    <f:selectItem itemLabel="Select" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItems value="#{challanbean.vechilelist}"  />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Owner Penalty"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapop" value="#{challanbean.VM_DA_PENALTY_OPENALTY}"   maxlength="8"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Owner Penalty" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Driver Penalty" />
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapdp" value="#{challanbean.VM_DA_PENALTY_DPENALTY}"  maxlength="8"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Driver Penalty">
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Conductor Penalty"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapcp" value="#{challanbean.VM_DA_PENALTY_CPENALTY}"  maxlength="8"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Conductor Penalty" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Sus Days"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapsd" value="#{challanbean.VM_DA_PENALTY_SUSDAYS}"  maxlength="3"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Sus Days" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Owner Penalty1"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapop1" value="#{challanbean.VM_DA_PENALTY_OPENALTY1}"  maxlength="8"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Owner Penalty1">
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Driver Penalty1"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapdp1" value="#{challanbean.VM_DA_PENALTY_DPENALTY1}" maxlength="8"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Driver Penalty1">
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Conductor Penalty1"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapcp1" value="#{challanbean.VM_DA_PENALTY_CPENALTY1}"  maxlength="8"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Conductor Penalty1" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Sus Days1"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapsd1" value="#{challanbean.VM_DA_PENALTY_SUSDAYS1}"  maxlength="3"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Sus Days1"  >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Owner Penalty2"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapop2" value="#{challanbean.VM_DA_PENALTY_OPENALTY2}"  maxlength="8"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Owner Penalty2" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Driver Penalty2" />
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapdp2" value="#{challanbean.VM_DA_PENALTY_DPENALTY2}"  maxlength="8"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Driver Penalty2" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Conductor Penalty2"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapcp2" value="#{challanbean.VM_DA_PENALTY_CPENALTY2}" maxlength="8"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Conductor Penalty2" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Sus Days2"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapsd2" value="#{challanbean.VM_DA_PENALTY_SUSDAYS2}"  maxlength="3"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter Sus Days2" >
+
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Sus Action"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="dapsa" value="#{challanbean.VM_DA_PENALTY_SUSACTION}" maxlength="1"   required="true" styleClass="text-uppercase" requiredMessage="Please Enter The Sus Action" >
+                                    <p:ajax event="blur" process="@this" update="dapenaltymsg"/>
+                                </p:inputText>   
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12"> 
+                                <p:commandButton id="dapenaltysave" value="Save" actionListener="#{challanbean.addNewRecordTable}"    styleClass="buttonlabel" update="dapenaltymsg  dapenaltytable dapsrno dapcode dapnlvhclass dapop dapdp dapcp dapsd dapop1 dapdp1 dapcp1 dapsd1 dapop2 dapdp2 dapcp2 dapsd2 dapsa "  process="DAPENALTY" >
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dialog>                
+
+                    <p:dialog id="EXSCHEDULE" widgetVar="echallan.vm_excess_schedule"  header="EXCESS SCHEDULE MASTER" width="800px" minWidth="500" height="300px" modal="true" dynamic="true" closeOnEscape="true" >
+                        <p:messages id="exschmsg"  ></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                <h:outputLabel id="exschedulemsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Sr. No"  /> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="exsrno" value ="#{challanbean.VM_EX_SCHEDULE_SRNO}" disabled="true" maxlength="5"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Excess Schedule Sr.No">
+                                    <p:ajax event="blur" process="@this" update="exschmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Type"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="extype" value="#{challanbean.VM_EX_SCHEDULE_TYPE1}"  maxlength="2" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The Excess Schedule Type" >
+                                    <p:ajax event="blur" process="@this" update="exschmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Vh Class"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:selectOneMenu id="exschvhclass" value="#{challanbean.VM_EX_SCHEDULE_VHCLASS}"   filterMatchMode="contains"  filter="true" 
+                                                 required="true" requiredMessage="Please Select The Excess Schedule Vehicle class" >
+                                    <p:ajax event="blur" process="@this" update="exschmsg"/>
+                                    <f:selectItem itemLabel="Select" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItems value="#{challanbean.vechilelist}"  />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Flat Rate"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="exflatrate" value="#{challanbean.VM_EX_SCHEDULE_FLATRATE}"  maxlength="7"   onkeypress="return checkIt(event);" required="true" requiredMessage="Please Enter The Excess Schedule Flat Rate">
+                                    <p:ajax event="blur" process="@this" update="exschmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel style="size: 50px" value="Unit Rate"  /> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="exunitrate" value="#{challanbean.VM_EX_SCHEDULE_UNITRATE}"  maxlength="7"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Excess Schedule Unit Rate">
+                                    <p:ajax event="blur" process="@this" update="exschmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12"> 
+                                <p:commandButton id="exschedulesave" value="Save" actionListener="#{challanbean.addNewRecordTable}"   styleClass="buttonlabel" update="exschmsg  Exstable exsrno extype exschvhclass exflatrate exunitrate "   process="EXSCHEDULE">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dialog>   
+                    <p:dialog id="OFFENCE" widgetVar="echallan.vm_offences"  header="OFFENCE MASTER" width="900px" minWidth="500" height="350px" modal="true" dynamic="true" closeOnEscape="true" >
+                        <p:messages id="offnmsg"  ></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                <h:outputLabel id="offencemsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Offence Code"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offcode" value="#{challanbean.VM_OFFENCE_CODE}" maxlength="3"   onkeypress="return checkIt(event);" disabled="true"   required="true" requiredMessage="Please Enter The Offence Code">
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Offence Description"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offdescr" value="#{challanbean.VM_OFFENCE_DESC}"  maxlength="150" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The Offence Description" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel value="MVA Clause"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offmva" value="#{challanbean.VM_OFFENCE_MVACLAUSE}"  maxlength="50" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The MVA Clause" disabled="true" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="CMVR Clause"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offcmvr" value="#{challanbean.VM_OFFENCE_CMVRCLAUSE}"  maxlength="50" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The CMVR Clause" disabled="true" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="SMVR Clause"  /> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offsmvr"  value="#{challanbean.VM_OFFENCE_SMVRCLAUSE}"  maxlength="50" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The SMVR Clause" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Additional Description"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offaddescr" value="#{challanbean.VM_OFFENCE_ADDLDESC}"  maxlength="100" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The Additional Description" >
+
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Punishment1"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offpn1" value="#{challanbean.VM_OFFENCE_PUNISHMENT1}"  maxlength="50" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The Punishment 1" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Punishment2"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="offpn2" value="#{challanbean.VM_OFFENCE_PUNISHMENT2}" maxlength="50" styleClass="text-uppercase" required="true" requiredMessage="Please Enter The Punishment 2" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Is Active For TPT"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:selectOneMenu id="isactivefortpt" value="#{challanbean.VM_OFFENCE_ISACT_TPT}"  
+                                                 filter="true" filterMatchMode="contains" required="true" requiredMessage="Please Select Is active for TPT or not" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                    <f:selectItem itemLabel="Select" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                    <f:selectItem itemLabel="NO" itemValue="N"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Is Active For Police"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:selectOneMenu id="isactiveforpolice" value="#{challanbean.VM_OFFENCE_ISACT_POLICE}" filter="true" filterMatchMode="contains"
+                                                 required="true" requiredMessage="Please Select Is active for Police or not" >
+                                    <p:ajax event="blur" process="@this" update="offnmsg"/>
+                                    <f:selectItem itemLabel="Select" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                    <f:selectItem itemLabel="NO" itemValue="N"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12"> 
+                                <p:commandButton id="offencesave" value="Save" actionListener="#{challanbean.addNewRecordTable}"   styleClass="buttonlabel" update=" offnmsg  offtable offcode offdescr offmva offcmvr offsmvr offaddescr offpn1 offpn2 isactivefortpt isactiveforpolice "   process="OFFENCE">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dialog>   
+                    <p:panel>
+                        <p:dialog id="OFFENCEPENALTY" widgetVar="echallan.vm_offence_penalty"  header="OFFENCE PENALTY MASTER" width="1000px" minWidth="500" height="300px" modal="true" dynamic="true" closeOnEscape="true" >
+                            <p:ajax event="close"  update="OFFENCEPENALTY"/>
+                            <p:messages id="offpnlmsg">
+                                <p:autoUpdate/>
+                            </p:messages>
+                            <div class="ui-grid-row center-position bottom-space">
+                                <div class="ui-grid-col-12">                       
+                                    <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                    <h:outputLabel id="offpenaltymsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-col-12"> 
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel value="Sr No"/> 
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:inputText id="offpsrno" value="#{challanbean.VM_OFF_PENALTY_SRNO}"  maxlength="5"  disabled="true" onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Sr.No" >
+                                        <p:ajax event="blur" process="@this" update="offpnlmsg"/>
+                                    </p:inputText>
+                                </div>
+
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel  value="Offence :"/>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:selectOneMenu id="offpnlcode"  value="#{challanbean.VM_OFF_PENALTY_CODE}"  filterMatchMode="contains" filter="true"
+                                                     required="true" requiredMessage="Please Select The Offence Code" >
+                                        <p:ajax event="blur" process="@this" update="offpnlmsg"/>
+                                        <f:selectItem itemLabel="Select" itemValue="" noSelectionOption="true"/>
+                                        <f:selectItems value="#{challanbean.offenceList}"  />
+                                        <p:ajax process="offpnlcode" listener="#{challanbean.getsectionOffenceWise()}" update="offpnlsectioncode" event="change"></p:ajax>
+                                    </p:selectOneMenu>
+
+                                </div>
+                            </div>
+                            <br></br>
+                            <div class="ui-grid-col-12"> 
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel  value="Vehicle Class"/>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:selectCheckboxMenu id="offpnlvhclass" value="#{challanbean.SELECT_VM_OFF_PENALTY_VHCLASS}" label="SELECT VEHICLE CLASS"  required="true" requiredMessage="Please Select Vehicle Class"
+                                                          filter="true" filterMatchMode="startsWith">
+                                        <f:selectItems value="#{challanbean.vechilelist}" />
+                                        <p:ajax event="change" listener="#{challanbean.checkOffence()}" update="offpnlvhclass"  process="@this" />
+                                    </p:selectCheckboxMenu>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel  value="Section :"/>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:selectOneMenu id="offpnlsectioncode" value="#{challanbean.VM_OFF_PENALTY_SECTIONCODE}"   filterMatchMode="startsWith" filter="true"
+                                                     required="true" requiredMessage="Please Select The Section Code" >
+                                        <p:ajax event="blur" process="@this" update="offpnlmsg"/>
+                                        <f:selectItem itemLabel="Select" itemValue="" noSelectionOption="true"/>
+                                        <f:selectItems value="#{challanbean.sectionList}"  />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-col-12"> 
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel  value=" Penalty 1"/>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:inputText id="offpop" value="#{challanbean.VM_OFF_PENALTY_OPENALTY}"  maxlength="8"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Owner Penalty" >
+                                        <p:ajax event="blur" process="@this" update="offpnlmsg"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel  value="Penalty 2"/>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:inputText  id="offpdp" value="#{challanbean.VM_OFF_PENALTY_DPENALTY}" maxlength="8"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The Driver Penalty"  >
+                                        <p:ajax event="blur" process="@this" update="offpnlmsg"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-col-12"> 
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel  value=" Penalty 3"/>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:inputText id="offpcp" value="#{challanbean.VM_OFF_PENALTY_CPENALTY}"  maxlength="8"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Conductor Penalty">
+                                        <p:ajax event="blur" process="@this" update="offpnlmsg"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel  value="Accused"/>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <p:selectCheckboxMenu id="offpnlAccused" value="#{challanbean.SELECTED_ACCUESD}" label="SELECT ACCUSED"  required="true" requiredMessage="Please Select Accused"
+                                                          filter="true" filterMatchMode="startsWith">
+                                        <f:selectItems value="#{challanbean.accuesdList}" />
+                                        <p:ajax event="change" listener="#{challanbean.checkAccused()}" update="offpnlAccused"  process="@this" />
+                                    </p:selectCheckboxMenu>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12"> 
+                                    <p:commandButton id="offpenaltysave" value="Save" actionListener="#{challanbean.addNewRecordTable}"    styleClass="buttonlabel" update=" offpnlmsg  offpnltytable  offpsrno offpnlcode offpnlvhclass offpnlsectioncode offpop offpdp offpcp offpnlAccused "   process="OFFENCEPENALTY">
+                                    </p:commandButton>
+                                </div>
+                            </div>
+
+                        </p:dialog>
+                    </p:panel>
+
+                    <p:dialog id="OVERLOADSCHEDULE" widgetVar="echallan.vm_overload_schedule"  header="OVERLOAD SCHEDULE MASTER" width="700px" minWidth="500" height="250px" modal="true" dynamic="true" closeOnEscape="true" >
+                        <p:messages id="ovlschdmsg"  ></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{challanbean.createUpdateTitle}" styleClass="caption dialogTitle-text" />
+                                <h:outputLabel id="ovldschedulemsg" value="#{challanbean.errLabelMsg}" escape="false"  styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Sr. No"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="ovlsrno"  value="#{challanbean.VM_OVLD_SCHEDULE_SRNO}"  maxlength="5"  disabled="true" onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Sr.No">
+                                    <p:ajax event="blur" process="@this" update="ovlschdmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Ld Wt Lower"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="ovlldlower"  value="#{challanbean.VM_OVLD_SCHEDULE_LDWTLOWER}"  maxlength="6"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The LdWtLower" >
+                                    <p:ajax event="blur" process="@this" update="ovlschdmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Ld Wt Upper"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="ovlldupper" value="#{challanbean.VM_OVLD_SCHEDULE_LDWTUPPER}"  maxlength="6"   onkeypress="return checkIt(event);"  required="true" requiredMessage="Please Enter The LdWtUpper" >
+                                    <p:ajax event="blur" process="@this" update="ovlschdmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Ld Wt Unit"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText  id="ovlldwtunit" value="#{challanbean.VM_OVLD_SCHEDULE_LDWTUNIT}" maxlength="1" styleClass="text-uppercase"  required="true" requiredMessage="Please Enter The LdWtUnit" >
+                                    <p:ajax event="blur" process="@this" update="ovlschdmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Flag Cf Amount"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="ovlfcf" value="#{challanbean.VM_OVLD_SCHEDULE_FLATCFAMT}" maxlength="7"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Flat Cf Amount">
+                                    <p:ajax event="blur" process="@this" update="ovlschdmsg"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Unit Cf Amount"/> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText id="ovlucf" value="#{challanbean.VM_OVLD_SCHEDULE_UNITCFAMT}"  maxlength="7"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The Unit Cf Amount">
+                                    <p:ajax event="blur" process="@this" update="ovlschdmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-12"> 
+                            <div class="ui-grid-col-3">
+                                <p:outputLabel  value="Wt Unit Val"/>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:inputText  id="ovlwtuval" value="#{challanbean.VM_OVLD_SCHEDULE_WTUNITVAL}"  maxlength="5"   onkeypress="return checkIt(event);"   required="true" requiredMessage="Please Enter The WtUnitVal"  >
+                                    <p:ajax event="blur" process="@this" update="ovlschdmsg"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12"> 
+                                <p:commandButton id="ovldschedulesave" value="Save" actionListener="#{challanbean.addNewRecordTable}"   styleClass="buttonlabel" update="ovlschdmsg ovltable ovlsrno ovlldlower ovlldupper ovlldwtunit ovlfcf ovlucf ovlwtuval "  process="OVERLOADSCHEDULE">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dialog>  
+                </p:outputPanel>
+                <p:outputPanel id="panelchallan">
+                    <p:panel   rendered="#{challanbean.challanpanel}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="challantable" />
+                        <p:dataTable id="challantable" value="#{challanbean.challanlist}" var="challan" editable="true" paginator="true" rows="5"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+
+                            <f:facet name="header">
+                                CHALLAN BOOK MASTER
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()" immediate="true"  />
+                            <p:ajax event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}"  oncomplete="onCellEditTableComplete()"/> 
+                            <p:column headerText="USER NAME">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <p:selectOneMenu value="#{challan.usercode}" disabled="true">
+                                            <f:selectItems value="#{challanbean.userCodeList}"></f:selectItems>
+                                        </p:selectOneMenu>
+
+                                    </f:facet> 
+                                    <f:facet name="input">
+                                        <p:selectOneMenu value="#{challan.usercode}" >
+                                            <f:selectItems value="#{challanbean.userCodeList}"></f:selectItems>
+                                        </p:selectOneMenu>
+
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="BOOK NO">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{challan.book_no}" /></f:facet> 
+                                    <f:facet name="input">
+                                        <h:outputText value="#{challan.book_no}" styleClass="text-uppercase"  />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="CHALLAN NO FROM">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{challan.chln_frm}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{challan.chln_frm}" style="width:100%" maxlength="6" onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="CHALLAN NO UPTO">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{challan.chln_upto}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{challan.chln_upto}" style="width:100%" maxlength="6"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="CHALLAN NO CURRENT">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{challan.curr_chln_no}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{challan.curr_chln_no}" style="width:100%" maxlength="6"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EXPIRED">
+                                <p:cellEditor>
+                                    <f:facet name="output" >
+                                        <p:selectOneMenu id="is_expired_output" value="#{challan.expired}"  disabled="true"  >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                            <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet> 
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="is_expired_input" value="#{challan.expired}"   >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                            <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="ISSUE DATE">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{challan.iss_dt}" /></f:facet> 
+                                    <f:facet name="input">
+                                        <p:calendar  value="#{challan.iss_dt}" pattern="dd-MM-yyyy"   immediate="true"  >
+                                            <f:convertDateTime pattern="dd-MM-yyyy"  />
+                                        </p:calendar>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="ISUE BY ">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{challan.iss_by}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{challan.iss_by}" styleClass="text-uppercase" style="width:100%" maxlength="10"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="OFFICE CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{challan.off_cd}" /></f:facet> 
+                                    <f:facet name="input">
+                                        <h:outputText value="#{challan.off_cd}"   />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor />
+                            </p:column> 
+                        </p:dataTable>  
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="panelcourt">
+                    <p:panel  rendered="#{challanbean.courtpanel}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="courttable" />
+                        <p:dataTable id="courttable" value="#{challanbean.courtlist}" var="court" editable="true" paginator="true" rows="5" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+                            <f:facet name="header">
+                                COURT MASTER
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()"/>  
+                            <p:ajax event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}"  oncomplete="onCellEditTableComplete()" /> 
+                            <p:column headerText="COURT CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{court.courtcode}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:outputText id="modelInput" value="#{court.courtcode}"  />
+                                    </f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="COURT NAME">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{court.courtname}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{court.courtname}"  styleClass="text-uppercase" style="width:100%" maxlength="30"   /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor />
+                            </p:column>        
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="panelda">
+                    <p:panel  rendered="#{challanbean.dapanel}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="Datable" />
+                        <p:dataTable id="Datable" value="#{challanbean.dalist}" var="da" editable="true"  paginator="true" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+                            <f:facet name="header">
+                                DA MASTER
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()"/>  
+                            <p:ajax event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}"  oncomplete="onCellEditTableComplete()" /> 
+                            <p:column headerText="DA CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{da.code}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{da.code}" style="width:100%" maxlength="3" disabled="true"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="DA DESCRIPTION">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{da.description}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{da.description}" styleClass="text-uppercase" style="width:100%" maxlength="50"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="OFFENCE CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <p:selectOneMenu  value="#{da.offence_code}" style="width:100%" disabled="true" >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>  
+                                            <f:selectItems value="#{challanbean.offenceList}"  />
+                                        </p:selectOneMenu>
+                                    </f:facet> 
+                                    <f:facet name="input">
+                                        <p:selectOneMenu  value="#{da.offence_code}" style="width:100%"  >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>  
+                                            <f:selectItems value="#{challanbean.offenceList}"  />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="DA SCHEDULE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{da.da_schedule}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{da.da_schedule}" styleClass="text-uppercase" style="width:100%" maxlength="50"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="DA SUB SCHEDULE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{da.da_sub_schedule}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{da.da_sub_schedule}" styleClass="text-uppercase" style="width:100%" maxlength="50"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor />
+                            </p:column> 
+                        </p:dataTable>  
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="paneldapenalty">
+                    <p:panel  rendered="#{challanbean.dapenaltypanel}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="dapenaltytable" />
+                        <p:dataTable id="dapenaltytable" value="#{challanbean.daPenaltylist}" var="dapnl" editable="true" paginator="true"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+                            <f:facet name="header">
+                                DA PENALTY MASTER
+                            </f:facet>
+                            <p:ajax id="re" event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()" />  
+                            <p:ajax id="rc" event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}" oncomplete="onCellEditTableComplete()" /> 
+                            <p:column headerText="SR NO">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.srno}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.srno}" style="width:100%" disabled="true" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="DA CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.dacode}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.dacode}" style="width:100%" maxlength="3"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="VH CLASS" style="width: 100px;">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <p:selectOneMenu value="#{dapnl.vhclass}" style="width:100%" disabled="true"  >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>  
+                                            <f:selectItems value="#{challanbean.vechilelist}"  />
+                                        </p:selectOneMenu>
+                                    </f:facet> 
+                                    <f:facet name="input">
+                                        <p:selectOneMenu value="#{dapnl.vhclass}" style="width:100%"   >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>  
+                                            <f:selectItems value="#{challanbean.vechilelist}"  />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="OWNER PENALTY">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.openalty}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.openalty}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="DRIVER PENALTY">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.dpenalty}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.dpenalty}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="CONDUCTOR PENALTY">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.cpenalty}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.cpenalty}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="SUS DAYS">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.susdays}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.susdays}" style="width:100%" maxlength="3"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="OWNER PENALTY1">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.openalty1}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.openalty1}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="DRIVER PENALTY1">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.dpenalty1}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.dpenalty1}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="CONDUCTOR PENALTY1">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.cpenalty1}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.cpenalty1}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="SUS DAYS1">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.susdays1}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.susdays1}" style="width:100%" maxlength="3"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="OWNER PENALTY2">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.openalty2}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.openalty2}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="DRIVER PENALTY2">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.dpenalty2}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.dpenalty2}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="CONDUCTOR PENALTY2">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.cpenalty2}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.cpenalty2}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="SUS DAYS2">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.susdays2}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.susdays2}" style="width:100%" maxlength="3"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="SUS ACTION">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dapnl.susaction}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{dapnl.susaction}"  styleClass="text-uppercase" style="width:100%" maxlength="1"   /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor/>
+                            </p:column> 
+                        </p:dataTable>  
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="panelexsch" >
+                    <p:panel  rendered="#{challanbean.exspanel}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="Exstable" />
+                        <p:dataTable id="Exstable" value="#{challanbean.exslist}" var="ex" editable="true"  paginator="true" rows="6"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+                            <f:facet name="header">
+                                EXCESS SCHEDULE MASTER
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()"/>  
+                            <p:ajax event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}"  oncomplete="onCellEditTableComplete()" /> 
+                            <p:column headerText="SR NO">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ex.srno}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="modelInput" value="#{ex.srno}" style="width:100%" disabled="true"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="TYPE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ex.type}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{ex.type}" styleClass="text-uppercase" style="width:100%" maxlength="2"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="VH CLASS">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <p:selectOneMenu id="davecclass11" value="#{ex.vh_class}" style="width:100%" disabled="true" >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>  
+                                            <f:selectItems value="#{challanbean.vechilelist}"  />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="davecclass" value="#{ex.vh_class}" style="width:100%"  >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>  
+                                            <f:selectItems value="#{challanbean.vechilelist}"  />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="FLAT RATE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ex.flatrate}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{ex.flatrate}" style="width:100%" maxlength="7"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="UNIT RATE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ex.unitrate}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{ex.unitrate}" style="width:100%" maxlength="7"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor />
+                            </p:column>        
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="paneloffence" >
+                    <p:panel rendered="#{challanbean.offencepanel}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="offtable" />
+                        <p:dataTable id="offtable" value="#{challanbean.offlist}" var="off" editable="true" scrollable="true" rows="6" paginator="true"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+                            <f:facet name="header">
+                                OFFENCE MASTER
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()"/>  
+                            <p:ajax event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}"  oncomplete="onCellEditTableComplete()" /> 
+                            <p:column headerText="OFFENCE CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.off_code}" /></f:facet>
+                                    <f:facet name="input"><h:outputText id="modelInput" value="#{off.off_code}"   /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="OFFENCE DESCRIPTION">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.offence_desc}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{off.offence_desc}"  styleClass="text-uppercase" style="width:100%" maxlength="150" disabled="true" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="MVA CLAUSE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.mva_clause}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{off.mva_clause}" styleClass="text-uppercase" style="width:100%" maxlength="50"   disabled="true" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="CMVR CLAUSE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.cmvr_clause}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{off.cmvr_clause}" styleClass="text-uppercase" style="width:100%" maxlength="50"  disabled="true" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="SMVR CLAUSE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.smvr_clause}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{off.smvr_clause}" styleClass="text-uppercase" style="width:100%" maxlength="50"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="ADDITIONAL DESCRIPTION">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.addl_desc}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{off.addl_desc}" styleClass="text-uppercase" style="width:100%" maxlength="100"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="PUNISHMENT 1">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.punishment1}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{off.punishment1}" styleClass="text-uppercase" style="width:100%" maxlength="50"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="PUNISHMENT 2">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{off.punishment2}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{off.punishment2}" styleClass="text-uppercase" style="width:100%" maxlength="50"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="IS ACTIVE FOR TPT">
+                                <p:cellEditor>
+                                    <f:facet name="output"
+                                             >
+
+                                        <p:selectOneMenu id="isactivefor_tpt11" value="#{off.isactivefor_tpt}"   disabled="true" >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                            <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    <f:facet name="input">
+
+                                        <p:selectOneMenu id="isactivefor_tpt" value="#{off.isactivefor_tpt}"   required="true" requiredMessage="Please Select Is active for TPT or not" >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                            <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                        </p:selectOneMenu>
+
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="IS ACTIVE FOR POLICE">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+
+                                        <p:selectOneMenu id="isactivefor_police11" value="#{off.isactivefor_police}"   disabled="true" >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                            <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    <f:facet name="input">
+
+                                        <p:selectOneMenu id="isactivefor_police" value="#{off.isactivefor_police}"   required="true" requiredMessage="Please Select Is active for TPT or not" >
+                                            <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                            <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor />
+                            </p:column>        
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="paneloffpenalty">
+                    <p:panel  rendered="#{challanbean.offPnlpanel}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="offpnltytable" />
+                        <p:dataTable id="offpnltytable" value="#{challanbean.offPnllist}" var="offpnl" editable="true"  paginator="true" rows="6"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+                            <f:facet name="header">
+                                OFFENCE PENALTY MASTER
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()"/>
+                            <p:ajax event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}"  oncomplete="onCellEditTableComplete()" /> 
+                            <p:column headerText="SR NO">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{offpnl.srno}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{offpnl.srno}" style="width:100%" disabled="true" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="OFFENCE CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{offpnl.oldoffcode}" />
+                                    </f:facet> 
+                                    <f:facet name="input">
+
+                                        <h:outputText value="#{offpnl.oldoffcode}" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="VH CLASS">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{offpnl.vhclass}" /></f:facet> 
+                                    <f:facet name="input">
+
+                                        <h:outputText value="#{offpnl.vhclass}" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="SECTION CODE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{offpnl.sectioncd}" /></f:facet> 
+                                    <f:facet name="input">
+
+                                        <h:outputText value="#{offpnl.sectioncd}" />
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText=" PENALTY 1">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{offpnl.openalty}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{offpnl.openalty}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText=" PENALTY 2">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{offpnl.dpenalty}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{offpnl.dpenalty}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText=" PENALTY 3">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{offpnl.cpenalty}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{offpnl.cpenalty}" style="width:100%" maxlength="8"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Offence Applied On">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{offpnl.accused}" /></f:facet> 
+                                    <f:facet name="input"><p:inputText value="#{offpnl.accused}" style="width:100%" maxlength="8" disabled="true"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor />
+                            </p:column> 
+                        </p:dataTable>  
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="panelovrloadsch">
+                    <p:messages id="tblovlschdmsg" ></p:messages>
+                    <p:panel  rendered="#{challanbean.ovlpanel}" >
+                        <p:remoteCommand name="onCellEditTableComplete" update="ovltable" />
+                        <p:dataTable id="ovltable" value="#{challanbean.ovllist}" var="ovl" editable="true" paginator="true" rows="5"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+                            <f:facet name="header">
+                                OVERLOAD SCHEDULE MASTER
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{challanbean.UpdateMasterTable}" oncomplete="onCellEditTableComplete()"/>  
+                            <p:ajax event="rowEditCancel" listener="#{challanbean.DeleteRowwiseData}" oncomplete="onCellEditTableComplete()" /> 
+                            <p:column headerText="SR NO">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ovl.srno}" /></f:facet>
+                                    <f:facet name="input"><p:inputText  value="#{ovl.srno}" style="width:100%" disabled="true"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="LD WT LOWER">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{ovl.ld_wt_lower}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="b" value="#{ovl.ld_wt_lower}" style="width:100%"  maxlength="6"   onkeypress="return checkIt(event);" >
+
+                                        </p:inputText>
+
+
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="LD WT UPPER">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ovl.ld_wt_upper}" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="a" value="#{ovl.ld_wt_upper}" style="width:100%"  maxlength="6"   onkeypress="return checkIt(event);"  >
+
+                                        </p:inputText></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="LD WT UNIT">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ovl.ld_wt_unit}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{ovl.ld_wt_unit}" styleClass="text-uppercase" style="width:100%" maxlength="1"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="FLAT CF AMOUNT">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ovl.flat_cf_amt}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{ovl.flat_cf_amt}" style="width:100%" maxlength="7"   onkeypress="return checkIt(event);"   /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="UNIT CF AMOUNT">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ovl.unit_cf_amt}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{ovl.unit_cf_amt}" style="width:100%" maxlength="7"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="WT UNIT VALUE">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{ovl.wt_unit_val}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{ovl.wt_unit_val}" style="width:100%" maxlength="5"   onkeypress="return checkIt(event);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT" style="width:32px">
+                                <p:rowEditor />
+                            </p:column>        
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+            </h:body>
+        </h:form>
+    </ui:define>
+</ui:composition>

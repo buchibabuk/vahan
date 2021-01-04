@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head></h:head>
+    <h:body>
+        <h:form id="challanDtls" prependId="false">
+
+            <p:outputPanel id="challanDetailsPanelId" styleClass="top-space">                                       
+                <p:dataTable id="challanDetails" value="#{vehicleDetails.pendinglist}" var="virtual" rows="10"
+                             rendered="#{vehicleDetails.pendinglist.size()>0}"
+                             paginator="#{vehicleDetails.pendinglist.size()>10}" widgetVar="List" rowIndexVar="index" reflow="true">
+                    <f:facet name="header">
+                        <div class="left-position">
+                            Pending Challan
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Sr.No" >
+                        <h:outputText value="#{index +1}."/></p:column>
+                    <p:column headerText="Challan No">#{virtual.challan_no}</p:column>
+                    <p:column>
+                        <f:facet name="header">Challan <br/> Date</f:facet>
+                            #{virtual.challan_dt}
+                    </p:column>
+                    <p:column headerText="Challan Officer">#{virtual.chal_officer} </p:column>
+                    <p:column>
+                        <f:facet name="header">Compound <br/> Amount</f:facet>
+                            #{virtual.compFee}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Challan <br/> RTO Name</f:facet>
+                            #{virtual.officeDescr}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Offence <br/> Amount</f:facet>
+                            #{virtual.offence_amnt}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Offence <br/> Description</f:facet>
+                        <h:outputText value="#{virtual.offenceDesc}"/>    
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+
+            <p:outputPanel id="disposeDetailsPanelId" styleClass="top-space">                                       
+                <p:dataTable id="disposeDetailsId"  value="#{vehicleDetails.disposelist}" var="virtual" rows="10"
+                             paginator="#{vehicleDetails.disposelist.size()>10}" rendered="#{vehicleDetails.disposelist.size()>0}"
+                             widgetVar="List" rowIndexVar="index" reflow="true">
+                    <f:facet name="header">
+                        <div class="left-position">
+                            Disposed Challan
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Sr.No"> <h:outputText value="#{index +1}."/></p:column>
+                    <p:column headerText="Challan No">#{virtual.challan_no}</p:column>
+                    <p:column>
+                        <f:facet name="header">Challan <br/> Date</f:facet>
+                            #{virtual.challan_dt}
+                    </p:column> 
+                    <p:column headerText="Challan Officer">#{virtual.chal_officer} </p:column>
+                    <p:column headerText="Compound Amount">#{virtual.compFee}</p:column>
+                    <p:column headerText="Offence Description">#{virtual.offenceDesc}</p:column>
+                    <p:column headerText="Disposal Remark">#{virtual.remark}</p:column>
+                </p:dataTable>
+            </p:outputPanel>
+            <p:outputPanel id="challanDetailsdataId"  styleClass="top-space">                                       
+                <p:dataTable id="challanDetailsId"  value="#{vehicleDetails.challanlist}" var="challan" rows="10"
+                             rendered="#{vehicleDetails.challanlist.size()>0}" scrollable="true"
+                             paginator="#{vehicleDetails.challanlist.size()>10}" paginatorPosition="bottom" widgetVar="List" rowIndexVar="index" reflow="true">
+                    <f:facet name="header">
+                        <div class="left-position">
+                            Pending E-Challan
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Sr.No" width="10%">#{index +1}.</p:column>
+                    <p:column headerText="Challan No" width="15%">#{challan.challan_no}</p:column>
+                    <p:column headerText="Offence" width="50%">#{challan.offence}</p:column>
+                    <p:column headerText="Location" width="15%">#{challan.offence_place}</p:column>        
+                    <p:column headerText="Challan Date" width="10%">#{challan.challan_date_descr}</p:column>
+                    <p:column headerText="Compound Amount" width="10%">#{challan.compFee}</p:column>
+                </p:dataTable>
+            </p:outputPanel>
+
+            <p:outputPanel id="challanHistoryPanel" styleClass="top-space">    
+                <p:dataTable value="#{challanDetails.challanlist}" 
+                             rendered="#{challanDetails.challanlist.size()>0}"
+                             var="challanHist" rows="3"  scrollable="true"
+                             paginatorPosition="bottom" paginator="#{vehicleDetails.challanlist.size()>10}" 
+                             rowIndexVar="index" >
+                    <f:facet name="header">
+                        <div class="left-position">
+                            History of Challan
+                        </div>
+                    </f:facet>
+                    <p:column  width="50" headerText="Serial no ">
+                        #{index +1}
+                    </p:column>
+                    <p:column  width="150" headerText="Challan No"> 
+                        <h:outputText value="#{challanHist.challan_no}" />
+                    </p:column>
+                    <p:column  width="300" headerText="Offense Details Name/Act" >
+                        <ui:repeat var="offence" value="#{challanHist.offence_details}" >
+                            ♦
+                            <h:outputText value="#{offence.name}" />Act
+
+                            <h:outputText value="#{offence.act}" /><br/>
+                        </ui:repeat>
+                    </p:column>
+                    <p:column  width="150" headerText="Challan Place">
+                        <h:outputText value="#{challanHist.challan_place}" />
+                    </p:column>
+                    <p:column  width="150" headerText="Challan Date/Time">
+                        <h:outputText value="#{challanHist.date_time}" />
+                    </p:column>
+                    <p:column  width="150" headerText="State">
+                        <h:outputText value="#{challanHist.state_code}" />
+                    </p:column>
+                    <p:column  width="150"  headerText="RTO">
+                        <h:outputText value="#{challanHist.rto_name}" />
+                    </p:column>
+                    <p:column  width="150" headerText="Accussed Name">
+                        <h:outputText value="#{challanHist.accused_name}" />
+                    </p:column>
+                    <p:column  width="150" headerText="Amount">
+                        <h:outputText value="#{challanHist.amount}" />
+                    </p:column>
+                    <p:column  width="150" headerText="Challan Status">
+                        <h:outputText value="#{challanHist.challan_status}" />
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+        </h:form>    
+    </h:body>
+</html> 

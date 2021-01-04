@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22">       
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="Fee_detail" prependId="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <ui:include id="fee_recpt_no" src="/ui/recpt/form_current_rcpt_no.xhtml" />
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:panel id="permit_fee" header="Permit Application No." styleClass="top-space bottom-space"> 
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no" value="#{label.appl_no}"/>
+                            </label>
+                            <p:inputText id="appl_no"
+                                         immediate="true"  
+                                         readonly="true"
+                                         value="#{permit_fee.appl_no}"
+                                         size="30"/>
+                        </div>
+                    </div>
+                </p:panel>   
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:tabView id="workbench_tabview" styleClass="top-space bottom-space">
+                            <p:tab  title="Permit Fee Details" >
+                                <p:panel styleClass="bottom-space">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{label.regn_no}"/>
+                                            </label>
+                                            <p:inputText id="pre_regn_no" value="#{permit_fee.regn_no}" disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-8">
+                                            <p:outputPanel rendered="#{permit_fee.renderPermit_dtls}">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <label class="field-label resp-label-section">
+                                                            <p:outputLabel value="#{pmtLabel.period_mode}"/>
+                                                        </label>
+                                                        <p:selectOneMenu id="sel_Per" value="#{permit_fee.per_mode_sel}" disabled="true">
+                                                            <f:selectItems value="#{permit_fee.period_mode}"/>
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <label class="field-label resp-label-section">
+                                                            <p:outputLabel value="#{pmtLabel.period}"/>
+                                                        </label>
+                                                        <p:inputText id="preiod" value="#{permit_fee.period}" disabled="true"/>
+                                                    </div>
+                                                </div>
+                                            </p:outputPanel>
+                                            <p:outputPanel rendered="#{!permit_fee.renderPermit_dtls}">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <label class="field-label resp-label-section">
+                                                            <p:outputLabel value="#{pmtLabel.pmt_no}"/>
+                                                        </label>
+                                                        <p:inputText value="#{permit_fee.pmt_no}" disabled="true" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <label class="field-label resp-label-section">
+                                                            <p:outputLabel value="#{pmtLabel.pmt_valid_upto}"/>
+                                                        </label>
+                                                        <p:calendar value="#{permit_fee.pmt_valid_from}" pattern="dd-MMM-yyyy" disabled="true"/>
+                                                    </div>
+                                                </div>
+                                            </p:outputPanel>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{pmtLabel.pmt_type}"></p:outputLabel>
+                                            </label>
+                                            <p:selectOneMenu id="permit_type" value="#{permit_fee.permit_type}" disabled="true" immediate="true" filter="true">                
+                                                <f:selectItems value="#{permit_fee.pmt_type_list}"/>
+                                            </p:selectOneMenu> 
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{pmtLabel.pmt_catg}"></p:outputLabel>
+                                            </label>
+                                            <p:selectOneMenu id="permit_catg" value="#{permit_fee.permit_catg}"  disabled="true" immediate="true"  filter="true"> 
+                                                <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                                <f:selectItems value="#{permit_fee.pmt_catg_list}"/>
+                                            </p:selectOneMenu> 
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{pmtLabel.ser_type}"></p:outputLabel>
+                                            </label>
+                                            <p:selectOneMenu id="service_type" value="#{permit_fee.service_type}" disabled="true" immediate="true" filter="true">                
+                                                <f:selectItems value="#{permit_fee.pmt_service_type_list}"/>
+                                            </p:selectOneMenu> 
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmtSubType" value="Permit Sub Type" rendered="#{permit_fee.pmtSubTypeRender}"/>
+                                            </label>
+                                            <p:inputText id="pmtSubType" value= "#{permit_fee.pmtSubType}" disabled="true" rendered="#{permit_fee.pmtSubTypeRender}"/>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                                <p:panel id="new_regn_details" styleClass="bottom-space" rendered="#{permit_fee.vehiclePanelrender}"> 
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="new_regn_no" value="#{label.regn_no}"/>
+                                            </label>
+                                            <p:inputText id="new_regn_no" value="#{permit_fee.new_regn_no}" styleClass="text-uppercase" autocomplete="off" maxlength="10"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <p:commandButton value="Check Vehicle" icon="ui-icon-check" action="#{permit_fee.check_regn_no()}" onclick="PF('blockNewDtls').show();" onsuccess="PF('blockNewDtls').hide();" update="new_regn_details :Fee_detail:takeFee  payAndFeePanel"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="new_o_name" value="#{label.owner_name}" />
+                                            </label>
+                                            <p:inputText id="new_o_name" value="#{permit_fee.new_o_name}" styleClass="text-uppercase" autocomplete="off" disabled="#{permit_fee.pmtFeeOwnerDtls}"/>
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="new_f_name" value="#{label.f_name}"/>
+                                            </label>
+                                            <p:inputText id="new_f_name" value="#{permit_fee.new_f_name}" styleClass="text-uppercase" autocomplete="off" disabled="#{permit_fee.pmtFeeOwnerDtls}"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="new_vh_class" value="#{label.vh_class}"/>
+                                            </label>
+                                            <p:selectOneMenu id="new_vh_class" value="#{permit_fee.new_vh_class_menu}" disabled="#{permit_fee.pmtFeeOwnerDtls}">
+                                                <f:selectItems value="#{permit_fee.new_vh_class}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="new_regn_dt" value="#{label.regn_dt}" />
+                                            </label>
+                                            <p:inputText id="new_regn_dt" value="#{permit_fee.new_regn_dt}" styleClass="text-uppercase" autocomplete="off" disabled="#{permit_fee.pmtFeeOwnerDtls}"/>
+                                        </div>
+                                    </div>
+                                    <p:blockUI block="new_regn_details" widgetVar="blockNewDtls">
+                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                    </p:blockUI>
+                                </p:panel>
+
+                                <p:panel header="Route and Area Details" toggleable="true"  styleClass="top-space bottom-space" rendered="#{permit_fee.routedata ne null or permit_fee.region_covered ne null}">
+                                    <p:outputPanel rendered="#{permit_fee.routedata ne null}">
+                                        <div class="left-position">
+                                            <h:outputText value="Route Detail" styleClass="font-bold report-header text-uppercase"/>
+                                        </div>
+                                        <div class="datatable-panel" style="margin: 0 auto;">
+                                            <p:dataTable var="routeDtls" value="#{permit_fee.routedata}" styleClass="datatable-panel-100">
+                                                <p:column headerText="Route Code" styleClass="center-position">
+                                                    <h:outputText value="#{routeDtls.rout_code}" />
+                                                </p:column>
+                                                <p:column headerText="From">
+                                                    <h:outputText value="#{routeDtls.floc}" />
+                                                </p:column>
+                                                <p:column headerText="To">
+                                                    <h:outputText value="#{routeDtls.tloc}" />
+                                                </p:column>
+                                                <p:column headerText="Via" width="35%">
+                                                    <h:outputText value="#{routeDtls.start_POINT}" />
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{permit_fee.region_covered ne null}" styleClass="top-space">
+                                        <h:panelGrid columns="2" styleClass="left-position">
+                                            <h:outputLabel value="Area Details : " styleClass="font-bold report-header text-uppercase"/>
+                                            <h:outputText value="#{permit_fee.region_covered}"/>
+                                        </h:panelGrid>
+                                    </p:outputPanel>
+                                </p:panel>
+
+                                <p:outputLabel id="payAndFeePanel" >
+                                    <p:outputPanel id="permitFee">
+                                        <ui:include src="/ui/permit/form_permit_show_fee_Details.xhtml">
+                                        </ui:include>
+                                    </p:outputPanel>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <ui:include src="/ui/fee/form_payment_collection.xhtml">
+                                                <ui:param name="paymentBean" value="#{permit_fee.paymentBean}"/>
+                                                <ui:param name="headerName" value="payment"/>
+                                                <ui:param name="totalPayableAmount" value="#{permit_fee.feePanelBean.totalAmount}"/>
+                                            </ui:include> 
+                                        </div>
+                                    </div>                      
+                                </p:outputLabel>
+
+                            </p:tab>
+
+                            <p:tab id="owner_details_tab" title="Owner Details" >
+                                <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                                    <ui:param name="Owner_permit_detail" value="#{permit_fee}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+                    </div>
+                </div>
+
+                <p:panel id="takeFee">
+                    <div class="ui-grid-row center-position"> 
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Save" action="#{permit_fee.validateForm()}" disabled="#{permit_fee.takeFeeDisable}" rendered="#{permit_fee.savePayment}" update="diaRecpt popup" >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:button value="Back" styleClass="button" onclick="PF('bui').show();" outcome="/home.xhtml?faces-redirect=true"/>
+                            <p:commandButton value="Online Payment" action="#{permit_fee.validateFormOnlinePayment()}" disabled="#{permit_fee.takeFeeDisable}" rendered="#{permit_fee.onlinePaymentRender}" process="@this" partialSubmit="true" update="diaRecpt takeFee">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancel Online Payment" action="#{permit_fee.cancelPayment()}" rendered="#{permit_fee.cancelOnlinePayment}"/>
+                            <p:commandButton  value="Revert Back For Rectification" styleClass="button" action ="#{permit_fee.reverBackForRectification()}" rendered="#{permit_fee.revertBackRender}">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12 center-position">
+                            <h:outputText value="#{permit_fee.onlinePaymentMsg}"  rendered="#{permit_fee.cancelOnlinePayment}" class="red font-bold bottom-space right-position"/>
+                            <br/>
+                            <h:outputText value="Note:" class="font-bold top-space right-position" rendered="#{permit_fee.cancelOnlinePayment}"/>
+                            <h:outputText value=" If Vehicle Owner wants to pay through Online Payment Gateway / Debit Card then Cashier can opt for that option. 
+                                          The Owner will get the Credentials on his Registered Mobile No for Online Payment." rendered="#{permit_fee.cancelOnlinePayment}"  class="red font-bold top-space right-position"/>
+                        </div>
+                    </div>
+                    <p:dialog id="diaRecpt" header="Recipet Number" modal="true" widgetVar="dlg" resizable="false" closable="false">
+                        <h:panelGrid columns="1" cellpadding="5">
+                            <p:outputLabel value="#{permit_fee.rept_no_msg}"/>
+                            <f:facet name="footer"> 
+                                <p:commandButton value="Exit for Another Applicaion" action="seatwork"/>
+                            </f:facet> 
+                        </h:panelGrid>
+                    </p:dialog>
+                </p:panel>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+
+                <p:dialog id="offNumber" header="Offer Number" visible="#{permit_fee.pmtFeeDialogeVisible}" modal="true" widgetVar="offNo" resizable="false" closable="false">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <p:outputLabel value="Enter The Offer Letter Number :"/>
+                        <p:inputText value="#{permit_fee.offLetterNo}" styleClass="text-uppercase" />
+                    </h:panelGrid>
+                    <f:facet name="footer"> 
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Check the Offer No" action="#{permit_fee.checkOffNumber()}" update="workbench_tabview"/>
+                            <p:button outcome="home" value="Exit"/>
+                        </div>
+                        <p:outputLabel escape="false" value="NOTE :- #{permit_fee.offerInfoMsg}"/>
+                    </f:facet> 
+                </p:dialog>
+
+                <p:dialog id="pmtFeePaid" header="Permit Fee Paid At the Time of Registration" visible="#{permit_fee.pmtFeePaidAtTymOfRegnVisible}" modal="true" widgetVar="pmtFeePaidAtRegn" resizable="false" closable="false">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <p:outputLabel value="#{permit_fee.pmtFeePaidAtTymOfRegnLable}"/>
+                    </h:panelGrid>
+                    <f:facet name="footer"> 
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Skip Fee." action="#{permit_fee.skipFee()}" >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancel" onclick="PF('pmtFeePaidAtRegn').hide();" oncomplete="PF('pmtFeePaidAtRegn').hide();" >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:button outcome="home" value="Exit"/>
+                        </div>
+                    </f:facet> 
+                </p:dialog>
+
+                <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel  escape="false"  value="#{permit_fee.app_no_msg}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Exit" immediate="true" action="home"/>
+                            </f:facet>
+                        </div>
+                    </div>
+                </p:dialog>
+
+                <p:dialog id="popup" widgetVar="confDlgFee" modal="true" draggable="false" closable="false" header="Do you want to continue">  
+                    <div class="center-position bottom-space top-space">
+                        <h:outputText value="Total Amount to paid in Cash" rendered="#{!permit_fee.onlinePayment and !permit_fee.otherthanCashMode}"/>
+                        <h:outputText value="Total Amount to paid in Online Mode" rendered="#{permit_fee.onlinePayment}" />
+                    </div>
+                    <div class="font-bold center-position bottom-space">
+                        <h:outputText value="In Rupees: #{permit_fee.paymentBean.isCashSelected?permit_fee.paymentBean.balanceAmount:permit_fee.paymentBean.balanceAmount}" rendered="#{!permit_fee.otherthanCashMode}"/>
+                    </div>
+                    <div class="font-bold center-position bottom-space">
+                        <p:selectBooleanCheckbox value="#{permit_fee.printOfferLetter}" rendered="#{permit_fee.showOffLtOption}"/>
+                        <h:outputText value="If you want to print permit Offer letter." rendered="#{permit_fee.showOffLtOption}"/>
+                    </div>
+                    <div class="center-position bottom-space">
+                        <p:commandButton value="Yes" onsuccess="PF('confDlgFee').hide();"  
+                                         icon="ui-icon-check" ajax="false"
+                                         action="#{permit_fee.saveFeeDetails()}" update="vehicleDetailsPanel payAndFeePanel tf_veh_no 
+                                         form_registered_vehicle_fee:tf_current_rcptno form_registered_vehicle_fee:tf_running_rcpt_no vehNoPanelGrid takeFee" />
+                        <p:commandButton  value="No"  onsuccess="PF('confDlgFee').hide();" icon="ui-icon-close"  />
+                    </div>
+                </p:dialog>
+
+                <p:blockUI block="workbench_tabview:permitFee" widgetVar="bui">
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <vcomponent:vahanMessages messages="#{permit_fee.vahanMessages}"  rendered="#{permit_fee.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

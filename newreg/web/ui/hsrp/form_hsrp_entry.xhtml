@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">HSRP Entry</h1>
+                </div>
+            </div>
+
+            <p:messages id="message_id" showDetail="true" showSummary="false" closable="true"/>                       
+            <p:outputLabel id="showMessg">
+                <p:dialog widgetVar="successDialog" id="successMessage"  modal="true" closable="false" resizable="false" draggable="false" header="Success Message">
+                    <h:outputText value="#{hsrpEntry.vahanMessages}" escape="false"/>
+                    <div class="center-position">
+                        <p:button value="Ok" outcome="home" icon="ui-icon-check"/>
+                    </div>
+                </p:dialog>
+            </p:outputLabel>
+            <p:dialog header="HSRP Disclaimer" widgetVar="dlghsrpltd"
+                      modal="true" closable="false" resizable="false"
+                      draggable="false" visible="#{hsrpEntry.renderHsrpDialog}" width="50%">
+                <ui:include src="/ui/form_HSRPDisclaimer.xhtml" />
+            </p:dialog>
+
+            <marquee direction="left" speed="25000" duration="10" behavior="alternate" >
+                <h:outputText value="Note- This module has been revoked for the New Registration cases (Registration Date 25-Nov-2019 onwards and OEMs are approved on Homologation Portal) as uploading the Front/Back laser codes have been directly provided to respective OEM/OEMs authorized HSRP vendor." styleClass="report-header font-bold red"/>
+            </marquee>
+
+            <p:outputPanel id="main_pnl">
+
+                <p:panel id="hsrpRegnPanel_id" header="HSRP Entry" styleClass="bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="Registration No"/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{hsrpEntry.regn_no}" 
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="Please Enter Registration No."
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off" validatorMessage="Minimum length of registration no should be 6."
+                                          disabled="#{hsrpEntry.renderHSRPDetails}"
+                                          styleClass="input">
+                                <p:keyFilter regEx="/[a-zA-Z0-9]/i"/>
+                                <p:ajax event="blur" update="@this"/>
+                                <f:validateLength minimum="6" maximum="10" />
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton id="gtDetails" value="Get Details" disabled="#{hsrpEntry.renderHSRPDetails}" action="#{hsrpEntry.gettingUserDetails()}" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"  update="hsrpRegnPanel_id hsrpDetails message_id"/>
+                            <p:button id="bt_cancel" value="Home" outcome="home"  />
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:outputPanel id="hsrpDetails" >
+                    <p:outputPanel rendered="#{hsrpEntry.renderHSRPDetails}" >
+                        <p:panel header="Vehicle Details" styleClass="bottom-space" id="vehicleDetailsPanel" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{label.appl_no}:"/>
+                                    </label>
+                                    <p:inputText id="tf_appl_no" value="#{hsrpEntry.applicationNumber}" readonly="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{label.chasi_no}:"/>
+                                    </label>
+                                    <p:inputText id="tf_chasi_no" value="#{hsrpEntry.ownerDobj.chasi_no}" readonly="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Registration Date:"/>
+                                    </label>
+                                    <p:inputText id="cal_regn_dt" value="#{hsrpEntry.ownerDobj.regnDateDescr}"  readonly="true"/>   
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Owner Name:"/>
+                                    </label>
+                                    <p:inputText id="tf_owner_name" value="#{hsrpEntry.ownerDobj.owner_name}" readonly="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Vehicle Class:"/> 
+                                    </label>
+                                    <p:inputText id="sm_vhClass" readonly="true" value="#{hsrpEntry.ownerDobj.vh_class_desc}"  />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Fitness Validity:" rendered="#{hsrpEntry.renderFitUptoBox}"/>
+                                    </label>
+                                    <p:inputText id="cal_fit_dt" value="#{hsrpEntry.ownerDobj.fitUptoDescr}" rendered="#{hsrpEntry.renderFitUptoBox}" readonly="true"/>
+                                </div>
+                            </div>
+                        </p:panel> 
+                        <span class="red font-bold"> Note:- Dealer/RTO's are requested to enter the correct unique HSRP code to avoid any duplicate related problem in future. Please keep the HSRP fitting letter mentioning Front and Rear unique laser code in respective vehicle registration records.</span>
+                        <p:panel id="hsrp_dtls"  header="HSRP Details" styleClass="top-space">
+                            <p:messages showDetail="true" id="hsrp_message_id" showSummary="false" closable="true"/>  
+                            <div class="ui-grid-row"> 
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Select reason for update hsrp laser code" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:selectOneMenu value="#{hsrpEntry.hsrpReason}" disabled="#{hsrpEntry.optionDisable}">
+                                        <f:selectItem itemLabel="Select Updation Reason" itemValue="-1"/>
+                                        <f:selectItems value="#{hsrpEntry.hsrpResonList}" />
+                                        <p:ajax event="change" listener="#{hsrpEntry.reasonChangeListener()}" update="main_pnl"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row"> 
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hsrpNoFront" value="HSRP Front No"/>
+                                    </label>
+                                    <p:inputText id="hsrpNoFront" maxlength="20" required="true" autocomplete="off"
+                                                 value="#{hsrpEntry.hsrpdobj.hsrp_no_front}"
+                                                 converter="toUpperCaseConverter" disabled="#{hsrpEntry.frontDisable}"
+                                                 requiredMessage="Please Provide HSRP Front Number"
+                                                 validatorMessage="Length should be minimum 7 and maximum 20." styleClass="input"  >
+                                        <f:validateRequired for="hsrpNoFront"/>
+                                        <f:validateLength minimum="7" for="hsrpNoFront" maximum="20"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hsrpNoBack" value="HSRP Back No"/>
+                                    </label>
+                                    <p:inputText id="hsrpNoBack" maxlength="20" required="true" autocomplete="off"
+                                                 value="#{hsrpEntry.hsrpdobj.hsrp_no_back}"
+                                                 converter="toUpperCaseConverter" disabled="#{hsrpEntry.rearDisable}"
+                                                 requiredMessage="Please Provide HSRP Back Number"
+                                                 style="text-transform: uppercase;" validatorMessage="Length should be minimum 7 and maximum 20." >
+                                        <f:validateRequired for="hsrpNoBack"/>
+                                        <f:validateLength minimum="7" for="hsrpNoBack" maximum="20"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hsrp_fixDt" value="HSRP Fix Date"/>
+                                    </label>
+                                    <p:calendar id="hsrp_fixDt" value="#{hsrpEntry.hsrpdobj.hsrp_fixed_dt}" pattern="dd-MMM-yyyy" navigator="true" mindate="#{hsrpEntry.minDate}" disabled="#{hsrpEntry.frontDisable and hsrpEntry.rearDisable}"
+                                                maxdate="#{hsrpEntry.maxDate}" autocomplete="off" required="true" readonlyInput="true" requiredMessage="Blank HSRP Fix Date:">
+                                    </p:calendar>
+                                </div>
+                            </div>
+                            <br/>
+                            <span class="red font-bold"> Note:- This module has been revoked for the New Registration cases (Registration Date 25-Nov-2019 onwards) as uploading the Front/Back laser codes have been directly provided to respective OEM/OEMs authorized HSRP vendor. #{hsrpEntry.displayMessage}</span>
+                            <p:outputLabel styleClass="red font-bold" value="Can't modify as the above details has been uploaded by the respective OEM/HSRP Vendor" rendered="#{hsrpEntry.frontDisable and hsrpEntry.rearDisable}"/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton  id="bt_save" value="Save" action="#{hsrpEntry.save()}" onclick="PF('ajax_status').show();" 
+                                                      rendered="#{!hsrpEntry.rearDisable or !hsrpEntry.frontDisable}" oncomplete="PF('ajax_status').hide();" update="hsrpDetails hsrp_message_id" >
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:outputPanel> 
+                <p:blockUI block="main_pnl" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </p:outputPanel>
+        </div>  
+    </ui:define>
+</ui:composition>
+

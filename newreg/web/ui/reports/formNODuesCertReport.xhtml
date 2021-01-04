@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <script>
+            var formSubmitted = false;
+            function onSubmitButton() {
+                if (!formSubmitted) {
+                    formSubmitted = true;
+                } else {
+                    // disable event propagation if form is already submitted
+                    event.preventDefault();
+                }
+            }
+        </script>
+    </h:head>
+    <h:body onload="window.print();">
+
+        <h:form prependId="false">
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <div class="center-position">
+                    <p:button id="back_to_noc_rpt" value="Back" outcome="/ui/reports/formNocReport.xhtml?faces-redirect=true"  icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none"/>      
+                    <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>
+                <div class="center-position">
+                    <h:outputText value="NO DUES CERTIFICATE" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <div class="left-position top-space bottom-space">
+                    Application for Transferor of Ownership of the vehicle 
+                    <h:outputText value="#{NODuesCertBean.dobj.regn_no}" class="font-bold text-uppercase"/>,
+                    <h:outputText value="#{NODuesCertBean.dobj.vch_class}" class="font-bold text-uppercase"/> 
+                    has been received in this office.
+                </div>
+                <table class="datatable-panel-100 table-width-two table-bordered table-condensed">
+                    <tr>
+                        <td class="font-bold center-position">TRANSFEROR</td>
+                        <td class="font-bold center-position">TRANSFEREE</td>
+                    </tr>
+                    <tr>
+                        <td> #{NODuesCertBean.dobj.transfereeName}</td>
+                        <td>#{NODuesCertBean.dobj.transferorName}</td>
+
+                    </tr>
+                    <tr>
+                        <td>#{NODuesCertBean.dobj.transfereeGuardianName}</td>
+                        <td>#{NODuesCertBean.dobj.transferorGuardianName}</td>
+
+                    </tr>
+                    <tr>
+                        <td>#{NODuesCertBean.dobj.transfereeAdd1}</td>
+                        <td>#{NODuesCertBean.dobj.transferorAdd1}</td>
+
+                    </tr>
+                    <tr>
+                        <td>#{NODuesCertBean.dobj.transfereeAdd2}</td>
+                        <td>#{NODuesCertBean.dobj.transferorAdd2}</td>
+
+                    </tr>
+                    <tr>
+                        <td>#{NODuesCertBean.dobj.transfereeAdd3}</td>
+                        <td>#{NODuesCertBean.dobj.transferorAdd3}</td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            Date of Sale: #{NODuesCertBean.dobj.dateOftransfer}
+                        </td>
+                    </tr>
+                </table>
+
+                <div class=" top-space bottom-space">
+                    On verification of documents, it is found that no dues are pending against the vehicle, <h:outputText value="#{NODuesCertBean.dobj.regn_no}" class="font-bold text-uppercase"/>.
+                    Original RC/ PERMIT has been surrendered in this office.
+                </div>
+
+                <div class=" top-space bottom-space">
+                    This certificate is to produce before the <h:outputText value="#{NODuesCertBean.dobj.transfereeOffice}" class="font-bold text-uppercase"/>.
+                </div>
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td>
+                            <div class="top-align">
+                                Date: <h:outputText value="#{NODuesCertBean.dobj.printed_date}"/> <br />
+                                Place: <h:outputText value="#{NODuesCertBean.dobj.transferorOffice}"/> 
+                            </div>
+                        </td>
+                        <td class="float-right">
+                            <div class="left-position">
+                                <br />
+                                <br />
+                                <br />
+                                Registering Authority <br />
+                                <h:outputText value="#{NODuesCertBean.dobj.transferorOffice}"/> 
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </h:form>
+    </h:body>
+</html>

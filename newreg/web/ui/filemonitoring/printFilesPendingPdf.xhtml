@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+    </h:head>
+    <h:body>
+        <h:form prependId="false">
+            <div class="position-relative">
+                <div class="center-position">
+                    <p:commandButton id="btnBack" value="Back" action="#{printpdfbean.backtoApplication()}" immediate="true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                    <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{printpdfbean.mainHeading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{printpdfbean.subHeading}" styleClass="font-bold report-subheader"/>
+                </div>
+                <div class="center-position bottom-space">
+                    <h:outputText value="#{printpdfbean.rto_name}" styleClass="font-bold report-subheader"/>
+                </div>
+            </div>
+            <div class="table-width-oneforth">
+                <h:panelGrid columns="2" styleClass="border-transparent datatable-panel" style="margin: 0 auto !important;">
+                    <h:outputLabel value="Dealer Name" styleClass="right-space bottom-space" rendered="#{printpdfbean.dealer_name.length()>0}"/>
+                    <h:outputText value=": #{printpdfbean.dealer_name}" styleClass="right-space bottom-space" rendered="#{printpdfbean.dealer_name.length()>0}" /> 
+
+                    <h:outputLabel  value="Sent Date" styleClass="right-space bottom-space " rendered="#{printpdfbean.approve_date.length()>0}" />
+                    <h:outputText  value=": #{printpdfbean.approve_date}" styleClass="right-space bottom-space" rendered="#{printpdfbean.dealer_name.length()>0}" /> 
+
+                    <h:outputLabel   value="RTO Name" styleClass="right-space bottom-space " rendered="#{printpdfbean.rto_name.length()>0}" />
+                    <h:outputText value=": #{printpdfbean.rto_name}" styleClass="right-space bottom-space" rendered="#{printpdfbean.rto_name.length()>0}" />
+                </h:panelGrid>
+            </div>
+            <div class="center-position top-space bottom-space">
+                <h:outputText value="Sent Files" styleClass="font-bold report-subheader bottom-line text-uppercase"/>
+            </div>
+            <p:outputPanel styleClass="datatable-panel" style="margin: 0 auto !important;">
+                <p:dataTable  var="pendingfiles" styleClass="top-space" id="bidwiserevenuenn" rendered="#{printpdfbean.filesList.size()>0}"  value="#{printpdfbean.filesList}" >
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="File &lt;br /&gt; Number" escape="false" /></f:facet>
+                        <h:outputText value="#{pendingfiles.fileNo}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Application &lt;br /&gt; Number" escape="false" /></f:facet>
+                        <h:outputText value="#{pendingfiles.appl_no}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Registration &lt;br /&gt; Date" escape="false" /></f:facet>
+                        <h:outputText value="#{pendingfiles.registrationDate}"/>
+                    </p:column>
+                    <p:column headerText="Status" >
+                        <h:outputText value="#{pendingfiles.status}"/>
+                    </p:column>
+                    <p:column styleClass="center-position" >
+                        <f:facet name="header"><h:outputText value="Pending &lt;br /&gt; Days" escape="false" /></f:facet>
+                        <h:outputText value="#{pendingfiles.pendingDays}"/>
+                    </p:column>
+                </p:dataTable> 
+            </p:outputPanel>
+            <br/>
+            <br/>
+        </h:form>
+    </h:body>
+</html>

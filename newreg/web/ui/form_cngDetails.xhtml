@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"     
+      xmlns:p="http://primefaces.org/ui"      
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition>
+        <div class="ui-grid ui-grid-responsive">
+            <p:panel header="#{language.retroFittingDetails}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_kit_no"  value="#{language.kitSerialNo}.:" />
+                        </label>
+                        <p:inputText id="tf_kit_no" value="#{retroFittingDetailsBean.tf_kit_no}" required="true" maxlength="25" requiredMessage="Blank Kit Number"
+                                     disabled="#{retroFittingDetailsBean.disable}" converter="toUpperCaseConverter" style="text-transform: uppercase;"
+                                     autocomplete="off" size="25">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  for="tf_kit_type"  value="#{language.kitType}:" />
+                        </label>
+                        <p:inputText id="tf_kit_type" value="#{retroFittingDetailsBean.tf_kit_type}" required="true" maxlength="25" requiredMessage="Blank Kit Number"
+                                     disabled="#{retroFittingDetailsBean.disable}" converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase;" autocomplete="off" size="25">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  for="tf_manu_name"   value="#{language.kitManufacturerName}:" />
+                        </label>
+                        <p:inputText id="tf_manu_name" value="#{retroFittingDetailsBean.tf_manu_name}" required="true" maxlength="50"
+                                     disabled="#{retroFittingDetailsBean.disable}" requiredMessage="Blank Manufacture Name"
+                                     converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase;" autocomplete="off" size="50">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_workshop"   value="#{language.workshop}:" />
+                        </label>
+                        <p:inputText id="tf_workshop" value="#{retroFittingDetailsBean.tf_workshop}" required="true" maxlength="50"
+                                     disabled="#{retroFittingDetailsBean.disable}" requiredMessage="Blank Workshop Name"
+                                     converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase;" autocomplete="off" size="50">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  for="tf_license_no"   value="#{language.licenseNo}:" />
+                        </label>
+                        <p:inputText id="tf_license_no" value="#{retroFittingDetailsBean.tf_license_no}" converter="toUpperCaseConverter" required="true"
+                                     disabled="#{retroFittingDetailsBean.disable}" maxlength="30" requiredMessage="Blank License Number"
+                                     style="text-transform: uppercase;" autocomplete="off" size="30">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_cyc_sr_no"   value="#{language.cyclinderSrNo}:" />
+                        </label>
+                        <p:inputText id="tf_cyc_sr_no" value="#{retroFittingDetailsBean.tf_cyc_sr_no}" required="true" maxlength="200"
+                                     disabled="#{retroFittingDetailsBean.disable}" requiredMessage="Blank Cyclinder Sr. Number"
+                                     converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase;" autocomplete="off" size="25">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="cal_install_dt"   value="#{language.installationDate}:" />
+                        </label>
+                        <p:calendar id="cal_install_dt" value="#{retroFittingDetailsBean.cal_install_dt}" readonlyInput="true"
+                                    disabled="#{retroFittingDetailsBean.disable}" mindate="#{retroFittingDetailsBean.minDate}" navigator="true"
+                                    maxdate="#{owner_bean.currentDate}" pattern="dd-MMM-yyyy">
+                        </p:calendar>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="cal_hydro_dt"   value="#{language.hydroValidityUpto}:" />
+                        </label>
+                        <p:calendar id="cal_hydro_dt" value="#{retroFittingDetailsBean.cal_hydro_dt}" readonlyInput="true"
+                                    disabled="#{retroFittingDetailsBean.disable}" mindate="#{retroFittingDetailsBean.minHydroDate}" navigator="true"
+                                    pattern="dd-MMM-yyyy">
+                        </p:calendar>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_poll_norms"   value="#{language.pollutionNorms}:" />
+                        </label>
+                        <p:inputText id="tf_poll_norms" value="#{retroFittingDetailsBean.tf_poll_norms}" required="true" maxlength="10"
+                                     disabled="#{retroFittingDetailsBean.disable}" requiredMessage="Blank PUCC Norms"
+                                     converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase;" autocomplete="off" size="10">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_approv_lettr_no"   value="#{language.approvalLetterNo}.:" />
+                        </label>
+                        <p:inputText id="tf_approv_lettr_no" value="#{retroFittingDetailsBean.tf_approv_lettr_no}" required="true" maxlength="25"
+                                     requiredMessage="Blank Approval No"
+                                     converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase;" autocomplete="off" size="25">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="cal_approv_dt"   value="#{language.approvalDate}:" />
+                        </label>
+                        <p:calendar id="cal_approv_dt" value="#{retroFittingDetailsBean.cal_approv_dt}" readonlyInput="true"
+                                    maxdate="#{owner_bean.currentDate}" navigator="true"
+                                    pattern="dd-MMM-yyyy" required="true" requiredMessage="Blank Approval Date">
+                        </p:calendar>
+                    </div>
+                </div>
+            </p:panel>
+        </div>
+    </ui:composition>
+</html>

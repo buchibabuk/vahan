@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formCollectionSummary"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Collection/Cancellation Summary</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-5 resp-blank-height"></div>
+                        <div class="ui-grid-col-2">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Date #{label.datePattern}"/>
+                            </label>
+                            <p:calendar value="#{collectionSummary.date}" maxdate="#{collectionSummary.today}"  pattern="dd-MMM-yyyy" navigator="true"
+                                        required="true" requiredMessage="Please Select Date">
+                            </p:calendar>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <p:commandButton value="Get Details" action="#{collectionSummary.getDetails()}" update=":formCollectionSummary" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();"/>
+                            <p:button value="Account Statement" outcome="/ui/reports/formStatementReport.xhtml?faces-redirect=true" /> 
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel id="dataTable">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <p:dataTable id="collectionSummaryDataTable"  value="#{collectionSummary.summaryList}" var="collSumm"
+                                         rowIndexVar="index" styleClass="datatable-panel">
+                                <f:facet name="header">
+                                    <div class="left-position">
+                                        Collection Summary as on [
+                                        <h:outputText value="#{collectionSummary.date}">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                                        </h:outputText>
+                                        ]
+                                    </div>
+                                </f:facet>
+
+                                <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                                    <p:outputLabel value="#{index +1}."/></p:column>
+                                <p:column headerText="Collected By" sortBy="#{collSumm.collectedBy}">#{collSumm.collectedBy}</p:column>
+                                <p:column headerText="Instrument" sortBy="#{collSumm.instrumentType}">#{collSumm.instrumentType}</p:column>
+                                <p:column headerText="No of Receipt"  styleClass="right-position right-space">
+                                    <h:outputLabel value="#{collSumm.noOfRcpt}" styleClass="right-position right-space" />
+                                </p:column>
+                                <p:column headerText="Amount"  styleClass="right-position right-space">
+                                    <h:outputLabel value="#{collSumm.amount}" styleClass="right-position right-space" />
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="3" styleClass="right-position right-space" footerText="Totals:" />
+                                        <p:column footerText="#{collectionSummary.totalReceiptCollection}" styleClass="right-position right-space"/>
+                                        <p:column footerText="Rs.#{collectionSummary.totalCollection}" styleClass="right-position right-space" />
+                                    </p:row>
+                                </p:columnGroup>
+                            </p:dataTable>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:dataTable id="collectionSummaryCancelDataTable"  value="#{collectionSummary.cancelSummaryList}" var="cancelCollSumm"
+                                         rowIndexVar="index" >
+                                <f:facet name="header">
+                                    <div class="left-position">
+                                        Cancelled Receipt Summary as on [
+                                        <h:outputText value="#{collectionSummary.date}">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                                        </h:outputText>
+                                        ]
+                                    </div>
+                                </f:facet>
+
+                                <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                                    <p:outputLabel value="#{index +1}."/></p:column>
+                                <p:column headerText="Collected By">#{cancelCollSumm.collectedBy}</p:column>
+                                <p:column headerText="Cancel By">#{cancelCollSumm.cancelBy}</p:column>
+                                <p:column headerText="Instrument">#{cancelCollSumm.instrumentType}</p:column>
+                                <p:column headerText="No of Receipt"  styleClass="right-position right-space">
+                                    <h:outputLabel value="#{cancelCollSumm.noOfRcpt}" styleClass="right-position right-space" />
+                                </p:column>
+                                <p:column headerText="Amount" styleClass="right-position right-space">
+                                    <h:outputLabel value="#{cancelCollSumm.amount}" styleClass="right-position right-space" />
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="4" styleClass="right-position right-space" footerText="Totals:" />
+                                        <p:column footerText="#{collectionSummary.totalReceiptCancel}" styleClass="right-position right-space"/>
+                                        <p:column footerText="Rs.#{collectionSummary.totalCancelCollection}" styleClass="right-position right-space" />
+                                    </p:row>
+                                </p:columnGroup>                                
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:blockUI block="formCollectionSummary" widgetVar="bui_fancy">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+                <vcomponent:vahanMessages messages="#{collectionSummary.vahanMessages}"  rendered="#{collectionSummary.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

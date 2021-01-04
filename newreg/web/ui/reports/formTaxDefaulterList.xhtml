@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+
+            <h:form id="downloadTaxDefaulterDataForm" prependId="false">
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Tax Defaulter List</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row" >
+                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <p:panel id="specificVeh" header="Tax Defaulter List Details">
+                            <div>
+                                <p:commandButton id="btngettaxdetailyearwise" value="Show Tax Defaulter Year Wise Summary" action="#{taxDefaulterBean.getTaxDefaulterListYearwiseSummary()}"
+                                                 update="taxdefaulterListyearwisesummary panelTaxVehDtls_n,taxdefinfopanel regnnopanel" onclick="PF('bui').show();" oncomplete="PF('bui').hide()"/>
+                            </div>
+                            <div>
+                                <p:commandButton id="btngettaxdetails" value="Get Tax Defaulter List" action="#{taxDefaulterBean.PurCodeListener()}"
+                                                 update="panelTaxVehDtls_n taxdefaulterListyearwisesummary taxdefinfopanel regnnopanel" onclick="PF('bui').show();" oncomplete="PF('bui').hide()"/>
+                            </div>                            
+                        </p:panel>
+                    </div>
+                    <div class="ui-grid-col-4" style="padding-left: 2px;">
+                        <p:panel header="Tax Defaulter Detail For Specific Vehicle" id="regnnopanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regn_no" value="Specific Regn.No" />
+                                    </label>
+                                    <p:inputText id="regn_no" value="#{taxDefaulterBean.regn_no}" maxlength="10" autocomplete="off" styleClass="text-uppercase" >                                        
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtls" value="Get Details For Specific Vehicle" title="Get Details For Specific Vehicle" action="#{taxDefaulterBean.getGetails}"  update=":downloadTaxDefaulterDataForm taxdefinfopanel btnPrint reCalTaxDtls">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":downloadTaxDefaulterDataForm" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                    <p:commandButton id="reCalTaxDtls" value="If Defaulting Amt not correct press this for Re-Calculate" title="If Defaulting Amt not correct press this for Re-Calculate" rendered="#{taxDefaulterBean.recalculateTax}" action="#{taxDefaulterBean.reCalculateTax}" update=":downloadTaxDefaulterDataForm taxdefinfopanel">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":downloadTaxDefaulterDataForm" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div>                            
+                        </p:panel>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:outputLabel id="op_showInsertRecord">
+                            <p:dialog widgetVar="successDialog" rendered="#{taxDefaulterBean.renderInsertRecordDialog}" modal="true" closable="false" resizable="false" 
+                                      draggable="false" header="Tax Defaulter detail not found for this Registration">
+                                <p:outputLabel value="Add this Registration No as Tax Defaulter ?" escape="false"/>
+                                <div class="center-position">
+                                    <p:button value="No" onclick="PF('successDialog').hide();" styleClass="display-none" icon="ui-icon-closethick"/>
+                                    <p:commandButton value="Yes" oncomplete="PF('successDialog').hide();"
+                                                     action="#{taxDefaulterBean.insertRecordforTaxDefaulter()}" icon="ui-icon-check" update="regnnopanel">
+                                        <f:param name="REGN_NO" value="#{taxDefaulterBean.regn_no}"/>
+                                    </p:commandButton>
+                                </div>
+                            </p:dialog>
+                        </p:outputLabel>
+                    </div>
+                </div>
+                <p:outputPanel id="taxdefaulterListyearwisesummary" styleClass="top-space bottom-space">
+                    <p:dataTable id="listaxdefaulterListyearwisesummary" rendered="#{taxDefaulterBean.listtaxDefaulterYearWiseSummaryDobj.size()>0 ?true:false}"  value="#{taxDefaulterBean.listtaxDefaulterYearWiseSummaryDobj}" var="taxDefSummary" rows="10"  
+                                 widgetVar="seatWorkList" paginator="true" rowIndexVar="rowkey"  paginatorPosition="bottom" >
+                        <f:facet name="header">  
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 left-position">
+                                    <h:outputText value="Tax Defaulter Summary" />
+                                </div>
+                            </div>
+                        </f:facet>
+                        <p:column styleClass="collumn-width center-position">
+                            <f:facet name="header">
+                                <h:outputText value="Sr.No" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <h:outputText value="#{rowkey+1}" />                                
+                        </p:column>
+                        <p:column  styleClass="left-position">
+                            <f:facet name="header">
+                                <h:outputText value="Vehicle Class" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            #{taxDefSummary.vchClassDesc}
+                        </p:column>
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="Total" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <h:outputText value="#{taxDefSummary.totalDefaulter}" styleClass="inline-block right-space" />
+                        </p:column>   
+                        <p:column  styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="yrs &lt; 1" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="0"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column  styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="1&lt;=  yrs  &lt; 2" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinOneToTwoYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="1"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="2 &lt;=  yrs  &lt; 3" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinTwoToThreeYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="2"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column  styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="3 &lt;=  yrs  &lt; 4" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinThreeToFourYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="3"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="4 &lt;=  yrs  &lt; 5" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinFourToFiveYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="4"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="5 &lt;=  yrs  &lt; 6" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinFiveToSixYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="5"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="6 &lt;=  yrs  &lt; 7" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinSixToSevenYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="6"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="7 &lt;=  yrs  &lt; 8" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinSevenToEightYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="7"  />
+                            </p:commandLink>
+                        </p:column> 
+                        <p:column  styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="8 &lt;=  yrs  &lt; 9" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinEightToNineYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="8"  />
+                            </p:commandLink>
+                        </p:column>
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="9 &lt;=  yrs  &lt; 10" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.withinNineToTenYearTotalDefaulter}" ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="9"  />
+                            </p:commandLink> 
+                        </p:column> 
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="yrs &gt;=10" styleClass="font-bold resp-label-section center-position"  />
+                            </f:facet>
+                            <p:commandLink value="#{taxDefSummary.moreThanTenYearTotalDefaulter}"  ajax="false" action="#{taxDefaulterBean.updatetaxtable(taxDefSummary)}" update="@form" styleClass="underline-text inline-block right-space" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                <f:param name="one" value="10"  />
+                            </p:commandLink> 
+                        </p:column> 
+                    </p:dataTable>
+                </p:outputPanel>
+
+                <p:outputPanel id="taxdefinfopanel">
+                    <p:dataTable id="taxtable" rowKey="#{tax.regn_no}" value="#{taxDefaulterBean.taxlist}" selection="#{taxDefaulterBean.selectedPrintDobj}" var="tax" 
+                                 rendered="#{taxDefaulterBean.renderdemandnoticepanel and taxDefaulterBean.taxlist.size()>0}" rowIndexVar="rowkey">
+                        <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                            <h:outputText value="#{rowkey+1}" />  
+                        </p:column>
+                        <p:column headerText="Regn No">
+                            <h:outputText value="#{tax.regn_no}" />  
+                        </p:column>
+                        <p:column headerText="Regn Date">
+                            <h:outputText value="#{tax.regndate}" />  
+                        </p:column>
+                        <p:column headerText="Vehicle Class">
+                            <h:outputText value="#{tax.vch_class_desc}" />  
+                        </p:column>
+                        <p:column headerText="Owner Name">
+                            <h:outputText value="#{tax.owner_name}" />  
+                        </p:column>
+                        <p:column headerText="Tax Due From">
+                            <h:outputText value="#{tax.taxFrom}" />  
+                        </p:column>
+                        <p:column headerText="Tax Due Upto">
+                            <h:outputText value="#{tax.taxupTo}" />  
+                        </p:column>
+                        <p:column headerText="Tax Amount">
+                            <h:outputText value="#{tax.taxamt}" />  
+                        </p:column>
+                        <p:column headerText="Tax Fine">
+                            <h:outputText value="#{tax.taxfine}" />  
+                        </p:column>
+                        <p:column selectionMode="multiple" styleClass="center-position">
+                            <f:facet name="header"><h:outputText value="Print &lt;br /&gt; Demand Notice" escape="false" /></f:facet>
+                        </p:column>
+                    </p:dataTable>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton id="btnPrint" value="Print" action="#{taxDefaulterBean.printConfirmTaxDefStatment()}" rendered="#{taxDefaulterBean.renderdemandnoticepanel}"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:dialog  id="printConfirmTaxDefPopup" styleClass="center-position" widgetVar="printConfirmTax" modal="true" draggable="false" 
+                           closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Do you want to continue"/>
+                            </label>
+                            <p:commandButton  value="Confirm Print" 
+                                              onclick="PF('printConfirmTax').show();
+                                                         PF('blockPrintRC').show();"  oncomplete="PF('printConfirmTax').hide(); PF('blockPrintRC').hide();"                                 
+                                              action="#{taxDefaulterBean.printTaxDefCertificate()}"
+                                              icon="ui-icon-check"/>
+                            <p:commandButton value="Cancel" onsuccess="PF('printConfirmTax').hide();" icon="ui-icon-close" />
+                        </div>
+                    </div>
+                </p:dialog>
+                <p:outputPanel id="panelTaxVehDtls_n" styleClass="top-space">           
+                    <div class="ui-grid-row">                
+                        <div class="ui-grid-col-6">
+                            <p:dataTable id="tb_vchclasswise"  value="#{taxDefaulterBean.downloadDetailsClassWise}" 
+                                         var="vchClassWise" rowIndexVar="index" styleClass="datatable-panel" rendered="#{taxDefaulterBean.downloadDetailsClassWise.size()>0 ?true:false}">
+                                <f:facet name="header">
+                                    <div class="left-position">
+                                        Tax Defaulter List (Vehicle Class Wise) 
+                                    </div>                                    
+                                </f:facet>
+                                <p:column headerText="Sr.No" styleClass="collumn-width center-position"> <p:outputLabel value="#{index +1}"/></p:column>
+                                <p:column headerText="Vehicle Class">
+                                    <h:outputText value="#{vchClassWise.vch_class_desc}" />  
+                                </p:column>
+                                <p:column headerText="Total Count" width="20%"> <p:outputLabel value="#{vchClassWise.totalCount}"/></p:column>
+                                <p:column headerText="Show" width="20%">
+                                    <p:commandButton icon="ui-icon-document" action="#{taxDefaulterBean.vchClassWiseDataListener()}" ajax="false" onclick="PF('bui').show();" oncomplete="PF('bui').hide()" update="tb_taxfiledownload">
+                                        <f:setPropertyActionListener target="#{taxDefaulterBean.selectedVchClassDetail}" value="#{vchClassWise}" />
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column width="20%">
+                                    <f:facet name="header"><h:outputText value="Generate Tax &lt;br /&gt;Demand Notice" escape="false" /></f:facet>
+                                    <p:commandButton icon="ui-icon-arrowthickstop-1-s" action="#{taxDefaulterBean.vchClassWiseTDNotice()}" ajax="false" onclick="PF('bui').show();" oncomplete="PF('bui').hide()" update="tb_taxfiledownload">
+                                        <f:setPropertyActionListener target="#{taxDefaulterBean.selectedVchClassDetail}" value="#{vchClassWise}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:dataTable id="tb_vchcatg_wise"  value="#{taxDefaulterBean.downloadDetailsCategoryWise}" 
+                                         var="vchCatgWise" rowIndexVar="index" styleClass="datatable-panel" rendered="#{taxDefaulterBean.downloadDetailsCategoryWise.size()>0 ?true:false}">
+                                <f:facet name="header">
+                                    <div class="left-position">
+                                        Tax Defaulter List (Vehicle Category Wise) 
+                                    </div>
+                                </f:facet>
+                                <p:column headerText="Sr.No" styleClass="collumn-width center-position"> <p:outputLabel value="#{index +1}"/></p:column>
+                                <p:column headerText="Vehicle Category">
+                                    <h:outputText value="#{vchCatgWise.vch_catg}" />                            
+                                </p:column>
+                                <p:column headerText="Total Count" width="20%">
+                                    <p:outputLabel value="#{vchCatgWise.totalCount}"/>
+                                </p:column>
+                                <p:column headerText="Show" width="20%">
+                                    <p:commandButton icon="ui-icon-document" action="#{taxDefaulterBean.vchCatgWiseDataListener()}" ajax="false" onclick="PF('bui').show();" oncomplete="PF('bui').hide()" update="tb_taxfiledownload">
+                                        <f:setPropertyActionListener target="#{taxDefaulterBean.selectedVchCatgDetail}" value="#{vchCatgWise}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row top-space"> 
+                        <div class="ui-grid-col-12">
+                            <p:dataTable id="tb_taxfiledownload" value="#{taxDefaulterBean.download.listFileExport}" scrollable="true" scrollWidth="99%" rows="10"
+                                         var="dwlList" paginator="#{taxDefaulterBean.isExceedPage}" paginatorPosition="bottom" rowIndexVar="index"  
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rendered="#{taxDefaulterBean.download.listFileExport.size()>0 ?true:false}"
+                                         styleClass=""
+                                         >
+                                <f:facet name="header">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <div class="left-position top-space">
+                                                <p:outputLabel rendered="#{taxDefaulterBean.download.listFileExport.size()>0}" value="#{taxDefaulterBean.dwnltableHeader}"/>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-col-6 right-position">
+                                            <p:commandButton id="taxbtnDownload" value="Download File" onclick="PF('downloadRCDataDialog').show();" update=":formTaxDispatchExport" rendered="#{taxDefaulterBean.download.listFileExport.size()>0}"/>
+
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                <p:column styleClass="collumn-width center-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Sr. No" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>   
+
+                                <p:column width="80" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Registration  No" styleClass="font-bold resp-label-section center-position"    />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.regn_no}" />
+                                </p:column> 
+                                <p:column width="80" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Tax Type" styleClass="font-bold resp-label-section center-position"    />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.purcdDescr}" />
+                                </p:column>
+                                <p:column width="80" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Registration  Date" styleClass="font-bold resp-label-section center-position"  />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.regndate}" />
+                                </p:column>
+                                <p:column width="90" rendered="#{taxDefaulterBean.isClassWise}"  styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Vehicle  Class" styleClass="font-bold resp-label-section center-position"  />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.vch_class_desc}" />
+                                </p:column>
+                                <p:column rendered="#{taxDefaulterBean.isCatgWise}" width="60" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Vehicle Category" styleClass="font-bold resp-label-section center-position"  />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.vch_catg}" />
+                                </p:column>
+                                <p:column width="150" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Owner Name" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.owner_name}" />
+                                </p:column>
+                                <p:column width="150" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Father Name" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.fatherName}" />
+                                </p:column>
+                                <p:column width="250" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Complete  Present Address" styleClass="font-bold center-position" style="display: block;"  />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.address}" />
+                                </p:column>
+                                <p:column width="50" styleClass="right-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="ULW" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.unldwt}" styleClass="inline-section right-space" />
+                                </p:column>
+                                <p:column width="50" styleClass="right-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="GVW" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.grosswt}" styleClass="inline-section right-space" />
+                                </p:column>
+                                <p:column width="50" styleClass="right-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Seat" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.seatcap}" styleClass="inline-section right-space"/>
+                                </p:column>
+                                <p:column width="80" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Arrear  from" styleClass="font-bold resp-label-section center-position" />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.taxFrom}" />
+                                </p:column>
+                                <p:column width="80" styleClass="left-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Arrear  upto" styleClass="font-bold resp-label-section center-position" />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.taxupTo}" />
+                                </p:column>
+                                <p:column width="80" styleClass="right-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Tax Amount" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.taxamt}" styleClass="inline-section right-space" />
+                                </p:column>
+                                <p:column width="80" styleClass="right-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Tax Fine" styleClass="font-bold resp-label-section center-position"/>
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.taxfine}" styleClass="inline-section right-space" />
+                                </p:column>
+                                <p:column width="70" styleClass="right-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="Total Tax Amount" styleClass="font-bold resp-label-section center-position" />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.totalamt}" styleClass="inline-section right-space" />
+                                </p:column>
+                                <p:column width="120">
+                                    <f:facet name="header">
+                                        <h:outputText value="Fitness Validity" styleClass="font-bold resp-label-section center-position" />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.fitvalidt}" />
+                                </p:column>
+                                <p:column width="100">
+                                    <f:facet name="header">
+                                        <h:outputText value="Financier  Name" styleClass="font-bold resp-label-section center-position" />
+                                    </f:facet>
+                                    <h:outputText value="#{dwlList.fncr_name}" />
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <vcomponent:vahanMessages messages="#{taxDefaulterBean.vahanMessages}"  rendered="#{taxDefaulterBean.vahanMessages ne null}"/>
+            </h:form>
+            <p:dialog id="downloadTaxDataDialog" header="Different File Formate" dynamic="true" closable="true" modal="true" widgetVar="downloadRCDataDialog">
+                <h:form id="formTaxDispatchExport" prependId="false">
+                    <p:panelGrid columns="2">
+                        <f:facet name="header">
+                            <h2> Download File  </h2>
+                        </f:facet>   
+                        <h:outputText value="EXCEL FILE"/>
+                        <h:commandLink onclick="PF('downloadRCDataDialog').hide();" >
+                            <p:graphicImage name="excel.png"  width="24" library="images"/>
+                            <p:dataExporter type="xls" target=":downloadTaxDefaulterDataForm:tb_taxfiledownload" fileName="#{taxDefaulterBean.download.downloadFileName}"  />
+                        </h:commandLink>
+
+                        <h:outputText value="CSV FILE"/>
+                        <h:commandLink onclick="PF('downloadRCDataDialog').hide();" >
+                            <p:graphicImage name="csv.png" width="24" library="images"/>
+                            <p:dataExporter type="csv" target=":downloadTaxDefaulterDataForm:tb_taxfiledownload" fileName="#{taxDefaulterBean.download.downloadFileName}" />
+                        </h:commandLink>
+
+                        <h:outputText value="XML FILE"/>
+                        <h:commandLink onclick="PF('downloadRCDataDialog').hide();">
+                            <p:graphicImage name="xml.png" width="24" library="images"/>
+                            <p:dataExporter type="xml" target=":downloadTaxDefaulterDataForm:tb_taxfiledownload" fileName="#{taxDefaulterBean.download.downloadFileName}" />
+                        </h:commandLink>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:blockUI block="downloadTaxDefaulterDataForm" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </div>
+    </ui:define>
+</ui:composition>

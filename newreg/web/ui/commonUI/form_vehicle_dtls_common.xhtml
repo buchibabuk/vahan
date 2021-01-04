@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <f:subview id="subview_vehicle_dtls">
+        <ui:composition>
+            <p:panel header="Vehicle Information" id="veh_info" rendered="#{containerBean.ownerDobj ne null}" styleClass="top-space bottom-space">
+                <div class="ui-grid ui-grid-responsive">
+                    <p:focus context="veh_info"/>
+                    <p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="chasi_no" value="#{label.chasi_no}"/>
+                                </label>
+                                <p:inputText id="chasi_no" value="#{containerBean.ownerDobj.chasi_no}" 
+                                             size="20" maxlength="30" disabled="true"
+                                             required="true" requiredMessage="Blank: Chassis No." autocomplete="off">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="vh_class" value="#{label.vh_class}"/>
+                                </label>
+                                <p:selectOneMenu id="vh_class" value="#{containerBean.ownerDobj.vh_class}"
+                                                 filter="true" disabled="true">
+
+                                    <f:selectItems value="#{containerBean.list_vh_class}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="vh_catg" value="#{label.vh_catg}"/>
+                                </label>
+                                <p:selectOneMenu id="vh_catg" value="#{containerBean.ownerDobj.vch_catg}"  filter="true" disabled="true">
+                                    <f:selectItems value="#{containerBean.list_vm_catg}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="norms" value="#{label.norms}"/>
+                                </label>
+                                <p:selectOneMenu id="norms" value="#{containerBean.ownerDobj.norms}" filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_norms}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="eng_no" value="#{label.eng_no}"/>
+                                </label> 
+                                <p:inputText id="eng_no" value="#{containerBean.ownerDobj.eng_no}" size="20" required="true"
+                                             requiredMessage="Blank: Engine No." maxlength="30" autocomplete="off" disabled="true">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="maker_model" value="#{label.maker_model}"/>
+                                </label>
+                                <p:selectOneMenu  id="maker_model" value="#{containerBean.ownerDobj.maker_model}" filter="true" disabled="true">
+                                    <f:selectItems value="#{containerBean.list_maker_model}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="body_type" value="#{label.body_type}"/>
+                                </label>
+                                <p:inputText id="body_type" value="#{containerBean.ownerDobj.body_type}" disabled="true" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="seat_cap" value="#{label.seat_cap}"/>
+                                </label>
+                                <p:inputText id="seat_cap"  value="#{containerBean.ownerDobj.seat_cap}" required="true" disabled="true"
+                                             requiredMessage="Blank: Seating Capacity" maxlength="3" size="20" autocomplete="off" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="stand_cap" value="#{label.stand_cap}"/>
+                                </label>
+                                <p:inputText id="stand_cap"  value="#{containerBean.ownerDobj.stand_cap}" required="true" disabled="true"
+                                             requiredMessage="Blank: Standing Capacity" maxlength="3" size="20" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="sleep_cap" value="#{label.sleep_cap}"/>
+                                </label>
+                                <p:inputText id="sleep_cap"  value="#{containerBean.ownerDobj.sleeper_cap}" size="20" maxlength="2" autocomplete="off" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ul_weight" value="#{label.ul_weight}"/>
+                                </label>
+                                <p:inputText id="ul_weight"  value="#{containerBean.ownerDobj.unld_wt}" size="20" maxlength="6" disabled="true"
+                                             required="true" requiredMessage="Blank: Unladen Weight" autocomplete="off" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="l_weight" value="#{label.l_weight}"/>
+                                </label>
+                                <p:inputText id="l_weight"  value="#{containerBean.ownerDobj.ld_wt}" size="20" maxlength="6" disabled="true"
+                                             required="true" requiredMessage="Blank: laden Weight" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">                           
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hp" value="#{label.hp}"/>
+                                </label>
+                                <p:inputText id="hp"  value="#{containerBean.ownerDobj.hp}" size="20" maxlength="11" disabled="true" 
+                                             required="true" requiredMessage="Blank: Horse Power" autocomplete="off" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="fuel" value="#{label.fuel}"/>
+                                </label>
+                                <p:selectOneMenu id="fuel"  value="#{containerBean.ownerDobj.fuel}" filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_fuel}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="purchase_as" value="#{label.purchase_as}"/>
+                                </label>
+                                <p:selectOneMenu id="purchase_as" value="#{containerBean.ownerDobj.vch_purchase_as}" filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_purchase_as}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="cubic_cap" value="#{label.cubic_cap}"/>
+                                </label>
+                                <p:inputText id="cubic_cap"  value="#{containerBean.ownerDobj.cubic_cap}" size="20" maxlength="11" disabled="true"
+                                             required="true" requiredMessage="Blank: Cubic Capicity" autocomplete="off" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="f_area" value="#{label.f_area}"/>
+                                </label>
+                                <p:inputText id="f_area"  value="#{containerBean.ownerDobj.floor_area}" size="20" maxlength="11" required="true" requiredMessage="Blank Floor Area" autocomplete="off" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ac_fitted" value="#{label.ac_fitted}"/>
+                                </label>
+                                <p:selectOneMenu id="ac_fitted"  value="#{containerBean.ownerDobj.ac_fitted}" maxlength="1" disabled="true">
+                                    <f:selectItem itemLabel="NO" itemValue="N"/>
+                                    <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="audio_fitted" value="#{label.audio_fitted}"/>
+                                </label>
+                                <p:selectOneMenu id="audio_fitted"  value="#{containerBean.ownerDobj.audio_fitted}" maxlength="1" disabled="true">
+                                    <f:selectItem itemLabel="NO" itemValue="N"/>
+                                    <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="video_fitted" value="#{label.video_fitted}"/>
+                                </label>
+                                <p:selectOneMenu id="video_fitted"  value="#{containerBean.ownerDobj.video_fitted}"  maxlength="1" disabled="true">
+                                    <f:selectItem itemLabel="NO" itemValue="N"/>
+                                    <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="imported_veh" value="#{label.imported_veh}"/>
+                                </label>
+                                <p:selectOneMenu id="imported_veh" value="#{containerBean.ownerDobj.imported_vch}" filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_imported_veh}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="sale_amt" value="#{label.sale_amt}"/>
+                                </label>
+                                <p:inputText id="sale_amt"  value="#{containerBean.ownerDobj.sale_amt}" maxlength="50" size="20" autocomplete="off" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="vm_other_criteria" value="#{label.vm_other_criteria}"/>
+                                </label>
+                                <p:selectOneMenu id="vm_other_criteria" value="#{containerBean.ownerDobj.other_criteria}" filter="true">
+                                    <f:selectItem itemLabel="Not Applicable" itemValue="0"/>
+                                    <f:selectItems value="#{owner_bean.list_other_criteria}"/>
+                                    <p:ajax/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="pushbackseat" styleClass="border-none">
+                        <p:outputPanel  id="pushbkseatpanel" rendered="#{containerBean.renderPushBackSeatPanel}" styleClass="border-none">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="push_back_seat" value="#{label.push_bkS}"/>
+                                    </label>
+                                    <p:inputText id="push_back_seat" value="#{containerBean.ownerDobj.push_bk_seat}" required="true" disabled="true" maxlength="2"  requiredMessage="Push Back Seat Cannot be Empty">
+                                        <p:keyFilter regEx="/[0-9]/i"/>
+                                        <f:validateRequired for="push_back_seat"/>                                
+                                    </p:inputText>
+                                </div>    
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ordn_seat" value="#{label.ordn_seat}"/>
+                                    </label>
+                                    <p:inputText id="ordn_seat" value="#{containerBean.ownerDobj.ordinary_seat}" required="true"  disabled="true"  maxlength="2" requiredMessage="Ordinary Seat Cannot be Empty">
+                                        <p:keyFilter regEx="/[0-9]/i"/>
+                                        <f:validateRequired for="ordn_seat"/>                                
+                                    </p:inputText>
+                                </div> 
+                                <div class="ui-grid-col-4">
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </div>
+            </p:panel>
+        </ui:composition>
+    </f:subview>
+</html>
+

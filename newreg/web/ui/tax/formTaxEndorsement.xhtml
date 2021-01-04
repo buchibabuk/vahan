@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"    
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22"> 
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formGenApplNo" prependId="false"> 
+                <p:growl id="msgs" />
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main"> Endorsement Tax Entry</h1>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+
+                        <div class="center-position">
+                            <p:commandButton value="Close" immediate="true" >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
+                        </div>
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="disposePanel" >
+                        <p:focus context="disposePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRegnNo" value="Registration Number"/>
+                                </label>
+                                <p:inputText  id="tfRegnNo" value="#{endorsmentTaxEntryBean.regnNo}" 
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="Please Enter Registration No"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" disabled="#{endorsmentTaxEntryBean.render}"/>
+                            </div>
+                            <div class="ui-grid-col-4">              
+
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="appl_no_id" for="applno_id" value="Application No" rendered="#{endorsmentTaxEntryBean.applNo !=null}"/>
+                                </label>
+                                <p:inputText id="applno_id" value="#{endorsmentTaxEntryBean.applNo}" autocomplete="off"
+                                             styleClass="input" 
+                                             converter="toUpperCaseConverter" required="true" maxlength="20" 
+                                             requiredMessage="Vehicle No Can't be Blank" 
+                                             disabled="true" rendered="#{endorsmentTaxEntryBean.applNo !=null}" >
+                                </p:inputText>
+
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{endorsmentTaxEntryBean.showDetails()}"
+                                                 update="formGenApplNo:panelOwnerInfo formGenApplNo" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()" rendered="#{!endorsmentTaxEntryBean.render}"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" rendered="#{endorsmentTaxEntryBean.renderBackBtm}"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfRegnNo" mask="alphanum"/>
+                    </p:panel>
+
+                </p:outputPanel>
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{endorsmentTaxEntryBean.render}">                    
+                        <p:tabView styleClass="top-space bottom-space" >
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{endorsmentTaxEntryBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{endorsmentTaxEntryBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+
+                        <p:panel id="pushordseatdetailsID"   header="Push Back And Ordinary Seat details " style="margin-bottom:20px" rendered="#{endorsmentTaxEntryBean.renderPushBackSeatPanel}">
+                            <p:outputPanel id="pushorddetails">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="push_back_seatId" value="#{label.push_bkS}"/>
+                                        </label>
+                                        <p:inputText id="push_back_seatId" value= "#{endorsmentTaxEntryBean.ownerDetail.push_bk_seat}"  disabled="true"/>                                
+                                    </div>    
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="ordn_seatId" value="#{label.ordn_seat}"/>
+                                        </label>
+                                        <p:inputText id="ordn_seatId" value="#{endorsmentTaxEntryBean.ownerDetail.ordinary_seat}"  disabled="true"/>                                
+                                    </div> 
+                                </div>
+                            </p:outputPanel>
+                        </p:panel> 
+
+                        <p:panel id="his_id" header="Previous Endorsement Tax Detail" style="margin-bottom:20px" rendered="#{endorsmentTaxEntryBean.historyEndosrsmtsList.size() >0}">
+                            <p:dataTable value="#{endorsmentTaxEntryBean.historyEndosrsmtsList}" var="historyendormnts" id="histryendmntTable">
+                                <p:column headerText="Application No">
+                                    <h:outputText value="#{historyendormnts.applNo}" />
+                                </p:column>
+                                <p:column headerText="Mode">
+                                    <p:selectOneMenu  value="#{historyendormnts.modMnulAuto}"  label="Mode A/M" disabled="true">
+                                        <f:selectItem itemLabel="Select One" itemValue="" />
+                                        <f:selectItems value="#{endorsmentTaxEntryBean.modeHashMap}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column headerText="No of Quarter cumpulsory">
+                                    <h:outputText value="#{historyendormnts.noofQuarter}" />
+                                </p:column>
+                                <p:column headerText="Tax Rate">
+                                    <h:outputText value="#{historyendormnts.taxRate}" />
+                                </p:column>
+                                <p:column headerText="Tax With Effect From Date">
+                                    <p:calendar id="endorsfrom_ends" value="#{historyendormnts.withEffectDate}"  pattern="dd-MMM-yyyy" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorsfrom_ends" /> 
+                                    </p:calendar>
+                                </p:column>
+                                <p:column headerText="Tax Endorsement Date">
+                                    <p:calendar value="#{historyendormnts.endorsFromDate}"  pattern="dd-MMM-yyyy" 
+                                                readonlyInput="true" navigator="true" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorstaxupto_ends"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </p:column>
+                                <p:column headerText="Tax Endorsement To">
+                                    <p:calendar value="#{historyendormnts.endorsUpto}"  pattern="dd-MMM-yyyy" 
+                                                readonlyInput="true" navigator="true" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorstaxupto_ends"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </p:column>
+
+
+                                <p:column headerText="Author">
+                                    <f:facet name="header">
+                                        <h:outputText value="Remark" />
+                                    </f:facet>
+                                    <h:outputText value="#{historyendormnts.remark}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+
+                        <p:panel id="addEndrsmnt" header="Endorsement Tax Detail" style="margin-bottom:20px">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Permit Type:"></p:outputLabel>
+                                    </label>
+                                    <p:selectOneMenu id="permit_type_id" value="#{endorsmentTaxEntryBean.permitPanelBean.permitDobj.pmt_type_code}" filter="true" filterMatchMode="contains" disabled="true" >                
+                                        <f:selectItem itemLabel="--SELECT PERMIT TYPE--" itemValue="-1"/>
+                                        <f:selectItems value="#{endorsmentTaxEntryBean.permitPanelBean.pmt_type_list}"/>                    
+                                        <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                                        <p:ajax event="change" listener="#{endorsmentTaxEntryBean.permitPanelBean.onSelectPermitType}"
+                                                process="@this"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Permit Category:"/>
+                                    </label>
+                                    <p:selectOneMenu id="permitendormst" value="#{endorsmentTaxEntryBean.permitPanelBean.permitDobj.pmtCatg}" filter="true" filterMatchMode="contains" disabled="true" >                
+                                        <f:selectItem itemLabel="--SELECT PERMIT CATEGORY--" itemValue="-1"/>
+                                        <f:selectItems value="#{endorsmentTaxEntryBean.permitPanelBean.pmt_catg_list}"/>
+                                        <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                                        <p:ajax event="change"/>
+                                    </p:selectOneMenu> 
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Service Type:"/>
+                                    </label>
+                                    <p:selectOneMenu id="serviceendorsmnt" value="#{endorsmentTaxEntryBean.permitPanelBean.permitDobj.services_TYPE}" filter="true" filterMatchMode="contains" disabled="true">                
+                                        <f:selectItems value="#{endorsmentTaxEntryBean.permitPanelBean.pmt_service_type_list}"/>
+                                        <p:ajax event="change"/>
+                                    </p:selectOneMenu> 
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="taxwef_ends" value="Tax With Effect From Date"/>
+                                    </label>
+                                    <p:selectOneMenu id="taxwef_ends" requiredMessage="Please Tax With Effect From Date" value="#{endorsmentTaxEntryBean.wittEffectDate}"  label="Tax With Effect From Date">
+                                        <f:selectItem itemLabel="Select One" itemValue="" />
+                                        <f:selectItems value="#{endorsmentTaxEntryBean.taxWefMap}"/>
+                                        <p:ajax event="change" update="endorsfrom_ends" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="endorsfrom_ends" value=" Tax Endorsement Date" />
+                                    </label>
+                                    <p:calendar id="endorsfrom_ends" value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj.endorsFromDate}"  pattern="dd-MMM-yyyy" 
+                                                requiredMessage="Blank Endorsment Tax From" readonlyInput="true"   navigator="true"  mindate="#{endorsmentTaxEntryBean.wittEffectDate}" >
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorsfrom_ends" /> 
+                                        <p:ajax event="dateSelect" listener="#{endorsmentTaxEntryBean.listnerUpdateUptoForTax()}"  process="@this" update="endorstaxupto_ends"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="endorstaxupto_ends" value="Tax Endorsement To"/>
+                                    </label>
+                                    <p:calendar id="endorstaxupto_ends" value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj.endorsUpto}"  pattern="dd-MMM-yyyy" 
+                                                mindate="#{endorsmentTaxEntryBean.minDateForUpto}"   requiredMessage="Blank Endorsment Tax  upto" readonlyInput="true" navigator="true" >
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorstaxupto_ends"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="taxmode_ends" value="Mode"/>
+                                    </label>
+                                    <p:selectOneMenu id="taxmode_ends"  requiredMessage="Please Select Mode" value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj.modMnulAuto}"  label="Mode A/M">
+                                        <f:selectItem itemLabel="Select One" itemValue="" />
+                                        <f:selectItems value="#{endorsmentTaxEntryBean.modeHashMap}"/>
+                                        <p:ajax event="change" listener="#{endorsmentTaxEntryBean.listnerUpdateManualAutoTaxMode()}" update="taxmode_ends rate_ends"  onstart="PF('ajax_status').show()" oncomplete="PF('ajax_status').hide()"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <!--                                    <p:outputPanel id="quarter_tax_mode_ends" rendered="# {endorsmentTaxEntryBean.renderTaxmode}"> -->
+                                    <p:outputPanel id="quarter_tax_mode_ends"> 
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="noquater_id_ends" value="No of Quarter cumpulsory"/>
+                                        </label>
+                                        <p:inputText  id="noquater_id_ends" value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj.noofQuarter}"
+                                                      maxlength="9"
+                                                      requiredMessage="Please Enter No of Quarter cumpulsory"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true">
+                                            <p:keyFilter regEx="/[\d\-\.]/"/></p:inputText>
+                                    </p:outputPanel>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="raxt_tax_mode_ends">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="rate_ends" value="Tax Rate"/>
+                                        </label>
+                                        <p:inputText  id="rate_ends" value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj.taxRate}"
+                                                      maxlength="9"
+                                                      requiredMessage="Please Enter Tax Rate"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true" >
+                                            <p:keyFilter regEx="/[\d\-\.]/"/></p:inputText>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+
+
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfremarks_ends" value="Remark"/>
+                                    </label>
+                                    <p:inputText  id="tfremarks_ends" value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj.remark}"
+                                                  maxlength="50"
+                                                  requiredMessage="Please Enter Remarks"
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase" 
+                                                  />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+
+                            </div>
+
+
+                            <!--                            <h:outputLabel value="Author : *" for="txt_author"></h:outputLabel>
+                                                        <p:inputText id="txt_author" value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj.remark}" required="true"/>-->
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton id="btn_reset" value="Reset" type="reset" update="endsmnt_add"/>
+                                    <p:commandButton id="btn_add" value="Add" update="endsmnt_add msgs @parent  " action="#{endorsmentTaxEntryBean.reinit}" >
+                                        <p:collector value="#{endorsmentTaxEntryBean.endorsmentTaxEntryDobj}" addTo="#{endorsmentTaxEntryBean.listEndosrsmts}" unique="true"/>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:outputPanel id="endsmnt_add">
+                            <div class="ui-grid-row right-position">
+                                <div class="ui-grid-col-12">
+                                    <h1 class=" header-main red">Serial No : #{endorsmentTaxEntryBean.listEndosrsmts.size()}</h1>
+                                </div>
+                            </div>
+                            <p:dataTable value="#{endorsmentTaxEntryBean.listEndosrsmts}" var="endormnts" id="endmntTable">
+
+                                <p:column headerText="Mode">
+                                    <!--                                    <h:outputText value="# {endormnts.modMnulAuto}" />-->
+
+                                    <p:selectOneMenu  value="#{endormnts.modMnulAuto}"  label="Mode" disabled="true">
+                                        <f:selectItem itemLabel="Select One" itemValue="" />
+                                        <f:selectItems value="#{endorsmentTaxEntryBean.modeHashMap}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column headerText="No of Quarter cumpulsory">
+                                    <h:outputText value="#{endormnts.noofQuarter}" />
+                                </p:column>
+                                <p:column headerText="Tax Rate">
+                                    <h:outputText value="#{endormnts.taxRate}" />
+                                </p:column>
+                                <p:column headerText="Tax With Effect From Date">
+                                    <p:calendar id="endorsfrom_ends" value="#{endormnts.withEffectDate}"  pattern="dd-MMM-yyyy" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorsfrom_ends" /> 
+                                    </p:calendar>
+                                </p:column>
+                                <p:column headerText="Tax Endorsement Date">
+                                    <p:calendar value="#{endormnts.endorsFromDate}"  pattern="dd-MMM-yyyy" 
+                                                readonlyInput="true" navigator="true" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorstaxupto_ends"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </p:column>
+                                <p:column headerText="Tax Endorsement To">
+                                    <p:calendar value="#{endormnts.endorsUpto}"  pattern="dd-MMM-yyyy" 
+                                                readonlyInput="true" navigator="true" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorstaxupto_ends"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </p:column>
+
+
+                                <p:column headerText="Author">
+                                    <f:facet name="header">
+                                        <h:outputText value="Remark" />
+                                    </f:facet>
+                                    <h:outputText value="#{endormnts.remark}" />
+                                </p:column>
+
+                                <p:column headerText="Action">
+                                    <p:commandLink value="Delete" update=":formGenApplNo:endsmnt_add" process=":formGenApplNo:endsmnt_add">
+                                        <p:collector value="#{endormnts}" removeFrom="#{endorsmentTaxEntryBean.listEndosrsmts}" unique="true" />
+                                    </p:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+
+
+
+
+
+
+
+                        <p:outputPanel id="reason_id"  rendered="#{!endorsmentTaxEntryBean.renderFileMove}">
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Save" action="#{endorsmentTaxEntryBean.saveEndorsTax()}"
+                                                     update="formGenApplNo:panelOwnerInfo formGenApplNo" onclick="PF('ajax_status').show()"
+                                                     oncomplete="PF('ajax_status').hide()" >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" /></p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" />
+                                    <p:commandButton  value="Reset" actionListener="#{endorsmentTaxEntryBean.reset()}" immediate="true" styleClass="button" update="formGenApplNo:panelOwnerInfo formGenApplNo panelApplInward  "></p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel id="outputpanel_appdisapp" rendered="#{endorsmentTaxEntryBean.renderFileMove}">       
+                            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                <ui:param name="app_disapp" value="#{endorsmentTaxEntryBean}"/>
+                            </ui:include>  
+                        </p:outputPanel>
+
+                        <p:panel id="changedByPrevUser" rendered="#{endorsmentTaxEntryBean.listPreviousChanges.size()>0}" >
+                            <p:dataTable value="#{endorsmentTaxEntryBean.listPreviousChanges}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="Changed by" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="Changed Data" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="Changed on" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+                    </p:panel>
+                </p:outputPanel>    
+                <!-- OTP for Change Vehicle Office-->
+                <p:blockUI block="formGenApplNo" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+                <vahan:vahanMessages messages="#{endorsmentTaxEntryBean.vahanMessages}"  rendered="#{endorsmentTaxEntryBean.vahanMessages ne null}"/>
+            </h:form>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,357 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="script">
+        <h:outputScript library="js" name="md5.js" />
+        <h:outputScript library="js" name="sha256.js" />
+        <h:outputScript library="js" name="changePassword.js" />
+    </ui:define>
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="empform">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.user_management}</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel rendered="#{userMgmtBean.marqueeIPButton}">
+                            <span class="report-header red"><span class="font-bold">Note:</span> Configuration of IP Address for respective Rto's login  has been provided to State Admin. 
+                                For any modification please contact to respective State Admin </span>
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 right-position">
+                        <p:commandButton value="#{language.user_blockUnblockButton}"  immediate="true" icon="ui-icon-unlocked" styleClass="close-counter" action="#{userMgmtBean.renderPanelAndButton('B')}"  update="empform: user_block_panel empform:user_mgmt_panel empform:user_table" rendered="#{userMgmtBean.block_unlock_button}"/>
+                        <p:commandButton value="#{language.user_IPButton}"  immediate="true" icon="ui-icon-unlocked" styleClass="open-counter" action="#{userMgmtBean.renderPanelAndButton('I')}"  update="empform: user_ip_address empform:user_mgmt_panel empform:user_table" rendered="#{userMgmtBean.renderIpAddButton}"/>
+                        <p:commandButton  value="#{language.user_restrictUserButton}" immediate="true" icon="ui-icon-locked" styleClass="close-counter" action="#{userMgmtBean.renderPanelAndButton('R')}"  update="empform: restrict_user_catg empform:user_mgmt_panel empform:user_table" rendered="#{userMgmtBean.restrictUserCatgButton}"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="state_cd" value="#{language.state}" rendered="#{userMgmtBean.state_render}"/>
+                        </label>
+                        <p:selectOneMenu id="state_cd" value="#{userMgmtBean.state_cd}" required="true"
+                                         rendered="#{userMgmtBean.state_render}" filter="true" filterMatchMode="contains">
+                            <f:selectItem itemValue="0" itemLabel="Select State"/>
+                            <f:selectItems value="#{userMgmtBean.stateList}" />
+                            <f:validator validatorId="selectOneValidator_0" for="state_cd" />
+                            <p:ajax update=":empform:basicDT,emp_panel,desig_cd" listener="#{userMgmtBean.fillDataTable()}" />
+                        </p:selectOneMenu>
+                    </div>
+
+                    <!--   new                       <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="off_cd" value="Office" rendered="#{userMgmtBean.off_render}" />
+                                                </label>
+                                                <p:selectOneMenu id="off_cd" value="#{userMgmtBean.office_cd}" required="true"
+                                                                 rendered="#{userMgmtBean.off_render}" filter="true">
+                                                    <f:selectItem itemValue="0" itemLabel="Select Office"/>
+                                                    <f:selectItems value="#{userMgmtBean.officeList}" />
+                                                    <f:validator validatorId="selectOneValidator_0" for="off_cd" />
+                                                    <p:ajax update=":empform:basicDT,emp_panel" listener="#{userMgmtBean.fillDataTable()}" />
+                                                </p:selectOneMenu>
+                                            </div>-->
+
+
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="user_block_panel" rendered="#{userMgmtBean.block_unblock}">
+                            <ui:include src="/ui/form_block_unblock_user.xhtml"/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="user_ip_address" rendered="#{userMgmtBean.renderIpAdd}">
+                            <ui:include src="/ui/user_mgmt/form_IpAddressEntry.xhtml"/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="restrict_user_catg" rendered="#{userMgmtBean.restrictUserCatg}">
+                            <ui:include src="/ui/user_mgmt/form_RestrictUsersForLogin.xhtml"/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:outputPanel id="user_table" rendered="#{userMgmtBean.renderModifyPanel}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-8">
+                                    <label class="field-label">
+                                        <p:outputLabel for="off_cd" value="#{language.user_selectoffice}" rendered="#{userMgmtBean.off_render}" />
+                                    </label>
+                                    <p:selectOneMenu id="off_cd" value="#{userMgmtBean.office_cd}" 
+                                                     rendered="#{userMgmtBean.off_render}" filter="true" filterMatchMode="contains">
+                                        <f:selectItem itemValue="0" itemLabel="#{language.select_case}"/>
+                                        <f:selectItems value="#{userMgmtBean.officeList}" />
+                                        <!--                                       <f:validator validatorId="selectOneValidator_0" for="off_cd" />-->
+                                        <p:ajax update=":empform:basicDT,emp_panel" listener="#{userMgmtBean.fillDataTable()}" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div> 
+
+                            <p:dataTable id="basicDT" var="dt" value="#{userMgmtBean.dtMap.entrySet().toArray()}" rowIndexVar="index"
+                                         paginator="true" paginatorPosition="bottom" filterDelay="100" filteredValue="#{userMgmtBean.filterList}"
+                                         rows="7" >
+                                <f:facet name="header">#{language.user_userList}</f:facet>
+                                <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="#{language.user_userID}" filterBy="#{dt.value}" filterMatchMode="contains" styleClass="center-position">
+                                    <h:outputText value="#{dt.value}"  />
+                                </p:column>
+                                <p:column headerText="#{language.user_modify}" styleClass="center-position">
+                                    <p:commandButton title="Edit"  icon="ui-icon-pencil" immediate="true">
+                                        <p:ajax event="click" listener="#{userMgmtBean.updateListner(dt.key)}" 
+                                                update=":empform:emp_panel" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </div>
+
+
+                    <div class="ui-grid-col-8">
+                        <p:outputPanel id="user_mgmt_panel" rendered="#{userMgmtBean.renderModifyPanel}">
+                            <p:panel id="emp_panel" header="#{language.user_registration_from}" styleClass="bottom-space" rendered="true">
+                                <!--                            <p:outputPanel rendered="# {userMgmtBean.renderUnblockUserCheck}" styleClass="top-space">
+                                                                <div class="ui-grid-row">
+                                                                    <div class="ui-grid-col-4"></div>
+                                                                    <div class="ui-grid-col-1">
+                                                                        <p:selectBooleanCheckbox  value="# {userMgmtBean.unblockUserFlag}" required="true" requiredMessage="Please Check unblock user"
+                                                                                                  styleClass="pull-right" style="margin-right: 5px;">                                            
+                                                                        </p:selectBooleanCheckbox>
+                                                                    </div>
+                                                                    <div class="ui-grid-col-3">
+                                                                        <p:outputLabel styleClass="pull-left">Unblock User.</p:outputLabel>
+                                                                    </div>
+                                                                    <div class="ui-grid-col-4"></div>
+                                                                </div>
+                                                            </p:outputPanel>-->
+                                <p:outputPanel rendered="#{userMgmtBean.renderResetPwdCheck}" styleClass="top-space">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4"></div>
+                                        <div class="ui-grid-col-1">
+                                            <p:selectBooleanCheckbox value="#{userMgmtBean.resetPwdFlag}" styleClass="pull-right" style="margin-right: 5px;">                                            
+                                                <p:ajax update="emp_panel" listener="#{userMgmtBean.resetPwdListener}"/>
+                                            </p:selectBooleanCheckbox>
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <p:outputLabel styleClass="pull-left">#{language.user_resetPassMsg}.</p:outputLabel>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>                            
+                                <p:outputPanel id="resetPassword" styleClass="bottom-space">
+                                    <p:outputPanel rendered="#{userMgmtBean.resetPwdRender}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="newPwd" value="#{language.user_newpassword}"/>
+                                                </label>
+                                                <p:password id="newPwd" value="#{userMgmtBean.newPwd}" match="CnfrmPwd" feedback="true"
+                                                            required="true" requiredMessage="Blank : New Password Field" validatorMessage="Invalid Password. Provide password as per the instructions">
+                                                    <f:validateRegex pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&amp;+=])(?=\S+$).{8,}$"/>
+                                                </p:password>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="CnfrmPwd" value="#{language.user_cnfrmPass}"/>
+                                                </label>
+                                                <p:password id="CnfrmPwd" value="#{userMgmtBean.cnfrmPwd}" feedback="true"
+                                                            required="true" requiredMessage="Blank : Confirm Password Field" validatorMessage="Invalid Password. Provide password as per the instructions">
+                                                    <f:validateRegex pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&amp;+=])(?=\S+$).{8,}$"/>
+                                                </p:password>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+
+                                <p:panel id="userDetails" rendered="#{userMgmtBean.userDetailRender}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <p:outputPanel id="assignOfficeListbox" rendered="#{userMgmtBean.renderAssignOffice}" styleClass="datatable-panel-100">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="offCode" value="#{language.user_assign_office}" />
+                                                </label>
+                                                <p:selectCheckboxMenu id="offCode" value="#{userMgmtBean.assignedOfficeList}" label="#{language.select_case}"  disabled="#{userMgmtBean.disableOfficeListItem}"
+                                                                      required="true" requiredMessage="#{language.user_officeselectmsg}!!" filter="true" filterMatchMode="contains" >
+                                                    <f:selectItems value="#{userMgmtBean.officeList}" />
+                                                    <p:ajax event="toggleSelect" update="offCode"/>
+                                                    <p:ajax  />
+                                                </p:selectCheckboxMenu>
+                                            </p:outputPanel>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="emp_name" value="#{language.user_username}"/>
+                                            </label>
+                                            <p:inputText id="emp_name" value="#{userMgmtBean.user_name}" required="true" styleClass="input"
+                                                         maxlength="99" autocomplete="off" requiredMessage="#{language.user_blankusername} !!!" >
+                                                <f:ajax event="blur" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="user_catg" value="#{language.user_usercategory}" />
+                                            </label>
+                                            <p:selectOneMenu id="user_catg" value="#{userMgmtBean.selectedUserCatg}" disabled="#{userMgmtBean.disable}" required="true" filter="true" filterMatchMode="contains"
+                                                             requiredMessage="#{language.user_blankusercategory}">
+                                                <f:selectItem itemLabel="#{language.select_case}" itemValue="0"/>
+                                                <f:selectItems value="#{userMgmtBean.list_user_catg}"/>
+                                                <f:validator validatorId="selectOneValidator_0" for="user_catg"/>
+                                                <p:ajax update="userAuthorityPanel,userAuthPanel,user_catg,userDetails" listener="#{userMgmtBean.userCategoryListener}" />
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="email" value="#{language.user_email}"/>
+                                            </label>
+                                            <p:inputText id="email" value="#{userMgmtBean.email}" required="true" requiredMessage="Blank : Email ID"
+                                                         maxlength="50" autocomplete="off"  validatorMessage="#{language.user_invalidemail} !!!">
+                                                <f:validator for="email" validatorId="emailValidator"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="desig_cd" value="#{language.user_designation}"/>
+                                            </label>
+                                            <p:selectOneMenu id="desig_cd" value="#{userMgmtBean.desig_cd}" filter="true" filterMatchMode="contains"
+                                                             required="true" requiredMessage="#{language.user_blankDesignation} !!!">
+                                                <f:selectItem itemValue="0" itemLabel="#{language.user_selectDesignation}"/>
+                                                <f:selectItems value="#{userMgmtBean.desigList}" />
+                                                <f:validator validatorId="selectOneValidator_0" for="desig_cd" />
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="mob_no" value="#{language.user_mobileNo}"/>
+                                            </label>
+                                            <p:inputText id="mob_no" value="#{userMgmtBean.mobile_no}" required="true" requiredMessage="Blank : Mobile No"
+                                                         autocomplete="off" maxlength="10">
+                                                <f:validator for="mob_no" validatorId="mobileNoValidator"/>
+                                                <f:ajax event="blur" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="user_id" value="#{language.user_userID}"/>
+                                            </label>
+                                            <p:inputText id="user_id" value="#{userMgmtBean.user_id}" required="true"
+                                                         maxlength="20" disabled="#{userMgmtBean.disable}" autocomplete="off"  requiredMessage="#{language.user_userIdmsg} !!!">
+                                                <p:ajax event="blur" listener="#{userMgmtBean.userIdListener}" update="@this" process="@this"/>
+                                                <p:keyFilter mask="email" for="user_id"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="off_ph" value="#{language.user_offcphn}"/>
+                                            </label>
+                                            <p:inputText id="off_ph" value="#{userMgmtBean.off_phone}" maxlength="15" autocomplete="off"
+                                                         validatorMessage="Phone Number should contain only digits !!!">
+                                                <f:validateRegex pattern="^[0-9]*$" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <p:outputPanel id="pwdRow" rendered="#{userMgmtBean.pwdField}">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="user_pwd" value="#{language.user_password}"/>
+                                                </label>
+                                                <p:password id="user_pwd"  value="#{userMgmtBean.user_pwd}" feedback="true" required="true"
+                                                            redisplay="true" autocomplete="off" maxlength="100"
+                                                            requiredMessage="Blank Password !!!" 
+                                                            onblur="return makePassword1()">
+                                                    <p:ajax event="blur" update="@this" partialSubmit="true"/>
+                                                </p:password>
+                                                <h:outputText styleClass="red" value="(#{language.user_passwordRequirement})"/>
+                                            </p:outputPanel>
+                                        </div>
+                                        <!--                                        <div class="ui-grid-col-6">
+                                                                                    <label class="field-label resp-label-section">
+                                                                                        <p:outputLabel for="tf_aadhar" value="# {language.user_aadhar}"/>
+                                                                                    </label>
+                                                                                    <p:inputText id="tf_aadhar" value="# {userMgmtBean.aadharNo}" converter="toUpperCaseConverter" styleClass="input" maxlength="12" autocomplete="off">
+                                                                                        <f:validator validatorId="aadharValidator"/>
+                                                                                    </p:inputText>
+                                                                                </div>-->
+                                    </div>
+
+
+                                    <p:outputPanel id="userAuthorityPanel">
+                                        <p:outputPanel rendered="#{userMgmtBean.renderPermPanel}">
+                                            <ui:include src="form_userAuthorityPanel.xhtml" />
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </p:panel>
+                            </p:panel>
+
+                            <p:panel styleClass="bottom-space">
+                                <div class="ui-grid-row center-position">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton id="submitBtn" value="#{language.save}" icon="ui-icon-disk" action="#{userMgmtBean.saveEmpRecord}" 
+                                                         update="emp_panel :empform:basicDT empform:user_pwd"  title="Save/Update User"  >
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <!--                                    <p:commandButton id="delBtn" value="Delete" icon="ui-icon-trash" action="# {userMgmtBean.deleteRecord()}"
+                                                                                             update="emp_panel,:empform:basicDT">
+                                                                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                                                            </p:commandButton>-->
+                                        <p:commandButton id="resetBtn" value="#{language.reset}" icon="ui-icon-refresh" action="#{userMgmtBean.reset()}"
+                                                         immediate="true" update="@form">
+                                            <p:resetInput target="@form" />
+                                        </p:commandButton>
+                                        <p:commandButton id="newBtn" value="#{language.new_val}" process="@this" icon="ui-icon-circle-plus"
+                                                         title="Add New User"
+                                                         action="#{userMgmtBean.newReset()}" update="emp_panel">
+                                            <p:resetInput target="emp_panel" />
+                                        </p:commandButton>
+                                        <p:button  id="back" value="#{language.login_back}" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                        </p:confirmDialog>                                    
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <p:dialog header="Password" widgetVar="pwd1" minHeight="40" closeOnEscape="true">
+                    <h:outputText value="Invalid Password. Provide password as per the instructions" />
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

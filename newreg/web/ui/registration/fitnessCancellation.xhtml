@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">    
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{fitCancellationBean.appl_details}"/>            
+            </ui:include>  
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formFintessCancellation" prependId="false"> 
+
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3">
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-12">
+                                    <div class="font-bold report-header">    
+                                        Registration No: <span class="red font-bold"> (#{fitCancellationBean.appl_details.regn_no})</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-12">
+                                    <h:outputText styleClass="field-label-mandate" value="#{fitCancellationBean.lableValue}"/>
+                                    <p:inputTextarea id="fitCanReason" value="#{fitCancellationBean.cancellationDobj.reason}" cols="50" rows="3"
+                                                     maxlength="97" converter="toUpperCaseConverter" styleClass="bottom-space text-uppercase"
+                                                     required="true" requiredMessage="Please Enter Reason for Fitness Cancellation"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-12 right-space">
+                                    <p:outputPanel id="outputpanel_appdisapp" rendered="#{!fitCancellationBean.render}">          
+                                        <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                            <ui:param name="app_disapp" value="#{fitCancellationBean}"/>
+                                        </ui:include>            
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="ui-grid-col-9">
+                            <p:tabView styleClass="top-space bottom-space" >
+
+                                <!--###################### Fitness Details ######################################## -->
+                                <p:tab id="fitnessDetails"  title="Fitness Details" rendered="#{fitCancellationBean.fitnessDobj ne null}">  
+                                    <ui:include src="/ui/registration/formFitnessDetails.xhtml">
+                                        <ui:param name="fitnessDobj" value="#{fitCancellationBean.fitnessDobj}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+
+                                <!--################################# Owner Details ########################################## -->
+                                <p:tab  id="owner_details_tab" title="Owner Details">
+                                    <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{fitCancellationBean.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+
+                                <!--################################# Vehicle Details ######################################## -->
+                                <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                    <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{fitCancellationBean.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <!--########################################################################################## -->         
+
+                            </p:tabView>
+
+                            <div class="ui-grid-row center-position top-space bottom-space">
+                                <div class="ui-grid-col-12">
+                                    <p:panel id="changedByPrevUser" rendered="#{fitCancellationBean.prevChangedDataList.size()>0}"
+                                             toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                                        <p:dataTable value="#{fitCancellationBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                            <p:column headerText="Changed by Employee" width="15%">
+                                                <h:outputText value="#{data.userName}" />
+                                            </p:column>
+                                            <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                                <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                            </p:column>
+                                            <p:column headerText="Changed on" width="15%">
+                                                <h:outputText value="#{data.op_dt}"/>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:panel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>                 
+                <vahan:vahanMessages messages="#{fitCancellationBean.vahanMessages}"  rendered="#{fitCancellationBean.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

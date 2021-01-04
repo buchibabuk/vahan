@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="temp_Pmt" prependId="false">
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">DETAIL ENTRY OF COMMON CARRIERS</h1>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages id="lbl_maker_error_msg" closable="true" styleClass="red"  showSummary="true">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </div>
+                    </div> 
+
+                    <p:outputPanel id="choose_trade_cert_type">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-6">
+                                <p:selectOneRadio id="console" columns="3"
+                                                  layout="responsive" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.duplicateRenewCert}"
+                                                  rendered="#{detailCommonCarrierBean.optionCCRenualDuplicate}" required="true">
+                                    <f:selectItem itemLabel="New Certificate" itemValue="New_CC_Certificate" />
+                                    <f:selectItem itemLabel="Renew Certificate " itemValue="Renew_CC_Certificate" />
+                                    <f:selectItem itemLabel="Duplicate Certificate " itemValue="Duplicate_CC_Certificate" />
+                                    <p:ajax  event="click" listener="#{detailCommonCarrierBean.fillRenewDuplicateOption}"  
+                                             update="cc_regnNo owner_detail_panel branch_sections_panel added_branch_sections_panel cal1 call_to"/>
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>                  
+                    <p:outputPanel id="cc_regnNo">
+                        <p:outputPanel rendered="#{detailCommonCarrierBean.visibleRenewDuplicate}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  value="Registration No:"/>
+                                    </label>
+                                    <p:inputText id="tf_regn_no" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.regnNo}"  
+                                                 maxlength="25"                                                
+                                                 autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                        <p:ajax  event="change" listener="#{detailCommonCarrierBean.fillRenewDuplicateDetailstoDobj}" 
+                                                 update="added_branch_sections_panel name_organisation name_person tf_USER_MOBILENO tf_USER_ADDRESS control_buttons branch_sections_panel cal1 call_to"/>
+                                    </p:inputText> 
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="owner_detail_panel" styleClass="top-space">
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="name_organisation"  value="#{label.org_name} :" />   
+                                </label>
+                                <p:inputText id="name_organisation" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.organijationName}" 
+                                             styleClass="input" required="true" 
+                                             disabled="#{detailCommonCarrierBean.disableOwnerName}" maxlength="40"
+                                             requiredMessage="Please Provide Person Authorised" autocomplete="off"> 
+                                    <p:ajax event="blur" process="name_organisation" update="@this "/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="name_person" value="#{label.owner_name} :"/>   
+                                </label>
+                                <p:inputText id="name_person" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.personAuthorised}" 
+                                             styleClass="input" disabled="#{detailCommonCarrierBean.disablePersonAuthorised}" maxlength="40"
+                                             requiredMessage="Please Provide Owner Name" required="true" autocomplete="off">
+                                    <p:ajax event="blur" process="name_person" update="@this "/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="tf_USER_MOBILENO" value="#{label.mob_no} :"/>   
+                                </label>
+                                <p:inputText id="tf_USER_MOBILENO" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.contactNumber}" disabled="#{detailCommonCarrierBean.disableContactNumber}" 
+                                             requiredMessage="Please Provide Mobile Number" required="true" autocomplete="off" maxlength="10">
+                                    <p:keyFilter regEx="/[\d\-\.]/" for="tf_USER_MOBILENO"/>
+                                    <p:ajax event="blur" process="tf_USER_MOBILENO" update="@this "/>
+                                    <f:validateLength minimum="10" />
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="tf_USER_ADDRESS" value="#{label.office_add} :" />   
+                                </label>
+                                <p:inputTextarea id="tf_USER_ADDRESS" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.address}" style="text-transform: uppercase" disabled="#{detailCommonCarrierBean.disableAddressMainOffice}" 
+                                                 requiredMessage="Please Provide User Address" required="true" maxlength="40">
+                                    <p:ajax event="blur" process="tf_USER_ADDRESS" update="@this "/>
+                                </p:inputTextarea>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:panel header="Details of Branch"  id="branch_sections_panel" styleClass="top-space">
+                        <p:outputPanel rendered="#{detailCommonCarrierBean.visibleMainBranchPanel}">
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-3">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  value="Location/State:"/>   
+                                    </label>
+
+                                    <p:selectOneMenu id="tf_BANK_LOCATION" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.branchLocation}" filter="true">
+                                        <f:selectItems value="#{detailCommonCarrierBean.list_c_state}"/>
+                                        <p:ajax event="change" listener="#{detailCommonCarrierBean.cStateListener}" update="branch_sections_panel" partialSubmit="true"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="tf_BANK_ADDRESS" value="Address of Contact :" />   
+                                    </label>
+                                    <p:inputText id="tf_BANK_ADDRESS" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.branchAddress}" style="text-transform: uppercase" 
+                                                 autocomplete="off" maxlength="40">                                
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="tf_BANK_GODOWN" value="Usage Office/Godown/Hub Center:" />   
+                                    </label>
+                                    <p:inputText id="tf_BANK_GODOWN" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.branchCenter}" styleClass="input"  
+                                                 autocomplete="off" maxlength="40">
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="tf_BANK_DATE_COMC" value="Date of Commencement:" />   
+                                    </label>
+                                    <p:calendar id="tf_BANK_DATE_COMC" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.branchDateCommencement}" pattern="dd-MM-yyyy" readonlyInput="true" navigator="true" 
+                                                maxdate="#{detailCommonCarrierBean.currentDate}">
+                                    </p:calendar>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Add More" action="#{detailCommonCarrierBean.addNewSectionsToApplication()}" update="branch_sections_panel lbl_maker_error_msg control_buttons" rendered="#{detailCommonCarrierBean.disableAddMore}"/>
+                                    <p:commandButton value="Clear Field" action="#{detailCommonCarrierBean.setDetailsBranch()}" update="tf_BANK_DATE_COMC tf_BANK_GODOWN tf_BANK_ADDRESS tf_BANK_LOCATION branch_sections_panel" disabled="#{detailCommonCarrierBean.disableClearField}" rendered="#{detailCommonCarrierBean.disableAddMore}"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:panel header="Added Branch Details" id="added_branch_sections_panel" visible="#{detailCommonCarrierBean.visibleBravchDetailPanel}">
+                            <p:dataTable var="detailCommonCarrierDobj" id="branch_sections_data_table" styleClass="top-space bottom-space" value="#{detailCommonCarrierBean.listBranchDetailsFor}"  paginator="false" disabledSelection="#{detailCommonCarrierBean.visibleBravchDetailPanel}" >
+                                <p:column headerText="Location/State">
+                                    <h:outputText  value="#{detailCommonCarrierDobj.branchLocation}" styleClass="input" />
+                                </p:column>
+
+                                <p:column headerText="Address and Contact">
+                                    <h:outputText value="#{detailCommonCarrierDobj.branchAddress}" styleClass="input" />
+                                </p:column>
+
+                                <p:column headerText="Usage Office/Godown/Hub Center">
+                                    <h:outputText value="#{detailCommonCarrierDobj.branchCenter}" styleClass="input" />
+                                </p:column>
+
+                                <p:column headerText="Date of Commencement">
+                                    <p:calendar value="#{detailCommonCarrierDobj.branchDateCommencement}" pattern="dd-MM-yyyy" disabled="#{detailCommonCarrierBean.disableDateComm}"/>
+                                </p:column>
+
+                                <p:column headerText="Remove" width="8%" rendered="#{detailCommonCarrierBean.renderRemoveRow}"> 
+                                    <div class="ui-grid ui-grid-responsive" style="width:150px">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-1">
+                                                <p:selectBooleanCheckbox value="#{detailCommonCarrierDobj.isRowRemove}">
+                                                    <p:ajax update="added_branch_sections_panel control_buttons" listener="#{detailCommonCarrierBean.removeInListListener}"/>
+                                                </p:selectBooleanCheckbox>
+                                            </div>                         
+                                        </div>
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </p:panel>               
+                    <div class="ui-grid-row top-space">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-3">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Valid From:" />   
+                            </label>
+                            <p:calendar id= "cal1" pattern="dd-MM-yyyy"  navigator="true" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.validFrom}" readonlyInput="true" 
+                                        disabled="#{detailCommonCarrierBean.disableValidFrom}"  mindate="#{detailCommonCarrierBean.currentDate}">
+                                <p:ajax event="dateSelect" listener="#{detailCommonCarrierBean.setValidUptoListner}"  update="call_to"/>    
+                            </p:calendar>
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Valid Upto:"/>   
+                            </label>
+                            <p:calendar id= "call_to" pattern="dd-MM-yyyy"  navigator="true" value="#{detailCommonCarrierBean.detailCommonCarrierDobj.validUpto}" readonlyInput="true" disabled="#{detailCommonCarrierBean.disableValidTo}"  >
+                                <p:ajax event="dateSelect"/>                               
+                            </p:calendar>
+                        </div>
+                    </div>                    
+                    <p:outputPanel rendered="#{!detailCommonCarrierBean.renderFileMovement}" id="control_buttons"  styleClass="top-space bottom-space">
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Save" id="btn_save" action="#{detailCommonCarrierBean.save()}" rendered="#{detailCommonCarrierBean.visibleSave}" update="popup popupSaveOutpsnel"/>
+                                <p:commandButton value="Reset" id="btn_reset" action="#{detailCommonCarrierBean.setReset()}" update="name_person tf_USER_MOBILENO tf_USER_ADDRESS tf_BANK_DATE_COMC tf_BANK_GODOWN tf_BANK_ADDRESS tf_BANK_LOCATION added_branch_sections_panel name_organisation"/>
+                                <p:button value="Cancel" outcome="home" />
+                            </div>
+                        </div>
+                    </p:outputPanel>                  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel rendered="#{detailCommonCarrierBean.renderFileMovement}" id="control_buttons_file_mov" styleClass="bottom-space top-space">
+                                <ui:include src="/ui/role/app_disapp_new.xhtml">
+                                    <ui:param name="app_disapp" value="#{detailCommonCarrierBean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+                </div>
+                <p:dialog id="popup" widgetVar="confDlgFee" modal="true" draggable="false" 
+                          closable="false" closeOnEscape="false" header="Application No">  
+                    <p:panel id="popupSavePanel">
+
+                        <div class="font-bold center-position bottom-space">
+                            <h:outputText value="Application No: #{detailCommonCarrierBean.myNo}"/>
+                        </div>
+                    </p:panel>
+                    <p:blockUI block="popupSavePanel" widgetVar="bui">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:dialog>
+
+                <p:dialog id="app_num_id" header="Common Carrier Application Number" widgetVar="appNum" modal="true" closable="false" resizable="false"
+                          onShow="updateDialog()">
+                    <p:panel id="popupSaveOutpsnel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <h:outputText value="#{detailCommonCarrierBean.postSaveMessage}" />
+                                <br/>
+                                <p:button value="OK" outcome="home" />
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:dialog>
+
+                <p:remoteCommand name="updateDialog" update="popupSaveOutpnel"/>
+                <p:dialog id="regn_num_id" header="Common Carrier Registration Number" widgetVar="regnNum" modal="true" closable="false" resizable="false"
+                          onShow="updateDialog()">
+                    <p:panel id="popupSaveOutpnel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <h:outputText value="#{detailCommonCarrierBean.postSaveMessage}" />
+                                <br/>
+                                <p:button value="OK" outcome="home" />
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <ui:define name="content">
+
+        <f:subview id="frm_print_Ownerdisclaimer">
+            <p:outputPanel id="frm_Ownerdisclaimer">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Owner Disclaimer Print Form </h1>
+                    </div>
+                </div>
+
+
+                <p:panel id="pn_ApplId" header="Registered Vehicles" styleClass="bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfAppNo" value="Application No"/>
+                            </label>
+                            <p:inputText  id="tfAppNo" value="#{ownerDiscmrBean.applNoForRegisteredVehicle}" 
+                                          maxlength="16"
+                                          required="true"
+                                          requiredMessage="Please Enter Application No"
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details"  action="#{ownerDiscmrBean.showDetails()}" onclick="PF('blockOwnerDisc').show();" ajax="false" oncomplete="PF('blockOwnerDisc').hide();">
+                                <f:param name="APPL_NO" value="#{ownerDiscmrBean.applNoForRegisteredVehicle}"/> 
+                            </p:commandButton>
+                            <p:button id="back_to_home_from_own_disc_frm" value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                    <p:keyFilter for="tfAppNo" mask="alphanum"/>
+                </p:panel>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:dataTable id="printOwnerdisclaimer"  value="#{ownerDiscmrBean.printCertDobj}" var="printOwnerDisc" rows="10"  
+                                     widgetVar="seatWorkList" filteredValue="#{ownerDiscmrBean.filteredSeat}" paginator="true" rowIndexVar="rowkey">
+                            <f:facet name="header">  
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 left-position">
+                                        <h:outputText value="New Registered Vehicles" />
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application no" filterBy="#{printOwnerDisc.appl_no}" filterMatchMode="contains" sortBy="#{printOwnerDisc.appl_no}">#{printOwnerDisc.appl_no}</p:column>                        
+                            <p:column headerText="Registration No" filterBy="#{printOwnerDisc.regno}" filterMatchMode="contains" sortBy="#{printOwnerDisc.regno}">#{printOwnerDisc.regno}</p:column>
+                            <p:column headerText="Application Date">#{printOwnerDisc.appl_dt}</p:column>
+                            <p:column headerText="Action"> 
+                                <p:commandButton id ="bt_print" value="Print Owner Disclaimer"  action="#{ownerDiscmrBean.confirmprintOwnerDisc()}" immediate="true" onclick="PF('blockOwnerDisc').show();" oncomplete="PF('blockOwnerDisc').hide();"> 
+                                    <f:param name="APPL_NO" value="#{printOwnerDisc.appl_no}"/> 
+                                    <f:param name="REGN_NO" value="#{printOwnerDisc.regno}"/>
+                                    <f:param name="PUR_CD" value="#{printOwnerDisc.purCd}"/>
+                                </p:commandButton>                        
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+                <div class="ui-grid-row center-position top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton  value="Back" action="home" immediate="true"/>              
+                    </div>
+                </div> 
+                <p:blockUI block="frm_Ownerdisclaimer" widgetVar="blockOwnerDisc">
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </p:outputPanel>
+        </f:subview>
+
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head> 
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="AgentCertInfo" prependId="false">
+            <div class="center-position">
+                <p:button id="back" value="Back" outcome="/ui/reports/formAgentCertificate.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="agentCertList" value="#{AgentCertReportBean.selectedAgentCertlist}" varStatus="status">
+                <div class="position-relative">
+                    <div class="center-position">
+                        <h:outputText value="FORM MVR: 59" styleClass="font-bold report-header text-uppercase"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="[See Rule 138(2) of MMV Rule 1995)]" styleClass="font-bold report-subheader"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="PERMIT IN RESPECT OF AGENT'S LICENCE" styleClass="font-bold report-header text-uppercase"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="#{agentCertList.pur_desc}" styleClass="font-bold report-header text-uppercase"/>
+                    </div>
+                </div>
+                <br />
+                <div class="table-width-two">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputLabel value="Permit NO:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{agentCertList.agent_licence_no}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Name:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{agentCertList.agent_name}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="C/O:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{agentCertList.f_name}" styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-oneforth datatable-panel" style="margin: 0 auto; font-size: 11px;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel  value="Permanent Address:"  styleClass="right-space bottom-space" />
+                        <h:outputText  value="#{agentCertList.p_full_address}" />
+                    </h:panelGrid>
+                </div>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="is Licensing to engage as an Agent for sale of ticket to the traveling Passenger to public Service Vehicles" styleClass="bottom-space" />
+                </div>
+                <div class="table-width-two">
+                    <h:panelGrid columns="2" styleClass="left-space datatable-panel" style="margin: 0 auto;">
+                        <h:outputLabel value="a). Place of Business:" styleClass="right-space bottom-space" />
+                        <h:outputText value="" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="b). Route:" styleClass="right-space bottom-space" />
+                        <h:outputText value="" styleClass="right-space bottom-space" />
+                        <h:outputLabel value="c) Name of Counter:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{agentCertList.name_of_counter}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="d) Agent's Badge No:" styleClass="right-space bottom-space" />
+                        <h:outputText value="" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="e) Licence valid from date:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{agentCertList.valid_from}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="f) Licence valid up to date:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{agentCertList.valid_upto}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="g) Place of Business:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{agentCertList.place_of_business}" styleClass="right-space bottom-space" /> 
+
+                    </h:panelGrid>
+                </div><br/><br/>
+                <table class="datatable-panel" style="margin: 0px auto;">
+                    <tr>
+                        <td class="right-position">
+                            <div class="right-space">                                                       
+                                (Signature of holder with date)
+                            </div>
+                        </td>
+                        <td class="right-position">
+                            <div class="right-space">                                                       
+                                Secretary, State Transport Authority
+                            </div>
+                        </td>
+                    </tr>
+                </table><br/>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="TERMS &amp; CONDITIONS" styleClass="font-bold bottom-line text-uppercase bottom-space" />
+                </div><br/>
+
+                <ol>
+                    <li>
+                        Agent's Licence neitu chuan ticket fel takin a issue tur a ni a ticket-ah chuan heng a hnuaia mi te hi a tilang
+                        ngei ngei tur a ni
+                        <div class="table-width-two">
+                            <h:panelGrid columns="2" styleClass="left-space datatable-panel" style="margin: 0 auto;">
+                                <h:outputLabel value="a) Zin ni(Date of journey)" styleClass="right-space bottom-space" />
+                                <h:outputLabel value="b) Motor Number" styleClass="right-space bottom-space" />
+                                <h:outputLabel value="c) Passenger seat number" styleClass="right-space bottom-space" />
+                                <h:outputLabel value="d) Ticket hralha ni" styleClass="right-space bottom-space" />
+                            </h:panelGrid>
+                        </div>
+                    </li>
+                    <li>Agent's Licence neitu chuan passenger list/summary fel takin an pe tur a ni a
+                        mi te hi a Ziak tel ngei tur a ni
+
+                        <div class="table-width-two">
+                            <h:panelGrid columns="2" styleClass="left-space datatable-panel" style="margin: 0 auto;">
+                                <h:outputLabel value="a) Agent's Licence number" styleClass="right-space bottom-space" />
+                                <h:outputLabel value="b) Motor number" styleClass="right-space bottom-space" />
+                            </h:panelGrid>
+                        </div>    
+                    </li>
+                    <li>Agent's Licence neitu chuan city/town pakhatah Booking Counter pakhat aia tam a nei thei lovang.</li>
+                    <li>Passenger tin hnenah ticket a pe ngei tur a ni a</li>
+                    <li>Agent's Licence Renewal Fee hi kumkhat atan RS.3000/-a ni</li>
+                    <li>Agent's Licence Renew dilna hi a permit thih hma ni 30 hmalamah a ni. A huna renew loh chuan
+                        Late fee Rs. 50/- lak a ni ang.</li>
+                    <li>Agent's Licence Renew dilna hi 'Form MVR-63' hmangin mahni awmna theuh DTO kaltlangin Secretary
+                        State Transport Authority Mizoram hnenah thehluh tur a ni.</li>
+                    <li>Agent's Licence hi a thih hnu kum khat thlenga renew a nih loh chuan automatically a cancel ang a ni.</li>
+                    <li>Agent's Licence neituin a neihna city/town huam chhungah a place of Business a thlak a nih chuan a thlak
+                        atanga ni 10 ral hma ngeiin STA-ah dil tur a ni.</li>
+                    <li>Conduct Rules-a tarlan angin Sorkar hnathawk tan Agent's Licence hi dil theih a ni lo.</li>
+                </ol><br/><br/>
+                <table class="datatable-panel" style="margin: 0px auto;">
+                    <tr>
+                        <td class="right-position">
+                            <div class="right-space">                                                       
+                                Sd/- <br/>Secretary, State Transport Authority
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"     
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+    <p:panel id="permitPanel" header="#{language.permit_details}">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel value="#{language.pmtType}"></p:outputLabel>
+                </label>
+                <p:selectOneMenu id="permit_type" value="#{permitFormPanel.permitDobj.pmt_type_code}" filter="true" filterMatchMode="contains" disabled="#{permitFormPanel.isDisable}" validator="permitTypeValidator">                
+                    <f:selectItem itemLabel="--SELECT PERMIT TYPE--" itemValue="-1"/>
+                    <f:selectItems value="#{permitFormPanel.pmt_type_list}"/>                    
+                    <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                    <p:ajax event="change" listener="#{permitFormPanel.onSelectPermitType}"
+                            update="pnl_permit_catg pnl_service pnl_rt_legnth pnl_no_trips pnl_permit_dom " process="@this"/>
+                </p:selectOneMenu> 
+            </div>
+            <div class="ui-grid-col-4">
+                <p:outputPanel id="pnl_permit_catg">
+                    <p:outputPanel rendered="#{permitFormPanel.tripsRouteLengthRqrd}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.pmtCatg}"/>
+                        </label>
+                        <p:selectOneMenu id="permit_catg" value="#{permitFormPanel.permitDobj.pmtCatg}" filter="true" filterMatchMode="contains" disabled="#{permitFormPanel.isDisable}" validator="permitCatgValidator">                
+                            <f:selectItem itemLabel="--SELECT PERMIT CATEGORY--" itemValue="-1"/>
+                            <f:selectItems value="#{permitFormPanel.pmt_catg_list}"/>
+                            <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                            <p:ajax event="change"/>
+                        </p:selectOneMenu> 
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+            <div class="ui-grid-col-4">
+                <p:outputPanel id="pnl_service">
+                    <p:outputPanel rendered="#{permitFormPanel.tripsRouteLengthRqrd}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.serviceType}"/>
+                        </label>
+                        <p:selectOneMenu id="service_type" value="#{permitFormPanel.permitDobj.services_TYPE}" filter="true" filterMatchMode="contains" disabled="#{permitFormPanel.isDisable}">                
+                            <f:selectItems value="#{permitFormPanel.pmt_service_type_list}"/>
+                            <p:ajax event="change"/>
+                        </p:selectOneMenu> 
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p:outputPanel id="pnl_rt_legnth">
+                    <p:outputPanel  rendered="#{permitFormPanel.tripsRouteLengthRqrd}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.routeLengthkm}"/>
+                        </label>
+                        <p:inputText id="routelen" maxlength="5" size="20" autocomplete="off"
+                                     value="#{permitFormPanel.permitDobj.rout_length}" disabled="#{permitFormPanel.isDisableForInstlmnt}">
+                            <f:validateRegex pattern="([0-9]+)" for="routelen" />
+                            <p:ajax event="blur"/>
+                        </p:inputText>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+            <div class="ui-grid-col-4">
+                <p:outputPanel id="pnl_no_trips">
+                    <p:outputPanel rendered="#{permitFormPanel.tripsRouteLengthRqrd}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.no_of_trips}" />
+                        </label>
+                        <p:inputText id="nooftrps" maxlength="3" size="20" autocomplete="off"
+                                     value="#{permitFormPanel.permitDobj.numberOfTrips}" disabled="#{permitFormPanel.isDisableForInstlmnt}">
+                            <f:validateRegex pattern="([0-9]+)" for="nooftrps" />
+                            <p:ajax event="blur"/>
+                        </p:inputText>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div> 
+            <div class="ui-grid-col-4">
+                <p:outputPanel id="pnl_permit_dom" >
+                    <p:outputPanel rendered="#{permitFormPanel.tripsRouteLengthRqrd and !permitFormPanel.renderMultiRegionList}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.permitDomain}"></p:outputLabel>
+                        </label>
+                        <p:selectOneMenu id="permit_domain" value="#{permitFormPanel.permitDobj.domain_CODE}" filter="true" filterMatchMode="contains" disabled="#{permitFormPanel.isDisableForInstlmnt}">
+                            <f:selectItem itemLabel="--SELECT DOMAIN TYPE--" itemValue="-1"/>
+                            <f:selectItems value="#{permitFormPanel.pmt_domain_list}"/>
+                            <p:ajax event="change"/>
+                        </p:selectOneMenu>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="area" value="Region" rendered="#{permitFormPanel.renderMultiRegionList}"/>
+                </label>
+                <p:selectCheckboxMenu id="area" value="#{permitFormPanel.permitDobj.regionCoveredArr}" label="" filter="true" filterMatchMode="contains" rendered="#{permitFormPanel.renderMultiRegionList}" disabled="#{permitFormPanel.isDisable}">                                    
+                    <f:selectItems value="#{permitFormPanel.regionList}"/>                                      
+                </p:selectCheckboxMenu>                 
+            </div>
+        </div>
+    </p:panel>  
+</html>

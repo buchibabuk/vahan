@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"   
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content">
+        <f:subview id="frm_CCRegnCertprint">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_printCCRegnCert" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputText value="CERTIFICATE OF REGISTRATION OF COMMON CARRIERS"/></h1>
+                        </div>
+                    </div>                
+                    <p:outputPanel id="radioBtnpanel" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-5 left-position">
+                                <p:selectOneRadio id="rb_rc" value="#{CommonCarrierRegnCertBean.rcRadiobtn}" layout="responsive" columns="2">                               
+                                    <f:selectItem itemLabel="By Regn No" itemValue="REGNNOCCRC" />
+                                    <f:selectItem itemLabel="Pending Common Carries RC(Last 15 Days)" itemValue="PENCCRC" />
+                                    <p:ajax event="change" listener="#{CommonCarrierRegnCertBean.rcRadioBtnListener}" update="printCCRCPanel radioOutputpanel btnCCRCPrint regnpanel" onstart="PF('blockPrintCCRC').show();" oncomplete="PF('blockPrintCCRC').hide();"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="radioOutputpanel">
+                        <p:panel id="regnpanel" header="Common Carries RC by Registration No" rendered="#{CommonCarrierRegnCertBean.printCCRCbyRegnNo}" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regn_no" value="Registration No" />
+                                    </label>
+                                    <p:inputText id="regn_no" value="#{CommonCarrierRegnCertBean.regn_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase" >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtls" value="Get Details" action="#{CommonCarrierRegnCertBean.getCCRCDetails}" update="printCCRCPanel"/>  
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:outputPanel id="printCCRCPanel">
+                        <p:dataTable id="printCCRCertificates" rowKey="#{printCCRegnCert.appl_no}"  value="#{CommonCarrierRegnCertBean.printCCRegnCertDobj}" selection="#{CommonCarrierRegnCertBean.selectedCCRegnCertDobj}" var="printCCRegnCert" rows="10"  paginatorPosition="bottom"
+                                     widgetVar="seatWorkList" filteredValue="#{CommonCarrierRegnCertBean.filteredSeat}" paginator="true" rowIndexVar="rowkey" rendered="#{CommonCarrierRegnCertBean.printCCRegnCertDobj.size()>0 ? true : flase}">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    <p:outputLabel value="Common Carriers RC Print" />
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application No" filterBy="#{printCCRegnCert.appl_no}" filterMatchMode="contains" sortBy="#{printCCRegnCert.appl_no}">#{printCCRegnCert.appl_no}</p:column>                        
+                            <p:column headerText="Registration No" filterBy="#{printCCRegnCert.regn_no}" filterMatchMode="contains" sortBy="#{printCCRegnCert.regn_no}">#{printCCRegnCert.regn_no}</p:column>
+                            <p:column headerText="Select to Print" selectionMode="multiple" style="text-align: center" />  
+                        </p:dataTable>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:outputPanel id="btnCCRCPrint">
+                                    <p:commandButton id ="bt_printCCRC" value="Print CommonCarriersRC" rendered="#{CommonCarrierRegnCertBean.printCCRegnCertDobj.size()>0 ? true : flase}"  action="#{CommonCarrierRegnCertBean.confirmPrintCCRegnCertificate()}" /> 
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:dialog  id="printCCRCConfirmationPopup" styleClass="center-position" widgetVar="printCCRCertificate" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" 
+                                                  onclick="PF('blockPrintCCRC').show();"  oncomplete="PF('printCCRCertificate').hide(); PF('blockPrintCCRC').hide();"                                 
+                                                  action="#{CommonCarrierRegnCertBean.printCCRegnCertificate()}"
+                                                  icon="ui-icon-check"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('printCCRCertificate').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                </p:outputPanel>
+                <p:blockUI block="frm_printCCRegnCert" widgetVar="blockPrintCCRC">
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </div>
+            <vcomponent:vahanMessages messages="#{CommonCarrierRegnCertBean.vahanMessages}"  rendered="#{CommonCarrierRegnCertBean.vahanMessages ne null}"/>
+        </f:subview>
+    </ui:define>        
+</ui:composition>
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:p="http://primefaces.org/ui">
+    <p:panel header="#{language.inspection_details}" styleClass="top-space bottom-space">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p:outputLabel for="inspDt"  value="#{language.inspection_date} #{label.datePattern}"/>
+                <p:calendar id="inspDt" value="#{inspectionDobj.insp_dt}"
+                            requiredMessage="#{language.inspection_date_reqMsg}" 
+                            maxdate="#{inspectionDobj.maxDt}" mindate="#{ownerDobj.purchase_dt}"
+                            pattern="dd-MMM-yyyy" required="true" navigator="true" readonlyInput="true" disabled="#{inspectionDobj.disableInsDetail}"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <p:outputLabel for="tfRmrk" value="#{language.remarks}"/>
+                <p:inputTextarea id="tfRmrk" value="#{inspectionDobj.remark}"
+                                 cols="30" maxlength="100" rows="3" 
+                                 converter="toUpperCaseConverter" styleClass="text-uppercase" disabled="#{inspectionDobj.disableInsDetail}"/>
+            </div>
+        </div>
+    </p:panel>
+</html>

@@ -1,0 +1,24 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12 bottom-space">
+                <p:dataTable value="#{currentinfo.currentInfoLabel}" var='data'>
+                    <f:facet name="header">
+                        #{language.information}
+                    </f:facet>
+                    <p:column headerText="" styleClass="panelRowHeight" width="20%">
+                        <h:outputText value="#{data}"/>
+                    </p:column>
+                    <p:column headerText="" styleClass="panelTextColor" width="80%">
+                        <h:outputText value="#{currentinfo.getKeyData(data)}" escape="false"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+    </div>   
+</html>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"    
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22"> 
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formBalTaxAmt" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Modify/Delete  Refund/Excess/Balance Tax Amount</h1>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+
+                        <div class="center-position">
+                            <p:commandButton value="Close" immediate="true" >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
+                        </div>
+                        <p:messages >
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="disposePanel" >
+                        <p:focus context="disposePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="reginId" value="Registered Vehicle number"/>
+                                </label>
+                                <p:inputText  id="reginId" value="#{balanceTaxUpdateDeleteBean.regnNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="Vehicle No Can't be Blank"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" disabled="#{balanceTaxUpdateDeleteBean.render}"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{balanceTaxUpdateDeleteBean.showDetails()}"
+                                                 update="formBalTaxAmt:panelOwnerInfo formBalTaxAmt  " onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()" rendered="#{!balanceTaxUpdateDeleteBean.render}"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" rendered="#{balanceTaxUpdateDeleteBean.renderBackBtm}"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="reginId" mask="alphanum"/>
+                    </p:panel>
+
+                </p:outputPanel>
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{balanceTaxUpdateDeleteBean.render}">                    
+                        <p:tabView styleClass="top-space bottom-space" >
+                            ################################# Owner Details ########################################## 
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{balanceTaxUpdateDeleteBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            ################################# Vehicle Details ######################################## 
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{balanceTaxUpdateDeleteBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+                        <p:outputPanel id="reason_id" >
+                            <!--           refun-->
+                            <p:panel id="instlmntDtls" header="Refund And Excess File Details" styleClass="bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Order Date"/>
+                                        </label>
+                                        <p:calendar id="orderdateti"  value="#{balanceTaxUpdateDeleteBean.reFundAndExcessDobj.orderDate}"
+                                                    requiredMessage="Blank:Order date." readonlyInput="true"
+                                                    maxdate="#{containerBean.maxOrderDate}"
+                                                    pattern="dd-MMM-yyyy" navigator="true" required="true">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" for="orderdateti"/> 
+                                            <p:ajax event="dateSelect" process="@this"/>
+                                        </p:calendar>
+                                    </div>     
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Order Issued By"/>
+                                        </label>
+                                        <p:inputText  id="tforderissuby" value="#{balanceTaxUpdateDeleteBean.reFundAndExcessDobj.orderIssueBy}"
+                                                      maxlength="50"
+                                                      requiredMessage="Please Enter Order Issue By"
+                                                      converter="toUpperCaseConverter"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Order No"/>
+                                        </label>
+                                        <p:inputText  id="tfordernoti" value="#{balanceTaxUpdateDeleteBean.reFundAndExcessDobj.orderNo}"
+                                                      maxlength="50"
+                                                      requiredMessage="Please Enter Order No."
+                                                      converter="toUpperCaseConverter"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true"/>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="refunRemarks" value="Remarks" />
+                                        </label>
+                                        <p:inputTextarea id="refunRemarks"  styleClass="input" value="#{balanceTaxUpdateDeleteBean.reFundAndExcessDobj.remark}"
+                                                         required="true" cols="50" rows="1" placeholder="enter your reason here..."
+                                                         maxlength="90" requiredMessage="Please enter your reason of changing data in remarks box."
+                                                         converter="toUpperCaseConverter" >                            
+                                        </p:inputTextarea>
+                                    </div>
+
+                                </div>
+                            </p:panel>
+                            <!--end refun-->
+                            <p:outputPanel id="removeadd">
+                                <p:remoteCommand name="onCellEditTableComplete" update="tb_showtaxtable"/>
+                                <p:dataTable id="tb_showtaxtable"  value="#{balanceTaxUpdateDeleteBean.refDojList}" editable="true"
+                                             scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                                    <f:facet name="header">
+                                        <div class="left-position">
+                                            Refund And Excess
+                                        </div>
+                                    </f:facet>
+                                    <p:ajax event="rowEdit" listener="#{balanceTaxUpdateDeleteBean.onRowEdit}" oncomplete="onCellEditTableComplete()"  update="tb_showtaxtable">
+
+                                    </p:ajax>
+                                    <p:ajax event="rowEditCancel" listener="#{balanceTaxUpdateDeleteBean.onRowCancel}" oncomplete="onCellEditTableComplete()"  update="tb_showtaxtable"/>
+                                    <p:column headerText="Sr No">
+                                        <h:outputText value="#{index +1}." />
+                                    </p:column>
+                                    <p:column headerText="Application No">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{sc.appl_no}"/></f:facet>
+                                            <f:facet name="input"><p:inputText id="taxAmountInst" value="#{sc.appl_no}" style="width:100%" maxlength="8" disabled="true"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Purpose">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{sc.purCdDescr}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="tax_id" value="#{sc.purCdDescr}" style="width:100%" maxlength="8" disabled="true"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Excess Amount"> 
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{sc.excessAmt}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="excessAmtId" value="#{sc.excessAmt}" style="width:100%" maxlength="8" >
+                                                    <p:keyFilter regEx="/[\d\-\.]/"/></p:inputText></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Refund Amount">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{sc.refundAmt}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="refundAmtId" value="#{sc.refundAmt}" style="width:100%" maxlength="8" >
+                                                    <p:keyFilter regEx="/[\d\-\.]/"/></p:inputText></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="Balance Amount">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{sc.balanceAmt}" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="taxAmtId" value="#{sc.balanceAmt}" style="width:100%" maxlength="8" >
+                                                    <p:keyFilter regEx="/[\d\-\.]/"/></p:inputText></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column style="width:32px" >
+                                        <p:rowEditor />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+
+                            <!--                            <div class="ui-grid-row center-position">
+                                                            <div class="ui-grid-col-12">
+                            
+                                                                <p:commandButton value="#{language.save}" action="#{balanceTaxUpdateDeleteBean.updateAndDeleteBalTax()}"
+                                                                                 update="formBalTaxAmt:panelOwnerInfo formBalTaxAmt" onclick="PF('ajax_status').show()"
+                                                                                 oncomplete="PF('ajax_status').hide()" >
+                                                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" /></p:commandButton>
+                                                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" />
+                                                                <p:commandButton  value="#{language.reset}" actionListener="#{balanceTaxUpdateDeleteBean.reset()}" immediate="true" styleClass="button" update="formBalTaxAmt panelOwnerInfo formBalTaxAmt panelApplInward  "></p:commandButton>
+                                                            </div>
+                                                        </div>-->
+
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Save" action="#{balanceTaxUpdateDeleteBean.sendOtpMailForUpdateRefund('sendOtp')}"
+                                                     update="formBalTaxAmt:panelOwnerInfo formBalTaxAmt" onclick="PF('ajax_status').show()"
+                                                     oncomplete="PF('ajax_status').hide()" >
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert" /></p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" />
+                                    <p:commandButton  value="Reset" actionListener="#{balanceTaxUpdateDeleteBean.reset()}" immediate="true" styleClass="button" update="formBalTaxAmt:panelOwnerInfo formBalTaxAmt panelApplInward  "></p:commandButton>
+                                </div>
+                            </div>
+
+
+                        </p:outputPanel>
+
+                    </p:panel>
+                </p:outputPanel> 
+                <!--OTP-->
+                <p:outputPanel id="otp_confirmation">
+                    <p:dialog  widgetVar="otp_confrm" header="OTP for Modify/Delete Balance Tax"  closable="false" dynamic="true" modal="true" resizable="false" >
+                        <p:messages  showDetail="true" showSummary="false" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 red">
+                                OTP has been sent to your registered mobile no.
+                            </div> 
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label>
+                                    <p:outputLabel value="Enter OTP:"/>
+                                </label>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <p:inputText value="#{balanceTaxUpdateDeleteBean.enterOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <p:commandLink value="ReSend OTP" action="#{balanceTaxUpdateDeleteBean.sendOtpMailForUpdateRefund('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                               onsuccess="PF('ajax_status').hide()"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="Confirm"  action="#{balanceTaxUpdateDeleteBean.sendOtpMailForUpdateRefund('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide();" >
+                                    <p:confirm header="Confirmation" message="Are you sure? Do You Want to Save the Transaction(s)?" icon="ui-icon-alert"/>   
+                                </p:commandButton>
+                                <p:commandButton value="Back" action="seatwork"
+                                                 process="@this"  immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block="formBalTaxAmt" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

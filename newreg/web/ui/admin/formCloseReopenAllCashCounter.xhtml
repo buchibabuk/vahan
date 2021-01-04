@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content22">
+        <h:form id="formCloseAllCashCounter" prependId="false">     
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Close/Reopen All Cash Counter #{closeReopenCashCounterBean.open_all_counter}</h1>
+                    </div>
+                </div>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:panel id="CloseAllCashCounterPanel">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:button  value="Home" outcome="home" icon="ui-icon-home"/>
+                            <p:commandButton value="Close All Cash Counter"  action="#{closeReopenCashCounterBean.confirmCloseAllCashCounter()}" icon="ui-icon-locked" styleClass="open-counter" rendered="#{!closeReopenCashCounterBean.open_all_counter}" />
+                            <p:commandButton value="Open All Cash Counter" action="#{closeReopenCashCounterBean.confirmOpenAllCashCounter()}" icon="ui-icon-locked" styleClass="close-counter" rendered="#{closeReopenCashCounterBean.open_all_counter}" />
+                        </div>
+                    </div>
+                    <p:dialog  id="isCashCaunterclose"  styleClass="center-position" widgetVar="CashCounterClose"
+                               modal="true" draggable="false" closable="false" hideEffect="explode" header="Cash Counter">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Are you sure to close the all cash counter? After that chashiers can not do any furter transaction?"/>
+                                </label>
+                                <p:commandButton  value="Yes" onclick="PF('CashCounterClose').hide();
+                                        PF('block_panel').show();"                                   
+                                                  actionListener="#{closeReopenCashCounterBean.updateCashCounterForAllCashier()}" update="CloseAllCashCounterPanel" 
+                                                  icon="ui-icon-check" oncomplete="PF('block_panel').hide();">
+                                </p:commandButton>
+                                <p:commandButton value="No" onsuccess="PF('CashCounterClose').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>  
+                    </p:dialog>
+                    <p:dialog  id="isCashCaunterOpen"  styleClass="center-position" widgetVar="CashCounterOpen"
+                               modal="true" draggable="false" closable="false" hideEffect="explode" header="Cash Counter">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Are you sure to open the all cash counter?"/>
+                                </label>
+                                <p:commandButton  value="Yes" onclick="PF('CashCounterOpen').hide();
+                                        PF('block_panel').show();"                                   
+                                                  actionListener="#{closeReopenCashCounterBean.updateCashCounterOpenForAllCashier()}" update="CloseAllCashCounterPanel" 
+                                                  icon="ui-icon-check" oncomplete="PF('block_panel').hide();">
+                                </p:commandButton>
+                                <p:commandButton value="No" onsuccess="PF('CashCounterOpen').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>  
+                    </p:dialog>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable id="previousOpenClose"  value="#{closeReopenCashCounterBean.list}" var="openClose" rows="10"  
+                                         widgetVar="seatWorkList" paginator="true" rowIndexVar="rowkey" rendered="#{closeReopenCashCounterBean.list.size()>0}">
+                                <p:column headerText="Sl.No" styleClass="collumn-width center-position">
+                                    <h:outputText value="#{rowkey+1}" />                                
+                                </p:column>
+                                <p:column styleClass="collumn-width center-position" headerText="User Id">
+                                    <h:outputText value="#{openClose.user_id}"/>
+                                </p:column>                        
+                                <p:column styleClass="collumn-width center-position" headerText="User Name">
+                                    <h:outputText value="#{openClose.user_name}"/>
+                                </p:column>
+                                <p:column styleClass="collumn-width center-position" headerText="Action">
+                                    <p:commandButton rendered="#{openClose.close_cash}" value="Reopen" action="#{closeReopenCashCounterBean.reopenCloseCashCounter(openClose)}"/>
+                                    <p:commandButton rendered="#{!openClose.close_cash}" value="Close" action="#{closeReopenCashCounterBean.reopenCloseCashCounter(openClose)}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+
+                </p:panel>
+
+            </div>
+            <p:blockUI block="CloseAllCashCounterPanel" widgetVar="block_panel">
+                <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>    
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">                
+                <p:panel header="Homologation Information" id="homo_veh_info" styleClass="top-space bottom-space" >
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+
+                            <h:outputText value="#{label.maker}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_maker" value="#{owner_bean.ownerDobj.ownerDetailsDo.maker_name}"/>                            
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="#{label.maker_model}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_maker_model" value="#{owner_bean.ownerDobj.ownerDetailsDo.model_name}" />                                
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="#{label.chasi_no}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_chasi_no" value="#{owner_bean.ownerDobj.chasi_no}"  />                            
+                        </div>
+                    </div>                    
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="#{label.eng_no}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_eng_no" value="#{owner_bean.ownerDobj.eng_no}"  />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="#{label.fuel}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_fuel"  value="#{owner_bean.ownerDobj.ownerDetailsDo.fuel_descr}" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="#{label.seat_cap}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_seat_cap"  value="#{owner_bean.ownerDobj.seat_cap}" />
+                        </div>
+                    </div>                      
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="#{label.ul_weight}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_ul_weight"  value="#{owner_bean.ownerDobj.unld_wt}" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="#{label.l_weight}: " styleClass="font-bold"/>
+                            <h:outputText id="homo_l_weight"  value="#{owner_bean.ownerDobj.ld_wt}"/>                                
+                        </div>  
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="Manufacture Month/Year: " styleClass="font-bold"/>
+                            <h:outputText id="homo_manu_yr"  value="#{owner_bean.ownerDobj.manu_mon}/#{owner_bean.ownerDobj.manu_yr}" />                                
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <h:outputText value="Model Manufactured Location: " styleClass="font-bold"/>
+                            <h:outputText id="homo_model_manu_loc"  value="#{owner_bean.ownerDobj.modelManuLocCodeDescr}" />
+                        </div>
+                        <div class="ui-grid-col-8">
+                            <h:outputText value="Model Name on TAC : " styleClass="font-bold red"/>
+                            <h:outputText id="homo_maker_model_tac" styleClass="red" value="#{owner_bean.ownerDobj.modelNameOnTAC}" />
+                        </div>
+                    </div>
+                </p:panel>
+            </div>
+        </div>
+    </div>   
+</html>

@@ -1,0 +1,309 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-col-12">
+
+                <f:subview id="new_veh_fee_subview">
+                    <p:blockUI block="ownerInformationPanel" widgetVar="bui_fancy">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">Draft Against Multiple Registration No</h1>
+                        </div>
+                    </div>
+                    <p:outputPanel id="pnl_mainSingleDraft">
+                        <p:outputPanel  rendered="#{singleDraftPayment.showSingleDraftPage}">
+                            <p:dialog id="confirmationPopup" 
+                                      style="text-align:center" header="Payment Collection Details"
+                                      widgetVar="confDlgTax"
+                                      modal="true" draggable="false" >                  
+                                <p:outputLabel value="Do you want to continue"/><br></br>
+                                <p:outputLabel style="font-weight: bold" value="Total Amount in Cash  :#{singleDraftPayment.paymentCollectionBean.isCashSelected?roadTaxCollectionBean.totalTaxAmount:roadTaxCollectionBean.totalBalanceAmount}"/>
+                                <br></br>
+                                <br/><br/>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="Confirm Payment" disabled="true" oncomplete="PF('confDlgTax').hide();" 
+                                                     update="ownerInformationPanel regnNoPanel 
+                                                     new_veh_fee_subview:tf_current_rcptno new_veh_fee_subview:tf_running_rcpt_no"
+                                                     action="#{singleDraftPayment.saveTaxDetails()}" icon="ui-icon-check" ajax="false" >
+                                    </p:commandButton>
+                                    <p:commandButton value="Cancel" oncomplete="PF('confDlgTax').hide();" icon="ui-icon-close" >
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </p:dialog> 
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 right-position">
+                                    <p:commandButton id="cmd_oldrecpt" value="Print Old Receipt" action="#{singleDraftPayment.showOldReceipts}"
+                                                     update="pnl_mainSingleDraft pnl_oldrcpt" styleClass="right-space"></p:commandButton>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-8">
+                                    <p:outputPanel id="pnl_left">
+                                        <p:messages showDetail="true" showSummary="false" closable="true">
+                                            <p:autoUpdate/>
+                                        </p:messages>
+                                        <p:outputPanel id="payment_panel" styleClass="bottom-space">                    
+                                            <p:dataTable id="pay_table" value="#{singleDraftPayment.paymentlist}" 
+                                                         editable="false" var="payment" rowIndexVar="index" >
+                                                <f:facet name="header">
+                                                    <p:outputLabel value="#{singleDraftPayment.header_name}"/>                        
+                                                </f:facet>
+                                                <p:column headerText="S.No." styleClass="collumn-width center-position"  >
+                                                    <p:outputLabel value="#{index +1}."/>
+                                                </p:column>
+                                                <p:column headerText="Instrument">
+                                                    <p:selectOneMenu id="payment_type" value="#{payment.instrument}"   disabled="#{singleDraftPayment.disableAmountDataTable}" >                                
+                                                        <f:selectItems value="#{singleDraftPayment.instrumentList}"/>  
+                                                        <p:ajax/>
+                                                    </p:selectOneMenu>
+                                                </p:column>
+                                                <!--disabled="# {payment.rowflag}"-->
+                                                <p:column headerText="Bank Name">
+                                                    <p:selectOneMenu value="#{payment.bank_name}"  disabled="#{singleDraftPayment.disableAmountDataTable}"  >
+                                                        <f:selectItems value="#{singleDraftPayment.bank_list}"/>
+                                                        <p:ajax/>
+                                                    </p:selectOneMenu>
+                                                </p:column>
+                                                <p:column headerText="Number">
+                                                    <p:inputText value="#{payment.number}" id="id_numeric"  maxlength="10"  disabled="#{singleDraftPayment.disableAmountDataTable}"  >
+                                                        <p:keyFilter mask="num"></p:keyFilter>
+                                                        <p:ajax event="change" listener="#{singleDraftPayment.validateInstrumentNumber}" process="@this"  update="id_numeric" />
+                                                        <f:attribute name="paymentDobj" value="#{payment}"/>
+                                                    </p:inputText>
+                                                </p:column>
+                                                <p:column headerText="Dated">                       
+                                                    <p:calendar value="#{payment.dated}" pattern="dd-MMM-yyyy" navigator="true" 
+                                                                maxdate="#{singleDraftPayment.max_draft_date}"  disabled="#{singleDraftPayment.disableAmountDataTable}" 
+                                                                mindate="#{singleDraftPayment.min_draft_date}">
+                                                        <f:convertDateTime pattern="dd-MMM-yyyy"/>                              
+                                                    </p:calendar>                            
+                                                </p:column>
+                                                <p:column  headerText="Amount" >
+                                                    <p:inputText id="amountId" value="#{payment.amount}" styleClass="right-position" maxlength="8"
+                                                                 disabled="#{singleDraftPayment.disableAmountDataTable}" >                               
+                                                        <p:keyFilter mask="num"></p:keyFilter></p:inputText>
+                                                </p:column>
+                                                <p:column headerText="Branch">
+                                                    <p:inputText id="branchId" value="#{payment.branch}" styleClass="text-uppercase" maxlength="30"
+                                                                 disabled="#{singleDraftPayment.disableAmountDataTable}" >
+                                                        <p:keyFilter mask="alpha"></p:keyFilter></p:inputText>
+                                                </p:column>
+                                                <p:column >
+                                                    <p:commandButton  id="add" action="#{singleDraftPayment.addRow(payment.number,payment.bank_name)}" icon="ui-icon-plusthick" update="pay_table" 
+                                                                      disabled="#{singleDraftPayment.disableAmountDataTable}" >
+                                                        <f:param name="actionmode" value="add"/>
+                                                    </p:commandButton>
+                                                    <p:tooltip id="toolTipGrow1" for="add" value="Add new #{singleDraftPayment.header_name} details"
+                                                               showEffect="clip" hideEffect="clip" />
+                                                    <p:commandButton id="minus" action="#{singleDraftPayment.addRow(payment.number,payment.bank_name)}"  icon="ui-icon-minusthick" update="pay_table"
+                                                                     disabled="#{singleDraftPayment.disableAmountDataTable}" >
+                                                        <f:param name="actionmode" value="minus"/>
+                                                    </p:commandButton>
+                                                    <p:tooltip id="toolTipGrow2" for="minus" value="Remove #{singleDraftPayment.header_name} details" 
+                                                               showEffect="clip" hideEffect="clip" />
+                                                </p:column>
+                                            </p:dataTable>             
+                                        </p:outputPanel>
+                                        <div class="ui-grid-row" >
+                                            <div class="ui-grid-col-12">
+                                                <p:outputPanel id="regnNoPanel">
+                                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                                    <div class="ui-grid-col-4 ">
+                                                        <label class="field-label resp-label-section">
+                                                            <p:outputLabel for="tf_regn_no" value="Enter Registration No:" />
+                                                        </label>
+                                                        <p:inputText  id="tf_regn_no" value="#{singleDraftPayment.regn_no}" size="20" maxlength="10" 
+                                                                      autocomplete="off"   style="text-transform: uppercase" disabled="#{singleDraftPayment.renderAllPanel}"
+                                                                      converter="toUpperCaseConverter"  >
+                                                        </p:inputText>
+                                                        <p:keyFilter mask="alphanum" for="tf_regn_no"/>
+                                                    </div>
+                                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                                </p:outputPanel>
+                                            </div>                                 
+                                        </div>
+                                        <p:outputPanel id="getButtonPanel">
+                                            <div class="ui-grid-row center-position" >
+                                                <div class="ui-grid-col-12">
+                                                    <p:commandButton id="getDetail" value="Get Details" onclick="PF('bui_fancy').show();" action="#{singleDraftPayment.getVehicleDetails}"
+                                                                     rendered="#{!singleDraftPayment.renderAllPanel}"  update="ownerInformationPanel regnNoPanel getButtonPanel payment_panel" 
+                                                                     oncomplete="PF('bui_fancy').hide()" />
+                                                    <p:commandButton  value="Save" update="confirmationPopup" action="#{singleDraftPayment.confirmSave()}"
+                                                                      rendered="#{singleDraftPayment.showSave}" 
+                                                                      />
+                                                    <p:commandButton  value="Reset" update="pnl_left" action="#{singleDraftPayment.reset()}"
+                                                                      rendered="#{singleDraftPayment.showReset}" 
+                                                                      />
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                        <p:dialog  id="confirmMsg"  styleClass="center-position" widgetVar="save"
+                                                   modal="true" draggable="false" closable="false" hideEffect="explode" header="Single Draft Payment" >  
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12 center-position bottom-space">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel value="Are you sure you want to make payment?"/>
+                                                    </label>
+                                                    <p:commandButton  value="Confirm Payment" onclick="PF('save').hide();
+                                                            PF('bui_fancy').show();"                                   
+                                                                      action="#{singleDraftPayment.saveDetails()}" update="confirmationPopup"
+                                                                      icon="ui-icon-check" oncomplete="PF('bui_fancy').hide();" />
+                                                    <p:commandButton value="No" onsuccess="PF('save').hide();" icon="ui-icon-close" />
+                                                </div>
+                                            </div>
+                                        </p:dialog>
+                                        <p:outputPanel id="ownerInformationPanel">
+                                            <p:outputPanel   rendered="#{singleDraftPayment.renderAllPanel}">
+                                                <ui:include src="../commonUI/form_owner_vehicle_dtls_mvtax.xhtml"  >
+                                                    <ui:param name="containerBean" value="#{singleDraftPayment}" />
+                                                </ui:include>
+                                                <p:outputPanel>
+                                                    <div class="ui-grid-row">
+                                                        <div class="ui-grid-col-4"></div>
+                                                        <!--                                                <div class="ui-grid-col-4">
+                                                                                                            <label class="field-label resp-label-section">
+                                                                                                                <p:outputLabel for="vm_other_criteria" value="# {label.vm_other_criteria}"/>
+                                                                                                            </label>
+                                                                                                            <p:selectOneMenu id="vm_other_criteria" value="# {singleDraftPayment.ownerDobj.other_criteria}" filter="true">
+                                                                                                                <f:selectItem itemLabel="Not Applicable" itemValue="0"/>
+                                                                                                                <f:selectItems value="# {owner_bean.list_other_criteria}"/>
+                                                                                                                <p:ajax/>
+                                                                                                            </p:selectOneMenu>
+                                                                                                        </div>-->
+                                                    </div>
+                                                </p:outputPanel>
+                                                <p:outputPanel rendered="#{singleDraftPayment.renderPermitPanel}" styleClass="top-space">
+                                                    <ui:include src="/ui/permit/form_permit_panel.xhtml" >
+                                                        <ui:param name="permitFormPanel" value="#{singleDraftPayment.permitPanelBean}"/>                                
+                                                    </ui:include>
+                                                </p:outputPanel>
+                                                <p:outputPanel  id="taxpanel" styleClass="top-space">
+                                                    <p:commandButton value="Refresh-Tax Details" onclick="PF('buiVar').show();"
+                                                                     oncomplete="PF('buiVar').hide();" actionListener="#{singleDraftPayment.refreshTaxMode()}"                                                 
+                                                                     update="taxpanel  :masterLayout:new_veh_fee_subview:totalPaybaleAmountPanel :masterLayout:new_veh_fee_subview:userChargesPaybaleAmountPanel"/>
+                                                    <h:outputLabel value="#{singleDraftPayment.taxPaidLabel}" rendered="#{singleDraftPayment.is_taxPaid}" styleClass="font-bold red"/>
+                                                    <h:outputLabel value="#{singleDraftPayment.addTaxPaidLabel}" rendered="#{singleDraftPayment.is_addtaxPaid}" styleClass="font-bold red"/>
+                                                    <h:outputLabel value="#{singleDraftPayment.taxClearLabel}" rendered="#{singleDraftPayment.is_taxClear}" styleClass="font-bold red"/>
+                                                    <h:outputLabel value="#{singleDraftPayment.addTaxClearLabel}" rendered="#{singleDraftPayment.is_addtaxClear}" styleClass="font-bold red"/>
+                                                    <h:outputLabel value="#{singleDraftPayment.taxExempLabel}" rendered="#{singleDraftPayment.isTaxExemp}" styleClass="font-bold red"/>
+                                                    <ui:include src="/ui/tax/form_tax_details.xhtml" >
+                                                        <ui:param name="taxContainerBean" value="#{singleDraftPayment}"/>
+                                                        <ui:param name="parentTotalPayableAmount" value=":masterLayout:new_veh_fee_subview:totalPaybaleAmountPanel :masterLayout:new_veh_fee_subview:userChargesPaybaleAmountPanel"/>
+                                                    </ui:include>
+                                                </p:outputPanel>
+                                                <div class="ui-grid-row top-space">
+                                                    <div class="ui-grid-col-4">
+                                                        <p:outputPanel id="userChargesPaybaleAmountPanel" rendered="#{singleDraftPayment.renderUserChargesAmountPanel}" styleClass="top-space bottom-space">
+                                                            <div class="ui-grid-row top-space">
+                                                                <div class="ui-grid-col-12">
+                                                                    <h:outputText value="User/Service Charges: " styleClass="font-bold"/>
+                                                                    <h:outputText  id="totalUserAmt" value="#{singleDraftPayment.totalUserChrg}" styleClass="font-bold"/>
+                                                                </div>
+                                                            </div>
+                                                        </p:outputPanel>
+                                                    </div>
+                                                    <div class="ui-grid-col-4">
+                                                        <p:outputPanel id="totalPaybaleAmountPanel" styleClass="top-space bottom-space">
+                                                            <div class="ui-grid-row top-space">
+                                                                <div class="ui-grid-col-12">
+                                                                    <h:outputText value="Total Payable Amount (In Rs): " styleClass="font-bold"/>
+                                                                    <h:outputText  id="totalamount" value="#{singleDraftPayment.totalTaxAmount}" styleClass="font-bold"/>
+                                                                </div>
+                                                            </div>
+                                                        </p:outputPanel>
+                                                    </div>                            
+                                                    <div class="ui-grid-col-4 resp-blank-height"></div>                            
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-12">
+                                                        <p:outputPanel id="pg_save" styleClass="center-position">
+                                                            <p:commandButton  value="Add to Cart" update="confirmationPopup pnl_right pnl_left"
+                                                                              action="#{singleDraftPayment.addToCart}"      
+                                                                              >
+                                                            </p:commandButton>
+                                                            <p:commandButton  value="Back" action ="/home.xhtml?faces-redirect=true"/>
+                                                        </p:outputPanel>
+                                                    </div>
+                                                </div>
+                                            </p:outputPanel>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="pnl_right">
+                                        <h:panelGroup>
+                                            <p:dataTable id="pnl_cartList_display" var="cart" value="#{singleDraftPayment.addToCartList}" scrollHeight="80">
+                                                <f:facet name="header">
+                                                    #{label.cart_status}
+                                                </f:facet>
+                                                <p:column headerText="Registration Number">#{cart.regn_no}</p:column>
+                                                <p:column headerText="Amount">#{cart.amount}</p:column>
+                                                <p:column >
+                                                    <p:commandButton id="delete" icon="ui-icon-minusthick" update="@form" 
+                                                                     action="#{singleDraftPayment.deleteRow(cart.regn_no)}" >
+                                                        <f:param name="actionmode" value="minus"/>
+                                                    </p:commandButton>
+                                                    <p:tooltip id="toolDeleteGrow2" for="delete" value="Remove #{singleDraftPayment.header_name} details"
+                                                               showEffect="clip" hideEffect="clip" />
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:panelGroup>
+                                    </p:outputPanel> 
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="pnl_oldrcpt">
+                        <p:outputPanel rendered="#{!singleDraftPayment.showSingleDraftPage}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="cmd_backToSingleDraft" value="Back" action="#{singleDraftPayment.backToSingleDraftPage}"
+                                                     update="pnl_mainSingleDraft pnl_oldrcpt"></p:commandButton> 
+                                </div>
+                            </div>
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-5 resp-blank-height"></div>
+                                <div class="ui-grid-col-3">
+                                    <p:outputLabel value="Select Date" />
+                                    <p:calendar value="#{singleDraftPayment.oldDate}" pattern="dd-MMM-yyyy" navigator="true"
+                                                maxdate="#{singleDraftPayment.max_draft_date}" >
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                        <p:ajax event="dateSelect" listener="#{singleDraftPayment.oldDateListener}" update="pnl_oldrcpt"/>   
+                                    </p:calendar>
+                                </div>
+                            </div>
+
+                            <p:dataTable id="tb_old_lis"  value="#{singleDraftPayment.oldReceiptList}" 
+                                         var="ol" styleClass="datatable-panel" rowIndexVar="index">
+
+                                <p:column headerText="Sr.No" styleClass="collumn-width">
+                                    <h:outputText value="#{index +1}"/>
+                                </p:column>
+
+                                <p:column headerText="Instrument Code">
+                                    <h:outputText value="#{ol.inscd}" ></h:outputText> 
+                                </p:column>
+
+                                <p:column headerText="Print">
+                                    <p:commandButton  action="#{singleDraftPayment.printReceipt(ol)}" icon="ui-icon-print"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </f:subview>
+
+            </div> 
+        </div>
+    </ui:define>
+</ui:composition>

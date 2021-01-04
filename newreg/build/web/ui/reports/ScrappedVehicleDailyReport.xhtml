@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style type="text/css">
+            @page {
+                size: landscape;
+
+            }
+
+            @media print {
+                *{
+                    font-size: 11px !important;
+                    margin-bottom: 10px;
+                }                
+            }
+        </style>
+    </h:head>
+    <h:body  >
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/form_scraped_vehicle_daily_report.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value="Transport Department,#{scrap_vehicle.reportDobj.stateName}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position bottom-space">
+                <span class="font-bold report-subheader"> <h:outputText value="RTO,#{scrap_vehicle.reportDobj.offname}"/> </span>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="Scrapped Vehicle Daily Report"/> </span>
+            </div>
+
+            <table class="datatable-panel" style="margin: 0 auto;">
+                <tr>
+                    <td class="left-position">
+                        <span class="font-bold"> Print On: </span>
+                        <h:outputText value="#{scrap_vehicle.reportDobj.printedon}"/>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="datatable-panel" style="margin: 0 auto;">
+                <tr>
+                    <td class="left-position">
+                        <span class="font-bold"> Print By: </span>
+                        <h:outputText value="#{scrap_vehicle.reportDobj.userName}"/>
+                    </td>                    
+                </tr>
+            </table>
+            <div class="inline-section qrcode-position-absolute">
+                <pe:qrCode 
+                    rendered="true"
+                    renderMethod = "canvas"
+                    renderMode="0"
+                    text="#{scrap_vehicle.reportDobj.loino}}"
+                    label="QR-Code"
+                    size="110"
+                    ecLevel="H"       
+                    radius="0.5"
+                    fillColor="#000000"/>
+            </div>
+            <br></br>
+            <br></br>
+            <br></br>
+            <div class="datatable-panel top-space" style="margin: 0 auto;">
+                <p:dataTable value="#{scrap_vehicle.scrapListPrint}" var="temp" rowIndexVar="rowkey" styleClass="border-transparent"> 
+                    <p:column headerText="S. No" styleClass="collumn-width center-position">
+                        <h:outputText value="#{rowkey+1}" />
+                    </p:column>
+                    <p:column headerText="Regn No " styleClass="center-position" width="10%"  >
+                        <h:outputText value="#{temp.oldRegnno}"  />
+                    </p:column>
+                    <p:column headerText="Loi No" styleClass="center-position" width="10%" >
+                        <h:outputText value="#{temp.loino}" />
+                    </p:column>
+                    <p:column headerText="Owner Name" styleClass="center-position"  >
+                        <h:outputText value="#{temp.ownName}" />
+                    </p:column>
+                    <p:column headerText="Father Name" styleClass="center-position" >
+                        <h:outputText value="#{temp.fname}" />
+                    </p:column>
+                    <p:column headerText="Address" styleClass="center-position" width="25%">
+                        <h:outputText value="#{temp.currentAddress}" />
+                    </p:column>
+                    <p:column headerText="Issue Date" styleClass="center-position" width="10%">
+                        <h:outputText value="#{temp.opdt}" />
+                    </p:column>
+                    <f:facet name="footer">
+                        <h:outputText value="Total No of Record = #{scrap_vehicle.total_record}" />
+                    </f:facet>
+                </p:dataTable>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

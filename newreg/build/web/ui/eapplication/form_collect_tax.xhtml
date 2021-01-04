@@ -1,0 +1,446 @@
+<ui:composition
+    template="#{taxCollectionBean.masterLayout}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="new_veh_fee_subview">
+
+                <div class="ui-grid-row center-position top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Know Your MV Tax</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel id="taxPanel">
+                    <p:outputPanel id="taxbrkupPanel" rendered="#{taxCollectionBean.showTaxBrkupPanel}">
+                        <ui:include src="form_show_tax_brkup_dtls.xhtml">
+                            <ui:param name="taxContainerBean"
+                                      value="#{taxCollectionBean.taxFormBean}"/>
+                            <ui:param name="taxFieldDobj"
+                                      value="#{taxCollectionBean.taxFieldDobj}"/>
+                        </ui:include>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <p:panel id="vchinfo" header="Vehicle Information" styleClass="top-space bottom-space">
+                    <h:panelGrid columns="3" styleClass="datatable-panel-100 table-width-three">
+                        <h:panelGroup>
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="state_code" value="Select State"/>
+                            </label>
+                            <p:selectOneMenu id="state_code"
+                                             value="#{taxCollectionBean.state_code}"
+                                             filter="true" required="true">
+                                <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                <f:selectItems value="#{taxCollectionBean.list_vm_state}"/>
+                                <p:ajax event="change" partialSubmit="true"  listener="#{taxCollectionBean.vehStateClassListener}"  update="domaincd vm_other_criteria vchinfo taxPanel"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="vh_type" value="#{label.vh_type}"/>
+                            </label>
+                            <p:selectOneMenu id="vh_type" value="#{taxCollectionBean.vehType}" required="true">
+
+                                <f:selectItems value="#{taxCollectionBean.list_veh_type}"/>
+                                <p:ajax event="change" partialSubmit="true" listener="#{taxCollectionBean.vehTypeListener}"  update="vh_class vh_catg vchinfo"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="vh_class"
+                                               value="#{label.vh_class}"/>
+                            </label>
+                            <p:selectOneMenu id="vh_class" disabled="#{taxCollectionBean.vhClassDisable}"
+                                             value="#{taxCollectionBean.vh_class}"
+                                             filter="true" required="true">
+                                <f:selectItems value="#{taxCollectionBean.list_vh_class}"/>
+                                <p:ajax event="change" partialSubmit="true" listener="#{taxCollectionBean.vehClassListener}"  update="vh_catg pmt_type vchinfo pmtDtls vm_tax_mode"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="vh_catg"
+                                               value="#{label.vh_catg}"/>
+                            </label>
+                            <p:selectOneMenu id="vh_catg" disabled="#{taxCollectionBean.vhCatgDisable}"
+                                             value="#{taxCollectionBean.vch_catg}"
+                                             filter="true" required="true">
+
+                                <f:selectItems value="#{taxCollectionBean.list_vm_catg}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="regndt" value="Registration Date"/>
+                            </label>
+                            <p:calendar id="regndt" value="#{taxCollectionBean.regn_dt}" maxdate="#{taxCollectionBean.today}"
+                                        pattern="dd-MMM-yyyy" navigator="true" >
+                                <f:convertDateTime pattern="dd-MMM-yyyy" for="regndt"/>
+                                <f:validateRequired for="regndt"/>
+                                <p:ajax event="dateSelect" partialSubmit="true" process="regndt" listener="#{taxCollectionBean.regnDateListener()}" update="regndt"/>
+                            </p:calendar>
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Purchase Date:" for="pur_dt" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:calendar id="pur_dt" value="#{taxCollectionBean.purchase_dt}" maxdate="#{taxCollectionBean.today}" navigator="true" autocomplete="off" pattern="dd-MMM-yyyy">
+                                <p:ajax event="dateSelect" partialSubmit="true" process="pur_dt" listener="#{taxCollectionBean.purchaseDateListener()}" update="pur_dt"/>
+                            </p:calendar>
+                        </h:panelGroup>
+
+                        <h:panelGroup  rendered="#{taxCollectionBean.isowner_cd}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_owner_cd"
+                                               value="Ownership"/>
+                            </label>
+                            <p:selectOneMenu id="tf_owner_cd"
+                                             value="#{taxCollectionBean.owner_cd}"
+                                             filter="true" required="true">
+                                <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                <f:selectItems value="#{taxCollectionBean.list_owner_cd}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.isfuel}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="fuel" value="#{label.fuel}"/>
+                            </label>
+                            <p:selectOneMenu id="fuel"
+                                             value="#{taxCollectionBean.fuel}"
+                                             filter="true"
+                                             required="true"
+                                             >
+                                <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                <f:selectItems value="#{taxCollectionBean.list_fuel}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup  rendered="#{taxCollectionBean.isseat_cap}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="seat_cap"
+                                               value="#{label.seat_cap}"/>
+                            </label>
+                            <p:inputText id="seat_cap"
+                                         value="#{taxCollectionBean.seat_cap}"
+                                         maxlength="3"
+                                         size="20"
+                                         autocomplete="off"
+                                         required="true"
+                                         requiredMessage="Seat Capacity should not be blank">
+                                <f:validateRegex pattern="([0-9]+)" for="seat_cap" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.isstand_cap}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="stand_cap"
+                                               value="#{label.stand_cap}"/>
+                            </label>
+                            <p:inputText id="stand_cap"
+                                         value="#{taxCollectionBean.stand_cap}"
+                                         maxlength="3"
+                                         size="20"
+                                         autocomplete="off">
+                                <f:validateRegex pattern="([0-9]+)" for="stand_cap" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup  rendered="#{taxCollectionBean.issleep_cap}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="sleep_cap"
+                                               value="#{label.sleep_cap}"/>
+                            </label>
+                            <p:inputText id="sleep_cap"
+                                         value="#{taxCollectionBean.sleep_cap}"
+                                         size="20"
+                                         maxlength="2"
+                                         autocomplete="off">
+                                <f:validateRegex pattern="([0-9]+)" for="sleep_cap" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup  rendered="#{taxCollectionBean.isul_weight}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="ul_weight"
+                                               value="#{label.ul_weight}"/>
+                            </label>
+                            <p:inputText id="ul_weight"
+                                         value="#{taxCollectionBean.ul_weight}"
+                                         size="20"
+                                         maxlength="6"
+                                         autocomplete="off"
+                                         required="true"
+                                         requiredMessage="Unladen weight should not be blank">
+                                <f:validateRegex pattern="([0-9]+)" for="ul_weight" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.isl_weight}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="l_weight"
+                                               value="#{label.l_weight}"/>
+                            </label>
+                            <p:inputText id="l_weight"
+                                         value="#{taxCollectionBean.l_weight}"
+                                         size="20"
+                                         maxlength="6"
+                                         autocomplete="off">
+                                <f:validateRegex pattern="([0-9]+)" for="l_weight" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup  rendered="#{taxCollectionBean.isac_fitted}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="ac_fitted" value="#{label.ac_fitted}"/>
+                            </label>
+                            <p:selectOneMenu id="ac_fitted"
+                                             value="#{taxCollectionBean.ac_fitted}"
+                                             maxlength="1">
+
+                                <f:selectItem itemLabel="NO" itemValue="N"/>
+                                <f:selectItem itemLabel="YES" itemValue="Y"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.iscubic_cap}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="cubic_cap" value="#{label.cubic_cap}"/>
+                            </label>
+                            <p:inputText id="cubic_cap"
+                                         value="#{taxCollectionBean.cubic_cap}"
+                                         size="20"
+                                         maxlength="8"
+                                         autocomplete="off">
+                                <f:validateRegex pattern="([0-9. ]+)" for="cubic_cap" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup  rendered="#{taxCollectionBean.ishp}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="hp"
+                                               value="#{label.hp}"/>
+                            </label>
+                            <p:inputText id="hp"
+                                         value="#{taxCollectionBean.hp}"
+                                         maxlength="8"
+                                         size="20"
+                                         autocomplete="off">
+                                <f:validateRegex pattern="([0-9. ]+)" for="hp" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.isf_area}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="f_area"
+                                               value="#{label.f_area}"/>
+                            </label>
+                            <p:inputText id="f_area"
+                                         value="#{taxCollectionBean.f_area}"
+                                         size="20"
+                                         maxlength="7"
+                                         autocomplete="off">
+                                <f:validateRegex pattern="([0-9. ]+)" for="f_area" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.issale_amt}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="sale_amt" value="#{label.sale_amt}"/>
+                            </label>
+                            <p:inputText id="sale_amt" value="#{taxCollectionBean.sale_amt}" maxlength="8" size="20" autocomplete="off" required="true" requiredMessage="Sale Amount should not be blank">
+                                <f:validateRegex pattern="([0-9]+)" for="sale_amt" />
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup  rendered="#{taxCollectionBean.isother_criteria}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="vm_other_criteria"
+                                               value="#{label.vm_other_criteria}"/>
+                            </label>
+                            <p:selectOneMenu id="vm_other_criteria"
+                                             value="#{taxCollectionBean.other_criteria}"
+                                             filter="true"
+                                             >
+                                <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                <f:selectItems value="#{taxCollectionBean.list_other_criteria}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.isvch_purchase_as}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="purchase_as"
+                                               value="#{label.purchase_as}"/>
+                            </label>
+                            <p:selectOneMenu id="purchase_as" value="#{taxCollectionBean.vch_purchase_as}" filter="true">
+                                <f:selectItems value="#{taxCollectionBean.list_purchase_as}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{taxCollectionBean.isimported_veh}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="imported_veh"
+                                               value="#{label.imported_veh}"/>
+                            </label>
+                            <p:selectOneMenu id="imported_veh"
+                                             value="#{taxCollectionBean.imported_veh}"
+                                             filter="true"
+                                             >
+                                <f:selectItems value="#{taxCollectionBean.list_imported_veh}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="vm_tax_mode"
+                                               value="#{label.taxMode}"/>
+                            </label>
+                            <p:selectOneMenu id="vm_tax_mode" disabled="#{taxCollectionBean.taxmodeDisable}"
+                                             value="#{taxCollectionBean.tax_mode}"
+                                             filter="true" required="true" >
+                                <f:selectItems value="#{taxCollectionBean.list_tax_mode}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{taxCollectionBean.isRegnType}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="regnType" value="#{label.regn_type}"/>
+                            </label>
+                            <p:selectOneMenu id="regnType" value="#{taxCollectionBean.regnType}" required="true" filter="true" styleClass="bottom-space">
+                                <f:selectItem itemLabel="--Select--" itemValue="-1"/>
+                                <f:selectItems value="#{taxCollectionBean.listRegnType}"/>
+                                <f:validator validatorId="selectOneValidator"/>
+                                <p:ajax event="change" partialSubmit="true" listener="#{taxCollectionBean.regnTypeChangeListener}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                    <p:outputPanel id="pmtDtls" rendered="#{taxCollectionBean.pmt_dtls_render}">
+                        <p:panel id="Pmt_dtls" header="Permit Details" styleClass="top-space bottom-space">
+                            <h:panelGrid columns="3" styleClass="datatable-panel-100 table-width-three">
+                                <h:panelGroup styleClass="resp-blank-height"></h:panelGroup>
+                                <h:panelGroup styleClass="resp-blank-height"></h:panelGroup>
+                                <h:panelGroup styleClass="resp-blank-height"></h:panelGroup>
+                                <h:panelGroup rendered="#{taxCollectionBean.ispmt_type}">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="pmt_type" value="#{pmtLabel.pmt_type}" />
+                                    </label>
+
+                                    <p:selectOneMenu id="pmt_type" value="#{taxCollectionBean.pmt_type}" filter="true">
+                                        <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                        <f:selectItems value="#{taxCollectionBean.list_vh_pmttype}"/>
+                                        <p:ajax event="change" partialSubmit="true" listener="#{taxCollectionBean.onSelectPermitType}"  update="permit_cate"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+
+                                <h:panelGroup  rendered="#{taxCollectionBean.ispmt_catg}">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="permit_cate" value="#{pmtLabel.pmt_sub_catg}" />
+                                    </label>
+                                    <p:selectOneMenu id="permit_cate" value="#{taxCollectionBean.pmt_catg}" filter="true" >
+                                        <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                        <f:selectItems value="#{taxCollectionBean.list_vh_pmtcatg}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{taxCollectionBean.isservices_type}">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="serType" value="#{pmtLabel.ser_type}" />
+                                    </label>
+                                    <p:selectOneMenu id="serType" value="#{taxCollectionBean.services_type}" filter="true"
+                                                     effect="fold" >
+                                        <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                        <f:selectItems value="#{taxCollectionBean.ser_type}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{taxCollectionBean.isnumberoftrips}">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="nooftrps" value="#{pmtLabel.no_of_trips}" />
+                                    </label>
+                                    <p:inputText id="nooftrps" maxlength="3" size="20"
+
+                                                 value="#{taxCollectionBean.numberoftrips}">
+                                        <f:validateRegex pattern="([0-9]+)" for="nooftrps" />
+                                    </p:inputText>
+                                </h:panelGroup>
+
+                                <h:panelGroup  rendered="#{taxCollectionBean.isrouteLen}">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="routelen" value="#{pmtLabel.route_length}"/>
+                                    </label>
+                                    <p:inputText id="routelen" maxlength="3" size="20"
+
+                                                 value="#{taxCollectionBean.routeLen}">
+                                        <f:validateRegex pattern="([0-9]+)" for="routelen" />
+                                    </p:inputText>
+                                </h:panelGroup>
+
+                                <h:panelGroup  rendered="#{taxCollectionBean.isdomain_cd}">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="domaincd" value="Domain/Region/Area" />
+                                    </label>
+                                    <p:selectOneMenu id="domaincd" value="#{taxCollectionBean.domain_cd}" filter="true"
+                                                     effect="fold" >
+                                        <f:selectItem itemValue="-1" itemLabel="--Select--"/>
+                                        <f:selectItems value="#{taxCollectionBean.list_domain_cd}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:panel>
+                <p:panel>
+                    <p:outputPanel id="captchaid">
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <vahan:vahanCaptcha labelName="Enter Verification Code: " catpchaRefresh="true"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <div class="ui-grid-row top-space bottom-space center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="getTaxDtls" value="Get Tax Details" 
+                                             action="#{taxCollectionBean.showTax()}" 
+                                             icon="ui-icon-disk"  
+                                             update="captchaid taxPanel"/>
+                            <p:button id="back_to_login_home_from_clt_tax" value="Home" outcome="/masterHome.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+                            <p:keyFilter mask="pint" for="ul_weight"/>
+                            <p:keyFilter mask="pint" for="seat_cap"/>
+                            <p:keyFilter mask="pint" for="stand_cap"/>
+                            <p:keyFilter mask="pint" for="sleep_cap"/>
+                            <p:keyFilter mask="pint" for="l_weight"/>
+                            <p:keyFilter mask="pint" for="sale_amt"/>
+                            <p:keyFilter mask="pint" for="hp"/>
+                            <p:keyFilter mask="pint" for="nooftrps"/>
+                            <p:keyFilter mask="pint" for="routelen"/>
+                            <p:keyFilter regEx="/[0-9. ]/" for="cubic_cap"/>
+                            <p:keyFilter regEx="/[0-9. ]/" for="f_area"/>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-row center-position top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="pg_save">
+                        </p:outputPanel>
+                    </div>
+                </div>
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>

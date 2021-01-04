@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"    
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22"> 
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formDeleteTaxInstallId" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Delete Wrongly Generated Tax Installment</h1>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+
+                        <div class="center-position">
+                            <p:commandButton value="Close" immediate="true" >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
+                        </div>
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="disposePanel" >
+                        <p:focus context="disposePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfAppNo" value="Registration Number."/>
+                                </label>
+                                <p:inputText  id="tfAppNo" value="#{deleteTaxInstallmentBean.regnNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="Please Enter Registration No"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" disabled="#{deleteTaxInstallmentBean.render}"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{deleteTaxInstallmentBean.showDetails()}"
+                                                 update="formDeleteTaxInstallId:panelOwnerInfo formDeleteTaxInstallId  " onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()" rendered="#{!deleteTaxInstallmentBean.render}"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" rendered="#{deleteTaxInstallmentBean.renderBackBtm}"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfAppNo" mask="alphanum"/>
+                    </p:panel>
+
+                </p:outputPanel>
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{deleteTaxInstallmentBean.render}">                    
+                        <p:tabView styleClass="top-space bottom-space" >
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{deleteTaxInstallmentBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{deleteTaxInstallmentBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+                        <p:panel id="panelVehTAXDtls" header="Installment File Details" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfclearby" value="File Ref No."/>
+                                    </label>
+                                    <p:inputText  id="tfclearby" value="#{deleteTaxInstallmentBean.deleteTaxInstallmentDobj.filerefNo}"
+                                                  maxlength="10"
+                                                  requiredMessage="Please Enter File Ref No"
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"
+                                                  required="true"
+                                                  disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tforedrIssby" value="Order Issue By."/>
+                                    </label>
+                                    <p:inputText  id="tforedrIssby" value="#{deleteTaxInstallmentBean.deleteTaxInstallmentDobj.orderIssueBy}"
+                                                  maxlength="10"
+                                                  requiredMessage="Please Enter Order Issue By "
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"
+                                                  required="true"
+                                                  disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="applRgn" value="New Regn Application No."/>
+                                    </label>
+                                    <p:inputText  id="applRgn" value="#{deleteTaxInstallmentBean.applNo}"
+                                                  maxlength="10"
+                                                  requiredMessage="Please New Regn Application No"
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"
+                                                  required="true"
+                                                  disabled="true"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tforderno" value="Order No."/>
+                                    </label>
+                                    <p:inputText  id="tforderno" value="#{deleteTaxInstallmentBean.deleteTaxInstallmentDobj.orderNo}"
+                                                  maxlength="10"
+                                                  requiredMessage="Please Enter order No."
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"
+                                                  required="true"
+                                                  disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="orderdate" value="Order Date"/>
+                                    </label>
+                                    <p:calendar id="orderdate"  value="#{deleteTaxInstallmentBean.deleteTaxInstallmentDobj.orderDate}"
+                                                requiredMessage="Blank Order date" readonlyInput="true"
+                                                pattern="dd-MMM-yyyy" navigator="true" required="true" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="orderdate"/>
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:outputPanel id="reason_id" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="reqt_by" value="Requested by :"/>
+                                    </label>
+                                    <p:inputText id="reqt_by" value="#{deleteTaxInstallmentBean.deleteTaxInstallmentDobj.requested_by}" converter="toUpperCaseConverter" required="true"
+                                                 requiredMessage="Blank: Requested by" maxlength="50" autocomplete="off" styleClass="input">
+                                        <f:validateLength maximum="50" for="reqt_by"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="reqt_on" value="Requested Date:"/>
+                                    </label>
+                                    <p:calendar id="reqt_on" value="#{deleteTaxInstallmentBean.deleteTaxInstallmentDobj.requestedOn}" navigator="true" 
+                                                required="true" requiredMessage="Blank Requested Date" pattern="dd-MMM-yyyy" readonlyInput="true" mindate=""
+                                                autocomplete="off" maxdate="#{deleteTaxInstallmentBean.maxDate}"> 
+                                        <f:validateRequired for="reqt_on"/>
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="reqt_on"/>
+                                    </p:calendar>    
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="adminRemarks" value="Remark" />
+                                    </label>
+                                    <p:inputTextarea id="adminRemarks"  styleClass="input" value="#{deleteTaxInstallmentBean.deleteTaxInstallmentDobj.remark}"
+                                                     required="true" cols="50" rows="1" placeholder="enter your reason here..."
+                                                     maxlength="90" requiredMessage="Please enter your reason  in remarks box."
+                                                     converter="toUpperCaseConverter" >                            
+                                    </p:inputTextarea>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+
+                                    <p:commandButton value="Save" action="#{deleteTaxInstallmentBean.detleteTaxInstallment()}"
+                                                     update="formDeleteTaxInstallId:panelOwnerInfo formDeleteTaxInstallId" onclick="PF('ajax_status').show()"
+                                                     oncomplete="PF('ajax_status').hide()" >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" /></p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" />
+                                    <p:commandButton  value="Reset" actionListener="#{deleteTaxInstallmentBean.reset()}" immediate="true" styleClass="button" update="formDeleteTaxInstallId:panelOwnerInfo formDeleteTaxInstallId panelApplInward  "></p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                    </p:panel>
+                </p:outputPanel>    
+                <p:blockUI block="formDeleteTaxInstallId" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

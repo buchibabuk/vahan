@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+    </h:head>
+    <h:body>
+        <div class="position-relative">
+            <table class="datatable-panel-100">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{NOCReportBean.dobj.image_logo}" style="width: 100px;" rendered="#{NOCReportBean.dobj.show_image_logo}" />
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position">
+                            <h:outputText value="#{NOCReportBean.dobj.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position">
+                            <h:outputText value="#{NOCReportBean.dobj.subHeader}" styleClass="font-bold report-header bottom-line text-uppercase" escape="false"/>
+                        </div>
+                        <div class="center-position">
+                            <h:outputText value="#{NOCReportBean.dobj.offName}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{NOCReportBean.dobj.noc_cc_lable}"/> </span>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                            <ui:param name="qrcodevalue" value="#{NOCReportBean.text}"/>   
+                            <ui:param name="renderqrCode" value="true"/>   
+                        </ui:include>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="table-width-four position-relative">
+            <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                <h:outputLabel value="#{NOCReportBean.dobj.noc_cc_fieldlable}" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.noc_no}" styleClass="right-space bottom-space" />
+                <h:outputLabel value="Registration No" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.regn_no}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="Registration Dt" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.regn_dt}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="Engine No" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.eng_no}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="Chassis No" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.chassi_no}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="Tax Valid Upto" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.tax_valid_upto}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="Issue Dt" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.noc_issue_dt}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="NCRB Ref. No" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.noc_ref_no}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="Dispatch No" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.dispatch_no}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="State To" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.state_to}" styleClass="right-space bottom-space" /> 
+                <h:outputLabel value="Rto To" styleClass="right-space bottom-space" />
+                <h:outputText value="#{NOCReportBean.dobj.rto_to}" styleClass="right-space bottom-space" />
+            </h:panelGrid>
+        </div>
+        <div class="table-width-oneforth position-relative">
+            <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                <h:outputLabel value="Reason" rendered="#{NOCReportBean.dobj.render_Descr}"/>
+                <h:outputText value="#{NOCReportBean.dobj.descr}"/> 
+                <h:outputLabel value="Transferee Name" rendered="#{NOCReportBean.dobj.render_newName}"/>
+                <h:outputText value="#{NOCReportBean.dobj.new_own_name}"/>                 
+            </h:panelGrid>
+        </div>
+        <p:outputPanel rendered="#{NOCReportBean.dobj.ishypothecated}" styleClass="position-relative">
+            <div class="table-width-oneforth">
+                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                    <h:outputText value="Hypothecation Details" styleClass="font-bold"/>
+                    <h:outputText value="#{NOCReportBean.dobj.fncr_full_add}" styleClass="text-uppercase"/>
+                </h:panelGrid>
+            </div>
+        </p:outputPanel>
+        <table class="datatable-panel-100 position-relative">
+            <tr>
+                <td class="left-position">
+                    <br />
+                    <span class="font-bold">Date: </span> <h:outputText value=" #{NOCReportBean.dobj.printDate}" />  <br />  
+                    <span class="font-bold">Note:</span> NOC/CC/VDO Can be verified online at http://vahan.nic.in
+                </td>
+                <td class="right-position">
+                    <div class="right-space">
+                        <p:outputPanel rendered="#{NOCReportBean.dobj.isUserSignExist}">
+                            <p class="bottom-space">
+                                <p:graphicImage  value="#{NOCReportBean.viewUserSign}" cache="false" style="height: 34px !important; width: auto;"/>
+                            </p>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{!NOCReportBean.dobj.isUserSignExist}">
+                            <br />  <h:outputText value="Signature Of Issuing" />
+                            <br />  <h:outputText value="Authority With Seal" />
+                        </p:outputPanel>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </h:body>
+</html>

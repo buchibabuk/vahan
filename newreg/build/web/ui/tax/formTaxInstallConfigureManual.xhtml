@@ -1,0 +1,337 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">  
+    <ui:define name="content22">
+        <h:form id="taxInstallmentManualId">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">#{language.instllmtManual}</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <p:outputPanel id="panelVehlDtls">
+                <p:outputPanel id="regnNoPanel" rendered="#{!taxInstallmentConfigureManualBean.taxInstallmentPanel}">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_regn_no" value="#{language.home_rightpanelregno}:"/>
+                            </label>
+                            <p:inputText  id="tf_regn_no" value="#{taxInstallmentConfigureManualBean.regnNo}" size="20" maxlength="10"  autocomplete="off"
+                                          styleClass="text-uppercase" converter="toUpperCaseConverter">
+                            </p:inputText>
+                            <p:keyFilter mask="alphanum" for="tf_regn_no"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton id="showButtonId" value="#{language.show}" action="#{taxInstallmentConfigureManualBean.regnNoDetails()}"
+                                             update="panelVehlDtls ownerInformationPanelrender" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                            <p:commandButton value="#{language.login_back}" action="home"/> 
+                        </div>
+                    </div>
+                </p:outputPanel>       
+            </p:outputPanel>
+
+            <p:outputPanel id="ownerInformationPanelrender">
+                <p:outputPanel  rendered="#{taxInstallmentConfigureManualBean.taxInstallmentPanel}">
+
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <div class="report-header font-bold bottom-line">#{language.dtlsforVeh}  #{taxInstallmentConfigureManualBean.regnNo} </div>
+                        </div>                            
+                    </div>                
+
+                    <p:tabView styleClass="top-space bottom-space">
+
+
+
+                        <!--################################# Owner Details ##########################################--> 
+                        <p:tab  id="owner_details_tab" title="#{language.ownerDetails}">
+                            <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                <ui:param name="ownerDetail" value="#{taxInstallmentConfigureManualBean.ownerDetail}"/>
+                            </ui:include>
+                        </p:tab>
+                        <!--##########################################################################################--> 
+
+
+                        <!--################################# Vehicle Details ########################################--> 
+                        <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}">                                
+                            <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                <ui:param name="ownerDetail" value="#{taxInstallmentConfigureManualBean.ownerDetail}"/>
+                            </ui:include>
+                        </p:tab>
+                        <!--##########################################################################################--> 
+
+
+
+
+                    </p:tabView>
+
+                    <p:outputPanel  id="taxpanel" styleClass="bottom-space">
+                        <p:panel id="taxPanelDtls" header="#{language.mvTaxDtls}" styleClass="bottom-space">
+                            <div class="ui-grid-row">
+                                <!--                                <div class="ui-grid-col-3">
+                                                                    <label class="field-label resp-label-section">
+                                                                        <p:outputLabel value="MV Tax"/>
+                                                                    </label>
+                                                                </div>                            -->
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{language.taxFrom}"/>
+                                    </label>
+                                    <p:calendar id="taxFromDate" value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.taxfromdt}" required="true" 
+                                                requiredMessage="#{language.plsetaxfrom}" readonlyInput="true"
+                                                mindate="#{taxInstallmentConfigureManualBean.minDate}"
+                                                pattern="dd-MMM-yyyy" navigator="true" disabled="#{taxInstallmentConfigureManualBean.disableTaxPanelEliments}">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="taxFromDate"/>
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{language.taxUpto}"/>
+                                    </label>
+                                    <p:calendar id="taxUptoDate" value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.taxuptodt}" 
+                                                required="true" requiredMessage="#{language.plsetaxupto}"
+                                                mindate="#{taxInstallmentConfigureManualBean.minDate}" readonlyInput="true"
+                                                pattern="dd-MMM-yyyy" navigator="true" disabled="#{taxInstallmentConfigureManualBean.disableTaxPanelEliments}">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="taxUptoDate"/>
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{language.taxAmt}"/>
+                                    </label>
+                                    <p:inputText value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.taxAmount}" 
+                                                 required="true" requiredMessage="Please enter tax amount" disabled="#{taxInstallmentConfigureManualBean.disableTaxPanelEliments}"
+                                                 maxlength="9">
+                                        <p:ajax event="blur" listener="#{taxInstallmentConfigureManualBean.taxAmountListener()}" update="totalPaybaleAmountPanel taxpanel"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <p:panel id="instlmntDtls" header="#{language.instllmtFile}" styleClass="bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.fileReferenceNo}"/>
+                                </label>
+                                <p:inputText  id="tffilerefno" value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.filerefno}"
+                                              maxlength="50"
+                                              requiredMessage="#{language.plseFileReferenceNo}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="text-uppercase"
+                                              required="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.orderIssueBy}"/>
+                                </label>
+                                <p:inputText  id="tforderissuby" value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.orderissueby}"
+                                              maxlength="50"
+                                              requiredMessage="#{language.plseorderIssueBy}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="text-uppercase"
+                                              required="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.orderNo}"/>
+                                </label>
+                                <p:inputText  id="tfordernoti" value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.orderno}"
+                                              maxlength="50"
+                                              requiredMessage="#{language.plseorderNo}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="text-uppercase"
+                                              required="true"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.orderDate}"/>
+                                </label>
+                                <p:calendar id="orderdateti"  value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.orderdate}"
+                                            requiredMessage="#{language.blnkOrderDate}" readonlyInput="true"
+                                            maxdate="#{taxInstallmentConfigureManualBean.maxDate}"
+                                            pattern="dd-MMM-yyyy" navigator="true" required="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" for="orderdateti"/> 
+                                    <p:ajax event="dateSelect" process="@this"/>
+                                </p:calendar>
+                            </div>                                                                                  
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <p:panel id="instlmntBrkup" header="#{language.instllmtBrkAdd}" styleClass="datatable-panel">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:growl id="glbmsg" showDetail="false" >
+                                            <p:autoUpdate/>
+                                        </p:growl>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.instllmtNo}"/>
+                                        </label>
+                                        <p:inputText  id="tfInstallmentNo" value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.serialno}"
+                                                      maxlength="2"
+                                                      converter="toUpperCaseConverter"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true" 
+                                                      disabled="true"
+                                                      />
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.instllmtAmt}"/>
+                                        </label>
+                                        <p:inputText id="installment_amt"  value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.taxamountinstl}"
+                                                     maxlength="9" size="20" autocomplete="off" 
+                                                     required="true" requiredMessage="#{language.blnkInstllmtAmt}" disabled="#{taxInstallmentConfigureManualBean.addDisabled}">
+                                            <f:validateLength minimum="1"/>
+                                            <f:ajax event="blur"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.payDueDate}"/>
+                                        </label>
+                                        <p:calendar id="payduedate"  value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobj.payduedt}"
+                                                    readonlyInput="true"
+                                                    mindate="#{taxInstallmentConfigureManualBean.minDate}"
+                                                    pattern="dd-MMM-yyyy" navigator="true"
+                                                    disabled="#{taxInstallmentConfigureManualBean.addDisabled}">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" for="payduedate"/> 
+                                            <p:ajax event="dateSelect" process="@this"/>
+                                        </p:calendar>
+                                    </div>                                                    
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:outputPanel id="pg_save" styleClass="center-position">
+                                            <p:commandButton  value="#{language.add}" action="#{taxInstallmentConfigureManualBean.addRowsInTaxInstallmentConfigureManualDobjList()}" update="installmentpanel instlmntBrkup totalPaybaleSumInstallmentPanel" disabled="#{taxInstallmentConfigureManualBean.addDisabled}"> 
+                                                <ui:param name="parentTotalSumInstallment" value=":taxInstallmentManualId:totalPaybaleSumInstallmentPanel"/>
+                                            </p:commandButton>    
+
+                                        </p:outputPanel>
+                                        <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                                        <p:keyFilter mask="pint" for="installment_amt"/> 
+                                        <!--#############################################################################################-->
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:outputPanel id="installmentpanel" >
+                                <p:dataTable id="instlmntBrkupDtls" value="#{taxInstallmentConfigureManualBean.taxInstallmentConfigureManualDobjList}"  rendered="#{taxInstallmentConfigureManualDobjList.size()!=0}" var="data1" paginator="true" rows="6" paginatorPosition="bottom">
+                                    <f:facet name="header">
+                                        <div class="left-position">
+                                            #{language.instllmntBrek}
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="#{language.number}"  styleClass="collumn-width center-position">
+                                        <h:outputText value="#{data1.serialnotable} " styleClass="right-space" />                                            
+                                    </p:column>
+                                    <p:column headerText="#{language.instllmt}">
+                                        <h:outputText value="#{data1.taxamountinstltable} " styleClass="right-space" />
+                                    </p:column>
+                                    <p:column headerText="#{language.dueDate}">
+                                        <h:outputText value="#{data1.dueDateStr} " styleClass="right-space" />
+                                    </p:column>  
+                                </p:dataTable>                                   
+                            </p:outputPanel>   
+                            <div class="center-position">
+                                <p:commandButton  value="#{language.deletLastInstllmt}" action="#{taxInstallmentConfigureManualBean.deleteRowsInTaxInstallmentConfigureManualDobjList()}" update="totalPaybaleSumInstallmentPanel installmentpanel instlmntBrkup" />
+                            </div>
+                        </div>
+                    </div>
+                    <p:outputPanel>
+                        <hr class="top-space bottom-space" />
+                        <div class="ui-grid-row h5">
+                            <div class="ui-grid-col-6">
+                                <p:outputPanel id="totalPaybaleAmountPanel">
+                                    <h:outputText value="#{language.TotalTaxAmt}: " styleClass="font-bold text-uppercase"/>
+                                    <h:outputText  id="totalamount" value="Rs. #{taxInstallmentConfigureManualBean.totalTaxAmount}/-" styleClass="font-bold"/>
+                                </p:outputPanel>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputPanel id="totalPaybaleSumInstallmentPanel">
+                                    <h:outputText value="#{language.sumInstllmtAmt}: " styleClass="font-bold text-uppercase"/>
+                                    <h:outputText  id="suminstallment" value="Rs. #{taxInstallmentConfigureManualBean.sumOfTotalTaxInstallment}/-" styleClass="font-bold"/>
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                        <hr class="top-space bottom-space"/>
+                    </p:outputPanel>
+
+                    <p:panel>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">                                    
+                                <p:commandButton value="#{language.save}" action="#{taxInstallmentConfigureManualBean.savetaxinstallmentDetails()}">
+                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>   
+                                </p:commandButton>
+                                <p:button value="#{language.login_back}" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+            </p:outputPanel>
+            <p:dialog id="taxInstallmentSuccessMsg"  dynamic="true" widgetVar="dlgdb_taxinstallment"
+                      modal="true" draggable="false" closable="false" hideEffect="explode" header="Info">  
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.taxInstllmtVehNo} : #{taxInstallmentConfigureManualBean.regnNo}"/>
+                        </label>                            
+                    </div>
+                </div>
+                <p:button value="#{language.ok}" outcome="home" />
+            </p:dialog>  
+            <p:dialog id="taxInstallmentSuccessMsgReConf"  dynamic="true" widgetVar="dlgdb_taxinstallmentReConf"
+                      modal="true" draggable="false" closable="false" hideEffect="explode" header="Alert">  
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <label class="field-label resp-label-section" >
+                            <p:outputLabel value="#{language.VehpayedFrst} : #{taxInstallmentConfigureManualBean.regnNo} .#{language.vehpayedSecnd}"/>
+                        </label>                            
+                    </div>
+                </div>
+                <p:commandButton value="#{language.yes}"  action="#{taxInstallmentConfigureManualBean.reConfigureInstallment()}"  update="panelVehlDtls ownerInformationPanelrender" oncomplete="dlgdb_taxinstallmentReConf.hide();"/>
+                <p:button value="#{language.no}" outcome="home" />
+            </p:dialog>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

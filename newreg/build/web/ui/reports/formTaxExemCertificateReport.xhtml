@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="bootstrap-3.3.1" name="css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+
+    </h:head> 
+    <h:body onload="window.print();">
+        <h:form id="formPrint" prependId="false">
+            <p:outputPanel >
+                <div class="center-position">
+                    <p:button id="back_to_print_form" value="Back" outcome="/ui/reports/formTaxExemCert.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />      
+                    <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>  
+
+                <div class="position-relative">
+                    <div class="position-relative">
+                        <p:outputPanel  rendered="#{taxExemCertReportBean.dobj.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{taxExemCertReportBean.dobj.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+                    </div>
+                    <table class="datatable-panel-100 position-relative">
+                        <tr>
+                            <td class="left-position" style="width: 70px;">
+                                <p:graphicImage library="images" name="#{taxExemCertReportBean.dobj.image_logo}" style="width: 100px;" rendered="#{taxExemCertReportBean.dobj.show_image_logo}" />
+                            </td>
+                            <td class="center-position">
+                                <div class="center-position">
+                                    <h:outputText value="#{taxExemCertReportBean.dobj.report_header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+                                <div class="center-position">
+                                    <span class="font-bold report-subheader"> <h:outputText value="#{taxExemCertReportBean.dobj.report_subheader} #{taxExemCertReportBean.dobj.off_name}" escape="false"/> </span>
+                                </div>
+                                <div class="center-position bottom-space">
+                                    <span class="font-bold report-subheader text-uppercase"> <h:outputText value="Tax Exemption Certificate"/> </span>
+                                </div>                                  
+                            </td>
+                            <td class="right-position " style="width: 70px;">
+                                <div class="inline-section qrcode-position-absolute">
+                                    <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                        <ui:param name="qrcodevalue" value="#{taxExemCertReportBean.text}"/>   
+                                        <ui:param name="renderqrCode" value="true"/>   
+                                    </ui:include>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br /> <br />
+                    <div class="right-position">
+                        <h:outputText value="Printed Date: " />
+                        <h:outputText value="#{taxExemCertReportBean.dobj.printedDate}"/>
+                    </div>
+                </div>
+
+                <div class="table-width-oneforth datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Certificate No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.appl_no} " />
+                        <h:outputText value="Registration Number" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.regn_no}"/>
+                        <h:outputText value="Ownership Type" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.ownershiptype} " />                       
+                        <h:outputText value="Owner Name" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.owner_name}" />
+                        <h:outputText value="Son/wife/daughter of" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.f_name} " />
+                        <h:outputText value="Date of Registration" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.regn_date} " />
+                        <h:outputText value="Purchase Date" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.purchase_date} " />
+                        <h:outputText value="Chassis No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.chasi_no} " />
+                        <h:outputText value="Engine No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.engine_no} " />
+
+                        <h:outputText value="Permanent Address" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.permanent_address} " />
+
+                        <h:outputText value="Temporary Address" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{taxExemCertReportBean.dobj.temporary_address} " />
+                    </h:panelGrid>
+                </div>
+                <br /> 
+
+                <div  class="datatable-panel" style="margin: 0 auto;">
+                    <span >The above vehicle is exempted of Tax for the period 
+                        <h:outputText value="#{taxExemCertReportBean.dobj.from_date}" styleClass="font-bold"/>
+                        to 
+                        <h:outputText value="#{taxExemCertReportBean.dobj.upto_date}" styleClass="font-bold"/>
+                        vide Government order no/memo no 
+                        <h:outputText value="#{taxExemCertReportBean.dobj.perm_no}" styleClass="font-bold"/>
+                        dated
+                        <h:outputText value="#{taxExemCertReportBean.dobj.perm_date}" styleClass="font-bold"/>
+                    </span>
+                </div>
+
+
+            </p:outputPanel>
+            <div class="center-position ">
+                <br/>
+                <table class="datatable-panel">
+                    <tr>
+                        <td class="left-position">
+                            <div class="left-space">
+                                <h:outputText value="Date"/>                                    
+                                <h:outputText value=": #{taxExemCertReportBean.dobj.op_date}" /> <br />                                   
+                            </div>
+                        </td>
+                        <td class="right-position">
+                            <div class="right-space">
+                                <h:outputText value="(Taxing Officer)" styleClass="right-space"/> <br />
+                                <h:outputText value="#{taxExemCertReportBean.dobj.off_name}" styleClass="right-space"/> 
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class=" datatable-panel" style="margin: 0px auto;">
+                <div class="font-bold">Instructions:</div>
+                <ol>
+                    <li>This certificate should be carried in the vehicle and produced on demand by an authorised person.</li>
+                    <li>Application for renewal of certificate, if admissible, to be made prior to the expiry.</li>
+                    <li>Information to be submitted immediately to the issuing authority in case of loss or destruction of this certificate.</li>
+                    <li>This certificate should be treated as cancelled in case of change in ownership of the vehicle.</li>    
+                </ol>
+            </div>
+            <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{taxExemCertReportBean.dobj.showRoadSafetySlogan}">
+                <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                    <div class="center-position" style="display: inline-block;">
+                        <br /><br />
+                        <h:outputText value="#{taxExemCertReportBean.dobj.roadSafetySloganDobj.english_lang}" /><br/>
+                        <h:outputText value="#{taxExemCertReportBean.dobj.roadSafetySloganDobj.state_lang}" />
+
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

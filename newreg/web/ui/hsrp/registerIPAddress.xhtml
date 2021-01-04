@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="script">
+
+        <h:outputScript library="js" name="changePassword.js" />
+    </ui:define>
+    <ui:define name="content22">
+
+        <h:form id="flateFileForm" prependId="false">
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+
+            <p:outputPanel id="opn_current">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-7 resp-blank-height"></div>
+                    <div class="ui-grid-col-3">
+                        <a href="https://parivahan.gov.in/hsrpws/" target="_blank" class="font-bold" style="color: blue; cursor: pointer;"> Document for using HSRP Restful Web Service  </a>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-8">
+                    <p:outputPanel id="pnl_ipaddress">
+                        <p:panel id="pnl_form" header="IP Details" rendered="#{hsrpIP.showform}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-2 top-space">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="IP Address"/>
+                                    </label>
+                                </div>
+                                <div class="ui-grid-col-8 top-space">
+                                    <p:inputText id="txtip1" value="#{hsrpIP.ipAdress1}" requiredMessage="Enter IP 1" required="true" maxlength="3" style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <!--<f:validateRegex pattern="^[0-9]*$" />-->
+                                        <p:keyFilter mask="pint" for="txtip1"/>
+                                    </p:inputText>
+                                    <p:inputText id="txtip2" value="#{hsrpIP.ipAdress2}" requiredMessage="Enter IP 2" required="true"  maxlength="3"  style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <!--<f:validateRegex pattern="^[0-9]*$" />-->
+                                        <p:keyFilter mask="pint" for="txtip2"/>
+                                    </p:inputText>
+                                    <p:inputText id="txtip3" value="#{hsrpIP.ipAdress3}" requiredMessage="Enter IP 3" required="true"   maxlength="3" style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <!--<f:validateRegex pattern="^[0-9]*$" />-->
+                                        <p:keyFilter mask="pint" for="txtip3"/>
+                                    </p:inputText>
+                                    <p:inputText id="txtip4" value="#{hsrpIP.ipAdress4}" requiredMessage="Enter IP 4" required="true"  maxlength="3"  style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <!--<f:validateRegex pattern="^[0-9]*$" />-->
+                                        <p:keyFilter mask="pint" for="txtip4"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-2 top-space">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Merchant Key"/>
+                                    </label>
+                                </div>
+                                <div class="ui-grid-col-5 top-space">
+                                    <p:inputText id="txtmerchant_key" value="#{hsrpIP.merchantKey}"  requiredMessage="Enter Merchant Key" required="true"   onblur="checkmerchentKey(this);"  maxlength="20" style="width: 50% !important; margin-right: 1.5% !important;">
+                                    </p:inputText>
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Register IP" action="#{hsrpIP.registerIP}" onclick="return true;" onstart="PF('bui').show();" 
+                                                     oncomplete="PF('bui').hide();" update=" pnl_ipaddress  pnl_datatable"/>
+                                    <p:button  value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:outputPanel id="pnl_datatable" >
+                            <p:dataTable id="tb_filehsrp"   value="#{hsrpIP.listIp}"  rendered="#{hsrpIP.showDataTable}"
+                                         var="hsrp"  selection="#{hsrpIP.selectva_ip}"
+                                         paginator="#{hsrpIP.listShow}" 
+                                         rowIndexVar="index" rowKey="#{hsrp.ip}" 
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rows="10">
+                                <f:facet name="header">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 top-space bottom-space">
+                                            <h:outputText value="White List IP for Web Service" class="h5 text-uppercase font-bold underline-text" />
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton  value="Delete" action="#{hsrpIP.deleteIp()}"  onclick="return true;" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                              update="pnl_ipaddress" />
+                                            <p:commandButton  value="Add New" action="#{hsrpIP.newFormFillUp()}"  onclick="return true;" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                              update="pnl_ipaddress" />
+
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                <p:column selectionMode="single"  styleClass="collumn-width center-position"/>
+                                <p:column headerText="Sr. No"  styleClass="center-position" exportable="false" width="20%">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="White List IP" styleClass="center-position">
+                                    <h:outputText value="#{hsrp.ip}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+
+                    </p:outputPanel>
+                    <p:blockUI block=":flateFileForm:pnl_ipaddress" widgetVar="bui">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </div>
+            </div>
+
+        </h:form>
+
+    </ui:define>
+
+
+</ui:composition>

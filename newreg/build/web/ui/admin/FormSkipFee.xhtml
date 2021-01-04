@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formGenApplNo" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Skip Fee For Inwarded Application</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true">
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="disposePanel" rendered="#{!skipFeeBean.render}">
+                        <p:focus context="disposePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfAppNo" value="Application No"/>
+                                </label>
+                                <p:inputText  id="tfAppNo" value="#{skipFeeBean.appl_no}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="Please Enter Application No"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRcptNo" value="Old Software's Receipt No"/>
+                                </label>
+                                <p:inputText  id="tfRcptNo" value="#{skipFeeBean.receiptNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="Please Enter Receipt No"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"/>
+                            </div>
+
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{skipFeeBean.showDetails()}"
+                                                 update="formGenApplNo:panelOwnerInfo formGenApplNo msg" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfAppNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{skipFeeBean.render}">                    
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <div class="ui-grid-row top-space bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="requestForPurCD" value="Skip Fee  Application - #{skipFeeBean.appl_no} For"/>
+                                        </label>
+                                        <p:selectManyMenu id="requestForPurCD" 
+                                                          requiredMessage="Please Select Transaction for Skipping Fee for Application"
+                                                          styleClass="scroll-panel-overflow">
+                                            <f:selectItems value="#{skipFeeBean.mapPurCdDescr}"/> 
+                                        </p:selectManyMenu>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row top-space bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="reason" value="Reason"/>
+                                        </label>
+                                        <p:inputTextarea id="reason"  value="#{skipFeeBean.reason}" 
+                                                         required="true" requiredMessage="Reason Field can't be Empty"
+                                                         converter="toUpperCaseConverter" maxlength="100"
+                                                         styleClass="input"/>
+                                    </div>
+                                </div>
+
+
+                                <div class="ui-grid-row center-position top-space bottom-space">                                    
+                                    <div class="ui-grid-col-12">                                      
+                                        <p:commandButton id="btn_save" value="Skip Fee Step" 
+                                                         action="#{skipFeeBean.skipFee()}"
+                                                         update="panelApplInward msg" onclick="PF('ajax_status').show()"
+                                                         onsuccess="PF('ajax_status').hide()">                                    
+                                            <p:confirm header="Confirmation" message="Are you sure? Do You Want to Skip the Transaction(s)?" icon="ui-icon-alert"/>   
+                                        </p:commandButton>                            
+                                        <p:commandButton value="Back" action="/ui/admin/FormSkipFee.xhtml" 
+                                                         process="@this" update="formGenApplNo" immediate="true" onclick="PF('ajax_status').show()"
+                                                         onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="ui-grid-col-9">
+                                <p:tabView styleClass="top-space bottom-space" >
+
+                                    <!--################################# Owner Details ########################################## -->
+                                    <p:tab  id="owner_details_tab" title="Owner Details">
+                                        <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{skipFeeBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+
+                                    <!--################################# Vehicle Details ######################################## -->
+                                    <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                        <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{skipFeeBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+                                    <!--###################### Insurance Details ############################### -->
+                                    <p:tab id="insuranceDetails"  title="Insurance Details">      
+                                        <ui:include src="/ui/form_ins_dtls.xhtml"/>                                                                  
+                                    </p:tab>  
+                                    <!--########################################################################################## -->     
+
+                                    <!--###################### Hypothecation Details ######################################## -->
+                                    <p:tab id="hypothecationDetails"  title="Hypothecation Details">  
+                                        <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+                                </p:tabView>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>             
+
+
+                <p:blockUI block="formGenApplNo" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

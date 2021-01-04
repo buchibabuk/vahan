@@ -1,0 +1,427 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <ui:define name="contentCommonInformation">
+                    <h:form>
+                        <ui:include src="panel_applicationdetails.xhtml">
+                            <ui:param name="appl_details" value="#{fitness_renew_bean.appl_details}"/>            
+                        </ui:include>
+                    </h:form>
+                </ui:define>
+            </div>
+        </div>
+
+        <ui:define name="content">
+            <div class="ui-grid ui-grid-responsive">
+                <h:form id="form_fitness" prependId="false"> 
+
+                    <p:outputPanel>
+                        <p:autoUpdate/>
+                        <p:dialog id="msgDialog" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                            <p:messages>
+                                <p:autoUpdate/>
+                            </p:messages>                        
+                        </p:dialog>
+                    </p:outputPanel> 
+                    <p:outputPanel id="opvltd" rendered="#{fitness_renew_bean.renderVltdDialog}">
+                        <p:dialog header="Missing ! Vehicle Location Tracking Device (VLTD)" widgetVar="dlgvltd" modal="true" closable="false" resizable="false" draggable="false" visible="#{fitness_renew_bean.renderVltdDialog}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    The Vehicle does NOT have a VLT device installed/activated as per CMVR 125 H.<br/> 
+                                    (<a class="font-bold" style="color: blue; text-decoration: underline" href="https://vahan.parivahan.gov.in/vltdmaker/vahan/welcome.xhtml">Click Here </a>) Kindly check the VLTD portal for fitment/activation of VLT device<br/>
+                                    and approve the same before registration of the vehicle.
+                                    <br/><br/>
+                                    By clicking OK, You agree to Approve the Deviation for non-installation/ activation of VLT device in this vehicle.
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-6 center-position">
+                                        <p:commandButton value="OK" onclick="PF('dlgvltd').hide();" immediate="true"                                             
+                                                         icon="ui-icon-check"/>
+                                    </div>
+                                    <div class="ui-grid-col-6 center-position">
+                                        <p:button value="Cancel" onclick="PF('dlgvltd').hide();"                                              
+                                                  outcome="home" icon="ui-icon-close"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:dialog>   
+                    </p:outputPanel>
+                    <p:outputPanel id="speed_gov_id">
+                        <p:dialog header="Speed Limiting Device (SLD)" widgetVar="sldVar" modal="true" closable="false" resizable="false" draggable="false" visible="#{fitness_renew_bean.renderSLDDialog}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    Fitness can not be done as Speed Governor Fitment Details not found,
+                                    <br/><br/>
+                                    As per instructions from State Transport Department, the Speed Governor Fitment Details is mandatory on the portal 
+                                    (<a class="font-bold" target="_blank" style="color: blue; text-decoration: underline" href="https://vahan.parivahan.gov.in/sldmaker/">https://vahan.parivahan.gov.in/sldmaker/</a>)
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:button value="Ok" onclick="PF('sldVar').hide();"                                              
+                                                  outcome="home" icon="ui-icon-close"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:dialog>   
+                    </p:outputPanel>
+                    <p:blockUI block="form_fitness" widgetVar="feeTaxCompareVar">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+
+                    <div class="center-position right-space top-space">
+                        <h:outputText value="Fitness/Inspection (Form-38A) done at #{fitness_renew_bean.tempFitnessDetails.off_name}, #{fitness_renew_bean.tempFitnessDetails.state_name}, click relevant tab for more details..." rendered="#{fitness_renew_bean.tempFitnessDetails!=null}"  styleClass="font-bold red header-subheader"/>
+                    </div>
+
+                    <p:remoteCommand autoRun="#{fitness_renew_bean.autoRunCheckFeeTax}" immediate="true"
+                                     onstart="PF('feeTaxCompareVar').show()" onsuccess="PF('feeTaxCompareVar').hide()"
+                                     actionListener="#{fitness_renew_bean.feeCompare}"
+                                     update="form_fitness"/>
+
+                    <p:outputPanel rendered="#{fitness_renew_bean.checkFeeTax ne null}">
+                        <ui:include  src="/ui/form_check_e_amount.xhtml">
+                            <ui:param name="ePay" value="#{fitness_renew_bean.checkFeeTax}"/>  
+                        </ui:include>  
+                    </p:outputPanel>
+                    <p:panel rendered="#{fitness_renew_bean.checkFeeTax eq null and fitness_renew_bean.appl_details.current_action_cd eq '20006'}" styleClass="top-space bottom-space center-position">
+                        <h:outputText value="Fee details not found reason may be [ application is either of Old VAHAN software or exempted case ( eg. Govt vehicle or state specific condition ) only ]"
+                                      styleClass="report-header font-bold red"/>
+                    </p:panel>
+                    <p:tabView id="fitnessTabView" styleClass="top-space bottom-space">
+                        <p:tab id="newFitDetailsTab" title="New Fitness Details">
+                            <p:panel header="New Fitness Details" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_fitness_dt"  value="Fitness Test Date"/>
+                                        </label>
+                                        <p:calendar id="tf_fitness_dt"  value="#{fitness_renew_bean.fitness_renew_dobj.fit_chk_dt}" 
+                                                    pattern="dd-MMM-yyyy"  navigator="true" mindate="#{fitness_renew_bean.minDate}"
+                                                    readonlyInput="true" maxdate="#{fitness_renew_bean.maxDate}"
+                                                    disabled="#{fitness_renew_bean.checkFeeTax ne null}"
+                                                    required="true" requiredMessage="Blank: Fitness Test Date">
+                                            <p:ajax event="dateSelect"  update="fit_valid_to fit_nid" listener="#{fitness_renew_bean.fitnessValidUptoDateChangeListener}"/>
+                                        </p:calendar>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="fit_valid_to" value="Fitness Valid Upto"/>
+                                        </label>
+                                        <p:calendar  id="fit_valid_to" value="#{fitness_renew_bean.fitness_renew_dobj.fit_valid_to}"
+                                                     navigator="true" pattern="dd-MMM-yyyy" readonlyInput="true" disabled="#{fitness_renew_bean.isDisableFitnessUpto}" required="true"
+                                                     mindate="#{fitness_renew_bean.fitUptoMinDate}" maxdate="#{fitness_renew_bean.fitUptoMaxDate}"  requiredMessage="Blank : Fitness Valid Upto">
+                                            <p:ajax/>
+                                        </p:calendar>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="fit_nid" value="NID(Next Inspection Date)"/>
+                                        </label>
+                                        <p:calendar  id="fit_nid" value="#{fitness_renew_bean.fitness_renew_dobj.fit_nid}"
+                                                     navigator="true" pattern="dd-MMM-yyyy" readonlyInput="true" disabled="true" required="true">
+                                        </p:calendar>
+                                    </div>
+                                </div>
+
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_pucc_no"  value="PUCC NO"/>
+                                        </label>
+                                        <p:inputText id="tf_pucc_no" size="30" value="#{fitness_renew_bean.fitness_renew_dobj.pucc_no}"
+                                                     maxlength="25"  required="true" requiredMessage="PUCC NO Can not be Empty" 
+                                                     disabled="#{fitness_renew_bean.skipPuccValidation}"
+                                                     autocomplete="off" converter="toUpperCaseConverter" styleClass="text-uppercase"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_pucc_validity"  value="PUCC Validity"/>
+                                        </label>
+                                        <p:calendar id="tf_pucc_validity" value="#{fitness_renew_bean.fitness_renew_dobj.pucc_val}"
+                                                    pattern="dd-MMM-yyyy" navigator="true" 
+                                                    disabled="#{fitness_renew_bean.skipPuccValidation}"
+                                                    readonlyInput="true" required="true" requiredMessage="PUCC Validity Can not be Empty"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_fare_meter_no"  value="Fare Meter No."/>
+                                        </label>
+                                        <p:inputText id="tf_fare_meter_no" size="30" maxlength="25" value="#{fitness_renew_bean.fitness_renew_dobj.fare_mtr_no}"
+                                                     autocomplete="off" converter="toUpperCaseConverter" styleClass="text-uppercase"/>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_result"  value="Result"/>
+                                        </label>
+                                        <p:selectOneMenu  id="tf_result" value="#{fitness_renew_bean.fitness_renew_dobj.fit_result}">
+                                            <f:selectItem itemLabel="PASS" itemValue="Y"/> 
+                                            <f:selectItem itemLabel="FAIL" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_inspected_by"  value="Inspected by Fitness Officer 1"/>
+                                        </label>
+                                        <p:selectOneMenu  id="tf_inspected_by" value="#{fitness_renew_bean.fitness_renew_dobj.fit_off_cd1}"
+                                                          required="true" requiredMessage="Please Select Fitness Officer 1"
+                                                          disabled="#{fitness_renew_bean.disableFitnessOfficer1}">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                            <f:selectItems value="#{fitness_renew_bean.fit_off_cd1_list}"/>   
+                                            <f:validator validatorId="selectOneValidator" for="tf_inspected_by"/>  
+                                            <f:ajax/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">  
+                                        <p:outputPanel rendered="#{fitness_renew_bean.isMultipleFitnessOfficer}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_inspected_by2"  value="Fitness Officer 2"/>
+                                            </label>
+                                            <p:selectOneMenu  id="tf_inspected_by2" value="#{fitness_renew_bean.fitness_renew_dobj.fit_off_cd2}"
+                                                              required="true" requiredMessage="Please Select Fitness Officer 2" validator="#{fitness_renew_bean.validateFitnessOfficer}">
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                <f:selectItems value="#{fitness_renew_bean.fit_off_cd2_list}"/>   
+                                                <f:validator validatorId="selectOneValidator" for="tf_inspected_by2"/>                                    
+                                            </p:selectOneMenu>                               
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_remarks" value="Remarks, If Any"/>
+                                        </label>
+                                        <p:inputTextarea id="tf_remarks" cols="30" maxlength="100" rows="3" value="#{fitness_renew_bean.fitness_renew_dobj.remark}"
+                                                         converter="toUpperCaseConverter" styleClass="text-uppercase"/>
+                                    </div> 
+
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_reasonForFitness" value="Reason For Fitness" rendered="#{fitness_renew_bean.paymentRemarks ne null}"/>
+                                        </label>
+                                        <p:inputTextarea id="tf_reasonForFitness" cols="30" maxlength="100" rows="3" value="#{fitness_renew_bean.paymentRemarks}"
+                                                         converter="toUpperCaseConverter" styleClass="text-uppercase" disabled="true" rendered="#{fitness_renew_bean.paymentRemarks ne null}"/>
+                                    </div> 
+                                </div>
+                            </p:panel>
+                            <p:outputPanel id="documentUploadPanel" rendered="#{fitness_renew_bean.renderFileUploadPanel}" >
+                                <p:commandButton icon="ui-icon-folder-open" immediate="true" value="View/Upload Documents" action="#{fitness_renew_bean.viewUploadedDocumentsForFitness()}" >
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:dialog id="viewUploadedDmsReg" modal="true" widgetVar="dmsfileUploadedReg" header="-- Displaying D.M.S Utility : Uploaded Documents Viewier -- " closeOnEscape="true" dynamic="true" draggable="false" resizable="false">
+                                    <iframe  src="#{fitness_renew_bean.dmsFileUploadUrl}"  height="600" width="1290" frameborder="0" scrolling="auto" marginheight="1" marginwidth="1"/>
+                                </p:dialog>
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                                </p:confirmDialog>  
+                            </p:outputPanel>
+
+                            <p:outputPanel id="op_speed_gov" rendered="#{fitness_renew_bean.renderSpeedGoverner}">
+                                <div class="ui-grid-row bottom-space">  
+                                    <div class="ui-grid-col-4">  
+                                        <h:outputText value="SPEED GOVERNER FITTED ? " styleClass="font-bold red inline-section right-space"/>
+                                        <p:selectBooleanCheckbox id="blnCheck" value="#{fitness_renew_bean.renderSpeedGov}" disabled="#{fitness_renew_bean.isDisableSpeedGovernerChkBox}" styleClass="top-space bottom-space">
+                                            <p:ajax update="op_speed_gov" listener="#{fitness_renew_bean.speedGovListener}" />
+                                        </p:selectBooleanCheckbox>                                        
+                                    </div>
+                                </div>
+                                <p:outputPanel rendered="#{fitness_renew_bean.renderSpeedGov}" styleClass="top-space bottom-space">                            
+                                    <ui:include src="/ui/formSpeedGovernor.xhtml">
+                                        <ui:param name="ownerDobj" value="#{fitness_renew_bean.owner}"/>
+                                        <ui:param name="listSpeedGovTypes" value="#{fitness_renew_bean.listSpeedGovTypes}"/>                                    
+                                    </ui:include>
+                                </p:outputPanel>
+                            </p:outputPanel> 
+
+                            <p:outputPanel id="op_reflectivateTape" rendered="#{fitness_renew_bean.isReflectiveTapeAllowed}">
+                                <div class="ui-grid-row bottom-space">  
+                                    <div class="ui-grid-col-4">                                       
+                                        <h:outputText value="Reflective Tape?" styleClass="font-bold red inline-section right-space"/>
+                                        <p:selectBooleanCheckbox id="blnCheckReflectiveTape" value="#{fitness_renew_bean.renderReflectiveTape}" disabled="#{fitness_renew_bean.isDisableReflectiveTapeChkBox}">
+                                            <p:ajax update="op_reflectivateTape" listener="#{fitness_renew_bean.reflectiveTapeListener}" partialSubmit="true"/>
+                                        </p:selectBooleanCheckbox>
+                                    </div>
+                                </div>
+                                <p:outputPanel rendered="#{fitness_renew_bean.renderReflectiveTape}" styleClass="top-space bottom-space">                            
+                                    <ui:include src="/ui/formReflectiveTape.xhtml">
+                                        <ui:param name="ownerDobj" value="#{fitness_renew_bean.owner}"/>
+                                    </ui:include>
+                                </p:outputPanel>                                
+                            </p:outputPanel>  
+
+                            <p:outputPanel id="cngDtlsPanel" rendered="#{fitness_renew_bean.renderRetroDetails}">
+                                <p:panel header="CNG/LPG Details" styleClass="top-space bottom-space">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_kit_sr_no"  value="KIT Sr. No"/>
+                                            </label>
+                                            <p:inputText id="tf_kit_sr_no" value="#{fitness_renew_bean.retroFittingDetailsDobj.kit_srno}" disabled="true"/>
+                                        </div>                   
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_kit_type"  value="KIT Type"/>
+                                            </label>
+                                            <p:inputText id="tf_kit_type" value="#{fitness_renew_bean.retroFittingDetailsDobj.kit_type}" disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_kit_pucc_norm"  value="KIT PUCC Norm"/>
+                                            </label>
+                                            <p:inputText id="tf_kit_pucc_norm" value="#{fitness_renew_bean.retroFittingDetailsDobj.kit_pucc_norms}" disabled="true"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_workshop"  value="Workshop"/>
+                                            </label>
+                                            <p:inputText id="tf_workshop" value="#{fitness_renew_bean.retroFittingDetailsDobj.workshop}" disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_workshop_lic_no"  value="Workshop Licence No"/>
+                                            </label>
+                                            <p:inputText id="tf_workshop_lic_no" value="#{fitness_renew_bean.retroFittingDetailsDobj.workshop_lic_no}" disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_kit_manu_no"  value="KIT Manufacturer"/>
+                                            </label>
+                                            <p:inputText id="tf_kit_manu_no" value="#{fitness_renew_bean.retroFittingDetailsDobj.kit_manuf}" disabled="true"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_approved_dt"  value="Approval Date"/>
+                                            </label>                                            
+                                            <p:calendar id="tf_approved_dt" value="#{fitness_renew_bean.retroFittingDetailsDobj.approval_dt}"
+                                                        pattern="dd-MMM-yyyy" disabled="true">
+                                            </p:calendar>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_fitment_dt"  value="Fitnment Date"/>
+                                            </label>                                            
+                                            <p:calendar id="tf_fitment_dt" value="#{fitness_renew_bean.retroFittingDetailsDobj.install_dt}"
+                                                        pattern="dd-MMM-yyyy" disabled="true">
+                                            </p:calendar>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_cyl_sr_no"  value="Cylinder Sr. No"/>
+                                            </label>
+                                            <p:inputText id="tf_cyl_sr_no" value="#{fitness_renew_bean.retroFittingDetailsDobj.cyl_srno}" disabled="true"/>
+                                        </div> 
+                                    </div>
+
+                                    <div class="ui-grid-row">                          
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_hydro_test_dt"  value="Hydro Test Date"/>
+                                            </label>
+                                            <p:calendar id="tf_hydro_test_dt" value="#{fitness_renew_bean.retroFittingDetailsDobj.hydro_dt}"
+                                                        readonlyInput="true" navigator="true"  pattern="dd-MMM-yyyy">
+                                            </p:calendar>                                            
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel>
+                            <p:outputPanel id="vltd_details" rendered="#{fitness_renew_bean.render_vltd_details}">
+                                <ui:include src="/ui/form_vehicle_tracking_details.xhtml">
+                                    <ui:param name="ownerDobj" value="#{fitness_renew_bean.owner}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                            <p:panel header="Parameters" styleClass="top-space">
+                                <div class="ui-grid-row">
+                                    <div id="checkBoxClass" class="ui-grid-col-12 ManyCheckbox">
+                                        <p:selectManyCheckbox id="chk_boxes"  binding="#{fitness_renew_bean.parameters}" columns="5" layout="grid">
+                                            <f:selectItems value="#{fitness_renew_bean.parameters_list}" />
+                                        </p:selectManyCheckbox> 
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton id="bt_check_all" value="Check / Uncheck All Parameters" type="button" onclick="$('#checkBoxClass').find('input[type=checkbox]').click()"/>          
+                                </div>
+                            </div>
+                            <!--
+                            $('.ui-chkbox-box').click() is a JQuery Function to check/uncheck all the checkboxes for p:selectManyCheckbox 
+                            --> 
+                        </p:tab>
+                        <p:tab id="oldFitDetailsTab" title="Previous Fitness Detail">
+                            <ui:include src="/ui/registration/formFitnessDetails.xhtml">
+                                <ui:param name="fitnessDobj" value="#{fitness_renew_bean.fitnessDetails}"/>
+                            </ui:include>
+                        </p:tab>
+
+                        <p:tab id="tempFitDetailsTab" title="Fitness/Inspection done in Other State" rendered="#{fitness_renew_bean.tempFitnessDetails!=null}">
+                            <ui:include src="/ui/registration/tempFitnessDetails.xhtml">
+                                <ui:param name="fitnessDobj" value="#{fitness_renew_bean.tempFitnessDetails}"/>
+                            </ui:include>
+                        </p:tab>
+
+                        <p:tab id="vehicleDetailsTab" title="Vehicle Details">
+                            <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                <ui:param name="ownerDetail" value="#{fitness_renew_bean.ownerDetail}"/>
+                            </ui:include>
+                        </p:tab>
+                    </p:tabView>
+
+                    <p:panel id="changedByPrevUser" rendered="#{fitness_renew_bean.prevChangedDataList.size()>0}">
+                        <p:dataTable value="#{fitness_renew_bean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                            <p:column headerText="Changed by" width="15%">
+                                <h:outputText value="#{data.userName}" />
+                            </p:column>
+
+                            <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                            </p:column>
+
+                            <p:column headerText="Changed on" width="15%">
+                                <h:outputText value="#{data.op_dt}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                    <div class="ui-grid-row center-position top-space">
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel rendered="#{!fitness_renew_bean.autoRunCheckFeeTax}">
+                                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                    <ui:param name="app_disapp" value="#{fitness_renew_bean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+
+                    <vahan:vahanMessages messages="#{fitness_renew_bean.vahanMessages}"  rendered="#{fitness_renew_bean.vahanMessages ne null}"/>
+
+                </h:form>
+            </div>
+        </ui:define>
+    </div>
+</ui:composition>

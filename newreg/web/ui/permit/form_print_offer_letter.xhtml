@@ -1,0 +1,74 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content22" >
+        <h:form id="permitPrint" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">
+                            Offer Letter Print
+                        </h1>
+                    </div>
+                </div>
+
+                <p:outputPanel styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <p:selectOneRadio id="select_task" value="A" value="#{offer_letter.app_notApp}">
+                                <f:selectItem itemLabel="If your Application is Approved" itemValue="A"/> 
+                                <f:selectItem itemLabel="If your Application is Not Approved" itemValue="D"/>
+                                <p:ajax event="click"  listener="#{offer_letter.select_Radio_Button()}" update="offer_leter"/>
+                            </p:selectOneRadio>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:dataTable id="offer_leter"  value="#{offer_letter.allPrintWork}" var="virtual" rows="10"
+                             paginator="true" widgetVar="seatWorkList" rowKey="#{virtual.sr}" selectionMode="single" 
+                             selection="#{offer_letter.pmtOfferDetails}" lazy="true" emptyMessage="YOU HAVE NO PENDING.">
+                    <p:ajax event="rowSelect" update=":permitPrint:OffDia" oncomplete="PF('dialog').show()" />
+                    <p:column headerText="S.No">#{virtual.sr}</p:column>
+                    <p:column headerText="Application No" filterBy="#{virtual.appl_no}" filterMatchMode="contains">#{virtual.appl_no}</p:column>
+                    <p:column headerText="Vehicle No" filterBy="#{virtual.regn_no}" filterMatchMode="contains">#{virtual.regn_no}</p:column>
+                    <p:column headerText="Permit Type" >#{virtual.pmt_type}</p:column>
+                    <p:column headerText="Offer Leter" >#{virtual.offer_no}</p:column>
+                    <p:column headerText="Public Remark" >#{virtual.public_remark}</p:column>
+                    <p:column headerText="Office Remark" >#{virtual.office_remark}</p:column>
+                </p:dataTable>
+                <p:dialog id="OffDia" header="Offer Leter Details" widgetVar="dialog"
+                          modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel styleClass="center-position">
+                        <p:panelGrid  columns="2" rendered="#{not empty offer_letter.pmtOfferDetails}">
+                            <f:facet name="header">
+                                #{offer_letter.pmtOfferDetails.pmt_type}
+                            </f:facet>
+                            Sr No.
+                            <h:outputText value="#{offer_letter.pmtOfferDetails.sr}" />
+                            Application No.
+                            <h:outputText value="#{offer_letter.pmtOfferDetails.appl_no}" />
+                            Offer Letter No.
+                            <h:outputText value="#{offer_letter.pmtOfferDetails.offer_no}" />
+                            Registration No.
+                            <h:outputText value="#{offer_letter.pmtOfferDetails.regn_no}"/>
+                            <p:commandButton value="PRINT" action="#{offer_letter.singlePrint(offer_letter.pmtOfferDetails.appl_no)}" /> 
+                            <p:commandButton value="MOVE FILE" action="#{newPmt.singlePrint()}" onclick="PF('bui').show();" ajax="false"> 
+                                <f:setPropertyActionListener target="#{newPmt.pmtDetails}" value="#{virtual}"/>
+                            </p:commandButton>
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

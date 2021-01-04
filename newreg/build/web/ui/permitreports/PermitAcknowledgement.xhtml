@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            <div class="center-position inline-section">
+                                Application No. :- <h:outputText value="#{printDocXHTML.passPmtDobj.applNo}" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="center-position">
+                <p:button value="Back" outcome="#{printDocXHTML.redirect()}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <br/>        
+
+            <div class="center-position">
+                <h:outputText value="#{printDocXHTML.main_header},#{printDocXHTML.passPmtDobj.off_cd}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position bottom-space">
+                <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/> </span>
+            </div>
+
+            <p:panelGrid style="margin-top:5px; width:99.5%;">
+                <f:facet name="header">
+                    <p:row>
+                        <u>
+                            <p:column style="font-weight: bold; font-size: larger" colspan="4">Acknowledgment Of Permit Application</p:column>
+                        </u>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column style="font-weight: bold; font-size: large ;width: 26%" colspan="1">
+                        <h:outputText value="1. Registration No"/>
+                    </p:column>
+                    <p:column style="font-weight: bold; font-size: large; width:" colspan="1" >
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.regnNo}" />
+                    </p:column>
+
+
+                    <p:column colspan="2" rowspan="2" >
+                        <center>
+                            <pe:qrCode rendered="true"
+                                       renderMethod="canvas" 
+                                       renderMode="0" 
+                                       text="#{printDocXHTML.textQRcode}" 
+                                       label="QR Code"
+                                       size="110"
+                                       fillColor="000000" 
+                                       ecLevel="H" 
+                                       radius="0.5"/>
+                        </center>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="font-weight: bold; font-size: large ;width: 26%" colspan="1">
+                        <h:outputText value="2. Application No"/>
+                    </p:column>
+                    <p:column style="font-weight: bold; font-size: large; width:" colspan="1" >
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.applNo}" styleClass="font-bold" />
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="3. Name of Permit Holder"/>
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.owner_name}" styleClass="font-bold"/>
+                    </p:column>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value=" 4. Father’s/Husband’s Name   (in case of Individual) "/>
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.f_name}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value=" 5. Permit Type" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_type}"/>
+                    </p:column>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="6. Permit Category" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.pmtCatg}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="7. Address " />
+                    </p:column>
+                    <p:column colspan="3">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add1},#{printDocXHTML.ownerPmtDobj.c_add2},#{printDocXHTML.ownerPmtDobj.c_add3},#{printDocXHTML.ownerPmtDobj.c_state}#{printDocXHTML.ownerPmtDobj.districtInString} PinCode -#{printDocXHTML.ownerPmtDobj.c_pincode}." />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value=" 8. Chassis No" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.chasi_no}" />
+                    </p:column>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value=" 9. Engine No" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.engnNo}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value=" 10. Vehicle Class" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.vh_class_desc}" />
+                    </p:column>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value=" 11. Vehicle Catogary" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.vch_catg}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value=" 12. Fuel" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.fuel_desc}" />
+                    </p:column>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="13. Purpose"/>
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.paction}"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="14. Mobile No"/>
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.mobile_no}"/>
+                    </p:column>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="15. Email-ID" />
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.email_id}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="16. Seat Capacity"/>
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.seat_cap}"/>
+                    </p:column>
+                    <p:column style="font-weight: bold;" colspan="1" rendered="#{printDocXHTML.pmtFeeDobj.color ne null}">
+                        <h:outputText value="17. Color" rendered="#{printDocXHTML.pmtFeeDobj.color ne null}" />
+                    </p:column>
+                    <p:column colspan="1" rendered="#{printDocXHTML.pmtFeeDobj.color ne null}">
+                        <h:outputText value="#{printDocXHTML.pmtFeeDobj.color}" rendered="#{printDocXHTML.pmtFeeDobj.color ne null}"/>
+                    </p:column>
+                </p:row>
+                <p:row rendered="#{printDocXHTML.ownerPmtDobj.regnDateInString ne null}">
+                    <p:column style="font-weight: bold;" colspan="1">
+                        <h:outputText value="18. Registration Date" rendered="#{printDocXHTML.ownerPmtDobj.regnDateInString ne null}"/>
+                    </p:column>
+                    <p:column colspan="1">
+                        <h:outputText value="#{printDocXHTML.ownerPmtDobj.regnDateInString}" rendered="#{printDocXHTML.ownerPmtDobj.regnDateInString ne null}"/>
+                    </p:column>
+                </p:row>
+                <p:row  rendered="#{printDocXHTML.passPmtDobj.region_covered ne null}">
+                    <p:column colspan="1">
+                        <h:outputText value="Region Detail" styleClass="font-bold"/>
+                    </p:column>
+                    <p:column colspan="3">
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.region_covered}"/>
+                    </p:column>
+                </p:row>
+                <p:row  rendered="#{printDocXHTML.routedata ne null}">
+                    <p:column colspan="1">
+                        <h:outputText value="Route Detail" styleClass="font-bold"/>
+                    </p:column>
+                    <p:column colspan="3">
+                        <h:outputText value="#{printDocXHTML.routeData}"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
+            <div class="center-position position-relative">
+                <h:outputText value="Route Time Table Detail" rendered="#{printDocXHTML.routeTimeTableData ne null and printDocXHTML.routeTimeTableData.size() > 0}" styleClass="font-bold report-header text-uppercase"/>
+            </div>
+            <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                <p:dataTable var="routeTimeDtls" value="#{printDocXHTML.routeTimeTableData}" rendered="#{printDocXHTML.routeTimeTableData ne null and printDocXHTML.routeTimeTableData.size() > 0}" styleClass="datatable-panel-100">
+                    <p:column headerText="Route Code" styleClass="center-position">
+                        <h:outputText value="#{routeTimeDtls.route_cd}" />
+                    </p:column>
+                    <p:column headerText="Stoppage" styleClass="center-position">
+                        <h:outputText value="#{routeTimeDtls.stoppage}" />
+                    </p:column>
+                    <p:column headerText="Journey Day" styleClass="center-position">
+                        <h:outputText value="#{routeTimeDtls.day}" />
+                    </p:column>
+                    <p:column headerText="Arrival Time   (HH:MM)">
+                        <h:outputText value="#{routeTimeDtls.route_fr_time}" />
+                    </p:column>                        
+                    <p:column headerText="Departure Time (HH:MM)" styleClass="center-position">
+                        <h:outputText value="#{routeTimeDtls.route_to_time}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                <br/>
+                                <h:outputText value="#{printDocXHTML.footerSignature},"/><br/>
+                                <h:outputText value="#{printDocXHTML.main_footer}"/>,<h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}"/> <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

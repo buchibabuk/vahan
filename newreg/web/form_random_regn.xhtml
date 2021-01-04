@@ -1,0 +1,45 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+
+        <div class="ui-grid-row center-position">
+            <div class="ui-grid-col-12">
+                <span class="header-main">Random Assignment of Registration Mark</span>
+            </div>
+        </div>
+
+        <p:panel id="panelRandAssign">
+            <p:messages id="errormsg"/>
+            <p:dataTable var="seriesList" value="#{random_regn_bean.seriesList}" id="seriesList" emptyMessage="No Records Found / Number Already Assigned for The Day. Please Wait for Next Working Day." rowIndexVar="rowIndex" >
+                <f:facet name="header" > List of Application Numbers </f:facet>
+                <p:column headerText="" style="background-color: threedhighlight">
+                    <p:outputLabel value="#{random_regn_bean.getSeriesDetails(seriesList.key)}"/>
+                    <p:dataTable value="#{random_regn_bean.getApplicationListSeriesWise(seriesList.key)}" var="list">
+                        <p:column headerText="Application No"> #{list.appl_no} </p:column>
+                        <p:column headerText="Regn No"> #{list.regn_no_alloted} </p:column>
+                        <p:column headerText="Status"> #{list.status eq "P" ? "Number Allottment Pending" :list.status eq "A"? "Number Allotted": list.status eq "M" ?"Number allotted and application moved successfully":list.status } </p:column>
+                        <p:column headerText="Remarks"> #{list.remark} </p:column>
+                    </p:dataTable>
+                </p:column>
+            </p:dataTable>
+
+            <center>
+                <p:commandButton value="Assign Number and Move File" action="#{random_regn_bean.assignNumber()}" 
+                                 rendered="#{random_regn_bean.optionGenNumber}"  update="panelRandAssign">
+                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                </p:commandButton>
+                <p:button value="Back" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+            </center>
+            <p:blockUI block="panelRandAssign" widgetVar="ajax_status">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </p:panel>
+
+    </ui:define>
+
+</ui:composition>

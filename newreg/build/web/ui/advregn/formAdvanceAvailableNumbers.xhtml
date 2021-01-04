@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Series details</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <i id="customheader" class="fa fa-fw fa-car" style="display:none"></i>
+        <p:dataTable id="availablenumbers"  value="#{advancefancy.availNumbers}" var="list" scrollHeight="500" scrollable="true">
+            <p:column headerText="Serial Number" >
+                <p:outputLabel value="#{list.serialNo}"/>
+            </p:column>
+            <p:column headerText="Registration Number" sortBy="#{list.regn_no}">
+                <p:outputLabel value="#{list.regn_no}"/>
+            </p:column>
+        </p:dataTable>
+    </h:body>
+
+</html>

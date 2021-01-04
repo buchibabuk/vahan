@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1><p:outputLabel value="#{pmtLease.header}" styleClass="header-main"/></h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages  showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                </div>
+            </div>
+            <p:outputPanel id="mainPanel" rendered="#{pmtLease.panelHideShow}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <p:selectOneRadio id="select_task" value="#{pmtLease.selectOneRadio}" >
+                            <f:selectItem itemLabel="Lease Aggrement Entry" itemValue="1"/>
+                            <!--                            <f:selectItem itemLabel="Lease Aggrement TerminationF" itemValue="2"/>-->
+                            <f:ajax event="click" render="mainPanel leaseSign"/>
+                        </p:selectOneRadio>
+                    </div>
+
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="lb_regnNo" value="Registration No\Permit No." rendered="#{pmtLease.selectOneRadio eq '1'}"/>
+                        </label>
+                        <p:inputText id="regno" required="true" styleClass="text-uppercase" disabled="#{pmtLease.regnNoDisable}"
+                                     value="#{pmtLease.countDobj.regn_no}" autocomplete="off"
+                                     maxlength="10" size="28" rendered="#{pmtLease.selectOneRadio eq '1'}">
+                            <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>                                                             
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Get Details" action="#{pmtLease.get_details()}" onclick="PF('bui').show();"
+                                         oncomplete="PF('bui').hide();" update=" mainPanel allDetails  pmtDtls leaseSign city"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <p:panel rendered="#{!pmtLease.panelHideShow}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{label.appl_no}"/>
+                        </label>
+                        <p:inputText id="appl_no" required="true" styleClass="text-uppercase" disabled="true" value="#{pmtLease.countDobj.appl_no}" />                                                             
+                    </div>
+                </div>
+            </p:panel>
+            <p:outputPanel id="allDetails">
+                <p:tabView  styleClass="top-space bottom-space" >
+                    <p:tab id="Owner_Details" title="Owner/Permit Detail">
+                        <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                            <ui:param name="Owner_permit_detail" value="#{pmtLease}"/>
+                        </ui:include>
+                    </p:tab>
+                    <p:tab id="Other_Veh_Info" title="Other Vehicle Detail">
+                        <ui:include src="/ui/permit/form_permit_check_Details.xhtml">
+                            <ui:param name="Other_Veh_Info" value="#{pmtLease}"/>
+                        </ui:include>
+                    </p:tab>
+                </p:tabView>
+            </p:outputPanel>
+            <p:panel id="pmtDtls"  header="Permit Details" styleClass="top-space bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmt_type" value="Permit Type" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:selectOneMenu id="pmt_type"  value="#{pmtLease.countDobj.pmt_type}" filter="true" disabled="#{pmtLease.disablePmtDtls}">
+                            <f:selectItem itemValue="-1" itemLabel="Select Any Permit"/>
+                            <f:selectItems value="#{pmtLease.pmtTypeList}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtDtlsPmtNo" value="Permit No." styleClass="field-label-mandate"/>
+                        </label>
+                        <p:inputText id="pmtDtlsPmtNo" styleClass="text-uppercase" 
+                                     value="#{pmtLease.countDobj.pmt_no}" maxlength="24" autocomplete="off" disabled="#{pmtLease.disablePmtDtls}" readonly="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtValidForm" value="Permit Valid From" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="pmtValidForm"  navigator="true"  pattern="dd-MMM-yyyy" value="#{pmtLease.countDobj.valid_from}" disabled="#{pmtLease.disablePmtDtls}" readonlyInput="true"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtValidUpto" value="Permit Valid UpTo" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="pmtValidUpto" navigator="true"  pattern="dd-MMM-yyyy" value="#{pmtLease.countDobj.valid_upto}"  disabled="#{pmtLease.disablePmtDtls}" readonlyInput="true"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:panel id="leaseSign"  header="Permit Lease Details" styleClass="top-space bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="ow_name" value="Owner Name" styleClass="field-label-mandate "/>
+                        </label>
+                        <p:inputText id="ow_name" value="#{pmtLease.countDobj.owner_name}" maxlength="30" autocomplete="off" styleClass="text-uppercase">
+                            <p:keyFilter regEx="/[a-zA-Z\s_ ]/i"/>  
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="f_name" value="Father Name" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:inputText id="f_name" value="#{pmtLease.countDobj.f_name}" maxlength="30" autocomplete="off" styleClass="text-uppercase">
+                            <p:keyFilter regEx="/[a-zA-Z\s_ ]/i"/>  
+
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="l_regn_no" value="Vehicle Number" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:inputText id="l_regn_no" value="#{pmtLease.countDobj.leaseRegnNo}" maxlength="10" autocomplete="off" styleClass="text-uppercase">
+                            <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>  
+
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="addsr" value="Address" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:inputText id="addsr" value="#{pmtLease.countDobj.address}" maxlength="50" autocomplete="off" styleClass="text-uppercase">
+                            <p:keyFilter regEx="/[a-zA-Z0-9\s_,]/i"/>  
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="city" value="City" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:inputText id="city" value="#{pmtLease.countDobj.city}" maxlength="20" autocomplete="off" styleClass="text-uppercase">
+                            <p:keyFilter regEx="/[a-zA-Z\s]/i"/>  
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pin" value="Pincode" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:inputText id="pin" value="#{pmtLease.countDobj.pincode}" maxlength="6" autocomplete="off" styleClass="text-uppercase"> 
+                            <p:keyFilter regEx="/[0-9\s_]/i"/>  
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="period_mode" value="#{pmtLabel.period_mode}" styleClass="field-label-mandate text-uppercase" />
+                        </label>
+                        <p:selectOneMenu id="period_mode"  value="#{pmtLease.countDobj.period_mode}" disabled="#{pmtLease.periodModeDisable}" filter="true">
+                            <f:selectItems value="#{pmtLease.periodModeList}"/>
+                            <p:ajax listener="#{pmtLease.check_Time_Period()}" partialSubmit="true" update="period"/>
+                        </p:selectOneMenu>
+                    </div>
+
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="period" value="#{pmtLabel.period}" />
+                        </label>
+                        <p:inputText id="period" value="#{pmtLease.countDobj.period}"  styleClass="text-uppercase" autocomplete="off"
+                                     maxlength="2" size="8">
+                            <p:keyFilter regEx="/[\d\-]/"/>
+                        </p:inputText>
+                    </div>
+                </div>
+            </p:panel>
+
+            <!--            <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:panel id="changedByPrevUser" rendered="#{conSign.prevChangedDataList.size()>0}"
+                                         toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                                    <p:dataTable value="#{conSign.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                        <p:column headerText="Changed by Employee" width="15%">
+                                            <h:outputText value="#{data.userName}" />
+                                        </p:column>
+            
+                                        <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                        </p:column>
+            
+                                        <p:column headerText="Changed on" width="15%">
+                                            <h:outputText value="#{data.op_dt}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel> 
+                            </div>
+                        </div>-->
+
+
+            <p:outputPanel id="bt_function" rendered="#{pmtLease.panelHideShow}" styleClass="top-space bottom-space center-position">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton value="Save" action="#{pmtLease.save_details()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" update="app_num_id" >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:button value="Reset" outcome="/ui/permit/formPermitOnLease.xhtml?faces-redirect=true"  onclick="PF('bui').show();" icon="ui-icon-arrowrefresh-1-w"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{!pmtLease.panelHideShow}" styleClass="top-space bottom-space">
+                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                    <ui:param name="app_disapp" value="#{pmtLease}"/>
+                </ui:include>
+            </p:outputPanel>
+
+            <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <h:outputLabel  escape="false"  value="#{pmtLease.app_no_msg}"/>
+                        <f:facet name="footer">
+                            <p:button value="Exit for Another Application" outcome="/ui/permit/formPermitOnLease.xhtml?faces-redirect=true" icon="ui-icon-arrowrefresh-1-w"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

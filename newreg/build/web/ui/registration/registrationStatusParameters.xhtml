@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"     
+      xmlns:p="http://primefaces.org/ui"> 
+
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-12 center-position">
+
+            <div class="font-bold report-header">    
+                Registration No: <span class="red font-bold">#{regStatusParam.regnNo}</span>
+            </div> 
+
+            <p:outputLabel rendered="#{!regStatusParam.contactStatus}" styleClass="inline-section right-space">
+                <h3 class="open-counter counter-button inline-section center-position" title="Contact Details: Available">
+                    <span class="glyphicon glyphicon-ok right-space"></span> #{language.contactDetails}
+                </h3>                        
+            </p:outputLabel>
+            <p:outputLabel rendered="#{regStatusParam.contactStatus}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position" title="Contact Details: Not Available">
+                    <span class="glyphicon glyphicon-remove right-space"></span>  #{language.contactDetails}
+                </h3>                        
+            </p:outputLabel>
+
+            <p:outputLabel rendered="#{regStatusParam.insuranceStatus}" styleClass="inline-section right-space">
+                <h3 class="open-counter counter-button inline-section center-position" title="Insurance: YES">
+                    <span class="glyphicon glyphicon-ok right-space"></span> #{language.insurance}
+                </h3>                        
+            </p:outputLabel>
+            <p:outputLabel rendered="#{!regStatusParam.insuranceStatus}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position" title="Insurance: Expired">
+                    <span class="glyphicon glyphicon-remove right-space"></span> #{language.insurance}
+                </h3>                        
+            </p:outputLabel>
+
+<!--            <p:outputLabel rendered="#{regStatusParam.puccStatus}" styleClass="inline-section right-space">
+                <h3 class="open-counter counter-button inline-section center-position" title="PUCC: YES">
+                    <span class="glyphicon glyphicon-ok right-space"></span> PUCC
+                </h3>                        
+            </p:outputLabel>
+            <p:outputLabel rendered="#{regStatusParam.puccStatus}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position" title="PUCC: NO">
+                    <span class="glyphicon glyphicon-remove right-space"></span>  PUCC
+                </h3>                        
+            </p:outputLabel>
+
+            <p:outputLabel rendered="#{regStatusParam.fitnessStatus}" styleClass="inline-section right-space">
+                <h3 class="open-counter counter-button inline-section center-position" title="Fitness: YES">
+                    <span class="glyphicon glyphicon-ok right-space"></span> Fitness
+                </h3>                        
+            </p:outputLabel>
+            <p:outputLabel rendered="#{regStatusParam.fitnessStatus}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position" title="Fitness: NO">
+                    <span class="glyphicon glyphicon-remove right-space"></span>  Fitness
+                </h3>                        
+            </p:outputLabel>
+
+            <p:outputLabel rendered="#{regStatusParam.taxStatus}" styleClass="inline-section right-space">
+                <h3 class="open-counter counter-button inline-section center-position" title="Tax: YES">
+                    <span class="glyphicon glyphicon-ok right-space"></span> Tax
+                </h3>                        
+            </p:outputLabel>
+            <p:outputLabel rendered="#{regStatusParam.taxStatus}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position" title="Tax: NO">
+                    <span class="glyphicon glyphicon-remove right-space"></span>  Tax
+                </h3>                        
+            </p:outputLabel>-->
+
+            <p:outputLabel rendered="#{regStatusParam.vtOwnerStatus}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position">
+                    <span class="glyphicon glyphicon-ok right-space"></span> #{regStatusParam.vtOwnerDescr}
+                </h3>                        
+            </p:outputLabel>
+
+            <p:outputLabel rendered="#{regStatusParam.permitSurrenderStatus ne null}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position" title="Permit Surrender: YES">
+                    <span class="glyphicon glyphicon-ok right-space"></span>  #{language.permitSurrenderReason} (#{regStatusParam.permitSurrenderStatus})
+                </h3>                        
+            </p:outputLabel>
+
+            <p:outputLabel rendered="#{regStatusParam.blackListStatus}" styleClass="inline-section right-space">
+                <h3 class="close-counter counter-button inline-section center-position">
+                    <span class="glyphicon glyphicon-ok right-space"></span> #{regStatusParam.blackListDescr}
+                </h3>                        
+            </p:outputLabel>
+        </div>
+    </div>
+
+</html>

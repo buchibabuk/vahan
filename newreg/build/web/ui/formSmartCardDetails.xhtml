@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <div class="ui-grid ui-grid-responsive">  
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12 center-position bottom-space">
+                <h2 class="header-main">#{smartcard_bean.dobj.pageHeader} </h2>
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:dataList value="#{smartcard_bean.dobj.scpendingList}" rendered="#{smartcard_bean.dobj.smartcarddatalist}" type="ordered" var="scdataList" styleClass="border-transparent">               
+                    #{scdataList.scpendingdtls}
+                </p:dataList>
+                <p:dataList value="#{smartcard_bean.dobj.vascList}" rendered="#{smartcard_bean.dobj.rcddatalist}" type="ordered" var="rcdataList" styleClass="border-transparent">               
+                    #{rcdataList.rcpendingdtls}
+                </p:dataList>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <div class="datatable-panel" style="margin: 0px auto;">
+                    <p:dataTable value="#{smartcard_bean.dobj.scList}" var="data" rendered="#{smartcard_bean.dobj.smartcarddatatable}">
+                        <f:facet name="header">  
+                            <div class="left-position">
+                                #{smartcard_bean.dobj.labelValue}
+                            </div>
+                        </f:facet>
+                        <p:column headerText="#{language.rcpt_no}">
+                            <h:outputText value="#{data.rcptno}" />
+                        </p:column>
+                        <p:column headerText="#{language.purpose}">
+                            <h:outputText value="#{data.purcd} " styleClass="right-space" />
+                        </p:column>
+                        <p:column headerText="#{language.rcCardChipNo}">
+                            <h:outputText value="#{data.rccardchipno} " styleClass="right-space" />
+                        </p:column>
+                        <p:column headerText="#{language.rcIssueDate}">
+                            <h:outputText value="#{data.rcissuedt} " styleClass="right-space" />
+                        </p:column>
+                        <p:column headerText="#{language.drto1Name}">
+                            <h:outputText value="#{data.drto1name} " styleClass="right-space" />
+                        </p:column>
+                        <p:column headerText="#{language.drto2Name}">
+                            <h:outputText value="#{data.drto2name} " styleClass="right-space" />
+                        </p:column>                
+                    </p:dataTable>
+                    <p:dataTable value="#{smartcard_bean.dobj.vhscList}" var="data" rendered="#{smartcard_bean.dobj.rcdatatable}">
+                        <f:facet name="header">  
+                            <div class="left-position">
+                                #{smartcard_bean.dobj.labelValue}
+                            </div>
+                        </f:facet>
+                        <p:column headerText="#{language.home_rightpanelApplno}">
+                            <h:outputText value="#{data.applno}" />
+                        </p:column>
+                        <p:column headerText="#{language.purpose}">
+                            <h:outputText value="#{data.purcd} " styleClass="right-space" />
+                        </p:column>
+                        <p:column headerText="#{language.printedOn}">
+                            <h:outputText value="#{data.printedon} " styleClass="right-space" />
+                        </p:column>
+                        <p:column headerText="#{language.printedBy}">
+                            <h:outputText value="#{data.printedby} " styleClass="right-space" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>

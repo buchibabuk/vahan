@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button id="back_to_print_form_from_temp_rc" value="Back" outcome="/ui/print/form_print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="rcList" value="#{tempRCBean.selectedRclist}" varStatus="status">
+                <div class="position-relative">
+                    <div class="position-relative">
+                        <p:outputPanel  rendered="#{rcList.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{rcList.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+                    </div>
+                    <table class="datatable-panel-100 position-relative">
+                        <tr>
+                            <td class="left-position" style="width: 70px;">
+                                <p:graphicImage library="images" name="#{rcList.image_logo}" style="width: 100px;" rendered="#{rcList.show_image_logo}" />
+                            </td>
+                            <td class="center-position">
+                                <p:outputPanel  rendered="#{rcList.notKAState eq false ? true : false}"> 
+                                    <div class="center-position">
+                                        <h:outputText value="#{rcList.reportHeading}" styleClass="font-bold report-header bottom-line text-uppercase" escape="false"/>
+                                    </div>
+                                    <div class="position-relative">
+                                        <div class="center-position">
+                                            <span class="font-bold report-subheader"> <h:outputText value="#{rcList.reportSubHeading}"/> </span>
+                                        </div>
+                                        <div class="center-position ">
+                                            <span class="font-bold report-subheader text-uppercase"> <h:outputText value="#{rcList.offName}"/> </span>
+                                            <span class="font-bold report-subheader text-uppercase"> <h:outputText value=",#{rcList.stateName}"/> </span>
+                                        </div>
+                                        <div class="center-position  bottom-space">
+                                            <h:outputText value="#{rcList.tempRCHeading}" styleClass="font-bold report-subheader"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                                <p:outputPanel  rendered="#{rcList.notKAState}"> 
+                                    <div class="center-position">
+                                        <h:outputText value="#{rcList.tempRCHeading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                    </div>
+                                    <div class="position-relative">
+                                        <div class="center-position">
+                                            <span class="font-bold report-subheader"> <h:outputText value="#{rcList.reportSubHeading}"/> </span>
+                                        </div>
+                                        <div class="center-position bottom-space">
+                                            <span class="font-bold report-subheader text-uppercase"> <h:outputText value="#{rcList.offName}"/> </span>
+                                            <span class="font-bold report-subheader text-uppercase"> <h:outputText value=",#{rcList.stateName}"/> </span>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                                <div class="center-position  bottom-space">
+                                    <h:outputText value="Temporary Certificate of Registration" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+                                <p:outputPanel  rendered="#{tempRCBean.labelFormCRTem}">
+                                    <div class="center-position  bottom-space">
+                                        <h:outputText value="Form C.R Tem[See Rule 94(3)]" styleClass="font-bold report-subheader text-uppercase"/>
+                                    </div>
+                                </p:outputPanel>
+                            </td>
+                            <td class="right-position" style="width: 70px;">
+                                <div class="inline-section qrcode-position-absolute">
+                                    <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                        <ui:param name="qrcodevalue" value="#{rcList.qrText}"/>   
+                                        <ui:param name="renderqrCode" value="true"/>   
+                                    </ui:include>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 bottom-space">
+                        <h:outputLabel value="Temporary Registration Mark " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.tempRegnNo}" styleClass="font-bold" />                        
+                        <h:outputLabel value="Application No " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.appl_no}" styleClass="font-bold" />
+                        <h:outputLabel value="Owner Name " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.ownerName}" />
+                        <h:outputLabel value="Son/wife/daughter of " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.fatherName}" />
+                        <h:outputLabel value="Address " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.ownerAddress}" />
+                    </h:panelGrid>
+                </div>
+                <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <span class="font-bold"> <h:outputText value="Description of Vehicle"/> </span>
+                </div>
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 bottom-space">
+                        <h:outputLabel value="Class of Vehicle " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.vchDesc}" />
+                        <h:outputLabel value="Maker's Name " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.makerName}" />
+                        <h:outputLabel value="Maker's Model Name " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.makerModelName}" />
+                        <h:outputLabel value="Type of Body " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.bodyType}" />
+                        <h:outputLabel value="Seating Capacity " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.seatingCap}" />
+                        <h:outputLabel value="Colour " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.color}" />
+                        <h:outputLabel value="Engine Number " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.engineNo}" />
+                        <h:outputLabel value="Chassis Number " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.chasiNo}" />
+                        <h:outputLabel value="Place where Vehicle shall be Permanently Registered" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{rcList.paddress}" />
+                        <h:outputLabel value="Reason " styleClass="right-space bottom-space" rendered="#{not empty rcList.bodybildaddress}"/>
+                        <h:outputText value="#{rcList.bodybildaddress}" rendered="#{not empty rcList.bodybildaddress}"/>
+                    </h:panelGrid>
+                </div>
+
+                <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <div class="bottom-space">
+                        <p:outputPanel id="notepanelid" rendered="#{rcList.fincierDtls eq null ? false : true}" >
+                            <span class="font-bold"> Note :</span>
+                            The Motor Vehicle above described is Hire-Purchase/Lease Agreement/Hypothecation in favor of
+                            <h:outputText value="#{rcList.fincierDtls}"  styleClass="font-bold" />
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <div class="bottom-space">
+                        Under the provisions of section 43 of the Motor Vehicles Act 1988,the vehicle described above has been
+                        Temporarily Registered on <h:outputText value="#{rcList.issueDate}"  styleClass="font-bold" /> and the Temporary Registration is valid from <h:outputText value="#{rcList.tempRegnFrom}"  styleClass="font-bold" /> to <h:outputText value="#{rcList.tempRegnUpto}"  styleClass="font-bold" />
+                    </div>
+                </div>
+                <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <div class="font-bold"> Fee Paid Details:</div>
+                    <h:outputText value="#{rcList.feeAmt}"/>
+                    <h:outputText value="#{rcList.fineAmt}"/>
+                    <h:outputText value="#{rcList.feeRectNo}"/>
+                    <h:outputText value="#{rcList.feeRcptDate}"/> 
+                </div>
+                <div class="datatable-panel bottom-space position-relative" style="margin: 0 auto;">
+                    <div class="font-bold"> Tax Paid Details:</div>
+                    <h:outputText value="#{rcList.taxAmt}"/> 
+                    <h:outputText value="#{rcList.rebateAmt}"/>
+                    <h:outputText value="#{rcList.surchargeAmt}"/>
+                    <h:outputText value="#{rcList.penaltyAmt}"/>
+                    <h:outputText value="#{rcList.interestAmt}"/>
+                    <h:outputText rendered="#{rcList.tax1Amt ne null}" value="#{taxFieldLabel.taxFieldDobj.tax1Label} #{rcList.tax1Amt}"/>
+                    <h:outputText rendered="#{rcList.tax2Amt ne null}" value="#{taxFieldLabel.taxFieldDobj.tax2Label} #{rcList.tax2Amt}"/>
+                    <h:outputText value="#{rcList.taxRcptNo}"/>
+                    <h:outputText value="#{rcList.taxFromdate}"/>
+                    <h:outputText value="#{rcList.taxUptoDate}"/>
+                </div>
+                <br/>
+                <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <div class="bottom-space">
+                        <p:outputPanel id="remarkpanelid" rendered="#{rcList.remarks eq null ? false : true}" >
+                            <span class="font-bold"> Remarks :</span>
+                            <h:outputText value="#{rcList.remarks}."/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <div class="datatable-panel bottom-space position-relative" style="margin: 0 auto;">
+
+                    <span class="font-bold">Printed on: </span> <h:outputText value="#{rcList.printedOn}"  styleClass="font-bold" /> 
+                </div>
+                <br/>
+                <p:outputPanel rendered="#{tempRCBean.labelFormCRTem}" styleClass="datatable-panel reduce-font position-relative" style="margin: 0px auto; font-size: 11px;">
+                    <ol>
+                        <li> This Temporary RC cannot be used to reserve a fancy number available in SMARTMOVE/Old VAHAN.</li>
+                        <li> Due to severe climatic conditions , the vehicle has to be brought for inspection before 11AM.</li>
+                    </ol>
+                </p:outputPanel>
+                <div class="center-position top-space bottom-space position-relative">
+                    <br/>
+                    <br/>
+                    <br/>
+                    <table class="datatable-panel">
+                        <tr>
+                            <td class="left-position">
+                                <div class="left-space">
+                                    <h:outputText value="Speciman Signature of the Owner " rendered="#{rcList.notKAState}"/>
+                                </div>
+                            </td>
+                            <td class="right-position">
+                                <p:outputPanel rendered="true">
+                                    <p class="bottom-space">
+                                        <p:graphicImage id="showUserSignTemp" value="#{tempRCBean.viewUserSign}" cache="false" style="height: 34px !important; width: auto;"/>
+                                    </p>
+                                </p:outputPanel>
+                                <h:outputText value="Signature of Registering Authority"/>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{rcList.showRoadSafetySlogan}">
+                    <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                        <div class="center-position" style="display: inline-block;">
+                            <br /><br /><br />
+                            <h:outputText value="#{rcList.roadSafetySloganDobj.english_lang}" /><br/>
+                            <h:outputText value="#{rcList.roadSafetySloganDobj.state_lang}" />
+
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

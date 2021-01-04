@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">       
+        <div class="ui-grid ui-grid-responsive">
+            <p:messages closable="true"  id="wb_errorMessages">
+                <p:autoUpdate/>
+            </p:messages>
+            <p:panel id="chassis_no_details" header="Chassis Number" rendered="#{!tempReg_bean.renew_temp_reg}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  value="#{label.chasi_no}"/>
+                        </label>
+                        <p:inputText id="chasi_no_new_entry" value="#{tempReg_bean.tempReg_dobj.chasi_no}"
+                                     size="35" style="text-transform: uppercase" converter="toUpperCaseConverter">
+                            <p:ajax listener="#{tempReg_bean.chasis_no_valueChangeListiner}" update="tabView_temp_reg:tmp_chasi_no" />
+                        </p:inputText>
+                    </div>
+                </div>
+            </p:panel>
+
+        </div>
+
+        <p:tabView id="tabView_temp_reg" styleClass="top-space bottom-space">
+
+            <p:tab id="temp_tab" title="Temporary Registration"> 
+                <p:outputPanel id="op_temp_reg">
+                    <ui:include src="/form_temp_registration.xhtml" />
+                </p:outputPanel>
+            </p:tab>
+
+            <p:tab id="temp_tab_veh_dtl" title="Vehicle Details"> 
+                <p:outputPanel id="op_temp_reg_veh_dtl">
+                    <ui:include src="/ui/form_vehicle_dtls_temp.xhtml" />
+                </p:outputPanel>
+            </p:tab>
+
+
+            <!--###################### Hypothecation and Insurance Details ############################### -->
+            <p:tab id="HypothecationOwner"  title="Hypothecation/Insurance Information">                     
+                <ui:include src="/form_hpa.xhtml"/> 
+                <ui:include src="/ui/form_ins_dtls.xhtml"/>
+            </p:tab>  
+            <!--########################################################################################## -->     
+
+            <!--###################### Commercial Trailer Details ######################################## -->
+            <!--            <p:tab id="CommercialTrailerDetails"  title="Commercial Trailer Details" >  
+                            <ui:include src="/ui/form_commercial_trailer_dtls.xhtml"/>
+                        </p:tab>-->
+            <!--########################################################################################## -->
+            <!--###################### Referal Documents ######################################## -->
+            <!--            <p:tab id="Referaldocs"  title="Referal docs" >  
+                            <ui:include src="/refdoc.xhtml"/>
+                        </p:tab>-->
+            <!--########################################################################################## -->
+
+        </p:tabView>
+
+
+
+        <!--<ui:include src="/ui/role/app_disapp.xhtml" />-->
+
+
+        <div class="ui-grid ui-grid-responsive">
+            <p:panel id="panelMoveCancel" styleClass="bottom-space top-space" >
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel >
+                            <p:commandButton value="Save" actionListener="#{tempReg_bean.save_ActionListener}"
+                                             onclick="PF('block_panel').show();" 
+                                             oncomplete="PF('block_panel').hide();" icon="ui-icon-disk" >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Back" action="home" onclick="PF('block_panel').show();"
+                                             immediate="true" icon="ui-icon-arrowreturnthick-1-w">
+                            </p:commandButton>
+                        </p:outputPanel>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:blockUI block="panelMoveCancel" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+            </p:confirmDialog> 
+        </div>
+
+        <!--</center>-->
+
+    </ui:define>
+
+</ui:composition>

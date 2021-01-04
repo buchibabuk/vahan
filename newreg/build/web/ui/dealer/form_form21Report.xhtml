@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+
+    <h:body onload="window.print();">
+        <h:form prependId="false" id="form21Id">
+            <div class="center-position bottom-space">
+                <p:button value="Back" outcome="/ui/dealer/form_printDealerReports.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show()"/>
+                <p:commandButton action="#{form21Bean.printReports('form20')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Form20" styleClass="display-none" rendered="#{form21Bean.printType != 'FORM20AfterApproval' and form21Bean.printType != 'FORM21AfterApproval'}" />
+                <p:commandButton action="#{form21Bean.printReports('inspCertificate')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Inspection-Certificate" styleClass="display-none" rendered="#{form21Bean.printType != 'FORM20AfterApproval' and form21Bean.printType != 'FORM21AfterApproval'}" />
+                <p:commandButton action="#{form21Bean.printReports('disclaimer')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Owner Disclaimer" styleClass="display-none" rendered="#{form21Bean.printType != 'FORM20AfterApproval' and form21Bean.printType != 'FORM21AfterApproval' and renderOwnerDisclBtn}">
+                    <f:param name="APPL_NO" value="#{form21Bean.applNo}"/>
+                    <f:param name="PUR_CD" value="#{form21Bean.purCd}"/>
+                    <f:param name="REGN_NO" value="#{form21Bean.regnNo}"/>
+                </p:commandButton>
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-header bottom-line text-uppercase"> <h:outputText value="FORM 21"/> </span>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> [ <h:outputText value="See Rule 47(a) and (d)"/> ]</span>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"><h:outputText value="Sale Certificate"/></span>
+            </div>
+
+            <div class="center-position">
+                <span class="font-bold">
+                    (To be issued by Manufacturer/Dealer or officer of Defence Department (In case of Military auctioned vehicle) <br />
+                    for presentation along with the application for registration of a motor vehicle) 
+                </span>
+            </div>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <h:outputText value="Certified that #{form21Bean.dobj.modelName} has been delivered by us to #{form21Bean.dobj.oName} on #{form21Bean.dobj.purchaseDate}." /> 
+            </div>
+
+            <div class="position-relative">
+                <div class="table-width-oneforth top-space datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                        <h:outputLabel value="Name of the buyer " styleClass="right-space" />
+                        <h:outputText value=": #{form21Bean.dobj.oName}"/>
+                        <h:outputLabel value="Son/wife/daughter of " styleClass="right-space" />
+                        <h:outputText value=": #{form21Bean.dobj.fName}"/>
+                        <h:outputLabel value="Address(Permanent)    " styleClass="right-space" />
+                        <h:outputText value=": #{form21Bean.dobj.address1}"/>
+                        <h:outputLabel value="Address(Temporary)  " styleClass="right-space" />
+                        <h:outputText value=": #{form21Bean.dobj.tempAddress1}"  />
+                    </h:panelGrid>
+                </div>
+                <div class="inline-section qrcode-position-absolute">
+                    <pe:qrCode 
+                        renderMethod="#{form21Bean.renderMethod}"
+                        renderMode="#{form21Bean.mode}"
+                        text="#{form21Bean.text}"
+                        label="#{form21Bean.label}"
+                        size="#{form21Bean.size}"
+                        fillColor="#000000"
+                        fontName="Ubuntu"
+                        fontColor="#01A9DB"
+                        ecLevel="H"       
+                        radius="0.5"/>
+                </div>
+            </div>
+            <div class="top-space datatable-panel" style="margin: 0 auto;">
+                <h:outputLabel value="The vehicle is held under agreement of Hire Purhcase/Lease/Hypothecation with: " />
+                <h:outputText value=" #{form21Bean.dobj.hypoDtls}"/>
+            </div>
+
+            <div class="top-space datatable-panel" style="margin: 0 auto;">
+                <span class="font-bold bottom-line">The details of the vehicle are given below: </span>
+            </div>
+
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="1. Class of vehicle" styleClass="right-space" />
+                    <h:outputText value=": #{form21Bean.dobj.vehClass}"  />                
+                    <h:outputLabel value="2. Maker's Name " styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.makersName}"  />
+                    <h:outputLabel value="3. Chassis No " styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.chasiNo}"  />
+                    <h:outputLabel value="4. Engine no/motor no &lt;br /&gt; in the case of Battery operated Vehicles " styleClass="right-space bottom-space" escape="false" />
+                    <h:outputText value=": #{form21Bean.dobj.engineNo}"  />
+                    <h:outputLabel value="5. Horse power(B.H.P.)/Cubic Capacity" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.horsePower}/#{form21Bean.dobj.cubCap}"  />
+                    <h:outputLabel value="6. Fuel used " styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.fuel}"  />
+                    <h:outputLabel value="7. No of Cylinders" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.noOfCyl}"  />
+                    <h:outputLabel value="8. Month and Year of Manufacture" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.mfgMonthYear}"  />
+                    <h:outputLabel value="9. Seating cap(inc driver)" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.seatCap}"  />
+                    <h:outputLabel value="10. Unladen weight (in kgs) " styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.unLdWt}"  />
+                </h:panelGrid>
+            </div>
+
+            <div class="table-width-two datatable-panel" style="margin: 0px auto;">
+                <h:outputText value="Axle Details:" styleClass="font-bold bottom-line left-space" rendered="#{form21Bean.dobj.vehType == 'Transport'}"/>
+                <h:outputText value="Maximum axle weight and number and description of types (In case of Transport vehicle)" styleClass="font-bold" rendered="#{form21Bean.dobj.vehType == 'Transport'}"/>
+            </div>
+
+
+            <div class="table-width-three left-spacedatatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="3" styleClass="datatable-panel-100" rendered="#{form21Bean.dobj.vehType == 'Transport'}">
+                    <h:outputLabel value=" " styleClass="right-space" />
+                    <h:outputLabel value="Description  " styleClass="right-space" />
+                    <h:outputLabel value="Weight(in kgs)  " styleClass="right-space" />
+
+                    <h:outputLabel value="a) Front : "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{form21Bean.dobj.fAxleDesc}"/>
+                    <h:outputText value="#{form21Bean.dobj.fAxleWeight}"/>
+
+                    <h:outputLabel value="b) Rear  : "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{form21Bean.dobj.rAxleDesc}"/>
+                    <h:outputText value="#{form21Bean.dobj.rAxleWeight}"/>
+
+                    <h:outputLabel value="c) Other : "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{form21Bean.dobj.oAxleDesc}"/>
+                    <h:outputText value="#{form21Bean.dobj.oAxleWeight}"/>
+
+                    <h:outputLabel value="d) Tandem : "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{form21Bean.dobj.tAxleDesc}"/>
+                    <h:outputText value="#{form21Bean.dobj.tAxleWeight}"/>
+                </h:panelGrid>
+            </div>
+
+            <div class="table-width-two top-space left-space datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="11. Colour or colours of the body" styleClass="right-space" />
+                    <h:outputText value=": #{form21Bean.dobj.color}"  />
+                    <h:outputLabel value="12. Gross vehicle weight (in kgs)" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.ldWt}"  />
+                    <h:outputLabel value="13. Type of body" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.bodyType}"  />
+                    <h:outputLabel value="14. AC Fitted" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.acFitted}"  />
+                    <h:outputLabel value="15. Dealer " styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.dealerName}"  />
+                    <h:outputLabel value="16. Model Manufactured Location " styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.modelManuLocCodeDescr}"  />
+                </h:panelGrid>
+            </div>
+
+            <div class="table-width-two top-space left-space datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100" rendered="#{form21Bean.dobj.fuelType == 'CngFuel'}">
+                    <h:outputLabel value="17. KIT Serial No" styleClass="right-space" />
+                    <h:outputText value=": #{form21Bean.dobj.kitSrNo}"  />
+                    <h:outputLabel value="18. KIT Type" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.kitType}"  />
+                    <h:outputLabel value="19. KIT Manufacturer Name" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.kitManuf}"  />
+                    <h:outputLabel value="20. Workshop" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.workShop}"  />
+                    <h:outputLabel value="21. Cyclinder Sr. No" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.cylSrNo}"  />
+                    <h:outputLabel value="22. Installation Date" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.fitmentDate}"  />
+                    <h:outputLabel value="23. Hydro Validity Upto" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.hydroTestDate}"  />
+                    <h:outputLabel value="24. Approval Letter No" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.approvalNo}"  />
+                    <h:outputLabel value="25. Approval Date" styleClass="right-space bottom-space" />
+                    <h:outputText value=": #{form21Bean.dobj.approvalDate}"  />
+                </h:panelGrid>
+            </div>
+
+            <div class="center-position bottom-space left-space">
+                <table class="datatable-panel">
+                    <tr>
+                        <td class="right-position">
+                            <div class="right-space">
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                Signature of Manufacturer/Dealer 
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <p:blockUI block="form21Id" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </h:body>
+</html>

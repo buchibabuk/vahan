@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui">
+    <p:dataTable value="#{eChallanDetail}" var="eChallan" rowIndexVar="index">
+        <p:column headerText="Sr.No" width="10%">#{index +1}.</p:column>
+        <p:column headerText="Challan No" width="15%">#{eChallan.challan_no}</p:column>
+        <p:column headerText="Offence" width="50%">#{eChallan.offence}</p:column>
+        <p:column headerText="Location" width="15%">#{eChallan.offence_place}</p:column>        
+        <p:column headerText="Challan Date" width="10%">#{eChallan.challan_date_descr}</p:column>
+    </p:dataTable>
+</html>

@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2-hudson-740-. --><xs:schema xmlns:tns="http://service.tax.vahan.nic/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://service.tax.vahan.nic/">
+
+<xs:element name="getTaxDetails" type="tns:getTaxDetails" />
+
+<xs:element name="getTaxDetailsResponse" type="tns:getTaxDetailsResponse" />
+
+<xs:element name="taxParams" type="tns:vahanTaxParameters" />
+
+<xs:element name="trailers" type="tns:trailer" />
+
+<xs:complexType name="getTaxDetails">
+<xs:sequence>
+<xs:element name="taxParams" type="tns:vahanTaxParameters" minOccurs="0" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="vahanTaxParameters">
+<xs:complexContent>
+<xs:extension base="tns:vahanTaxParametersServer">
+<xs:sequence>
+<xs:element name="AC_FITTED" type="xs:string" minOccurs="0" />
+<xs:element name="AUDIO_FITTED" type="xs:string" minOccurs="0" />
+<xs:element name="CC" type="xs:float" minOccurs="0" />
+<xs:element name="DISTANCE_RUN_IN_QTR" type="xs:int" minOccurs="0" />
+<xs:element name="DOMAIN_CD" type="xs:int" minOccurs="0" />
+<xs:element name="FLOOR_AREA" type="xs:float" minOccurs="0" />
+<xs:element name="FUEL" type="xs:int" minOccurs="0" />
+<xs:element name="GCW" type="xs:int" minOccurs="0" />
+<xs:element name="HP" type="xs:float" minOccurs="0" />
+<xs:element name="IDV" type="xs:int" minOccurs="0" />
+<xs:element name="LD_WT" type="xs:int" minOccurs="0" />
+<xs:element name="NEW_VCH" type="xs:string" minOccurs="0" />
+<xs:element name="NO_OF_REGIONS" type="xs:int" minOccurs="0" />
+<xs:element name="NO_OF_ROUTES" type="xs:int" minOccurs="0" />
+<xs:element name="NO_OF_TRIPS_PER_DAY" type="xs:int" minOccurs="0" />
+<xs:element name="NO_OF_TYRES" type="xs:int" minOccurs="0" />
+<xs:element name="OFF_CD" type="xs:int" minOccurs="0" />
+<xs:element name="OTHER_CRITERIA" type="xs:int" minOccurs="0" />
+<xs:element name="OWNER_CD" type="xs:int" minOccurs="0" />
+<xs:element name="OWNER_CD_DEPT" type="xs:int" minOccurs="0" />
+<xs:element name="PAYMENT_DATE" type="xs:string" minOccurs="0" />
+<xs:element name="PERMIT_SUB_CATG" type="xs:int" minOccurs="0" />
+<xs:element name="PERMIT_TYPE" type="xs:int" minOccurs="0" />
+<xs:element name="PM_SALE_AMT" type="xs:int" minOccurs="0" />
+<xs:element name="PUR_CD" type="xs:int" minOccurs="0" />
+<xs:element name="REGN_DATE" type="xs:string" minOccurs="0" />
+<xs:element name="REGN_TYPE" type="xs:string" minOccurs="0" />
+<xs:element name="ROUTE_CLASS" type="xs:int" minOccurs="0" />
+<xs:element name="ROUTE_LENGTH" type="xs:double" minOccurs="0" />
+<xs:element name="SALE_AMT" type="xs:int" minOccurs="0" />
+<xs:element name="SEAT_CAP" type="xs:int" minOccurs="0" />
+<xs:element name="SERVICE_TYPE" type="xs:int" minOccurs="0" />
+<xs:element name="SLEEPAR_CAP" type="xs:int" minOccurs="0" />
+<xs:element name="STAND_CAP" type="xs:int" minOccurs="0" />
+<xs:element name="STATE_CD" type="xs:string" minOccurs="0" />
+<xs:element name="TAX_DUE_FROM_DATE" type="xs:string" minOccurs="0" />
+<xs:element name="TAX_MODE" type="xs:string" minOccurs="0" />
+<xs:element name="TAX_MODE_NO_ADV" type="xs:int" minOccurs="0" />
+<xs:element name="TRAILERS" type="tns:trailer" nillable="true" minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="TRANSACTION_PUR_CD" type="xs:int" minOccurs="0" />
+<xs:element name="UNLD_WT" type="xs:int" minOccurs="0" />
+<xs:element name="VCH_CATG" type="xs:string" minOccurs="0" />
+<xs:element name="VCH_IMPORTED" type="xs:string" minOccurs="0" />
+<xs:element name="VCH_TYPE" type="xs:int" minOccurs="0" />
+<xs:element name="VEH_PURCHASE_AS" type="xs:string" minOccurs="0" />
+<xs:element name="VH_CLASS" type="xs:int" minOccurs="0" />
+<xs:element name="VIDEO_FITTED" type="xs:string" minOccurs="0" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="vahanTaxParametersServer">
+<xs:sequence>
+<xs:element name="arrTaxDuePeriods" type="xs:anyType" nillable="true" minOccurs="0" maxOccurs="unbounded" />
+<xs:element name="CALENDAR_MONTH" type="xs:boolean" />
+<xs:element name="COMPLETE_QTR" type="xs:boolean" />
+<xs:element name="DELAY_DAYS" type="xs:int" minOccurs="0" />
+<xs:element name="DELAY_MONTHS" type="xs:int" minOccurs="0" />
+<xs:element name="FINANCIAL_QTR" type="xs:boolean" />
+<xs:element name="FINANCIAL_YEAR" type="xs:boolean" />
+<xs:element name="FIN_VCH_AGE" type="xs:int" minOccurs="0" />
+<xs:element name="HOLIDAYS" type="xs:int" minOccurs="0" />
+<xs:element name="INTEREST" type="xs:double" minOccurs="0" />
+<xs:element name="mapTagFields">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="key" minOccurs="0" type="xs:anyType" />
+<xs:element name="value" minOccurs="0" type="xs:anyType" />
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="NET_TAX_AMT" type="xs:double" minOccurs="0" />
+<xs:element name="PENALTY" type="xs:double" minOccurs="0" />
+<xs:element name="PENALTY_FROM_FIRST_TAX_DUE_DATE" type="xs:boolean" />
+<xs:element name="REBATE" type="xs:double" minOccurs="0" />
+<xs:element name="SURCHARGE" type="xs:double" minOccurs="0" />
+<xs:element name="TAX_AMT" type="xs:double" minOccurs="0" />
+<xs:element name="TAX_AMT_ROUND_TO" type="xs:double" minOccurs="0" />
+<xs:element name="TAX_MONTH_DURATION" type="xs:int" minOccurs="0" />
+<xs:element name="TAX_PERIOD_SR_NO" type="xs:int" minOccurs="0" />
+<xs:element name="VCH_AGE" type="xs:int" minOccurs="0" />
+<xs:element name="VCH_AGE_MONTHS" type="xs:int" minOccurs="0" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="trailer">
+<xs:sequence>
+<xs:element name="TRAILER_RLW" type="xs:int" minOccurs="0" />
+<xs:element name="TRAILER_ULW" type="xs:int" minOccurs="0" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getTaxDetailsResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0" />
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

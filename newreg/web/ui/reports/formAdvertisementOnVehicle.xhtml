@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content">
+        <f:subview id="frmAdv_print">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Advertisement On Vehicle Print Form </h1>
+                </div>
+            </div>
+            <p:panel id="advregnprint" header="Advertisement On Vehicle" styleClass="top-space bottom-space">
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="adv_regn_no" value="Enter Registration No" />
+                        </label>
+                        <p:inputText id="adv_regn_no" value="#{advOnVehicleBean.regn_no}" maxlength="10" autocomplete="off" styleClass="text-uppercase" >
+                        </p:inputText>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Print Advertisement" action="#{advOnVehicleBean.confirmprintCertificate()}"  update="printAdvConfirmationPopup" />  
+                        <p:commandButton  value="Back" action="home" immediate="true"/> 
+                    </div>
+                </div>
+                <p:dialog id="printAdvConfirmationPopup"  
+                          widgetVar="printAdvCertificate"
+                          modal="true" draggable="false" closable="false" hideEffect="explode"
+                          header="Printed Confirmation Panel" styleClass="center-position">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Do you want to continue"/>
+                            </label>
+                            <p:commandButton  value="Confirm Print" oncomplete="PF('advregnprint').hide();" onclick="PF('advregnprint').show();
+                                    PF('printAdvCertificate').hide();" action="#{advOnVehicleBean.printCertificateADV()}" icon="ui-icon-check" 
+                                              update="@form"/>
+                            <p:commandButton value="Cancel" onsuccess="PF('printAdvCertificate').hide();" icon="ui-icon-close"/>
+                        </div>
+                    </div>                            
+                </p:dialog>
+                <p:blockUI block="advregnprint" widgetVar="advregnprint">  
+
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+
+                </p:blockUI> 
+            </p:panel>
+
+        </f:subview>
+
+    </ui:define>
+
+
+</ui:composition>

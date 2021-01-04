@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <f:subview id="subviewPermitLoiAdditionalDtls">
+        <ui:composition>
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel>
+                    <p:panel styleClass="bottom-space" rendered="#{loiAddDlts.dobj ne null}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <p:graphicImage value="#{loiAddDlts.viewSignFile}"  height="100" />
+                            </div>
+                            <div class="ui-grid-col-8">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="Adhar card No" />
+                                        </label>
+                                        <p:inputText value="#{loiAddDlts.dobj.adharCardNo}" style="font-weight: bold" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="Driving Licence" />
+                                        </label>
+                                        <p:inputText value="#{loiAddDlts.dobj.dlNo}" style="font-weight: bold" disabled="true"/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="Batch No." />
+                                        </label>
+                                        <p:inputText value="#{loiAddDlts.dobj.batchNo}" style="font-weight: bold" disabled="true"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+            </div>
+        </ui:composition>
+    </f:subview>
+</html>

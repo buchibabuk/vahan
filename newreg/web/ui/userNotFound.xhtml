@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/ui/session/errorPageLayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form  prependId="false">
+            <div class="message-content-panel left-position"> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <div class="header-section error-message-header red top-space text-uppercase">                   
+                            "Warning Message"!!!
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h:outputText value="User Does not exist." styleClass="font-bold red" style="font-size: 16px"/>
+                        <br/>
+                        <h:outputText value="Please Try Again" styleClass="font-bold" style="font-size: 16px"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row left-space center-position">
+                    <div class="ui-grid-col-12">
+                        <h3>Please <span class="font-bold underline-text"> <h:link value="Re-Login"  outcome="/ui/login/login.xhtml?faces-redirect=true" /> </span> to Continue or Contact to the Office Administrator.</h3>
+                    </div>
+                </div>
+            </div>
+        </h:form>    
+    </ui:define>
+</ui:composition>

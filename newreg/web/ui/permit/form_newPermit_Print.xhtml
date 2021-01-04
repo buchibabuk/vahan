@@ -1,0 +1,242 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22" >
+        <h:form id="permitPrint" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">#{language.permit_print}</h1>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="top-space bottom-space">
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-8">
+                            <p:selectOneRadio id="select_task" value="#{newPmt.printPermit}">
+                                <f:selectItem itemLabel="#{language.print_by_regno}" itemValue="2"/>
+                                <f:selectItem itemLabel="#{language.print_by_pur_pmt_type}" itemValue="3"/>
+                                <f:selectItem itemLabel="#{language.reprint_permit}" itemValue="1"/>
+                                <f:ajax event="click"  listener="#{newPmt.onClickPrint()}" render="inputRegn  PermitPrintPanal printPermitField RePrintPermit"/>
+                            </p:selectOneRadio>
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+                <p:outputPanel id="PermitPrintPanal">
+                    <p:outputPanel id="printPermit" >
+                        <p:panel id="printPermitField" rendered="#{newPmt.hidecombopanel}">
+                            <p:outputPanel styleClass="top-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-10 resp-blank-height"></div>
+                                    <div class="ui-grid-col-2 right-space">
+                                        <p:selectBooleanCheckbox value="#{newPmt.surrenderSlip}">
+                                            <f:ajax render="PermitPrintPanal"/>
+                                        </p:selectBooleanCheckbox>
+                                        <span>Surrender Slip</span>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Select Any purpose : "/>
+                                    </label>
+                                    <p:selectOneMenu id="printPurposeType" value="#{newPmt.selPurposeType}" effect="fold" disabled="#{newPmt.surrenderSlip}">
+                                        <f:selectItem itemLabel="Select" itemValue="0"/>
+                                        <f:selectItems value="#{newPmt.arrayPurposeType}"/>
+                                        <p:ajax update="printPermitField" listener="#{newPmt.selectPurposeType()}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Select Any Permit Type : " />
+                                    </label>
+                                    <p:selectOneMenu id="print_pmt_type" value="#{newPmt.sel_pmt_type}" effect="fold" disabled="#{newPmt.boolPermitType or newPmt.surrenderSlip}">
+                                        <f:selectItem itemLabel="Select" itemValue="0"/>
+                                        <f:selectItems value="#{newPmt.array_pmt_typ}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Select Document Type : " />
+                                    </label>
+                                    <p:selectOneMenu id="permitDocument" value="#{newPmt.selDocmentType}" effect="fold" disabled="#{newPmt.boolDocumentType or newPmt.surrenderSlip}">
+                                        <f:selectItems value="#{newPmt.arrayDocmentType}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:commandButton value="Get Details" update="permitDetails" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"  action="#{newPmt.bt_GetDetails()}" />
+                                </div>
+                            </div> 
+                        </p:panel> 
+
+                        <p:panel id="inputRegn" rendered="#{newPmt.showRegnNo}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  value="#{language.regn_no}:" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:inputText id="regn_no" value="#{newPmt.regnNo}" autocomplete="off" maxlength="10" styleClass="text-uppercase"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:commandButton value="Get Details" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="permitDetails" action="#{newPmt.bt_GetDetails()}" />
+                                </div>
+                            </div> 
+                        </p:panel>
+
+                        <p:dataTable id="permitDetails" rendered="#{newPmt.showRegnNo=='true' or (newPmt.hidecombopanel=='true')}" value="#{newPmt.allPrintWork}" filteredValue="#{newPmt.filteredAllPrintWork}" paginatorAlwaysVisible="false" var="virtual" rows="10"
+                                     paginator="true" widgetVar="seatWorkList" styleClass="top-space bottom-space" rowIndexVar="index"
+                                     emptyMessage="YOU HAVE NO PENDING PRINT ON THIS PERMIT TYPE." >
+                            <p:column headerText="#{language.sn}"  styleClass="collumn-width center-position">#{index +1}</p:column>
+                            <p:column headerText="#{language.home_rightpanelApplno}" filterBy="#{virtual.appl_no}" filterMatchMode="contains">#{virtual.appl_no}</p:column>
+                            <!--                            <p:column headerText="# {language.appl_date}" filterBy="# {virtual.appl_dt}" filterMatchMode="contains"># {virtual.appl_dt}</p:column>-->
+                            <p:column headerText="#{language.vehNo}" filterBy="#{virtual.regn_no}" filterMatchMode="contains">#{virtual.regn_no}</p:column>
+                            <p:column headerText="#{language.pmt_no_offer_no}" filterBy="#{virtual.pmt_no}" filterMatchMode="contains">#{virtual.pmt_no}</p:column>
+                            <p:column headerText="#{language.purpose}" rendered="#{newPmt.renderColumn}">#{virtual.pur_cd_descr}</p:column>
+                            <p:column headerText="#{language.pmtType}" rendered="#{newPmt.renderColumn}">#{virtual.pmt_type_descr}</p:column>
+                            <p:column headerText="#{language.document}" rendered="#{newPmt.renderColumn}">#{virtual.doc_id_descr}</p:column>
+                            <!--                            <p:column headerText="# {language.last_public_remark}"># {virtual.public_remark}</p:column>
+                                                        <p:column headerText="# {language.last_off_remark}"># {virtual.office_remark}</p:column>-->
+                            <p:column headerText="#{language.print}">
+                                <p:commandButton value="PRINT" action="#{newPmt.singlePrint()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" > 
+                                    <f:setPropertyActionListener target="#{newPmt.pmtDetails}" value="#{virtual}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:outputPanel>
+
+                    <p:outputPanel id="RePrintPermit" rendered="#{newPmt.rePrintPermit}">
+                        <p:panel id="pendingInputs">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-5 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:selectOneRadio  value="#{newPmt.searchByValue}" >
+                                        <f:selectItem itemLabel="Application No" itemValue="applNo" />
+                                        <f:selectItem itemLabel="Registration No" itemValue="regnNo" />
+                                        <f:selectItem itemLabel="LOI Application No" itemValue="loiNo" />
+                                        <f:ajax event="click" render="pendingInputs RePrintPermitDetails" listener="#{newPmt.onChangeReprint()}"/>
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-8">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel   value="Application No:" rendered="#{newPmt.searchByValue eq 'applNo'}"/>
+                                        <p:outputLabel   value="Part 1 (First Six Chars)" rendered="#{newPmt.searchByValue eq 'applNo'}" styleClass="inline-section" style="width: 49% !important; color: #FF0000 !important;" />
+                                        <p:outputLabel   value="Part 2 (Next Ten Chars)" rendered="#{newPmt.searchByValue eq 'applNo'}" styleClass="inline-section" style="width: 50% !important; color: #FF0000 !important;" />
+                                    </label>
+
+                                    <p:inputText id="firstPartAppNo" styleClass="text-uppercase" maxlength="6" required="true" 
+                                                 requiredMessage="Please Enter Application No" 
+                                                 converter="toUpperCaseConverter"  title="Application Number Part 1 (First Six Chars)"
+                                                 autocomplete="off" value="#{newPmt.firstPartApplNo}" 
+                                                 style="width: 42% !important; margin-right: 4.5%;" 
+                                                 rendered="#{newPmt.searchByValue == 'applNo'}">
+                                        <f:validateLength minimum="6" maximum="6"/>  
+                                    </p:inputText>  
+                                    <p:inputText  id="secondPartAppNo" value="#{newPmt.secondPartApplNo}" maxlength="10"
+                                                  converter="toUpperCaseConverter"  title="Application Number Part 2 (Next Ten Chars)"
+                                                  autocomplete="off" styleClass="text-uppercase"
+                                                  style="width: 42% !important;" rendered="#{newPmt.searchByValue eq 'applNo'}">
+                                    </p:inputText> 
+                                    <div class="ui-grid-row top-space">
+                                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="Registration No:" rendered="#{newPmt.searchByValue == 'regnNo'}"/>  
+                                            </label>
+                                            <p:inputText id="regNo"  maxlength="10" styleClass="text-uppercase"                                          
+                                                         converter="toUpperCaseConverter" 
+                                                         autocomplete="off" value="#{newPmt.regnNo}" rendered="#{newPmt.searchByValue == 'regnNo'}" validatorMessage="Invalid Registration no.Minimum Character is 4 and Maximum Character is 10">                               
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row top-space">
+                                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="Loi Appl No:" rendered="#{newPmt.searchByValue == 'loiNo'}"/>    
+                                            </label>
+                                            <p:inputText id="loiNo"  maxlength="30" styleClass="text-uppercase"                                          
+                                                         converter="toUpperCaseConverter" 
+                                                         autocomplete="off" value="#{newPmt.loiNo}" rendered="#{newPmt.searchByValue == 'loiNo'}" validatorMessage="Invalid Loi no.Minimum Character 25">                               
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Get Details" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"  update="RePrintPermitDetails" action="#{newPmt.btGetDetailsForRePrint()}" />
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:dataTable id="RePrintPermitDetails"  value="#{newPmt.allPrintWork}" filteredValue="#{newPmt.filteredAllPrintWork}" paginatorAlwaysVisible="false" var="virtual" rows="10"
+                                     paginator="true" widgetVar="seatWorkList" styleClass="top-space bottom-space"
+                                     emptyMessage="YOU HAVE NO PENDING PRINT ON THIS PERMIT TYPE." >
+                            <p:column headerText="#{language.sn}"  styleClass="collumn-width center-position">#{virtual.sr}</p:column>
+                            <p:column headerText="#{language.home_rightpanelApplno}" filterBy="#{virtual.appl_no}" filterMatchMode="contains">#{virtual.appl_no}</p:column>
+                            <p:column headerText="#{language.vehNo}" filterBy="#{virtual.regn_no}" filterMatchMode="contains">#{virtual.regn_no}</p:column>
+                            <p:column headerText="#{language.purpose}">
+                                <p:selectOneMenu value="#{virtual.pur_cd}" disabled="true">
+                                    <f:selectItems value="#{newPmt.arrayPurposeType}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column headerText="Document Id">
+                                <p:selectOneMenu value="#{virtual.doc_id}" disabled="true">
+                                    <f:selectItems value="#{newPmt.arrayDocmentType}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column headerText="Operation Date">#{virtual.op_dt}</p:column>
+                            <p:column headerText="RE-PRINT">
+                                <p:commandButton value="RE-PRINT" action="#{newPmt.singlePrint()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" > 
+                                    <f:setPropertyActionListener target="#{newPmt.pmtDetails}" value="#{virtual}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:blockUI block="permitDetails" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printPermitReport" modal="true" draggable="false" 
+                           closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Do you want to continue"/>
+                            </label>
+                            <p:commandButton  value="Confirm Print" onclick="PF('printPermitReport').hide();"                                  
+                                              action="#{newPmt.printPermitReportInXhtml()}" oncomplete="PF('bui').hide();"
+                                              icon="ui-icon-check" ajax="false" /> 
+                            <p:commandButton value="Cancel" onsuccess="PF('printPermitReport').hide();" icon="ui-icon-close" />
+                        </div>
+                    </div>
+                </p:dialog>
+            </div>
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

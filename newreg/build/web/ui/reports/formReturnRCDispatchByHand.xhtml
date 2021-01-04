@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content22">
+        <h:form id="returnRCDispatchByHandForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Return RC Dispatch By Hand</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row" styleClass="top-space bottom-space">
+                    <div class="ui-grid-col-6">
+                        <p:panel header="Handed Over Entry" id="radioRCDispHandedOverpanel" styleClass="top-space bottom-space datatable-panel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6 center-position">
+                                    <p:selectOneRadio id="enrtyrbtnHandedOver" value="#{rcReturnDispatchByHandBean.radioBtnValue}" layout="grid" columns="2" styleClass="width:100%;">                               
+                                        <f:selectItem itemLabel="By Appl No" itemValue="A" />
+                                        <f:selectItem itemLabel="By Regn No" itemValue="R" />                                       
+                                        <p:ajax event="change" listener="#{rcReturnDispatchByHandBean.rcRadioBtnListener()}" update="srchlabelHandedOver tf_srchlabelHandedOver returnRCDispatchByHandForm"/> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel id="srchlabelHandedOver" value="#{rcReturnDispatchByHandBean.searchLabel}" styleClass="field-label-mandate" />
+                                    </label>
+                                    <p:inputText  id="tf_srchlabelHandedOver"  value="#{rcReturnDispatchByHandBean.enteredNo}" maxlength="#{rcReturnDispatchByHandBean.maxlenght}" autocomplete="off" size="30" styleClass="text-uppercase">
+                                        <p:ajax event="blur" listener="#{rcReturnDispatchByHandBean.getDetails()}" update="returnRCDispatchByHandForm"/>
+                                        <p:keyFilter regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter> 
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Remark:" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:inputTextarea id="rmk_fld" value="#{rcReturnDispatchByHandBean.remark}" autoResize="false" maxlength="50" counter="display" counterTemplate="{0} characters remaining." styleClass="text-uppercase" >
+                                        <f:validateLength maximum="50" for="rmk_fld"/>
+                                    </p:inputTextarea>  
+                                    <p:outputLabel id="display"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">
+                                    <p:commandButton value="Save" action="#{rcReturnDispatchByHandBean.saveReturnEntry()}" rendered="#{rcReturnDispatchByHandBean.dobj.listFileExport.size()>0}" update="returnRCDispatchByHandForm">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":returnRCDispatchByHandForm" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div> 
+                        </p:panel> 
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <p:panel id="retpanalHandedOver" header="Handed Over Report" styleClass="top-space bottom-space datatable-panel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:selectOneRadio id="printrbtnHandedOver" value="#{rcReturnDispatchByHandBean.rptRadioBtnValue}" layout="grid" columns="3" styleClass="width:100%;">                               
+                                        <f:selectItem itemLabel="By Appl No" itemValue="APPLNO" />
+                                        <f:selectItem itemLabel="By Regn No" itemValue="REGNNO" />
+                                        <f:selectItem itemLabel="By Handed Over Date" itemValue="HANDEDOVERDT" /> 
+                                        <p:ajax event="change" partialSubmit="true" listener="#{rcReturnDispatchByHandBean.rcHandedOverRadioBtnListener()}" 
+                                                update="retpanalHandedOver"/> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:outputPanel id="rptSrchLblHandedOver" rendered="#{rcReturnDispatchByHandBean.applOrRegnWiseReport}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="rptSrchlabelHandedOver" value="#{rcReturnDispatchByHandBean.rptSearchLabel}" styleClass="field-label-mandate" />
+                                        </label>
+                                        <p:inputText  id="tf_rptSrchlabelHandedOver"  value="#{rcReturnDispatchByHandBean.rptEnteredNo}" maxlength="#{rcReturnDispatchByHandBean.rptMaxlenght}"  size="30" styleClass="text-uppercase">
+                                            <p:keyFilter regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter> 
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:outputPanel id="rptfrDateLblHandedOver" rendered="#{rcReturnDispatchByHandBean.retDtWiseReport}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="frdtcal" value="From Date"/>
+                                        </label>
+                                        <p:calendar id="frdtcal" value="#{rcReturnDispatchByHandBean.frdt_cal}"  
+                                                    pattern="dd-MMM-yyyy" navigator="true" maxdate="#{rcReturnDispatchByHandBean.today}" readonlyInput="true">
+                                            <p:ajax event="dateSelect" partialSubmit="true" process="frdtcal" listener="#{rcReturnDispatchByHandBean.onDateSelect}" />
+                                        </p:calendar>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:outputPanel id="rpttoDateLblHandedOver" rendered="#{rcReturnDispatchByHandBean.retDtWiseReport}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="todtcal" value="Upto Date"/>
+                                        </label>
+                                        <p:calendar id="todtcal" value="#{rcReturnDispatchByHandBean.todt_cal}" 
+                                                    pattern="dd-MMM-yyyy" navigator="true" maxdate="#{rcReturnDispatchByHandBean.today}" readonlyInput="true">
+                                            <p:ajax event="dateSelect" partialSubmit="true" process="todtcal" listener="#{rcReturnDispatchByHandBean.onDateSelect}" />                                        
+                                        </p:calendar>
+                                    </p:outputPanel>
+                                </div>
+                            </div>  
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">
+                                    <p:commandButton id="btnPrintHandedOver" value="Print" action="#{rcReturnDispatchByHandBean.printRCDispatchHandedOverEntry()}" >
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":retpanalHandedOver" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div> 
+                        </p:panel>
+                    </div>
+                </div>
+                <p:dataTable id="tb_detailsHandedOver" value="#{rcReturnDispatchByHandBean.dobj.listFileExport}" rendered="#{rcReturnDispatchByHandBean.dobj.listFileExport.size()>0}" var="dwlList" rows="10" rowIndexVar="index" 
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">  
+                    <f:facet name="header">
+                        <div class="left-position"> 
+                            <h:outputText value="Vehicle Details" />  
+                        </div>
+                    </f:facet>
+                    <p:column styleClass="collumn-width center-position">
+                        <f:facet name="header">
+                            <h:outputText value="SR.No." styleClass="font-bold" />
+                        </f:facet>                            
+                        <h:outputText value="#{index +1}"/>
+                    </p:column>
+                    <p:column style="width: 80px;">
+                        <f:facet name="header">
+                            <h:outputText value="Owner Name" styleClass="font-bold" />
+                        </f:facet>
+                        <h:outputText value="#{dwlList.ownerName}" />
+                    </p:column>
+                    <p:column style="width: 200px;">
+                        <f:facet name="header">
+                            <h:outputText value="Current Address" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.currentAddress}" />
+                    </p:column>                    
+                    <p:column style="width: 50px;">
+                        <f:facet name="header">
+                            <h:outputText value="Mobile No" styleClass="font-bold" />
+                        </f:facet>
+                        <h:outputText value="#{dwlList.mobile_no}" />
+                    </p:column>
+                    <p:column style="width: 80px;">
+                        <f:facet name="header">
+                            <h:outputText value="Barcode" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatch_ref_no}" />
+                    </p:column>
+                    <p:column style="width: 70px;">
+                        <f:facet name="header">
+                            <h:outputText value="Dispatch on" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatchdate}" />
+                    </p:column>
+                    <p:column style="width: 90px;">
+                        <f:facet name="header">
+                            <h:outputText value="Dispatch By" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatch_by}" />
+                    </p:column>
+                    <p:column style="width: 70px;">
+                        <f:facet name="header">
+                            <h:outputText value="RC Return on" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatch_rc_return_on}" />
+                    </p:column>
+                    <p:column style="width: 90px;">
+                        <f:facet name="header">
+                            <h:outputText value="RC Return By" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatch_rc_return_by}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

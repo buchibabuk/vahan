@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="sm-style.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:button id="back_to_print_form_from_smartcard_rc" value="Back" outcome="/ui/print/form_print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                    <p:button onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>
+            </div>
+            <ui:repeat var="rcList" value="#{smartcardReg.selectedRclist}" varStatus="status">
+                <p:outputPanel id="smartcard-rc" style="#{rcList.showhideborder};">
+                    <p:outputPanel styleClass="#{rcList.smartcardFrontPanel} inline-section" >
+                        <div class="front-panel-header">
+                            <div class="front-panel-header-section inline-section">
+                                <h2><h:outputText value="#{rcList.header}"  /></h2>
+                                <div>Certificate of Registration(Form 23)</div>
+                            </div>
+                            <div class="inline-section vehicle-type">
+                                <div class="circled-section"><h:outputText value="#{rcList.stateCD}"/></div>
+                                <div class="circled-section"><h:outputText value="#{rcList.regnType}"/></div>
+                                <p:outputPanel styleClass="inline-section" rendered="#{smartcardReg.isSikkimState}">
+                                    <p:graphicImage name="sk/logo_sk.png" library="images" styleClass="state-logo" />
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                        <div class="front-panel-detail-section">
+                            <div class="smartcard-left-section front-left-section">
+                                <div class="smartcard-details-section">
+                                    <p:outputPanel rendered="#{rcList.nontransport and rcList.taxUpto eq null ? false : true}">
+                                        <h2>Tax upto</h2>
+                                        <p><h:outputText value="#{rcList.taxUpto}"/></p>
+                                    </p:outputPanel>
+                                    <h2>Fuel Used</h2>
+                                    <p> <h:outputText value="#{rcList.fuelDesc}"/></p>
+                                    <h2>Emission Norms</h2>
+                                    <p><h:outputText value="#{rcList.normDesc}"/></p>
+                                    <p:outputPanel rendered="#{rcList.iscng}">
+                                        <h2>Kit Cyl.No</h2>
+                                        <p><h:outputText value="#{rcList.kitCylno}"/></p>
+                                    </p:outputPanel> 
+                                    <p:outputPanel rendered="#{rcList.showTransactionDate}">
+                                        <h2>Date of Effect</h2>
+                                        <p><h:outputText value="#{rcList.transactionDate}"  /></p>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="smartcard-right-section front-right-section">
+                                <div class="smartcard-details-section">
+                                    <div>
+                                        <div class="inline-section right-space">
+                                            <h2>Regn. No</h2>
+                                            <p class="font-bold"><h:outputText value="#{rcList.regnNo}"/></p>
+                                        </div>
+                                        <div class="inline-section  right-space">
+                                            <h2>Date of Regn</h2>
+                                            <p><h:outputText value="#{rcList.regnDt}"/></p>
+                                        </div>
+                                        <div class="inline-section">
+                                            <p:outputPanel rendered="#{rcList.nontransport}">
+                                                <h2>Regn.Validity</h2>
+                                                <p><h:outputText value="#{rcList.regnUpto}"/></p>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="inline-section">
+                                            <h2>Chassis No</h2>
+                                            <p><h:outputText value="#{rcList.chasiNo}"/></p>
+                                        </div>
+                                        <div class="inline-section float-right right-space">
+                                            <h2 class="inline-section">Owner<br /> Sr.No</h2>
+                                            <div class="circled-section inline-section">
+                                                <h:outputText value="#{rcList.ownerSrno}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h2>Engine No</h2>
+                                        <p> <h:outputText value="#{rcList.engNo}"/></p>
+                                    </div>
+                                    <div>
+                                        <h2>Owner Name</h2>
+                                        <p><h:outputText value="#{rcList.ownerName}"/> </p>  
+                                    </div>
+                                    <div>
+                                        <h2>Son/Daughter/Wife of</h2>
+                                        <p> <h:outputText value="#{rcList.fatherName}"/></p>
+                                    </div>
+                                    <div>
+                                        <h2>Address</h2>
+                                        <p style="word-wrap: break-word;"><h:outputText value="#{rcList.currFullAddr}"/></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-absolute-content front-absolute-position">
+                            <h:outputText value="#{rcList.purposeDesc}"/>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel styleClass="page-break" rendered="#{rcList.pageBreakforHR}"></p:outputPanel>
+
+                    <p:outputPanel styleClass="#{rcList.smartcardBackPanel} top-align inline-section" >
+                        <div class="back-panel-detail-section">
+                            <div class="smartcard-left-section back-left-section">
+                                <div class="smartcard-details-section">
+                                    <div class="center-position bottom-space">
+                                        <div class="circled-section"><h:outputText value="#{rcList.stateCD}"/></div>
+                                        <div class="circled-section"><h:outputText value="#{rcList.regnType}"/></div>
+                                    </div>
+                                    <h2>Regn.No</h2>
+                                    <p><h:outputText value="#{rcList.regnNo}"/></p>
+                                    <h2> Month &amp; Yr.of Mfg </h2>
+                                    <p><h:outputText value="#{rcList.manuMnt}/#{rcList.manuYr}"/></p>
+                                    <h2>Wheel Base(mm)</h2>
+                                    <p><h:outputText value="#{rcList.wheelBase}"/></p>
+                                    <h2>Cubic Capacity</h2>
+                                    <p><h:outputText value="#{rcList.cubicCap}"/></p>
+                                    <h2>No of Cylinders</h2>
+                                    <p><h:outputText value="#{rcList.noofCyl}"/></p>
+                                    <p:outputPanel rendered="#{rcList.istransport}">
+                                        <h2>ULW/GVW(kgs)</h2>
+                                        <p> <h:outputText value="#{rcList.unldwt}/#{rcList.ldwt}"  /></p>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{rcList.nontransport}">
+                                        <h2>ULW(kgs)</h2>
+                                        <p><h:outputText value="#{rcList.unldwt}"  /></p>
+                                    </p:outputPanel>                                    
+                                </div>
+                            </div>
+                            <div class="smartcard-right-section">
+                                <div class="smartcard-details-section" style="position: relative;">
+                                    <div class="right-absolute-content back-absolute-position">
+                                        <h:outputText value="Form 23A"/>
+                                    </div>
+                                    <div class="back-middle-section">
+                                        <div>
+                                            <h2>Vehicle Class</h2>
+                                            <p> <h:outputText value="#{rcList.vchDesc}#{rcList.permitCatg}"  /></p>
+                                        </div>
+                                        <div>
+                                            <h2>Maker's Name</h2>
+                                            <p>  <h:outputText value="#{rcList.makerName}"  /></p>
+                                        </div>
+                                        <div>
+                                            <h2>Model name</h2>
+                                            <p><h:outputText value="#{rcList.modelName}"/></p>
+                                        </div>
+                                        <div>
+                                            <h2>Colour</h2>
+                                            <p><h:outputText value="#{rcList.color}"  /></p>
+                                        </div>
+                                        <div>
+                                            <h2>Body type</h2>
+                                            <p> <h:outputText value="#{rcList.bodyType}"  /></p>
+                                        </div>
+                                    </div>
+                                    <div class="inline-section right-position">
+                                        <div class="qr-code-section">
+                                            <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                                <ui:param name="qrcodevalue" value="#{rcList.qrText}"/>   
+                                                <ui:param name="renderqrCode" value="true"/>   
+                                            </ui:include>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="smartcard-details-section">
+                                    <p:outputPanel rendered="#{rcList.istransport}">
+                                        <h2>Seating(in all)/Standing/Sleeping Capacity</h2>
+                                        <p> <h:outputText value="#{rcList.seatCap} / #{rcList.standCap} / #{rcList.sleepCap}"  /></p>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{rcList.nontransport}">
+                                        <h2>Seating(in all) Capacity</h2>
+                                        <p> <h:outputText value="#{rcList.seatCap}"/></p>
+                                    </p:outputPanel>
+                                </div>
+                                <div class="smartcard-details-section">
+                                    <div class="back-middle-section">
+                                        <p:outputPanel rendered="#{rcList.istransport}">
+                                            <table>
+                                                <tr>
+                                                    <td>Axle Type &#160;</td>
+                                                    <td>No/Size/Weight(kgs) </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Front</td>
+                                                    <td><h:outputText value="#{rcList.fdesc} / #{rcList.fweight}"  /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Rear</td>
+                                                    <td><h:outputText value="#{rcList.rdesc} / #{rcList.rweight}"  /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Other</td>
+                                                    <td><h:outputText value="#{rcList.odesc} / #{rcList.oweight}"  /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tandem</td>
+                                                    <td><h:outputText value="#{rcList.tdesc} / #{rcList.tweight}"  /></td>
+                                                </tr>
+                                            </table>
+                                        </p:outputPanel>
+                                    </div>
+                                    <p:outputPanel styleClass="#{rcList.topMarginOnPlasticRC} inline-section" style="width: 110px !important;">
+                                        <p:outputPanel rendered="#{rcList.ishypothecated}">
+                                            <h2> <h:outputText value="Financier Name"  /> &#160; </h2>
+                                            <p> <h:outputText value="#{rcList.fncrname}" />&#160; </p>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{!rcList.ishypothecated}">
+                                            <br/>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{rcList.isUserSignExist}">
+                                            <p class="bottom-space">
+                                                <p:graphicImage id="showUserSign" value="#{smartcardReg.viewUserSign}" cache="false" style="height: 34px !important; width: auto;"/>
+                                            </p>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{!rcList.isUserSignExist}">
+                                            <br/>
+                                        </p:outputPanel>
+                                        <h2>Registering Authority</h2>
+                                        <p><h:outputText value="#{rcList.offName}" /></p> 
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel styleClass="page-break" rendered="#{rcList.pageBreakforHR}"></p:outputPanel>
+                </p:outputPanel>
+                <p:outputPanel rendered="#{rcList.pageBreakExceptHR}">
+                    <p:outputPanel rendered="#{rcList.rcCount %4==0}">
+                        <div class="page-break"></div>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

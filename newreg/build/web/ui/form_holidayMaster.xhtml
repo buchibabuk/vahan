@@ -1,0 +1,119 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content">
+        <h:form prependId="false" id="appointform">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </p:outputPanel>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">#{language.holidayMaster}</h1>
+                    </div>
+                </div>
+
+                <p:outputPanel id="datePnl" styleClass="bottom-space">
+                    <p:panel id="innrPnl" header="#{language.holidayEntry}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-3">
+                                <label class="resp-label-section">
+                                    <p:outputLabel for="dt_holiday" value="#{language.holidayDate}"/>
+                                </label>
+                                <p:calendar id="dt_holiday" value="#{masterHoliday.holiday_date}" required="true"  
+                                            requiredMessage="#{language.requiredMsgHoliday}" mindate="true"                                             
+                                            pattern="dd-MM-yyyy" navigator="true" readonlyInput="true">
+                                    <f:convertDateTime pattern="dd-MM-yyyy" for="dt_holiday"/>
+                                    <f:validateRequired for="dt_holiday"/>      
+                                    <p:ajax event="dateSelect" update="dt_holiday"/>
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="resp-label-section">
+                                    <p:outputLabel for="tf_reason" value="#{language.holidayReason}"/>
+                                </label>
+                                <p:inputText id="tf_reason"  value="#{masterHoliday.holiday_reason}" maxlength="25" styleClass="input" converter="toUpperCaseConverter">
+                                    <p:ajax event="blur" update="tf_reason"/>
+                                    <p:keyFilter regEx="/[a-zA-Z0-9 ]/i"></p:keyFilter>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="bt_getdtls" value="#{language.save}" action="#{masterHoliday.saveHolidayData()}" update="innrPnl dt_holiday tf_reason datePnl holiday_list">
+                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                    <p:blockUI block="innrPnl" trigger="bt_getdtls" >
+                                        <p:graphicImage id="img2" value="/resources/images/ajax_loader_blue.gif" style="width: 80px; height:30px;"/>
+                                    </p:blockUI>
+                                </p:commandButton>
+                                <p:commandButton id="bt_reset" value="#{language.reset}" action="#{masterHoliday.reset()}" update="datePnl innrPnl holiday_list"/>
+                                <p:button value="#{language.login_back}" outcome="seatwork" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <!--<p:panel id="datatblPnl">-->
+                    <p:outputPanel id="outDataPnl">
+                        <p:dataTable id="holiday_list" value="#{masterHoliday.dataList}" var="holidylist" paginator="true" rows="15"   
+                                     rowIndexVar="rowIndex" rendered="#{masterHoliday.renderTable}" styleClass="top-space" >
+                            <f:facet name="header">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 center-position"></div>   
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText value="#{language.holidayList}" styleClass="top-space font-black" />
+                                    </div>   
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Serial No" styleClass="collumn-width center-position">
+                                <f:facet name="header"> 
+                                    <h:outputText  value="#{language.user_srno}" /> 
+                                </f:facet>
+                                <h:outputText value="#{rowIndex+1}" />
+                            </p:column>
+                            <p:column headerText="Date Of Holiday" styleClass="collumn-width center-position">
+                                <f:facet name="header"> 
+                                    <h:outputText  value="#{language.holidayDate}" /> 
+                                </f:facet>
+                                <h:outputText value="#{holidylist.holiday_date}" />
+                            </p:column>
+                            <p:column headerText="Holiday Reason" styleClass="collumn-width center-position">
+                                <f:facet name="header"> 
+                                    <h:outputText  value="#{language.holidayReason}" /> 
+                                </f:facet>
+                                <h:outputText value="#{holidylist.holiday_reason}" />
+                            </p:column>
+                            <p:column headerText="Operation Date" styleClass="collumn-width center-position">
+                                <f:facet name="header"> 
+                                    <h:outputText  value="#{language.operationDate}" /> 
+                                </f:facet>
+                                <h:outputText value="#{holidylist.op_date}" />
+                            </p:column>
+                            <p:column headerText="Action" styleClass="collumn-width center-position">
+                                <f:facet name="header"> 
+                                    <h:outputText  value="#{language.action}" /> 
+                                </f:facet>
+                                <p:commandButton value="#{language.delete}" immediate="true"  action="#{masterHoliday.onDeleteListener(holidylist)}" update=":masterLayout:appointform:outDataPnl">
+                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+                    <!--</p:panel>-->
+                </p:outputPanel>
+            </div>
+            <h:outputScript library="js" name="backButton.js" />
+        </h:form>
+    </ui:define>
+</ui:composition>

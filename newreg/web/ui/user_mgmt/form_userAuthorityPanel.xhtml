@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition>
+        <p:outputPanel id="userAuthPanel">
+            <p:outputPanel rendered="#{userAuthorityBean.renderAuthPanel}">
+                <div class="ui-grid ui-grid-responsive">
+                    <p:outputPanel id="checkBoxRow">
+                        <p:outputPanel rendered="#{userAuthorityBean.renderCheckBoxRow}">
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-6">
+                                    <p:selectBooleanCheckbox value="#{userAuthorityBean.regnSeqRender}" styleClass="right-space" required="true"
+                                                             requiredMessage="#{language.user_rehnSeries_Msg}.">
+                                        <p:ajax listener="#{userAuthorityBean.regSeqListner}" update="tf_lb,tf_ub,regnSeriesPanel"/>
+                                    </p:selectBooleanCheckbox>
+                                    <h:outputText value="#{language.user_aasign_regnNo_seq}" />
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <p:selectBooleanCheckbox value="#{userAuthorityBean.dobj.isFitOfficer}" styleClass="right-space">
+                                    </p:selectBooleanCheckbox>
+                                    <h:outputText value="#{language.user_fit_off} ?" />
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <p:selectBooleanCheckbox value="#{userAuthorityBean.dobj.isEnforcementOfficer}" styleClass="right-space" >
+                                        <p:ajax  listener="#{userAuthorityBean.team_idListener()}" update="tf_lb,tf_ub,teamidpanel" /> 
+                                    </p:selectBooleanCheckbox>
+                                    <h:outputText value="#{language.user_enforcmnt_off} ?" />
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>  
+                    <p:outputPanel id="teamidpanel">  
+                        <p:outputPanel rendered="#{userAuthorityBean.renderTeam_id}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="teamID" value="Team_ID" />
+                                    </label>
+                                    <p:inputText required="true" id="teamID" value="#{userAuthorityBean.dobj.team_id}" maxlength="5">
+
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="regnSeriesPanel">
+                        <p:outputPanel rendered="#{userAuthorityBean.regnSeqRender}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_lb" value="#{language.user_lowerBound}" />
+                                    </label>
+                                    <p:inputText id="tf_lb" value="#{userAuthorityBean.lowerBound}" disabled="#{userAuthorityBean.disable}" required="true" requiredMessage="Blank : Lower Bound">
+                                        <p:ajax event="blur" listener="#{userAuthorityBean.checkLowerBound}" update="@this"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_ub" value="#{language.user_upperBound}" />
+                                    </label>
+                                    <p:inputText id="tf_ub" value="#{userAuthorityBean.upperBound}" disabled="#{userAuthorityBean.disable}" required="true" requiredMessage="Blank : Upper Bound" >
+                                        <p:ajax event="blur" listener="#{userAuthorityBean.checkUpperBound}" update="@this"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="vehicleTypeRow">
+                        <p:outputPanel rendered="#{userAuthorityBean.renderVehicle}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="vehType" value="#{language.user_vehType}" />
+                                    </label>
+                                    <p:selectOneMenu id="vehType" value="#{userAuthorityBean.dobj.vehType}" required="true">
+                                        <f:selectItems value="#{userAuthorityBean.vehicleTypeList}" />
+                                        <f:validator validatorId="selectOneValidator_0" for="vehType" />
+                                        <p:ajax update="vehClass permitRow" listener="#{userAuthorityBean.vehTypeListener}" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="vehClass" value="#{language.user_vehClass}" />
+                                    </label>
+                                    <p:selectCheckboxMenu id="vehClass" value="#{userAuthorityBean.dobj.selectedVehClass}" label="-SELECT-" filter="true"
+                                                          required="true" requiredMessage="Please Select Vehicle Class" filterMatchMode="startsWith">
+                                        <f:selectItems value="#{userAuthorityBean.vehClassList}" />
+                                        <p:ajax update="permitRow" listener="#{userAuthorityBean.vehTypeCatgListener()}" />
+                                        <p:ajax event="toggleSelect" update="vehClass,permiType" listener="#{userAuthorityBean.vehTypeCatgListener()}"  />
+                                    </p:selectCheckboxMenu>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="permitRow">
+                        <p:outputPanel rendered="#{userAuthorityBean.renderPermit}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="permiType" value="#{language.user_permitType}" />
+                                    </label>
+                                    <p:selectCheckboxMenu id="permiType" value="#{userAuthorityBean.dobj.permitType}" label="-SELECT-"
+                                                          filter="true" filterMatchMode="startsWith">
+                                        <f:selectItems value="#{userAuthorityBean.permitTypeList}" />
+                                        <p:ajax event="toggleSelect" update="permiType,permitCatg" listener="#{userAuthorityBean.permitTypeListener}"/>
+                                        <p:ajax update="permitCatg" listener="#{userAuthorityBean.permitTypeListener}" />
+                                    </p:selectCheckboxMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="permitCatg" value="#{language.user_permitCatg}" />
+                                    </label>
+                                    <p:selectCheckboxMenu id="permitCatg" value="#{userAuthorityBean.dobj.selectedPermitCatg}" label="-SELECT-"
+                                                          filter="true" filterMatchMode="startsWith">
+                                        <f:selectItems value="#{userAuthorityBean.permitCatgList}" />
+                                        <p:ajax event="toggleSelect" update="permitCatg" process="@this" />
+                                    </p:selectCheckboxMenu>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="delearRow">
+                        <p:outputPanel rendered="#{userAuthorityBean.renderDealer}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="delear" value="#{language.user_dealer}" />
+                                    </label>
+                                    <p:selectOneMenu id="delear" value="#{userAuthorityBean.dobj.dealerCode}" filter="true" filterMatchMode="contains" disabled="#{userAuthorityBean.disableDealer}">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="0" />
+                                        <f:selectItems value="#{userAuthorityBean.dealerList}"/>
+                                        <f:validator validatorId="selectOneValidator_0" for="delear" />
+                                        <p:ajax listener="#{userAuthorityBean.dealerListener}" update="delearRow" partialSubmit="true"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="maker" value="#{language.user_maker}" />
+                                    </label>
+                                    <p:selectCheckboxMenu id="maker" value="#{userAuthorityBean.dobj.selectedMakerType}" label="-SELECT-"
+                                                          filter="true" filterMatchMode="contains">
+                                        <f:selectItems value="#{userAuthorityBean.makerList}" />
+                                        <p:ajax event="toggleSelect" update="maker" process="@this" />
+                                    </p:selectCheckboxMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-6">
+                                    <p:selectBooleanCheckbox id="assign_all_rto" value="#{userAuthorityBean.dobj.allOfficeAuth}" rendered="#{userAuthorityBean.renderAllOfficeAuth}" styleClass="right-space" >                                        
+                                    </p:selectBooleanCheckbox>
+                                    <h:outputText id="assign_all_rto_label" value="#{language.user_assignAllRtoAuth}" rendered="#{userAuthorityBean.renderAllOfficeAuth}"/>
+                                </div>
+                                <div class="ui-grid-col-6"></div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel id ="sign_upload" styleClass="top-space">
+                <p:outputPanel rendered="#{userAuthorityBean.renderSignatureUpload}"> 
+                    <div class="ui-grid-row top-space">
+                        <div class="ui-grid-col-5">
+                            <p:fileUpload id="file-upload" label="#{language.user_signature}" auto="true"  allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                          sizeLimit="20000"  fileUploadListener="#{userAuthorityBean.handelSignatureFile}" update="showSignImg"
+                                          invalidSizeMessage="#{language.user_signMsg}."/>
+                            <p:commandButton id="remove_sign" rendered="#{userAuthorityBean.renderedRemoveSignature}" value="#{language.user_signRemove}" action="#{userAuthorityBean.removeUserSignature()}" icon="ui-icon-disk" ajax="true"  update="sign_upload">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </div>
+                        <div class="ui-grid-col-1"></div>
+                        <div class="ui-grid-col-6">
+                            <p:graphicImage id="showSignImg" value="#{userAuthorityBean.viewSignFile}" cache="false">
+                            </p:graphicImage>
+                        </div>                                
+                    </div>
+                </p:outputPanel>
+            </p:outputPanel>
+        </p:outputPanel>
+    </ui:composition>
+</html>

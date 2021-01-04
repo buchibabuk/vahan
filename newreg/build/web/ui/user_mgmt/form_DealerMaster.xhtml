@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="script">
+    </ui:define>
+    <ui:define name="content"> 
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Dealer Master</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">                        
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>                         
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p:panel styleClass="datatable-panel scroll-panel-height scroll-panel-overflow bottom-space">
+                        <p:dataTable id="basicDT" var="dt" value="#{dealerMasterBean.dealerDobj.dtMap.entrySet().toArray()}" 
+                                     paginator="true" paginatorPosition="bottom" rows="7" paginatorAlwaysVisible="false"
+                                     filterDelay="100" filteredValue="#{dealerMasterBean.filterList}"  >
+                            <f:facet name="header">Dealer List</f:facet>
+                            <p:column headerText="Code" style="width: 25%;"  filterBy="#{dt.key}" >
+                                <h:outputText value="#{dt.key}" />
+                            </p:column>
+                            <p:column headerText="Name" filterBy="#{dt.value}" filterMatchMode="contains">
+                                <h:outputText value="#{dt.value}" />
+                            </p:column>
+                            <p:column headerText="Modify" styleClass="center-position" style="width: 20%;">
+                                <p:commandButton title="Edit"  icon="ui-icon-pencil" immediate="true">
+                                    <p:ajax event="click" listener="#{dealerMasterBean.updateListner(dt.key)}" 
+                                            update=":masterLayout:dealerPanel" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </div>
+                <div class="ui-grid-col-8">
+                    <p:panel id="dealerPanel" header="Dealer Details" styleClass="bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section"> 
+                                    <p:outputLabel for="dealerName" value="Dealer Name" />
+                                </label>
+                                <p:inputText id="dealerName" value="#{dealerMasterBean.dealerDobj.dealerName}" required="true" requiredMessage="Blank : Dealer Name"
+                                             converter="toUpperCaseConverter" style="text-transform: uppercase;" maxlength="50" validator="#{validateFunction.validateDealerName}">
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="dealerRegnNo" value="Dealer Registration Number"/>
+                                </label>
+                                <p:inputText id="dealerRegnNo" value="#{dealerMasterBean.dealerDobj.dealerRegnNo}" required="true" style="text-transform: uppercase;"  
+                                             converter="toUpperCaseConverter" requiredMessage="Blank : Dealer Registration Number" maxlength="20" validator="#{validateFunction.validateRegNoForDealerMaster}">
+                                    <f:ajax event="blur" render="@this" execute="@this"/>
+                                </p:inputText>                                                   
+                            </div>                                            
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section"> 
+                                    <p:outputLabel for="add1" value="Address 1"/>
+                                </label>
+                                <p:inputText id="add1" value="#{dealerMasterBean.dealerDobj.dealerAdd1}" required="true" requiredMessage="Blank : Address 1"
+                                             converter="toUpperCaseConverter" style="text-transform: uppercase;" maxlength="35"  validator="#{validateFunction.validateAddress}"> 
+                                    <f:ajax event="blur" render="@this" execute="@this"/>                                    
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section"> 
+                                    <p:outputLabel for="add2" value="Address 2"/>
+                                </label>
+                                <p:inputText id="add2" value="#{dealerMasterBean.dealerDobj.dealerAdd2}" converter="toUpperCaseConverter"
+                                             style="text-transform: uppercase;" maxlength="35"> 
+                                </p:inputText>
+                            </div>                                           
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="state" value="Dealer State"/>
+                                </label>
+                                <p:selectOneMenu id="state" value="#{dealerMasterBean.dealerDobj.dealerStateCode}" required="true" 
+                                                 filter="true" requiredMessage="Blank : Dealer State">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                    <f:selectItems value="#{dealerMasterBean.stateList}" />
+                                    <p:ajax listener="#{dealerMasterBean.dealerStateListener}" update="district"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section"> 
+                                    <p:outputLabel for="district" value="District"/>
+                                </label>
+                                <p:selectOneMenu id="district" filter="true" value="#{dealerMasterBean.dealerDobj.dealerDistrict}" >
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                    <f:selectItems value="#{dealerMasterBean.districtList}" />
+                                </p:selectOneMenu>
+                            </div>                                
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pincode" value="Pin"/>
+                                </label>
+                                <p:inputText id="pincode" value="#{dealerMasterBean.dealerDobj.dealerPincode}" size="10" required="true" 
+                                             requiredMessage="Blank : Pin" autocomplete="off" maxlength="6" >                                                
+                                    <f:validateRequired for="pincode"/>
+                                    <f:validateLength maximum="6" for="pincode"/> 
+                                    <f:validator validatorId="pinCodeValidator" for="pincode"/>                                    
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="validity" value="Dealer Validity"/>
+                                </label>                                        
+                                <p:calendar id="validity" value="#{dealerMasterBean.dealerDobj.dealerValidUpto}" navigator="true" 
+                                            mindate="#{dealerMasterBean.today}" readonlyInput="true" pattern="dd-MMM-yyyy" />
+                            </div>                                            
+                        </div> 
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tin" value="Tin No."/>
+                                </label>
+                                <p:inputText id="tin" value="#{dealerMasterBean.dealerDobj.tin_NO}"  required="true" 
+                                             converter="toUpperCaseConverter" requiredMessage="Blank :Tin_no" 
+                                             autocomplete="off" maxlength="15" validator="#{validateFunction.validateTinNo}" 
+                                             style="text-transform: uppercase;">                                                
+                                    <f:validateRequired for="tin"/>
+                                    <f:validateLength maximum="15" for="tin"/>                                                                      
+                                    <p:ajax event="blur" listener="#{dealerMasterBean.varifyTinNo}" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6 top-space">
+                                <label class="field-label resp-label-section">
+                                </label>
+                                <p:outputPanel rendered="#{dealerMasterBean.renderRegnGenAuth}" styleClass="top-space">
+                                    <p:selectBooleanCheckbox value="#{dealerMasterBean.dealerDobj.registrationMarkAuth}" styleClass="right-space">                                    
+                                    </p:selectBooleanCheckbox>
+                                    <h:outputText value="Registration Mark Generated @Dealer End." />
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <p:outputPanel id="tradeCertPanel" rendered="#{dealerMasterBean.renderTCPanel}">
+                                <p:dataTable rowIndexVar="index" styleClass="top-space"
+                                             paginator="true" paginatorPosition="bottom"
+                                             rows="2" value="#{dealerMasterBean.tradeCertList}" 
+                                             emptyMessage="No Record Available" var="tradeCert">
+                                    <f:facet name="header">Dealer Trade Certificate Details</f:facet>
+                                    <p:column headerText="Sr. No" styleClass="collumn-width center-position">
+                                        <h:outputText value="#{index+1}"/>
+                                    </p:column>
+                                    <p:column headerText="Vehicle Category" styleClass="center-position">
+                                        <h:outputText value="#{tradeCert.vehCatg}"/>
+                                    </p:column>
+                                    <p:column headerText="Trade Certificate No." styleClass="center-position">
+                                        <h:outputText value="#{tradeCert.tradeCertNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Valid From" styleClass="center-position">
+                                        <h:outputText value="#{tradeCert.tradeValidFrom}"/>
+                                    </p:column>
+                                    <p:column headerText="Valid Upto" styleClass="center-position">
+                                        <h:outputText value="#{tradeCert.tradeValidUpto}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </div>
+                        <p:keyFilter for="pincode" mask="num" />
+                    </p:panel>
+                    <p:panel styleClass="bottom-space">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">                                               
+                                <p:commandButton id="submitBtn" value="Save" action="#{dealerMasterBean.saveDealerDetails()}" icon="ui-icon-disk" 
+                                                 ajax="true" title="Save/Update Dealer" update="@form">                                        
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>                                
+                                <p:commandButton id="resetBtn" value="New" action="#{dealerMasterBean.reset()}" update="dealerPanel"
+                                                 immediate="true" icon="ui-icon-refresh">
+                                    <p:resetInput target="@form" />
+                                </p:commandButton>                                                            
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>                                              
+                            </div>
+                        </div>
+                    </p:panel>
+                </div>
+            </div>
+        </div>
+    </ui:define>    
+</ui:composition>

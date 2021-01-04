@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns>
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        Bitmap img = (Bitmap)Image.FromFile(Application.StartupPath + "\\CDL.png");
+        Graphics g = Graphics.FromImage(img);
+        g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+        System.Drawing.Font f1 = new Font("Arial", 12, FontStyle.Bold);
+        System.Drawing.Font f2 = new Font("Arial", 12, FontStyle.Bold | FontStyle.Italic);
+        System.Drawing.Font f3 = new Font("Arial", 12, FontStyle.Bold);
+        System.Drawing.Font f4 = new Font("Free 3 of 9", 30);
+        System.Drawing.Font f5 = new Font("Arial", 10, FontStyle.Bold);
+
+        Pen p = new Pen(Color.FromArgb(185, 185, 185), 3);
+
+        g.DrawLine(p, 0, img.Height / 3f-10, 150f, img.Height / 3f-10);
+        g.DrawLine(p, 0, 2 * img.Height / 3f, 150f, 2 * img.Height / 3f);
+        g.DrawLine(p, img.Width - 150, img.Height / 3f-10, img.Width, img.Height / 3f-10);
+        g.DrawLine(p, img.Width - 150, 2 * img.Height / 3f, img.Width, 2 * img.Height / 3f);
+        g.DrawString("*" + barcode + "*", f4, Brushes.Black, new PointF(255, 265));
+        g.DrawString(barcode, f5, Brushes.Black, new PointF(260, 330));
+        g.DrawString("To", f1, Brushes.Black, new PointF(160, 360));
+        g.DrawString("Mr/Mrs. " + lblDLName.Text, f1, Brushes.Black, new PointF(260, 360));
+        g.DrawString(lblDLAdd1.Text, f1, Brushes.Black, new PointF(260, 390));
+        g.DrawString(lblDLAdd2.Text, f1, Brushes.Black, new PointF(260, 420));
+        g.DrawString("CHANDIGARH " + txtDLPincode.Text, f1, Brushes.Black, new PointF(260, 450));
+        g.DrawString("Issue No.  R&LA/RC/" + DateTime.Now.Year.ToString() + "/" + dnumber.ToString(), f3, Brushes.Black, new PointF(260, 500));
+        g.DrawString("Issue Date. " + DateTime.Now.Date.ToShortDateString(), f3, Brushes.Black, new PointF(260, 530));
+        g.DrawString(lblDLDLnumber.Text, f2, Brushes.Black, new PointF(900, 890));
+        g.DrawString(lblDLDLnumber.Text, f2, Brushes.Black, new PointF(850, 1220));
+        e.PageSettings.Margins = new Margins(0, 0, 0, 0);
+        e.Graphics.DrawImage(img, -10,-10);
+    </body>
+</html>

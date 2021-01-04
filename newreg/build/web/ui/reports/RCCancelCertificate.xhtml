@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Disapproval Notice</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style type="text/css">
+            @media print {
+                #printer,#back {
+                    display :  none;
+                }
+            }
+            @page{
+                size: 0;
+            }
+        </style>
+    </h:head>
+    <body onload="window.print()">
+        <h:form id="disAppNoticeForm" prependId="false">
+            <p:outputPanel id="Notice">
+                <div class="center-position h4 bottom-space">
+                    <h:outputText value="#{rCCancelCertificateBean.recieptHeader}"></h:outputText> <h:outputText value="#{rCCancelCertificateBean.office}"/>,<h:outputText value="#{rCCancelCertificateBean.state}"/>
+                </div>
+                <table class="datatable-panel left-space right-space bottom-space">
+                    <tr>
+                        <td>
+                            <div class="left-space">
+                                File Reference  No:-  <h:outputText value="#{rCCancelCertificateBean.fileRefrenceNo}"/>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="right-space">
+                                Date:- <h:outputText value="#{rCCancelCertificateBean.currentDate}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="bottom-space top-space center-position">
+                    <span class="header-main">TO WHOM SOEVER IT MAY CONCERN</span>
+                </div>
+                <div class="top-space bottom-space left-space">
+                    <p>This is to certify that the Original Registration Certificate in the respect of Vehicle No. <h:outputText value="#{rCCancelCertificateBean.vehicleNo}"/>,
+                        bearing Chassis No <h:outputText value="#{rCCancelCertificateBean.chassisNo}"/> and Engine No <h:outputText value="#{rCCancelCertificateBean.engineNO}"/>
+                        is registered in the name of <h:outputText value="#{rCCancelCertificateBean.ownerName}"/> resident of <h:outputText value="#{rCCancelCertificateBean.ownerAddress}"/>
+                        in this office. Further it has been informed by the registered Owner of the Vehicle that the said Vehicle has been destroyed/scraped and is permanently in capable of 
+                        use and kept as salvage as manually decided by registered Owner and Insurance company.</p>
+                </div>
+                <div class="top-space bottom-space left-space">
+                    <p>The registration Certificate in respect of above said vehicle is hereby canceled under section 55(1) of Motor Vehicle Act 1988.</p>
+                </div>
+
+
+                <div class="bottom-space right-position">
+                    <h6> ( MOTOR LICENSING OFFICE )</h6>
+                    <h:outputText value="#{rCCancelCertificateBean.office}" />,
+                    <h:outputText value="#{rCCancelCertificateBean.state}" />
+                </div>
+                <div class="center-position bottom-space">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position">
+                                <div class="left-space">
+                                    Copy:-
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td class="left-position">
+                                <div class="left-space">
+                                    To,
+                                </div>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </p:outputPanel>
+            <div class="center-position clearfix">
+                <p:commandButton id="printer" value="Print" type="button" icon="ui-icon-print">
+                    <p:printer target=":disAppNoticeForm:Notice" />
+                </p:commandButton>
+                <p:commandButton id="back" value="Back" action="home" />
+            </div>
+        </h:form>
+    </body>
+</html>

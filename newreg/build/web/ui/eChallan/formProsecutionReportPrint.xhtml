@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../masterLayoutPage.xhtml"
+                xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"
+                xmlns:v4="http://java.sun.com/jsf/passthrough"
+                >
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">
+        <style>
+            .facet-header-section.ui-panel .ui-panel-title {
+                margin: 0 auto !important;
+            }
+
+            .facet-header-section_header.ui-panel-titlebar {
+                padding: 0.5em 0 0 0.3em !important;
+            }
+        </style>
+        <h:form id="ChallanReferReport">
+            <p:outputPanel >
+                <p:autoUpdate/>
+                <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                    <p:messages> 
+                        <p:autoUpdate/>
+                    </p:messages>                      
+                </p:dialog>
+            </p:outputPanel>
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Challan IR/Prosecution Report</h1>
+                </div>
+            </div> 
+            <p:panel id="challan_Prosecution_Report" styleClass="facet-header-section">
+                <f:facet name="header"> 
+                    <div class="ui-grid-row"> 
+                        <div class="center-position">
+                            <h:outputText value="Please Select Application/ Challan Number" styleClass="font-bold" />
+                        </div>
+                    </div>
+                </f:facet>
+                <div class="ui-grid-row" >
+                    <div class="ui-grid-col-5 resp-blank-height"></div>  
+                    <div class="ui-grid-col-4">                            
+                        <h:panelGrid columns="2" styleClass="bottom-space" cellpadding="5" id="pg_selectOptions">
+                            <p:selectOneRadio id="selectedOption" value="#{ReferChallanReport.selectedOption}" >
+                                <f:selectItem itemLabel="Application No" itemValue="applNo" />
+                                <f:selectItem itemLabel="Challan No" itemValue="challanNo" />                                    
+                                <p:ajax listener="#{ReferChallanReport.selectedOptionListener}" update="appl_op challan_op print_report"/>
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                    </div>
+                </div>
+
+                <p:outputPanel id="appl_op">
+                    <p:outputPanel id="applNoPanel" rendered="#{ReferChallanReport.renderApplPnl}">
+                        <p:focus context="applNoPanel"/>
+                        <div class="ui-grid-row" >
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 ">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="applNo" value="Enter Application No:" />
+                                </label>
+                                <p:inputText  id="applNo" value="#{ReferChallanReport.applicatioNo}" size="20" maxlength="16" required="true" requiredMessage="Please Enter Application No."
+                                              autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter"  >
+                                </p:inputText>
+                                <p:keyFilter mask="alphanum" for="applNo"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:outputPanel id="challan_op">
+                    <p:outputPanel id="challanNoPanel" rendered="#{ReferChallanReport.renderChallanPnl}">
+                        <p:focus context="challanNoPanel"/>
+                        <div class="ui-grid-row" >
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 ">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="challanNo" value="Enter Challan No:" />
+                                </label>
+                                <p:inputText  id="challanNo" value="#{ReferChallanReport.challanNo}" size="20" maxlength="16" required="true" requiredMessage="Please Enter Challan No."
+                                              autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter"  >
+                                </p:inputText>
+                                <p:keyFilter mask="alphanum" for="challanNo"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <p:outputPanel id="print_report">
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="printreport" value="Print Report" icon="ui-icon-print"  
+                                             action="#{ReferChallanReport.printReport()}" rendered="#{ReferChallanReport.renderPrintReportButton}" >
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

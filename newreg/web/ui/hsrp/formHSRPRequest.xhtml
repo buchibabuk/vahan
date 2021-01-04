@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Request for Duplicate HSRP</h1>
+                </div>
+            </div>
+
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages closable="true"  id="errmsg" escape="false">
+                        <p:autoUpdate/>
+                    </p:messages>      
+                </div>
+            </div>
+            <p:outputPanel id="applicationPanel" rendered="#{newhsrp.isApplicationFlag}" styleClass="bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="lb_applno" value="Application No:"/>
+                        </label>
+                        <p:inputText id="tf_applNo" maxlength="16" value="#{newhsrp.applicationNo}" autocomplete="off" styleClass="text-uppercase" readonly="true" /> 
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:panel id="hsrprequetpanel" header="Request For New HSRP" rendered="#{!newhsrp.isSearchPanelFlag}" styleClass="bottom-space">
+                <div class="ui-grid row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="lb_REGN_NO" value="Registration No:"/>
+                        </label>
+                        <p:inputText id="regNo"  maxlength="10" styleClass="text-uppercase"                                          
+                                     converter="toUpperCaseConverter" 
+                                     autocomplete="off" value="#{newhsrp.regnNo}"  validatorMessage="Invalid Registration no.Minimum Character is 4 and Maximum Character is 10">                               
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton id="bt_SHOW" value="Show" action="#{newhsrp.getApplicationDetails}"
+                                         onstart="PF('ajax_status').show()" oncomplete="PF('ajax_status').hide();" update="displayhsrpoutputpanel"/>
+                        <p:commandButton id="bt_RESET" value="Reset" action="#{newhsrp.resetForm}" update="@form" />
+                    </div>
+                </div>
+            </p:panel> 
+            <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <p:outputPanel id="displayhsrpoutputpanel">
+                <p:panel id="displayhsrppanel" rendered="#{newhsrp.isDisplayHsrpPanel}" header="#{newhsrp.headerTitle}" >
+                    <p:panel header="HSRP Information" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row report-table">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-3">
+                                <h:outputText value="HSRP Front: " styleClass="font-bold" />
+                                <h:outputText value="#{empty newhsrp.dobj.hsrpInfodobj.hsrp_no_front  ? 'N/A' : newhsrp.dobj.hsrpInfodobj.hsrp_no_front}" />
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <h:outputText value="HSRP Rear: " styleClass="font-bold"/>
+                                <h:outputText value="#{empty newhsrp.dobj.hsrpInfodobj.hsrp_no_back ? 'N/A' : newhsrp.dobj.hsrpInfodobj.hsrp_no_back}" />
+                            </div>
+                        </div>
+                        <p:outputPanel id="hsrpflag" rendered="#{newhsrp.isHsrpReason}" styleClass="bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Reason" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:selectOneMenu value="#{newhsrp.hsrpReason}" disabled="#{newhsrp.inputSelection}">
+                                        <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                        <f:selectItems value="#{newhsrp.hsrpResonList}" />
+                                        <p:ajax event="change" listener="#{newhsrp.reasonChangeListener()}" update="hsrpflag firpanel displayhsrppanel"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="HSRP Flag" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:selectOneMenu value="#{newhsrp.hsrpMenu}" disabled="#{newhsrp.inputSelection}">
+                                        <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                        <f:selectItems value="#{newhsrp.hsrpMenuList}" />
+                                    </p:selectOneMenu>
+                                </div> 
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel id="hsrpflagOB" rendered="#{!newhsrp.isHsrpReason}" styleClass="bottom-space">
+                            <div class="ui-grid-row">                               
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Hsrp Flag" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:selectOneMenu value="#{newhsrp.hsrpMenu}" disabled="#{newhsrp.inputSelection}">
+                                        <f:selectItem itemLabel="" itemValue="-1"/>
+                                        <f:selectItems value="#{newhsrp.hsrpMenuList}" />
+                                    </p:selectOneMenu>
+                                </div> 
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel id="firpanel" rendered="#{newhsrp.isFirPanel}" styleClass="bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="FIR No." styleClass="field-label-mandate" />
+                                    </label>
+                                    <p:inputText id ="firNo" autocomplete="off" value="#{newhsrp.firNo}"  styleClass="text-uppercase"                                          
+                                                 converter="toUpperCaseConverter"  disabled="#{newhsrp.inputSelection}"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="FIR Date" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:calendar id ="firdate" pattern="dd/MM/yyyy" value="#{newhsrp.firDate}" maxdate="#{newhsrp.maxFirDate}" disabled="#{newhsrp.inputSelection}"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Police Station" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:inputText id ="policeStation" autocomplete="off" value="#{newhsrp.policeStation}"  styleClass="text-uppercase"                                          
+                                                 converter="toUpperCaseConverter" disabled="#{newhsrp.inputSelection}"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:tabView  >
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{newhsrp.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{newhsrp.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+                    </p:panel>
+                    <p:outputPanel rendered="#{!newhsrp.isSaveBtnVisible}">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Approve" action="#{newhsrp.updateHsrpRequest()}"  
+                                                 onsuccess="PF('successDialog').show();"  update=":masterLayout:showdlgbox">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton> 
+                            </div>                      
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{newhsrp.isSaveBtnVisible}">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="SAVE" action="#{newhsrp.saveHsrpRequestData()}"  
+                                                 onsuccess="PF('successDialog').show();"  update=":masterLayout:showdlgbox">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>                      
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="showdlgbox">
+                        <p:dialog widgetVar="successDialog"
+                                  modal="true" closable="false" resizable="false" draggable="false" header="Generated Application No">
+                            <p:outputLabel value="#{newhsrp.applNoGenMessage}" escape="false"/>
+                            <div class="center-position">
+                                <p:commandButton  value="Ok" onclick="PF('successDialog').hide();"                                              
+                                                  action="#{newhsrp.returnPage()}"   icon="ui-icon-check" />
+
+                            </div>
+                        </p:dialog>
+                    </p:outputPanel>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"  icon="ui-icon-check"  onstart="PF('ajax_status').show()" oncomplete="PF('ajax_status').hide();"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+                </p:panel>
+            </p:outputPanel>
+        </div>
+    </ui:define>
+</ui:composition>

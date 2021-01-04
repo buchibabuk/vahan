@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style>
+            @page {
+                size: A4;
+
+            }
+
+            @media print {
+                *{
+                    font-size: 16px !important;
+                    margin-top: 50px;
+                    line-height: 2em;
+                }                
+            }
+        </style>
+
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="rcSuspensionDetail" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="seatwork" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+
+            <div class="center-position">
+                <span class="font-bold report-subheader text-uppercase bottom-line"> 
+                    <h:outputText value="REGIONAL TRANSPORT OFFICE, #{rcSurrender.getOffCdDesr()} "/> </span>
+            </div>
+
+            <table class="datatable-panel-100">
+                <tr>
+                    <td class="left-position left-space">
+                        <br/>
+                        <br/>
+                        No.  <h:outputText value="---------------" />
+                    </td>
+                    <td class="right-position">
+                        <div class="center-position inline-section">
+                            Dated- <h:outputText value=" #{rcSurrender.currentDate} " />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="datatable-panel-100" style="margin: 0 auto !important;">
+                Whereas, it appears to the undersigned that, the Registered owner of vehicle
+                No. <h:outputText value=" #{rcSurrender.vehicleNo} " /> has been issued with show cause notice for committing offence under MV
+                Act, 1988. But so far no satisfactory reply has been received/ reply is not satisfactory.
+                Thus, in exercise of the powers conferred under section 53 of the MV Act, 1988, the
+                Regional Transport Officer &amp; Registering Authority, MV Department,  <h:outputText value=" #{rcSurrender.getOffCdDesr()} " /> do hereby
+                suspend the Registration certificate of the vehicle bearing Regn. No.  <h:outputText value=" #{rcSurrender.vehicleNo} " /> from 
+                <h:outputText value=" #{rcSurrender.surrenderDate} " /> to   <h:outputText value=" #{rcSurrender.suspendedUptoDate} " /> .
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                <br/>
+                                Regional Transport Officer &amp;<br/>
+                                Registering Authority, MV Dept,
+                                <h:outputText value=" #{rcSurrender.getOffCdDesr()} "/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                Copy to: <br/>
+                Vehicle owner name &amp; address<br/>
+                <h:outputText value=" #{rcSurrender.ownerName} "/><br/>
+                <h:outputText value=" #{rcSurrender.address} "/>
+            </div>
+        </h:form>
+    </h:body>
+</html>

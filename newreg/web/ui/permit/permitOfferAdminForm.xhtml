@@ -1,0 +1,283 @@
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22" >
+        <h:form id="permitForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main "><h:outputText value="Permit Offer Administrator Form" /></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Application Number" />
+                            </label>
+                            <p:inputText id="uer_regn_no" styleClass="text-uppercase" value="#{offerAdminBean.appl_no}" maxlength="16" autocomplete="off" required="true" requiredMessage="Enter Application Number ">
+                                <p:ajax event="blur" update="uer_regn_no"/>
+                                <p:keyFilter regEx="/[a-zA-Z0-9\s]/i"/> 
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Details" action="#{offerAdminBean.pmtGetDetails()}"  onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="All_detail uer_regn_no BTNsave"/>
+                            <p:button value="Reset" outcome="/ui/permit/permitOfferAdminForm.xhtml?faces-redirect=true"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:tabView id="All_detail" styleClass="top-space bottom-space">
+                    <p:tab id="Owner_Details" title="Owner Detail">
+                        <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                            <ui:param name="Owner_permit_detail" value="#{offerAdminBean}"/>
+                        </ui:include>
+                    </p:tab>
+                    <p:tab id="Permit_Details" title="Permit Detail">
+                        <p:panel header="Permit Details">
+                            <p:outputPanel id="permit_details">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="vech_no" value="#{label.regn_no}" />
+                                        </label>
+                                        <p:inputText id="vech_no" readonly="true" value="#{offerAdminBean.pmt_dobj.regnNo}"
+                                                     disabled="true" autocomplete="off" size="10"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pmt_action" value="#{pmtLabel.pmt_action}" />
+                                        </label>
+                                        <p:selectOneMenu id="pmt_action"  value="#{offerAdminBean.pmt_dobj.paction_code}" filter="true" disabled="true">
+                                            <f:selectItems value="#{offerAdminBean.purCdList}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pmt_type" value="#{pmtLabel.pmt_type}" styleClass="field-label-mandate"/>
+                                        </label>
+                                        <p:selectOneMenu id="pmt_type"  value="#{offerAdminBean.pmt_dobj.pmt_type}" filter="true">
+                                            <f:selectItem itemValue="-1" itemLabel="Select Permit Type"/>
+                                            <f:selectItems value="#{offerAdminBean.pmtTypeList}"/>
+                                            <p:ajax event="change" listener="#{offerAdminBean.onSelectPermitType()}" 
+                                                    partialSubmit="true" onstart="PF('bui').show();" onsuccess="PF('bui').hide()"
+                                                    update="permit_cate"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="period_mode" value="#{pmtLabel.period_mode}" styleClass="field-label-mandate" />
+                                        </label>
+                                        <p:selectOneMenu id="period_mode"  value="#{offerAdminBean.pmt_dobj.period_mode}" filter="true">
+                                            <f:selectItem itemValue="-1" itemLabel="Select Period"/>
+                                            <f:selectItems value="#{offerAdminBean.period}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="period" value="#{pmtLabel.period}" />
+                                        </label>
+                                        <p:inputText id="period" value="#{offerAdminBean.pmt_dobj.period}" autocomplete="off"
+                                                     maxlength="2" size="8">
+                                            <p:keyFilter regEx="/[\d\-]/"/>
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="permit_cate" value="#{pmtLabel.pmt_catg}" />
+                                        </label>
+                                        <p:selectOneMenu id="permit_cate" value="#{offerAdminBean.pmt_dobj.pmtCatg}" filter="true" effect="fold">
+                                            <f:selectItem itemValue="-1" itemLabel="Select Premit Category"/>
+                                            <f:selectItems value="#{offerAdminBean.pmtCatgList}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="repDate" value="#{pmtLabel.date_Of_Replace}"/>
+                                        </label>
+                                        <p:calendar id="repDate" value="#{offerAdminBean.pmt_dobj.replaceDate}" navigator="true" pattern="dd-MMM-yyyy" readonlyInput="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="serType" value="#{pmtLabel.ser_type}"/>
+                                        </label>
+                                        <p:selectOneMenu id="serType" value="#{offerAdminBean.pmt_dobj.services_TYPE}" filter="true"
+                                                         effect="fold" >
+                                            <f:selectItem itemValue="-1" itemLabel="Select Services Type"/>
+                                            <f:selectItems value="#{offerAdminBean.serTypeList}"/>
+                                        </p:selectOneMenu>
+                                    </div> 
+                                </div>
+                            </p:outputPanel>
+                        </p:panel>
+
+                        <p:panel id="area_details" header="Area-Details" styleClass="top-space bottom-space">
+                            <p:pickList id="Area_pickList" value="#{offerAdminBean.areaManage}"  styleClass="text-uppercase" filterMatchMode="contains"
+                                        showSourceFilter="true" showTargetFilter="true" effect="bounce"
+                                        var="area_mast" itemLabel="#{area_mast.value}" itemValue="#{area_mast.key}"/>
+                        </p:panel>
+
+                        <p:panel id="route_details" header="Route-Details" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <p:pickList id="pickList" styleClass="text-uppercase" filterMatchMode="contains"
+                                                value="#{offerAdminBean.routeManage}" showSourceFilter="true" showTargetFilter="true"
+                                                effect="bounce" var="route_mast" itemLabel="#{route_mast.value}" itemValue="#{route_mast.key}" >
+                                        <p:ajax event="transfer" listener="#{offerAdminBean.onTransfer}" update="via trips"/>
+                                    </p:pickList>
+                                </div>
+
+                                <div class="ui-grid-col-8">
+                                    <p:outputPanel id="via">
+                                        <div class="route-details-header">Selected Route Direction</div>
+                                        <div class="left-position">
+                                            <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                                <p:outputLabel escape="false" id="route_via" value="#{offerAdminBean.via_route}" />
+                                            </p:scrollPanel>
+                                        </div>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="trips">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="no_trips" value="#{pmtLabel.no_of_trips}" rendered="#{offerAdminBean.noOfTripsrendered}"/>
+                                        </label>
+                                        <p:inputText id="no_trips" maxlength="3" autocomplete="off" value="#{offerAdminBean.pmt_dobj.numberOfTrips}" size="3" rendered="#{offerAdminBean.noOfTripsrendered}">
+                                            <p:keyFilter regEx="/[\d\-]/"/>
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:panel header="Optional Details"  styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="park_plce" value="Parking Place"/>
+                                    </label>
+                                    <p:inputTextarea counter="display" id="park_plce" value="#{offerAdminBean.pmt_dobj.parking}" maxlength="100"
+                                                     counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase">
+                                        <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                    </p:inputTextarea>
+                                    <h:inputHidden/>
+                                    <label class="field-label resp-label-section">
+                                        <h:outputText id="display"/>
+                                    </label>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="pup_jour" value="Purpose of Journey"/>
+                                    </label>
+                                    <p:inputTextarea counter="purJourDisplay" id="pup_jour" value="#{offerAdminBean.pmt_dobj.joreny_PURPOSE}" maxlength="300"
+                                                     counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase">
+                                        <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                    </p:inputTextarea>
+                                    <h:inputHidden/>
+                                    <label class="field-label resp-label-section">
+                                        <h:outputText id="purJourDisplay"/>
+                                    </label>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="good_carry" value="Nature of goods to be carried"/>
+                                    </label>
+                                    <p:inputTextarea counter="GoodsCarry" id="good_carry" value="#{offerAdminBean.pmt_dobj.goods_TO_CARRY}" maxlength="40"
+                                                     counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase">
+                                        <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                    </p:inputTextarea>
+                                    <h:inputHidden/>
+                                    <label class="field-label resp-label-section">
+                                        <h:outputText id="GoodsCarry"/>
+                                    </label>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab>
+                </p:tabView>
+
+                <p:outputPanel id="BTNsave">
+                    <p:panel visible="#{offerAdminBean.renderSaveBtn}" styleClass="top-space bottom-space center-position">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Save" action="#{offerAdminBean.compareChanges()}"/>
+                                <p:commandButton value="Reset" action="/ui/permit/permitOfferAdminForm.xhtml?faces-redirect=true"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:dialog id="compair" header="Compair Old Value To New Value" widgetVar="compairVar" modal="true" closable="true">
+                    <p:dataTable value="#{offerAdminBean.compBeanList}" var="data">
+                        <p:column headerText="Field Name" width="15%">
+                            <h:outputText value="#{data.fields}" />
+                        </p:column>
+
+                        <p:column headerText="Old Value" width="70%">
+                            <h:outputText value="#{data.old_value}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="New Value" width="15%">
+                            <h:outputText value="#{data.new_value}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton value="Submit" action="#{offerAdminBean.savePmtDetails()}">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton value="Cancel" action="/ui/permit/permitOfferAdminForm.xhtml?faces-redirect=true" />
+                        </f:facet>
+                    </p:dataTable>
+                </p:dialog>
+
+                <p:dialog id="pendingApplicationID" header="Application Number" widgetVar="pendingAppication" modal="true" resizable="false" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel  escape="false"  value="#{offerAdminBean.errorMsg}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Exit for Another Application" immediate="true" action="/ui/permit/permitOfferAdminForm.xhtml?faces-redirect=true"/>
+                            </f:facet>
+                        </div>
+                    </div>
+                </p:dialog>
+            </div>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

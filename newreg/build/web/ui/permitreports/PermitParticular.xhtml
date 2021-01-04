@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <table class="datatable-panel" >
+                <tr>
+                    <td class="left-position">
+                        <br/>
+                        <br/>
+                        <div class="center-position inline-section">
+                            <h:outputText value="Permit Extract"/>
+                        </div>
+                        <br/>                       
+                    </td>
+                </tr>                    
+            </table>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{permitParticularBean.image_logo}" style="width: 100px;" rendered="#{permitParticularBean.show_image_logo}" />
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position">
+                            <h:outputText value="TRANSPORT DEPARTMENT,#{permitParticularBean.passPmtDobj.off_cd}" styleClass="font-bold report-header bottom-line text-uppercase"/>                            
+                        </div>
+                        <div class="center-position bottom-space">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{permitParticularBean.passPmtDobj.state_cd}" styleClass="font-bold report-header bottom-line text-uppercase" /> </span>
+                        </div>
+                        <div class="center-position">
+                            <h:outputText value="PERMIT IN RESPECT OF #{permitParticularBean.passPmtDobj.pmt_type}#{permitParticularBean.passPmtDobj.pmtCatg}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <pe:qrCode rendered="true"
+                                   renderMethod="canvas" 
+                                   renderMode="0" 
+                                   text="#{permitParticularBean.textQRcode}" 
+                                   label="QR Code"
+                                   size="110"
+                                   fillColor="000000" 
+                                   ecLevel="H" 
+                                   radius="0.5"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{permitParticularBean.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{permitParticularBean.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="1. Permit No " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.passPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                    <h:outputLabel value="2. Name Of The Permit Holder " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.ownerPmtDobj.owner_name}" styleClass="font-bold"/>
+                    <h:outputLabel value="3. Father’s/Husband’s Name (in case of Individual) " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.ownerPmtDobj.f_name}" />
+                    <h:outputLabel value="4. Permanent Address   " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.ownerPmtDobj.c_add1},#{permitParticularBean.ownerPmtDobj.c_add2},#{permitParticularBean.ownerPmtDobj.c_add3}; #{permitParticularBean.ownerPmtDobj.c_state},#{permitParticularBean.ownerPmtDobj.districtInString} - #{permitParticularBean.ownerPmtDobj.c_pincode}." />
+                </h:panelGrid>
+                <div class="datatable-panel">                    
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                        <h:outputLabel value="5. Registration Details " styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div>
+                <ol type="I">
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(i) Type of Vehicle :" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.vh_class_desc} " />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(ii) Registration Mark :" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.regn_no}" styleClass="font-bold"/>
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(iii) Date of Registration" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.regnDateInString}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(iv) Seating Capacity :" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.seat_cap}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(v) Chassis Number" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.chasi_no}"  />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(vi) Make/Model" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.modelName}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(vii) Standing Capacity" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.stand_cap}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="(viii) Sleeper Capacity" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.sleeper_cap}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value=" (ix) Manuf. year of the motor vehicle" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.manuYearInString}"  />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value=" (x) Type of body" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{permitParticularBean.ownerPmtDobj.body_type}"  />
+                        </h:panelGrid>
+                    </il>
+
+                    <il>
+                        <p:outputPanel rendered="#{permitParticularBean.passPmtDobj.replaceDateInString ne null}">
+                            <h:panelGrid columns="2" style="width:98.5% !important;">
+                                <h:outputLabel value="(xi) Date of Replacement " styleClass="right-space bottom-space" />
+                                <h:outputText value="#{permitParticularBean.passPmtDobj.replaceDateInString}"/>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </il>
+                    <il>
+                        <p:outputPanel rendered="#{permitParticularBean.passPmtDobj.services_TYPE ne null}">
+                            <h:panelGrid columns="2" style="width:98.5% !important;">
+                                <h:outputLabel value="(xii) Service Type" styleClass="right-space bottom-space" />
+                                <h:outputText value="#{permitParticularBean.passPmtDobj.services_TYPE}" />
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </il>
+
+                </ol>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="6. Validity of the Permit" styleClass="right-space bottom-space" />
+                    <h:outputText value="From: &#160;&#160;#{permitParticularBean.passPmtDobj.validFromInString} &#160;&#160;&#160;&#160; To:&#160;&#160;#{permitParticularBean.passPmtDobj.validUptoInString}" styleClass="font-bold"/>
+                </h:panelGrid>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="7. Date of Replacement of Vehicle" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.passPmtDobj.replaceDateInString}" />
+                    <h:outputLabel value="8. Nature of Goods to be Carried" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.passPmtDobj.goods_TO_CARRY}" />
+                    <h:outputLabel value="9. Parking Place" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.passPmtDobj.parking}" />
+                    <h:outputLabel value="10. Purpose Of Journey" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{permitParticularBean.passPmtDobj.joreny_PURPOSE}" />
+                    <h:outputLabel value="11. Rate of fare approved " styleClass="right-space bottom-space" />
+                    <h:outputText value="Approved by STA/RTA" />
+                </h:panelGrid>
+            </div>
+            <p:outputPanel rendered="#{permitParticularBean.passPmtDobj.region_covered ne null}" styleClass="top-space">
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="Region Covered :" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{permitParticularBean.passPmtDobj.region_covered}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <br/>
+            <p:outputPanel rendered="#{permitParticularBean.routedata ne null}" styleClass="position-relative">
+                <div class="center-position">
+                    <h:outputText value="Route Detail" styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <p:dataTable var="routeDtls" value="#{permitParticularBean.routedata}" styleClass="datatable-panel-100">
+                        <p:column headerText="Route Code" styleClass="center-position">
+                            <h:outputText value="#{routeDtls.rout_code}" />
+                        </p:column>
+                        <p:column headerText="From">
+                            <h:outputText value="#{routeDtls.floc}" />
+                        </p:column>
+                        <p:column headerText="To">
+                            <h:outputText value="#{routeDtls.tloc}" />
+                        </p:column>
+                        <p:column headerText="Via" width="35%">
+                            <h:outputText value="#{routeDtls.start_POINT}" />
+                        </p:column>                           
+                    </p:dataTable>
+                </div>
+            </p:outputPanel>
+            <br/>            
+            <p:outputPanel styleClass="top-space" rendered="#{permitParticularBean.homeAuthDobj.authNo ne null}" >
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                        <h:outputLabel value="12. Authorization Details " styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                    <ol type="I">
+                        <il>
+                            <h:panelGrid columns="2" style="width:98.5% !important;">
+                                <h:outputLabel value="(!). Authorization No." styleClass="right-space bottom-space" />
+                                <h:outputText value="#{permitParticularBean.homeAuthDobj.authNo}" />
+                            </h:panelGrid>
+                        </il>
+                        <il>
+                            <h:panelGrid columns="2" style="width:98.5% !important;">
+                                <h:outputLabel value="(!!). Authorization Validity" styleClass="right-space bottom-space" />
+                                <h:outputText value="From: &#160;&#160;#{permitParticularBean.homeAuthDobj.authFromInString} &#160;&#160;&#160;&#160; To:&#160;&#160;#{permitParticularBean.homeAuthDobj.authUptoInString}" />
+                            </h:panelGrid>
+                        </il>
+                    </ol>
+                </div>
+            </p:outputPanel>
+            <br/>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:outputLabel value="This copy of permit is only extract and not the original permit." styleClass="right-space bottom-space" />
+                <h:outputLabel value="Permit Extract issued to produce before the Hon’ble court/RTI/Insurance." styleClass="right-space bottom-space" />
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div class="top-space bottom-space datatable-panel position-relative"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <br/>
+                            Date:  <h:outputText value="#{permitParticularBean.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="bottom-space right-position right-space position-relative">
+                                <div class="center-position" style="display: inline-block;">                  
+                                    <br />
+                                    <br />
+                                    Signature of Registering Authority<br />
+                                    <h:outputText value="#{permitParticularBean.passPmtDobj.off_cd}" />
+                                    [ <h:outputText value="#{permitParticularBean.passPmtDobj.state_cd}" /> ]
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </h:form>
+    </h:body>
+</html>

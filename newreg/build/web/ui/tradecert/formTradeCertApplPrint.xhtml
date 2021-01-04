@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="formPrint" prependId="false">
+            <div class="inline-section qrcode-position-absolute">
+                <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                    <ui:param name="qrcodevalue" value="#{applicationTradeCertPrintBean.text}"/>   
+                    <ui:param name="renderqrCode" value="true"/>   
+                </ui:include>  
+            </div>
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/tradecert/form_trade_cert_application.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('bui').show();" styleClass="display-none" rendered="#{applicationTradeCertPrintBean.dobj.stateCd ne 'OR'}"/> 
+                <p:button value="Back" outcome="/ui/tradecert/form_tc_dealer_application.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('bui').show();" styleClass="display-none" rendered="#{applicationTradeCertPrintBean.dobj.stateCd eq 'OR'}"/>      
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputLabel value="Form 16 " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> 
+                    <h:outputLabel value=" [ See Rule 34 (1) ] " styleClass="bottom-space"/>
+                    <h:outputLabel value=" Form of application for grant or renewal of Trade Certificate " rendered="#{applicationTradeCertPrintBean.purCd == 21 || applicationTradeCertPrintBean.purCd == 51}"/>
+                    <h:outputLabel value=" Form of application for grant of Duplicate Trade Certificate " rendered="#{applicationTradeCertPrintBean.purCd == 22}"/>
+                </span>
+            </div>
+            <div class="left-position">
+                <h:outputLabel value="To," styleClass="left-space"/>
+            </div>
+            <div class="left-position">
+                <h:outputLabel value="The Registering Authority" styleClass="left-space"/>
+            </div>
+            <div class="left-position">
+                <h:outputText value="#{applicationTradeCertPrintBean.dobj.officeName},#{applicationTradeCertPrintBean.dobj.stateName}" styleClass="left-space"/>
+            </div>
+            <br/>
+            <br/>
+            <div class="left-position bottom-space">
+                <h:outputLabel value="I / We hereby apply for issue of / renewal of a Trade Certificate [ Application No: #{applicationTradeCertPrintBean.dobj.applNo} ] " styleClass="left-space" rendered="#{applicationTradeCertPrintBean.purCd == 21 || applicationTradeCertPrintBean.purCd == 51}"/>
+                <h:outputLabel value="I / We hereby apply for issue of Duplicate Trade Certificate [ Application No: #{applicationTradeCertPrintBean.dobj.applNo} ] " styleClass="left-space" rendered="#{applicationTradeCertPrintBean.purCd == 22}"/>
+
+            </div>
+            <br/>
+            <div class="bottom-space">
+                <h:panelGrid columns="3" styleClass="left-space left-position datatable-panel table-top-align  top-align" style="margin: 0 auto;">
+                    <h:outputText value="1." styleClass="right-space bottom-space-50" />
+                    <h:outputText value="Applicant's Name: " styleClass="right-space bottom-space-50" />
+                    <h:outputText  value="#{applicationTradeCertPrintBean.dobj.dealerName}" styleClass="right-space bottom-space-50" /> 
+
+                    <h:outputText value="2." styleClass="right-space bottom-space-50" />
+                    <h:outputText value="Son / Wife / Daughter of: "  styleClass="right-space bottom-space-50"/>
+                    <h:outputText  value="........................................................................... " styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd ne 'OR'}"/> 
+                    <h:outputText  value="#{applicationTradeCertPrintBean.dobj.applicantRelation} " styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd eq 'OR'}"/> 
+
+                    <h:outputText value="3." styleClass="right-space bottom-space-50" />
+                    <h:outputText value="Applicant's Full Address(Proof to be attached): "  styleClass="right-space bottom-space-50"/>
+                    <h:outputText  value="#{applicationTradeCertPrintBean.dobj.dealerAddress}" styleClass="right-space bottom-space-50" /> 
+
+                    <h:outputText value="4." styleClass="right-space bottom-space-50" />
+                    <h:outputText value="Whether the applicant is a manufacturer or dealer in motor vehicles , approved repairer of vehicles, engaged in building to vehicles, engaged in the business of hire / purchase / lease / hypothecation of vehicles."  styleClass="right-space bottom-space-50"/>
+                    <h:outputText  value="#{applicationTradeCertPrintBean.applicantTypeDescr}" converter="toUpperCaseConverter" styleClass="right-space bottom-space-50"/> 
+
+                    <h:outputText value="5." styleClass="right-space bottom-space-50"  rendered="#{!applicationTradeCertPrintBean.doNotShowNoOfVehicles}"/>
+                    <h:outputText value="Number of Certificates required: "  styleClass="right-space bottom-space-50" rendered="#{!applicationTradeCertPrintBean.doNotShowNoOfVehicles}"/>
+                    <h:outputText value="#{applicationTradeCertPrintBean.dobj.noOfAllowedVehicles}" styleClass="right-space bottom-space-50" rendered="#{!applicationTradeCertPrintBean.doNotShowNoOfVehicles}"/> 
+
+                    <h:outputText value="6." styleClass="right-space bottom-space-50" />
+                    <h:outputText value="Vehicle Category(Number of Vehicles applied,Fuel) of Motor Vehicles in respect of which each Certificate(s) is required: "  styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.displayFuel and applicationTradeCertPrintBean.dobj.stateCd ne 'OR'}"/>
+                    <h:outputText value="Vehicle Category(Number of Vehicles applied) of Motor Vehicles in respect of which each Certificate(s) is required: "  styleClass="right-space bottom-space-50" rendered="#{!applicationTradeCertPrintBean.displayFuel and applicationTradeCertPrintBean.dobj.stateCd ne 'OR'}"/>
+                    <h:outputText value="Class of Motor Vehicle(s) in respect of which each Certificate(s) is required: "  styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd eq 'OR'}"/>
+                    <h:outputText  value="#{applicationTradeCertPrintBean.dobj.vehCatgName}" styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd ne 'OR'}"/>
+                    <h:outputText  value="#{applicationTradeCertPrintBean.dobj.vehClass}" styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd eq 'OR'}"/>
+
+                    <h:outputText value="7." styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd ne 'RJ'}"/>
+                    <h:outputText value= "Amount paid: " styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd ne 'RJ'}"/>
+                    <h:outputText  value="#{applicationTradeCertPrintBean.dobj.feesCollected} INR" styleClass="right-space bottom-space-50" rendered="#{applicationTradeCertPrintBean.dobj.stateCd ne 'RJ'}"/>
+                </h:panelGrid>
+            </div>
+            <div class="bottom-space-50 datatable-panel " style="margin: 0px auto;" rendered="#{applicationTradeCertPrintBean.renewal}">
+                <h:outputLabel value="7.a If the application is for renewal / duplicate, indicate the ( Trade Certificate No | Date of Issue | Date of Expiry ) in respect of which renewal is applied :- "  styleClass="right-space bottom-space" rendered="#{applicationTradeCertPrintBean.renewal}" />
+                <p:dataTable value="#{applicationTradeCertPrintBean.dobjsublist}" var="data" 
+                             styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                             datatable-second-column-right datatable-second-column-header-right 
+                             datatable-third-column-right datatable-third-column-header-right
+                             datatable-fourth-column-right datatable-fourth-column-header-right
+                             datatable-fifth-column-right datatable-fifth-column-header-right
+                             datatable-six-column-right datatable-six-column-header-right" rendered="#{applicationTradeCertPrintBean.renewal}">
+
+                    <p:column headerText="Trade Certificate No.">
+                        <h:outputText value="#{data.tradeCertNo}" />
+                    </p:column>
+                    <p:column headerText="Issued On">
+                        <h:outputText value="#{data.issueDtAsString}" styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Valid From">
+                        <h:outputText value="#{data.validDtAsString}" styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Expired On">
+                        <h:outputText value="#{data.validUptoAsString}" styleClass="right-space" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="center-position ">
+                <h:outputLabel value="Declaration" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+
+            <div class="center-position">
+                <h:outputLabel value="I / We do hereby declare that the Trade Certificate(s) is/are required by me/us for bonafide Trade purpose" styleClass="left-space report-subheader" rendered="#{applicationTradeCertPrintBean.purCd == 21 || applicationTradeCertPrintBean.purCd == 51}"/>
+                <h:outputLabel value="I / We do hereby declare that the Duplicate Trade Certificate(s) is/are required by me/us for bonafide Trade purpose" styleClass="left-space report-subheader" rendered="#{applicationTradeCertPrintBean.purCd == 22}"/>
+            </div>
+
+            <br/>
+            <br/>
+
+            <div class="table-width-two two-space bottom-space-50">
+                <h:panelGrid columns="2" styleClass="left-space left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="Place: #{applicationTradeCertPrintBean.dobj.stateName}" styleClass="right-space bottom-space" />
+                    <h:outputText  value="" styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="Date: #{applicationTradeCertPrintBean.currentDate}"  styleClass="right-space bottom-space"/>
+                    <h:outputText value="Signature of the Applicant"   styleClass="right-position"/>
+                </h:panelGrid>
+            </div>    
+            <p:blockUI block="formPrint" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </h:body>
+</html>

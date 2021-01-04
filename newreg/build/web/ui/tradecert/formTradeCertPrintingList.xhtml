@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <ui:define name="content">
+        <f:subview id="frm_print_TC">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_printTC">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputText value="#{TCPrintBean.main_header_label}"/> </h1>
+                        </div>
+                    </div>
+                    <p:outputPanel id="radiopanel" styleClass="top-space bottom-space" rendered="#{TCPrintBean.printTc and !TCPrintBean.forAlreadyPrintedTC}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-8 center-position">
+                                <p:selectOneRadio id="tf_tcno" value="#{TCPrintBean.tcRadiobtn}">   
+                                    <f:selectItem itemLabel="By Application No" itemValue="APPLNO" />	<!--Added by UP	-->					
+                                    <f:selectItem itemLabel="By Trade Certificate No" itemValue="TCNO" />
+                                    <f:selectItem itemLabel="Pending TC(Last 15 Days)" itemValue="PNDNGTC" />
+                                    <f:selectItem itemLabel="Today Printed TC" itemValue="PRTTC" />
+                                    <p:ajax event="change" 
+                                            listener="#{TCPrintBean.tcRadioBtnListener}" 
+                                            update="printTCDataTablePanel printTCDataTablePanelForTcNo radioOutputpanel tcpanel radioOutputpanelSearchByApplicationNO tcpanelByApplicationNO" 
+                                            onstart="PF('blockPrintTC').show();" oncomplete="PF('blockPrintTC').hide();"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="radioOutputpanelSearchByApplicationNO" >
+                        <p:panel id="tcpanelByApplicationNO" 
+                                 header="Print TC by Application No"
+                                 rendered="#{TCPrintBean.printTcByApplicationNo}" 
+                                 styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="appl_no" value="Application No" />
+                                    </label>
+                                    <p:inputText id="appl_no" value="#{TCPrintBean.applNo}" maxlength="16" autocomplete="off" styleClass="text-uppercase" >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtlsByApplicationNo" value="Get Details" 
+                                                     action="#{TCPrintBean.fetchTCDetailsByApplicationNumber()}"
+                                                     update="printTCDataTablePanelForTcNo"
+                                                     icon ="ui-icon-folder-open"/> 
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:outputPanel id="radioOutputpanel" >
+                        <p:panel id="tcpanel" header="Print TC by Trade Certificate No" rendered="#{TCPrintBean.printTcbyTradeCertNo}" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tc_no" value="Trade Certificate No" />
+                                    </label>
+                                    <p:inputText id="tc_no" value="#{TCPrintBean.tc_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase" >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtls" value="Get Details" action="#{TCPrintBean.fetchTCDetailsByNumber()}" update="printTCDataTablePanelForTcNo" icon ="ui-icon-folder-open"/> 
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="printTCDataTablePanelForTcNo" >
+                        <p:dataTable id="print_TC_For_TC_No_Data_Table"
+                                     rowKey="#{printTCRecord.tcNo}" 
+                                     value="#{TCPrintBean.printCertDobjForTCNoList}" 
+                                     var="printTCRecord" 
+                                     rows="10"  
+                                     widgetVar="print_TCDataTable" 
+                                     filteredValue="#{TCPrintBean.filteredSeat}" 
+                                     paginator="true"   paginatorPosition="bottom" 
+                                     rowIndexVar="rowkey" 
+                                     rendered="#{TCPrintBean.printCertDobjForTCNoList.size()>0 ? true : false}">
+                            <f:facet name="header">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 right-position right-space">
+                                        <p:outputLabel  id="lb_cert_no" value="#{label.trade_cert_no_label}" />
+                                    </div>
+                                    <div class="ui-grid-col-1 left-position">                        
+                                        <c:choose>
+                                            <c:when test="#{TCPrintBean.tcRadiobtn eq 'APPLNO'}">
+                                                <h:outputText  id="tx_cert_no" value="#{TCPrintBean.printCertDobjForTCNoList.get(0).getTcNo()}" styleClass="font-bold"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <h:outputText  id="tx_cert_no" value="#{TCPrintBean.tc_no}" styleClass="font-bold"/>
+                                            </c:otherwise>
+                                        </c:choose>                             
+                                    </div>
+                                    <div class="ui-grid-col-1 right-position right-space">
+                                        <p:outputLabel id="lb_dealer_for" value="#{label.applicant}"/>
+                                    </div>
+                                    <div class="ui-grid-col-2 left-position">
+                                        <h:outputText id="lb_dealer_name" value="#{TCPrintBean.dealerName} " styleClass="font-bold"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Vehicle Category"  filterBy="#{printTCRecord.vehCatgs}" filterMatchMode="contains" sortBy="#{printTCRecord.vehCatgs}" rendered="#{!TCPrintBean.renderVehClass}">#{printTCRecord.vehCatgs}</p:column>
+                            <p:column headerText="Vehicle Class"  filterBy="#{printTCRecord.vehCatgs}" filterMatchMode="contains" sortBy="#{printTCRecord.vehCatgs}" rendered="#{TCPrintBean.renderVehClass}">#{printTCRecord.vehCatgs}</p:column>
+                            <c:if test ="#{TCPrintBean.displayFuel}">
+                                <p:column headerText="Fuel"  filterBy="#{printTCRecord.fuelTypeName}" filterMatchMode="contains" sortBy="#{printTCRecord.fuelTypeName}">#{printTCRecord.fuelTypeName}</p:column>
+                            </c:if>
+
+                            <p:column headerText="Vehicle Count" width="15%" filterBy="#{printTCRecord.noOfVeh}" filterMatchMode="contains" sortBy="#{printTCRecord.noOfVeh}" rendered="#{!TCPrintBean.doNotShowNoOfVehicles}">#{printTCRecord.noOfVeh}</p:column>
+
+                            <p:column headerText="Trade Certificate Range"  width="20%"  rendered="#{TCPrintBean.tcForEachVehCatg}">#{TCPrintBean.tc_no}/1 - #{TCPrintBean.tc_no}/#{printTCRecord.noOfVeh}</p:column>
+                            <f:facet name="footer">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 right-position right-space"> 
+                                        <p:commandButton id ="bt_print" value="Print"  action="#{TCPrintBean.confirmPrintTC(TCPrintBean.printCertDobjForTCNoList.get(0))}" icon="ui-icon-print" />
+                                    </div>
+                                </div>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="printTCDataTablePanel" >
+                        <p:dataTable id="print_TC_Data_Table" selection="#{TCPrintBean.selectedCertDobj}" rowKey="#{printTCRecord.tcNo}" value="#{TCPrintBean.printCertDobjForPendingList}" var="printTCRecord" rows="10"  
+                                     widgetVar="print_TCDataTable" filteredValue="#{TCPrintBean.filteredSeat}" paginator="true"   paginatorPosition="bottom" rowIndexVar="rowkey" rendered="#{TCPrintBean.printCertDobjForPendingList.size()>0 ? true : false}">
+
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application No." filterBy="#{printTCRecord.applNo}" filterMatchMode="contains" sortBy="#{printTCRecord.applNo}" width="120">
+                                #{printTCRecord.applNo}
+                            </p:column>
+                            <p:column headerText="Certificate No." filterBy="#{printTCRecord.tcNo}" filterMatchMode="contains" sortBy="#{printTCRecord.tcNo}" width="120">
+                                #{printTCRecord.tcNo}
+                            </p:column>
+                            <p:column headerText="Dealer" filterBy="#{printTCRecord.dealerName}" filterMatchMode="contains" sortBy="#{printTCRecord.dealerName}">#{printTCRecord.dealerName}</p:column>
+
+                            <p:column headerText="Vehicle Category" filterBy="#{printTCRecord.vehCatgs}" filterMatchMode="contains" sortBy="#{printTCRecord.vehCatgs}" rendered="#{!TCPrintBean.renderVehClass}">
+                                <h:outputText id="lb_veh_catg_name" value=" #{printTCRecord.vehCatgs}" escape="false"/>
+                            </p:column>
+
+                            <p:column headerText="Vehicle Class" filterBy="#{printTCRecord.vehCatgs}" filterMatchMode="contains" sortBy="#{printTCRecord.vehCatgs}" rendered="#{TCPrintBean.renderVehClass}">
+                                <h:outputText id="lb_veh_class_name" value=" #{printTCRecord.vehCatgs}" escape="false"/>
+                            </p:column>
+
+                            <p:column headerText="#{label.valid_upto}" style="width: 8%;">
+                                <h:outputText  id="lb_valid_upto" value="#{printTCRecord.validUptoAsString}"/>
+                            </p:column>
+                            <c:if test="#{TCPrintBean.alreadyPrintedTc}"> 
+                                <p:column headerText="Printed On" filterBy="#{printTCRecord.printedOn}" filterMatchMode="contains" sortBy="#{printTCRecord.printedOn}" width="120" > <h:outputText value="#{printTCRecord.printedOn}" styleClass="red"/>  </p:column>
+                                <p:column headerText="Printed By" filterBy="#{printTCRecord.printedBy}" filterMatchMode="contains" sortBy="#{printTCRecord.printedBy}" width="130"><h:outputText value="#{printTCRecord.printedBy}"   styleClass="red" /></p:column>
+                            </c:if>
+                            <p:column headerText="Select TC to print" selectionMode="multiple" style="text-align: center" width="80"/>                        
+                            <f:facet name="footer">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 right-position right-space"> 
+                                        <p:commandButton id ="bt_print_All" value="Print Selected Trade Certificates"  action="#{TCPrintBean.confirmPrintAllTC()}" icon="ui-icon-print"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:outputPanel>
+
+
+
+                    <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printCertificate" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Print Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" onsuccess="PF('printCertificate').hide();"                                   
+                                                  action="#{TCPrintBean.confirmPrintTradeCer()}" 
+                                                  icon="ui-icon-print"  rendered="#{TCPrintBean.selectedCertDobj == null or (TCPrintBean.selectedCertDobj != null and TCPrintBean.selectedCertDobj.size() == 0)}"/>
+                                <p:commandButton  value="Confirm Print All Selected Trade Certificates" onsuccess="PF('printCertificate').hide();"                                   
+                                                  action="#{TCPrintBean.confirmPrintAllTradeCer()}" 
+                                                  icon="ui-icon-print" rendered="#{TCPrintBean.selectedCertDobj != null and TCPrintBean.selectedCertDobj.size() != 0}"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('printCertificate').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <div class="ui-grid-row center-position top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:button  value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>              
+                        </div>
+                    </div>
+                    <p:blockUI block="frm_printTC" widgetVar="blockPrintTC">
+                        <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+            </div>
+        </f:subview>
+    </ui:define>
+</ui:composition>

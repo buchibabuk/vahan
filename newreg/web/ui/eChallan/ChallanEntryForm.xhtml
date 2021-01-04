@@ -1,0 +1,1606 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"
+    xmlns:v4="http://java.sun.com/jsf/passthrough"
+    >
+
+    <ui:define name="content22">
+        <style>
+            #vehdet_penal.ui-panel .ui-panel-title,
+            #DetailsOfFeePaidOnRoad_Panel .ui-panel-title {
+                margin: 0 auto !important;
+            }
+
+
+        </style>
+        <h:body>
+            <!--               <ui:include src="/ui/recpt/form_current_rcpt_no.xhtml" /> -->
+            <h:form id="challan_form" prependId="false" >
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="bottom-space left-position">
+
+                        <p:outputPanel id="showDetailsPreviousChallan">
+                            <p:commandButton id="showDetails"   value="Previous Challan" rendered="#{save.vehicleChallanDetailsButton}">
+                                <p:ajax event="click" listener="#{save.getPriviousChallanDetails()}" update="PrevchallanDetails"></p:ajax>
+                            </p:commandButton>
+                            <p:commandButton value="FITNESS/TAX/INSURANCE/PERMITDETAILS"
+                                             rendered="#{save.vehicleChallanDetailsButton}"
+                                             action="#{save.getdetailsforvehicle()}"
+                                             update="showVehicleOtherDetails"
+                                             />
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <p:blockUI block="@form" widgetVar="bui_fancy">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>  
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>
+                <div class="ui-grid ui-grid-responsive">
+                    <p:panel header="Application No" visible="#{save.applicationNo ne null}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_application_No" value="Application No:"/>
+                                </label>
+                                <p:inputText id="tf_application_No" value="#{save.applicationNo}"  styleClass="text-uppercase" maxlength="11" disabled="true" />
+                            </div>
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:panel header="Challan Detail" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_vcr_no" value="Challan No:"/>
+                                        </label>
+                                        <p:inputText id="tf_vcr_no" 
+                                                     value="#{save.challanNo}"  
+                                                     disabled="#{save.config_dobj.book_no_enable}" 
+                                                     maxlength="14" 
+                                                     size="20"  
+                                                     required="true" 
+                                                     styleClass="text-uppercase"
+                                                     converter="toUpperCaseConverter"
+                                                     requiredMessage="Please Enter The Challan No." >
+                                            <p:ajax event="blur" listener="#{save.disableOnRoadDetails()}" update="DetailsOfFeePaidOnRoad_Panel"></p:ajax>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="som_officer"  value="Challan Officer:"/>
+                                        </label>
+                                        <p:selectOneMenu id="som_officer" value="#{save.officerNo}" editable="false"  styleClass="bottom-space" required="true" filter="true" requiredMessage="Please Select The Officer" >  
+                                            <f:selectItems value="#{save.officer}"/>  
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_place" value="Place:"/>
+                                        </label>
+                                        <p:inputText id="tf_place"
+                                                     value="#{save.challanPlace}" 
+                                                     styleClass="text-uppercase" 
+                                                     converter="toUpperCaseConverter"
+                                                     maxlength="30" 
+                                                     size="29" 
+                                                     autocomplete="off" 
+                                                     required="true" 
+                                                     requiredMessage="Please Enter The Place"
+                                                     disabled="#{save.appl_details.current_action_cd ne 11104}"
+                                                     >
+                                            <p:ajax event="blur" process="@this" update="@this "/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="lb_vcr_dt" value="Challan Date:"  rendered="#{save.config_dobj.is_challan_date}"/>
+                                        </label>
+                                        <p:calendar  id="challan_date" 
+                                                     size="20" 
+                                                     pattern="dd/MM/yyyy" 
+                                                     navigator="true" 
+                                                     autocomplete="off"
+                                                     value="#{save.challanDateCal}"
+                                                     maxdate="#{save.maxDate}"
+                                                     rendered="#{save.config_dobj.is_challan_date}"
+                                                     >
+                                            <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                            <p:ajax event="dateSelect" listener="#{save.receiptDt()}" update="cal_RecieptDate"> </p:ajax>
+                                        </p:calendar>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="lb_time" value="Time(HHMM):"  rendered="#{save.config_dobj.is_challan_time}"/>
+                                        </label>
+                                        <p:inputText id="tf_time"
+                                                     value="#{save.challanTime}" 
+                                                     size="20" 
+                                                     autocomplete="off" 
+                                                     rendered="#{save.config_dobj.is_challan_time}"/>
+                                    </div>
+
+
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="NCCR_No" value="N.C.C.R No:" rendered="#{save.config_dobj.is_nccr_no}"/>
+                                        </label>
+                                        <p:inputText id="NCCR_No"  value="#{save.nccrNo}"  maxlength="6"  autocomplete="off"  rendered="#{save.config_dobj.is_nccr_no}"/>
+                                    </div>
+
+
+
+                                </div>
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="coming_from" value="Coming From:" rendered="#{save.config_dobj.commingFrom}"/>
+                                        </label>
+                                        <p:inputText id="coming_from"  value="#{save.commingFrom}" styleClass="text-uppercase"  converter="toUpperCaseConverter"  maxlength="100"  autocomplete="off" required="true" requiredMessage="Coming From can not be blank."
+                                                     rendered="#{save.config_dobj.commingFrom}"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="going_to" value="Going To:" rendered="#{save.config_dobj.goingTo}"/>
+                                        </label>
+                                        <p:inputText id="going_to"  value="#{save.goingTo}" styleClass="text-uppercase"  converter="toUpperCaseConverter"  maxlength="100"  autocomplete="off" required="true" requiredMessage="Going To can not be blank."
+                                                     rendered="#{save.config_dobj.goingTo}"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:keyFilter for="tf_vcr_no" mask="alphanum"></p:keyFilter>
+                            <p:keyFilter for="NCCR_No" mask="num"></p:keyFilter>
+                            <p:keyFilter for="tf_place" mask="alpha"></p:keyFilter>
+                            <p:panel id="vehdet_penal" styleClass="top-space bottom-space">
+                                <f:facet name="header"> 
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6 left-position">
+                                            <h:outputText value="Vehicle Details" styleClass="inline-section font-bold" /></div>
+                                        <div class="ui-grid-col-6 right-position right-space">
+                                            <p:outputLabel for="checkbox_miss_veh" value="Save With Chassis No:" styleClass="inline-section right-space bottom-space" />
+                                            <p:selectBooleanCheckbox id="checkbox_miss_veh" value="#{save.cbSaveByChassisNo}">
+                                                <p:ajax process="checkbox_miss_veh" event="change" listener="#{save.showPanels()}" update="tf_regn_no2 tf_chessis_no vehicleinfo"></p:ajax>
+                                            </p:selectBooleanCheckbox>
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_regn_no2" value="Vehicle No:"/>
+                                        </label>
+                                        <p:inputText id="tf_regn_no2"
+                                                     value="#{save.tfVehno2}"
+                                                     disabled="#{save.tfVehicleNo2Disabled}" 
+                                                     size="6" maxlength="10" 
+                                                     styleClass="text-uppercase"
+                                                     converter="toUpperCaseConverter"
+                                                     onkeypress="return NoSpecialCharacter(event)"
+                                                     autocomplete="off" 
+                                                     style="width: 90% !important;"
+                                                     >
+                                            <p:ajax process="tf_regn_no2" 
+                                                    event="blur" 
+                                                    onstart ="PF('bui_fancy').show();" 
+                                                    onerror ="PF('bui_fancy').hide();" 
+                                                    oncomplete="PF('bui_fancy').hide()" 
+                                                    listener="#{save.getDataWithRegnNo('regn_no',save.tfVehno2)}"
+                                                    update="tf_chessis_no tf_regn_no2 sm_vehicle_class  tf_seat_cap tf_stand_cap tf_color tf_sleeper tf_owner_name sm_region_state sm_region_code tf_ld_wt sm_fuel sm_offence_sel  hiddenaddressField sm_accused_catg  sm_vehicle_type :challan_form:showDetailsPreviousChallan vehicleDetailsDatble">
+                                            </p:ajax>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_chessis_no" value="Chassis No:"/>
+                                        </label>
+                                        <p:inputText
+                                            id="tf_chessis_no" 
+                                            value="#{save.chasiNo}"
+                                            disabled="#{save.tfChessisNoDisabled}"
+                                            styleClass="text-uppercase"
+                                            converter="toUpperCaseConverter"
+                                            size="55" 
+                                            maxlength="30"
+                                            autocomplete="off" required="true" requiredMessage="Please Enter The Chassis No.">
+                                        </p:inputText>
+                                        <!--</div>-->
+
+                                    </div>
+
+
+                                    <div class="ui-grid-col-4">
+                                        <div class="inline-section">
+                                            <p:commandButton id="showPanel" value="+" action="#{save.showPanel()}"  immediate="true" update="vehdet_penal " styleClass="inline-section right-space top-space" rendered="#{save.showPlusButton}"/>
+                                            <p:commandButton id="hidePanel" value="-" action="#{save.hidePanel()}" immediate="true" update="vehdet_penal " styleClass="inline-section right-space top-space" rendered="#{save.showMinusButton}"  />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <p:panel id="vehicleinfo" styleClass="border-none" rendered="#{save.showVehicleInfoPanel}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_region_state" value="State:"/>
+                                            </label>
+                                            <p:selectOneMenu id="sm_region_state" value="#{save.state}" disabled="#{save.disableOwnerDetails}" styleClass="bottom-space" required="true" requiredMessage="Please Select The State" filter="true">  
+                                                <f:selectItems value="#{save.stateCode}" />  
+                                                <f:ajax execute="sm_region_state" event="change" listener="#{save.showRtoList()}" render="sm_region_code"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_region_code" value="RTO:"/>
+                                            </label>
+                                            <p:selectOneMenu id="sm_region_code" value="#{save.district}" disabled="#{save.disableOwnerDetails}" required="true" requiredMessage="Please Select The RTO" filter="true">  
+                                                <f:selectItems value="#{save.rtoCode}" />  
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_fuel" value="Fuel:"/>
+                                            </label>
+                                            <p:selectOneMenu id="sm_fuel" disabled="#{save.disableOwnerDetails}" value="#{save.fuel}" required="true" requiredMessage="Please Select The Fuel" filter="true">  
+                                                <f:selectItems value="#{save.fuelList}"/>  
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_owner_name" value="Owner Name:" />
+                                            </label>
+                                            <p:inputText id="tf_owner_name"  
+
+                                                         value="#{save.ownerNAme}" 
+                                                         styleClass="text-uppercase" 
+                                                         converter="toUpperCaseConverter"
+                                                         size="55" 
+                                                         disabled="#{save.disableOwnerDetails}"  
+                                                         maxlength="50" 
+                                                         autocomplete="off" 
+                                                         required="true"
+                                                         requiredMessage="Please Enter The Owner Name"
+                                                         >
+                                                <p:ajax event="blur" process="@this" update="@this "/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_vehicle_type" value="Vehicle Type:"/>
+                                            </label>
+                                            <p:selectOneMenu id="sm_vehicle_type" value="#{save.vehicleType}" disabled="#{save.disableOwnerDetails}" required="true" requiredMessage="Please Select The Vehicle Class" >  
+                                                <f:selectItem itemLabel="----Select----" itemValue="-1"/>  
+                                                <f:selectItem itemLabel="Transport" itemValue="1"/>  
+                                                <f:selectItem itemLabel="NonTransport" itemValue="2"/>  
+                                                <p:ajax event="change" process="sm_vehicle_type" listener="#{save.showVehicleClass()}" update="sm_vehicle_class"></p:ajax>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_vehicle_class" value="Vehicle Class:"/>
+                                            </label>
+                                            <p:selectOneMenu id="sm_vehicle_class" value="#{save.vhClass}" disabled="#{save.disableOwnerDetails}" required="true" requiredMessage="Please Select The Vehicle Class" filter="true">  
+                                                <f:selectItems value="#{save.vehclass}"/>  
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel id="lb_seat_cap" value="Seating capacity:"/>
+                                            </label>
+                                            <p:inputText id="tf_seat_cap"  value="#{save.seatCap}" maxlength="3" onkeypress="return checkIt(event)" disabled="#{save.disableOwnerDetails}"   size="10" />
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel id="lb_stand_cap" value="Standing capacity" />
+                                            </label>
+                                            <p:inputText id="tf_stand_cap" value="#{save.standCap}" maxlength="3" onkeypress="return checkIt(event)" disabled="#{save.disableOwnerDetails}"    size="10" />
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_sleeper" value="Sleeper capacity" />
+                                            </label>
+                                            <p:inputText id="tf_sleeper" value="#{save.sleeperCap}" maxlength="2" onkeypress="return checkIt(event)" disabled="#{save.disableOwnerDetails}"    size="10" />
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_color" value="Color:"/>
+                                            </label>
+                                            <p:inputText id="tf_color" value="#{save.color}" styleClass="input" maxlength="15"  converter="toUpperCaseConverter" disabled="#{save.disableOwnerDetails}"  size="10" required="true"  requiredMessage="Please Enter The Color">
+                                                <p:ajax event="blur" process="@this" update="@this "/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel id="lb_ld_wt" value="Laden Weight:"/>
+                                            </label>
+                                            <p:inputText id="tf_ld_wt" value="#{save.ladenWeight}" maxlength="6" disabled="#{save.disableOwnerDetails}" onkeypress="return checkIt(event)"  size="10" />
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                            </label>
+                                            <h:inputHidden value="#{save.hiddenaddressField}" id="hiddenaddressField"></h:inputHidden>
+                                        </div>
+                                    </div>
+                                </p:panel>
+
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-12 center-position"> 
+
+                                    </div>
+                                </div>
+
+                            </p:panel>
+                            <p:keyFilter for="tf_chessis_no" mask="alphanum"></p:keyFilter>
+                            <p:keyFilter for="tf_owner_name" mask="alpha"></p:keyFilter>
+                            <p:keyFilter for="tf_ld_wt" mask="num"></p:keyFilter>
+                            <p:keyFilter for="tf_seat_cap" mask="num"></p:keyFilter>
+                            <p:keyFilter for="tf_stand_cap" mask="num"></p:keyFilter>
+                            <p:keyFilter for="tf_sleeper" mask="num"></p:keyFilter>
+                            <p:dialog  id="showVehicleOtherDetails" modal="true" header="FITNESS/TAX/INSURANCE/PERMITDETAILS DETAILS" widgetVar="otherDetailsOfVehicle" >
+                                <ui:include src="/ui/permit/form_permit_check_Details.xhtml">
+                                    <ui:param name="Other_Veh_Info" value="#{save}"/>
+                                </ui:include>
+                            </p:dialog>
+                            <p:dialog  id="vehicleDetailsDatble" header="Vehicle Details" widgetVar="DetailsOfVehicle" >
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:dataTable  value="#{save.challanDetailsList}" var="challan" >
+
+                                            <p:column headerText="Vehicle No." width="8%">
+                                                <h:outputText value="#{challan.vehno2}"/>
+                                            </p:column>
+                                            <p:column headerText="Chessis No." width="9%">
+                                                <h:outputText value="#{challan.chasiNo}"/>
+                                            </p:column>
+                                            <p:column headerText="State" width="8%">
+                                                <p:selectOneMenu value="#{challan.state}" disabled="true" >
+                                                    <f:selectItems value="#{save.stateCode}"></f:selectItems>
+                                                </p:selectOneMenu>
+
+                                            </p:column>                                    
+                                            <p:column headerText=" Rto " width="10%">
+                                                <p:selectOneMenu value="#{challan.district}" disabled="true">
+                                                    <f:selectItems value="#{save.rtoCode}"></f:selectItems>
+                                                </p:selectOneMenu>
+
+                                            </p:column>
+                                            <p:column headerText=" Fuel" width="10%">
+                                                <p:selectOneMenu value="#{challan.fuel}"  disabled="true">
+                                                    <f:selectItems value="#{save.fuelList}"></f:selectItems>
+                                                </p:selectOneMenu>
+                                            </p:column>
+                                            <p:column headerText=" Owner Name " width="10%" style="word-break: keep-all;">
+                                                <h:outputText value="#{challan.ownerName}"/>
+                                            </p:column>
+                                            <p:column headerText=" Vehicle Class " width="11%">
+                                                <p:selectOneMenu value="#{challan.vhClass}" disabled="true">
+                                                    <f:selectItems value="#{save.vehclass}"></f:selectItems>
+                                                </p:selectOneMenu>
+
+                                            </p:column>
+                                            <p:column headerText=" Color ">
+                                                <h:outputText value="#{challan.color}"/>
+                                            </p:column>
+                                            <p:column headerText=" Vehicle Type " width="10%">
+                                                <p:selectOneMenu value="#{challan.vehicleType}" disabled="true">
+                                                    <f:selectItem itemLabel="----Select----" itemValue="-1"/>  
+                                                    <f:selectItem itemLabel="Transport" itemValue="1"/>  
+                                                    <f:selectItem itemLabel="NonTransport" itemValue="2"/>  
+                                                </p:selectOneMenu>
+
+                                            </p:column>
+                                            <p:column headerText=" Seating capacity " style="word-break: keep-all;">
+                                                <h:outputText value="#{challan.seatCap}"/>
+                                            </p:column>
+                                            <p:column headerText=" Standing Capacity " style="word-break: keep-all;">
+                                                <h:outputText value="#{challan.standCap}"/>
+                                            </p:column>
+                                            <p:column headerText=" Sleeper Capacity " style="word-break: keep-all;">
+                                                <h:outputText value="#{challan.sleeperCap}"/>
+                                            </p:column>
+                                            <p:column headerText=" Laden Wieght " style="word-break: keep-all;">
+                                                <h:outputText value="#{challan.ladenWt}"/>
+                                            </p:column>
+                                            <p:column headerText=" Select Row " width="5%" style="word-break: keep-all;">
+                                                <p:selectBooleanCheckbox value="#{save.selectedRow}"  >
+                                                    <p:ajax event="change" listener="#{save.selectRow(challan)}" update=":challan_form:vehdet_penal :challan_form:tf_regn_no2 :challan_form:tf_ld_wt :challan_form:tf_chessis_no :challan_form:sm_vehicle_class :challan_form:tf_seat_cap :challan_form:tf_stand_cap :challan_form:tf_color :challan_form:tf_sleeper :challan_form:tf_owner_name :challan_form:sm_region_state :challan_form:sm_region_code :challan_form:sm_fuel :challan_form:sm_offence_sel :challan_form:sm_accused_catg :challan_form:sm_vehicle_type"/>
+                                                </p:selectBooleanCheckbox>
+                                            </p:column>
+                                        </p:dataTable> 
+                                    </div>
+                                </div>       
+
+                            </p:dialog>
+
+
+                            <p:outputPanel id="accDet" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:remoteCommand name="onCellEditTableComplete" update="accuseddeatil" />
+                                        <!--<p:dataTable value="#{save.accusedDetails}"  rendered="#{save.showaccusedDataTable}" var="acc_details"-->  
+                                        <p:dataTable value="#{save.accusedDetails}"  var="acc_details" 
+                                                     id="accuseddeatil" editable="true" 
+                                                     style="width:auto;" styleClass="top-space bottom-space">
+                                            <f:facet name="header"> 
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6 left-position"><h:outputText value="Accused Details" styleClass="inline-section top-space font-bold" /></div>
+                                                    <div class="ui-grid-col-6 right-position"><p:commandButton id="bt_add_accused"  onclick="PF('dialog_accused').show()"   value="ADD ACCUSED"  /></div>
+                                                </div>
+                                            </f:facet>
+                                            <p:ajax event="rowEdit" listener="#{save.onEdit}" oncomplete="onCellEditTableComplete()"  />  
+                                            <p:ajax event="rowEditCancel" listener="#{save.onCancel}"   oncomplete="onCellEditTableComplete()"   /> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Accuse Name" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accName}" styleClass="text-uppercase"  />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{acc_details.accName}"  onkeyup="this.value = this.value.toUpperCase();" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Accuse Type" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accDesc}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{acc_details.accDesc}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Addresss" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accAddress}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{acc_details.accAddress}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="DL/Bladge No" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accDLBladgeNo}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{acc_details.accDLBladgeNo}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column rendered="#{save.config_dobj.accu_pol_sta}">
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Police Station"  />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accPoliceStation}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{acc_details.accPoliceStation}" styleClass="text-uppercase" maxlength="20"/>  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column  rendered="#{save.config_dobj.accu_city}">
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Accused City" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accCity}" styleClass="text-uppercase"/>  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{acc_details.accCity}" styleClass="text-uppercase" maxlength="20"/>  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column  rendered="#{save.config_dobj.accu_flag}">
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Accused Flag"/>  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accFlag}" styleClass="text-uppercase"  />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:selectOneMenu id="accused_flag" value="#{acc_details.accFlag}" >
+                                                            <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                                            <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                                        </p:selectOneMenu>      
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column rendered="#{save.config_dobj.accu_pin_cd}">
+                                                <f:facet name="header" >  
+                                                    <h:outputText value="Pincode"/>  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{acc_details.accPincode}" styleClass="text-uppercase"/>  
+                                                    </f:facet>  
+                                                    <f:facet name="input" >  
+                                                        <p:inputText value="#{acc_details.accPincode}" styleClass="text-uppercase"  maxlength="6" id="tb_pincode" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+
+                                            <p:column>  
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Option" />  
+                                                </f:facet>
+                                                <p:rowEditor />  
+                                            </p:column> 
+                                        </p:dataTable>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="OffenceDetailsPenal"   styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <!--rendered="#{save.showOffenceDetailPanel}" Commented By Nitin-->
+                                        <p:remoteCommand name="onCellEditTableComplete" update="selected_offence_for_accuse" />
+                                        <p:dataTable 
+                                            id="selected_offence_for_accuse"
+                                            value="#{save.offenceDetails}"
+                                            rowIndexVar="rowIndex"
+                                            var="offDetail"
+                                            editable="true"
+                                            selection="#{save.offenceDobj}" 
+                                            rowKey="#{offDetail.offenceCode}"
+                                            >
+                                            <p:ajax event="rowEdit" listener="#{save.onEditOffecedetails}"  oncomplete="onCellEditTableComplete()"/>  
+                                            <p:ajax event="rowEditCancel" listener="#{save.onCancelffencedetails}" oncomplete="onCellEditTableComplete()" update=":challan_form:tf_CompFee"/> 
+                                            <f:facet name="header"> 
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6 left-position"><h:outputText value="Offence Details" styleClass="inline-section top-space font-bold" /></div>
+                                                    <div class="ui-grid-col-6 right-position"><p:commandButton id="bt_add_accused"  onclick="PF('dialogOffenceDetails').show()"   value="ADD OFFENCE"  /></div>
+                                                </div>
+                                            </f:facet>
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Accuse" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <p:outputLabel value="#{offDetail.accusedDescr}" styleClass="text-uppercase" />
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:outputLabel value="#{offDetail.accusedDescr}" styleClass="text-uppercase" ></p:outputLabel>
+                                                    </f:facet>  
+                                                </p:cellEditor> 
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Offence" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <p:outputLabel value="#{offDetail.offenceDescr}" styleClass="text-uppercase" />
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:outputLabel value="#{offDetail.offenceDescr}" styleClass="text-uppercase" ></p:outputLabel>
+                                                    </f:facet>  
+                                                </p:cellEditor> 
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Under Section" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <p:outputLabel value="#{offDetail.mvcrClause}" styleClass="text-uppercase" />
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:outputLabel value="#{offDetail.mvcrClause}" styleClass="text-uppercase" ></p:outputLabel>
+                                                    </f:facet>  
+                                                </p:cellEditor> 
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Penalty" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <p:outputLabel value="#{offDetail.penalty}" styleClass="text-uppercase" />                     
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:outputLabel value="#{offDetail.penalty}" styleClass="text-uppercase"></p:outputLabel>                    
+                                                    </f:facet>  
+                                                </p:cellEditor> 
+                                            </p:column>
+
+                                            <p:column headerText="Options">  
+                                                <p:rowEditor  />  
+                                            </p:column>
+                                        </p:dataTable>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:panel header="Optional Activities" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="checkbox_document_impound" value="Document Impounded"  styleClass="inline-section right-space top-space"  />
+                                        <p:selectBooleanCheckbox id="checkbox_document_impound" value="#{save.documentImpoundCheckBox}">
+                                            <p:ajax process="checkbox_document_impound" event="change" listener="#{save.showDocumentDialog()}" update="panel_doc_impounded"></p:ajax>
+                                        </p:selectBooleanCheckbox>
+                                    </div> 
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="checkbox_vehicle_impounded" value="Vehicle Impounded" styleClass="inline-section right-space top-space" />                   
+                                        <p:selectBooleanCheckbox id="checkbox_vehicle_impounded"  value="#{save.vehicleImpoundCheckBox}">
+                                            <p:ajax process="checkbox_vehicle_impounded" event="change" listener="#{save.showPanels}" update="panel_vehicle_impnd"></p:ajax>
+                                        </p:selectBooleanCheckbox>
+                                    </div> 
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="checkbox_Challan_refered_to_court" value="Challan Refered To Court"  styleClass="inline-section right-space top-space" />                                 
+                                        <p:selectBooleanCheckbox id="checkbox_Challan_refered_to_court"  value="#{save.referTOCourtCheckBox}">
+                                            <p:ajax process="checkbox_Challan_refered_to_court" event="change" listener="#{save.showPanels}" update="courtDetails,DetailsOfFeePaidOnRoad_Panel"></p:ajax>
+                                        </p:selectBooleanCheckbox>
+                                    </div>
+                                    <div class="ui-grid-col-3">
+                                        <p:outputLabel for="checkbox_WitnessDetails" value="Witness Details"  styleClass="inline-section right-space top-space" />
+                                        <p:selectBooleanCheckbox id="checkbox_WitnessDetails"  value="#{save.witnessDetailsCheckBox}">
+                                            <p:ajax process="checkbox_WitnessDetails" event="change" listener="#{save.showWitnessDialog()}" update="witnessDetailsDialog"></p:ajax>
+                                        </p:selectBooleanCheckbox>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:dialog widgetVar="dialog_accused"  width="600" modal="true" showEffect="fade" hideEffect="explode"  id="dialog_accused_details" header="Accused Details" >
+                                <p:panel id="accusedPanel">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_accused_catg" value="Accused Catg:" />
+                                            </label>
+                                            <p:selectOneMenu id="sm_accused_catg" value="#{save.accusCatg}"  filter="true" filterMatchMode="contains">  
+                                                <f:selectItems value="#{save.accused}"/>  
+                                                <p:ajax event="change" listener="#{save.filOwnerDetails()}" update="accusedPanel"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_accuse_name" value="Name:"/>
+                                            </label>
+                                            <p:inputText id="tf_accuse_name" 
+                                                         styleClass="text-uppercase" 
+                                                         converter="toUpperCaseConverter"
+                                                         maxlength="35"  
+                                                         value="#{save.accuName}"  
+                                                         size="18" 
+                                                         autocomplete="off" />
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_dl_no" value=" DL/Badge No:" />
+                                            </label>
+                                            <p:inputText id="tf_dl_no" value="#{save.dlNo}" maxlength="50" styleClass="text-uppercase"  converter="toUpperCaseConverter"  size="15" autocomplete="off"/>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_address" value="Address:"/>
+                                            </label>
+                                            <p:inputText id="tf_address" value="#{save.accuseAddress}" maxlength="100" styleClass="text-uppercase"   converter="toUpperCaseConverter" size="18" autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_accued_police_station" value="Police Station:" rendered="#{save.config_dobj.accu_pol_sta}"/>
+                                            </label>
+                                            <p:inputText id="tf_accued_police_station"
+                                                         value="#{save.accuesdPoliceSation}"
+                                                         maxlength="20" 
+                                                         styleClass="text-uppercase" 
+                                                         converter="toUpperCaseConverter"
+                                                         onkeypress=" return onlyCharNoSpace1(event)"  
+                                                         size="20" 
+                                                         autocomplete="off"
+                                                         rendered="#{save.config_dobj.accu_pol_sta}"/>
+
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_city" value="City:" rendered="#{save.config_dobj.accu_city}"/>
+                                            </label>
+                                            <p:inputText id="tf_city"
+                                                         value="#{save.accuesdCity}"
+                                                         maxlength="20" 
+                                                         styleClass="text-uppercase"  
+                                                         converter="toUpperCaseConverter"
+                                                         size="20" 
+                                                         onkeypress=" return onlyCharNoSpace1(event)"
+                                                         autocomplete="off"
+                                                         rendered="#{save.config_dobj.accu_city}"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_pin_code" value="PinCode:" rendered="#{save.config_dobj.accu_pin_cd}"/>
+                                            </label>
+                                            <p:inputText id="tf_pin_code" 
+                                                         value="#{save.accuesdPincode}" 
+                                                         maxlength="6" 
+                                                         styleClass="text-uppercase" 
+                                                         converter="toUpperCaseConverter"
+                                                         size="6" 
+                                                         autocomplete="off" 
+                                                         onkeypress="return checkIt(event)"
+                                                         rendered="#{save.config_dobj.accu_pin_cd}"
+                                                         />
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_accused_flag" value="Accused Flag:" rendered="#{save.config_dobj.accu_flag}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_accused_flag" value="#{save.accuesdFlag}" rendered="#{save.config_dobj.accu_flag}" >
+                                                <f:selectItem itemLabel="Select" itemValue="-1"/>
+                                                <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                                <f:selectItem itemLabel="NO" itemValue="N"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton 
+                                                id="add_acc_details" 
+                                                value="ADD ACCUSE"
+                                                onstart ="PF('bui_fancy').show();" 
+                                                onerror ="PF('bui_fancy').hide();" 
+                                                oncomplete="PF('bui_fancy').hide()" 
+                                                action="#{save.showaccusedDetails()}" 
+                                                update="accuseddeatil accDet :challan_form:sm_accused_catg_doc_impnd :challan_form:sm_accused_type accusedPanel"
+                                                process="accusedPanel">                                            
+                                            </p:commandButton>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                                <p:keyFilter for="tf_accuse_name" regEx="/[a-zA-Z ]/i"></p:keyFilter>
+                                <p:keyFilter for="tf_dl_no" mask="alphanum"></p:keyFilter>
+                                <p:keyFilter for="tf_pin_code" mask="num"></p:keyFilter>
+                            </p:dialog>
+
+                            <p:dialog id="dialogWitness" header="Witness Details" width="600" widgetVar="witnessDialog" modal="true"  showEffect="fade" hideEffect="explode">
+                                <p:panel id="witnessDetailsDialog"  >
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_Witness_Name"  value="Witness Name:"/>
+                                            </label>
+                                            <p:inputText 
+                                                id="tf_Witness_Name" 
+                                                value="#{save.witnessName}"
+                                                maxlength="50"
+                                                styleClass="text-uppercase" 
+                                                converter="toUpperCaseConverter"
+                                                >  
+                                            </p:inputText>
+                                        </div> 
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_Witness_Contact_No"  value="Witness Contact No:"/>
+                                            </label>
+                                            <p:inputText 
+                                                id="tf_Witness_Contact_No" 
+                                                value="#{save.witnessMobileNo}"
+                                                maxlength="10"
+                                                onkeypress="return checkIt(event)"
+                                                >  
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_Witness_Address"  value="Witness Address:"/>
+                                            </label>
+                                            <p:inputText 
+                                                id="tf_Witness_Address"
+                                                value="#{save.witnessAddress}"
+                                                maxlength="50"
+                                                styleClass="text-uppercase"
+                                                converter="toUpperCaseConverter"
+                                                >  
+                                            </p:inputText>
+                                        </div> 
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_witness_police_station"  value="Police Station:"/>
+                                            </label>
+                                            <p:inputText 
+                                                id="tf_witness_police_station"
+                                                value="#{save.witnessPoliceStationName}"
+                                                maxlength="50"
+                                                onkeypress=" return onlyCharNoSpace1(event)"
+                                                styleClass="text-uppercase" 
+                                                converter="toUpperCaseConverter"
+                                                >  
+                                            </p:inputText>
+                                        </div> 
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton id="add_witness_details" value="Add Witness" 
+                                                             process="witnessDetailsDialog"
+                                                             onstart ="PF('bui_fancy').show();" 
+                                                             onerror ="PF('bui_fancy').hide();" 
+                                                             oncomplete="PF('bui_fancy').hide()" 
+                                                             action="#{save.showWitnessDetails()}" 
+                                                             update=" witnessDetails tf_Witness_Address tf_Witness_Contact_No tf_Witness_Name tf_witness_police_station panel_Witness_Details" >                                                </p:commandButton>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:dialog>
+                            <p:outputPanel id="panel_Witness_Details"  >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:remoteCommand name="onCellEditTableComplete" update="witnessDetails" />
+                                        <p:dataTable 
+                                            rendered="#{save.showWitnessDetailsPenal}"
+                                            value="#{save.witnessDetailsList}" 
+                                            id="witnessDetails" 
+                                            var="witness"
+                                            rowIndexVar="rowIndex" 
+                                            widgetVar="witness" 
+                                            style="overflow-x:scroll; overflow-y:scroll"
+                                            editable="true" 
+                                            styleClass="top-space bottom-space"
+                                            >
+                                            <f:facet name="header"> 
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6 left-position"><h:outputText value="Witness Details" styleClass="inline-section top-space font-bold" /></div>
+                                                    <div class="ui-grid-col-6 right-position"><p:commandButton id="bt_add_accused"  onclick="PF('witnessDialog').show()"   value="Witness Details"  /></div>
+                                                </div>
+                                            </f:facet>
+                                            <p:ajax event="rowEdit" listener="#{save.onEditWitnessDetails}" oncomplete="onCellEditTableComplete()"/>  
+                                            <p:ajax event="rowEditCancel" listener="#{save.onCancelWitnessDetails}" oncomplete="onCellEditTableComplete()"/> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Witness Name" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{witness.witnessName}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{witness.witnessName}" disabled="#{save.appl_details.current_action_cd ne 11104}" styleClass="text-uppercase" maxlength="50" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Witness Contact No" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{witness.witnessContactNo}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{witness.witnessContactNo}" styleClass="text-uppercase" maxlength="11" disabled="true"/>  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Witness Address" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{witness.witnessAddress}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{witness.witnessAddress}" styleClass="text-uppercase"  maxlength="50" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Witness Police Station" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{witness.policeStation}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{witness.policeStation}" styleClass="text-uppercase"  maxlength="35"  />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column headerText="Options">  
+                                                <p:rowEditor />  
+                                            </p:column> 
+                                        </p:dataTable>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                            <p:keyFilter for="tf_Witness_Address" mask="alphanum"/>
+                            <p:keyFilter for="tf_Witness_Contact_No" mask="num"/>
+                            <p:keyFilter for="tf_Witness_Name" mask="alphanum"/>
+                            <p:keyFilter for="tf_witness_police_station" mask="alpha"/>
+                            <p:panel header="Court Details" id="courtDetails" visible="#{save.showRefToCourtPenal}" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="sm_court_list"  value="Court Name"/>
+                                        </label>
+                                        <p:selectOneMenu id="sm_court_list" value="#{save.courtName}" filter="true">  
+                                            <f:selectItem itemLabel="--Select Court--"  itemValue="-1" /> 
+                                            <f:selectItems value="#{save.courtCode}"/>  
+                                            <p:ajax process="sm_court_list" event="change" listener="#{save.getSelectedValues('court',save.courtName)}" update="sm_magistrate_list"></p:ajax>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <p:outputPanel rendered="#{save.config_dobj.ismagistrate_exist}">
+                                        <div class="ui-grid-col-4">
+
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_magistrate_list"  value="Magistrate:"/>
+                                            </label>
+                                            <p:selectOneMenu id="sm_magistrate_list" value="#{save.magistrate}"   filter="true">  
+                                                <f:selectItem itemLabel="--Select Magistrate--"  itemValue="-1" /> 
+                                                <f:selectItems value="#{save.magistrateList}"/>  
+                                                <p:ajax process="sm_magistrate_list" event="change" listener="#{save.getSelectedValues('magistrate',save.magistrate)}" update="sm_court_list"></p:ajax>
+
+                                            </p:selectOneMenu>
+
+                                        </div>
+                                    </p:outputPanel>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section"> 
+                                            <p:outputLabel for="cal_hearing_date" value="Hearing Date"/>
+                                        </label>
+                                        <p:calendar  
+                                            id="cal_hearing_date" 
+                                            value="#{save.heaaringDt}"
+                                            size="15" 
+                                            pattern="yyyy-MM-dd"
+                                            navigator="true"
+                                            autocomplete="off"
+                                            mindate ="#{save.maxDate}"
+                                            >
+                                        </p:calendar>
+                                    </div>
+                                </div>                                                               
+                            </p:panel>
+                            <p:dialog widgetVar="document_Dialog" width="600"  modal="true"  showEffect="fade" hideEffect="explode"  header="Document Impounded">
+                                <p:outputPanel>
+                                    <p:autoUpdate/>
+                                    <p:panel  id="panel_doc_impounded"  visible="#{save.showDocumentImpoundPenal}" styleClass="top-space bottom-space">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <h:outputLabel for="sm_document_Code" value="Document:"/>
+                                                </label>
+                                                <p:selectOneMenu id="sm_document_Code"  value="#{save.addDoc}" styleClass="bottom-space" filter="true"> 
+                                                    <f:selectItems value="#{save.docCode}" />  
+                                                    <p:ajax event="change" listener="#{save.changeDoc()}" update="tf_doc_name" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="sm_accused_catg_doc_impnd" value="Accused Catg:" />
+                                                </label>
+                                                <p:selectOneMenu id="sm_accused_catg_doc_impnd"  value="#{save.accCategInDocImp}">  
+                                                    <f:selectItems value="#{save.accusedUpdatedList}"/>  
+                                                </p:selectOneMenu>
+                                            </div>
+
+                                        </div>
+                                        <div class="ui-grid-row">
+
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel id="lb_validity" value="Validity"/>
+                                                </label>
+                                                <p:calendar value="#{save.docValidity}"  id="cal_validity"  size="15" pattern="dd/MM/yyyy" navigator="true" autocomplete="off" >
+                                                    <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                                </p:calendar>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_doc_no" value="Document No:"/>
+                                                </label>
+                                                <p:inputText id="tf_doc_no" value="#{save.docNo}" styleClass="text-uppercase"  converter="toUpperCaseConverter" maxlength="30" size="15"  autocomplete="off"/>
+                                            </div>
+
+                                        </div>
+                                        <div class="ui-grid-row">
+
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_iss_auth"  value="Issuing Authority:"/>
+                                                </label>
+                                                <p:inputText id="tf_iss_auth" value="#{save.issueAuth}" styleClass="text-uppercase"  converter="toUpperCaseConverter" onkeypress=" return onlyCharNoSpace1(event)" maxlength="25"   autocomplete="off"/>
+                                            </div>
+                                            <div class="ui-grid-col-6"  >
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_doc_name" value="Other Documents :" rendered="#{save.otherDocumentPanel}" />
+                                                </label>
+                                                <p:inputText id="tf_doc_name" value="#{save.docName}" styleClass="text-uppercase"  converter="toUpperCaseConverter" maxlength="30" size="15"  rendered="#{save.otherDocumentPanel}"  autocomplete="off" />
+                                            </div>
+                                        </div>  
+
+                                        <div class="ui-grid-row center-position">
+                                            <div class="ui-grid-col-12">
+                                                <p:commandButton
+                                                    id="bt_add_doc"
+                                                    value="ADD DOCUMENT" 
+                                                    process="panel_doc_impounded"
+                                                    onstart ="PF('bui_fancy').show()" 
+                                                    onerror ="PF('bui_fancy').hide()" 
+                                                    oncomplete="PF('bui_fancy').hide()" 
+                                                    action="#{save.showDocImpounded()}"
+                                                    update=" sm_document_Code sm_accused_catg_doc_impnd cal_validity tf_doc_no tf_iss_auth tf_doc_name docImpndTable ">                                                </p:commandButton> 
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                            </p:dialog>
+                            <p:outputPanel id="docImpndTable" >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:remoteCommand name="onCellEditTableComplete" update="documentImpounded" />
+                                        <p:dataTable 
+                                            value="#{save.docImpounded}"
+                                            rendered="#{save.showDocumentTable}"
+                                            id="documentImpounded" 
+                                            var="docImp" 
+                                            rowIndexVar="rowIndex"
+                                            widgetVar="doc_impnd" 
+                                            style="overflow-x:scroll; overflow-y:scroll" 
+                                            editable="true" 
+                                            styleClass="top-space bottom-space"
+                                            >
+                                            <f:facet name="header"> 
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6 left-position"><h:outputText value="Document Details" styleClass="inline-section top-space font-bold" /></div>
+                                                    <div class="ui-grid-col-6 right-position"><p:commandButton id="bt_add_accused" action="#{save.confirmDocDialog()}"   value="ADD DOCUMENT"  /></div>
+                                                </div>
+                                            </f:facet>
+                                            <p:ajax event="rowEdit" listener="#{save.onEditDocImpounded}" oncomplete="onCellEditTableComplete()"/>  
+                                            <p:ajax event="rowEditCancel" listener="#{save.onCancelDocImpounded}" oncomplete="onCellEditTableComplete()"/> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Document Code" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{docImp.documentDesc}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{docImp.documentDesc}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Accused category" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{docImp.accusedDescDocImpnd}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{docImp.accusedDescDocImpnd}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Doc Validity" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{docImp.showdate}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{docImp.showdate}"  styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Document No" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{docImp.docNo}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{docImp.docNo}" styleClass="text-uppercase" disabled="true" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Issuig Authority" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{docImp.issueAuth}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{docImp.issueAuth}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column>
+                                                <f:facet name="header">  
+                                                    <h:outputText value="Other Document" />  
+                                                </f:facet>
+                                                <p:cellEditor>  
+                                                    <f:facet name="output">  
+                                                        <h:outputText value="#{docImp.docName}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                    <f:facet name="input">  
+                                                        <p:inputText value="#{docImp.docName}" styleClass="text-uppercase" />  
+                                                    </f:facet>  
+                                                </p:cellEditor>
+                                            </p:column> 
+                                            <p:column headerText="Options">  
+                                                <p:rowEditor />  
+                                            </p:column> 
+                                        </p:dataTable>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                            <p:keyFilter for="tf_doc_no" mask="alphanum"></p:keyFilter>
+                            <p:keyFilter for="tf_iss_auth" mask="alphanum"></p:keyFilter>
+                            <p:panel id="panel_vehicle_impnd" header="Vehicle Impounded"  visible="#{save.showVehicleImpoundPenal}" styleClass="top-space bottom-space"> 
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="lb_impd_dt" value="Impounding Date:"/>
+                                        </label>
+                                        <p:calendar
+                                            value="#{save.vehImpdDate}"
+                                            id="cal_veh_impnd" 
+                                            size="15"  
+                                            pattern="dd/MM/yyyy"
+                                            navigator="true"
+                                            autocomplete="off"
+                                            maxdate="#{save.maxDate}"
+                                            >
+                                            <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                        </p:calendar> 
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_sez_no" value="Sezure No:"/>
+                                        </label>
+                                        <p:inputText
+                                            id="tf_sez_no"
+                                            onkeypress="return checkIt(event);"
+                                            size="10" 
+                                            maxlength="9"
+                                            value="#{save.sezNo}" 
+                                            autocomplete="off" 
+                                            />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_impd_place" value="Place Of Impound:"/>
+                                        </label>
+                                        <p:inputText
+                                            id="tf_impd_place"
+                                            value="#{save.impndPlace}"
+                                            styleClass="text-uppercase" 
+                                            converter="toUpperCaseConverter"
+                                            maxlength="30" 
+                                            size="44"  
+                                            autocomplete="off"
+                                            onkeypress=" return onlyCharNoSpace1(event)"
+                                            />
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_ofcr_to" value="Officer to Contact:"/>
+                                        </label>
+                                        <p:inputText 
+                                            id="tf_ofcr_to" 
+                                            value="#{save.contactOfficer}"
+                                            size="44"
+                                            styleClass="text-uppercase" 
+                                            converter="toUpperCaseConverter"
+                                            maxlength="35"
+                                            autocomplete="off"
+                                            onkeypress=" return onlyCharNoSpace1(event)"
+                                            />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_impdPolice_station" value="Police Station:" rendered="#{save.config_dobj.impnd_dist}"/>
+                                        </label>
+                                        <p:inputText 
+                                            id="tf_impdPolice_station" 
+                                            value="#{save.siezePoliceStationName}"
+                                            size="20"
+                                            styleClass="text-uppercase" 
+                                            converter="toUpperCaseConverter"
+                                            maxlength="20"
+                                            onkeypress=" return onlyCharNoSpace1(event)"
+                                            autocomplete="off"
+                                            rendered="#{save.config_dobj.impnd_pol_sta}"
+
+                                            />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_impdDistrict" value="District:" rendered="#{save.config_dobj.impnd_dist}"/>
+                                        </label>
+                                        <p:inputText 
+                                            id="tf_impdDistrict" 
+                                            value="#{save.siezeDistrictName}"
+                                            size="15"
+                                            styleClass="text-uppercase" 
+                                            converter="toUpperCaseConverter"
+                                            maxlength="20"
+                                            onkeypress=" return onlyCharNoSpace1(event)"
+                                            autocomplete="off"
+                                            rendered="#{save.config_dobj.impnd_dist}"
+                                            />
+                                    </div>
+                                </div>         
+                            </p:panel>
+                            <p:keyFilter for="tf_sez_no" mask="num"></p:keyFilter>
+                            <p:keyFilter for="tf_ofcr_to" mask="num"></p:keyFilter>
+                            <p:keyFilter for="tf_impdDistrict" mask="alpha"></p:keyFilter>
+                            <p:keyFilter for="tf_impdPolice_station" mask="alpha"></p:keyFilter>
+
+                            <p:dialog header="Offence Details"  widgetVar="dialogOffenceDetails" id="offenceDialog" width="700" showEffect="fade" hideEffect="explode" modal="true">
+                                <p:panel id="offenceDetailsOutputPanel"  >
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputLabel for="sm_accused_type" value="Accused Type:"/>
+                                        </label>
+                                        <p:selectOneMenu id="sm_accused_type" value="#{save.accuseInOffDetail}" styleClass="bottom-space" filter="true"> 
+                                            <f:selectItems value="#{save.accusedUpdatedList}"/>  
+                                            <p:ajax process="sm_accused_type sm_vehicle_class" event="change" listener="#{save.getOffenceAccordingAccuse()}" update="sm_offence_sel"></p:ajax>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputLabel for="sm_offence_sel" value="Offence:"/>
+                                        </label>
+                                        <p:selectOneMenu id="sm_offence_sel" label="Select Offence" value="#{save.offenceCode}" styleClass="bottom-space" filter="true"> 
+                                            <f:selectItems value="#{save.offenceList}"/> 
+                                            <p:ajax process="sm_offence_sel" event="change" listener="#{save.hideShowOverPenals()}" update="penal_over_load penal_access_passanger"></p:ajax>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-row center-position bottom-space">
+                                        <div class="ui-grid-col-12">
+                                            <p:commandButton 
+                                                id="bt_addOffence"
+                                                value="ADD OFFENCE" 
+                                                process="bt_addOffence penal_over_load penal_access_passanger"
+                                                action="#{save.getPenaltyWithOffenc()}" 
+                                                update=":challan_form:bt_save_challan selected_offence_for_accuse tf_CompFee OffenceDetailsPenal penal_over_load"> 
+                                            </p:commandButton>
+                                        </div>
+                                    </div> 
+                                </p:panel>
+                                <p:outputPanel> 
+                                    <p:autoUpdate/>
+                                    <p:panel  id="penal_over_load" header="OverLoad "   rendered="#{save.penalOverload}"  styleClass="top-space bottom-space">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <div class="ui-grid-col-3">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_actual_weight" value="Actual Weight:" />
+                                                    </label>
+                                                    <p:inputText id="tf_actual_weight" required="true" requiredMessage="Please Enter Actual weight"  maxlength="6"  value="#{save.actualWeight}" >
+                                                        <p:ajax event="blur" listener="#{save.overLoadVehicle()}" />
+                                                    </p:inputText>
+                                                </div>
+                                                <div class="ui-grid-col-3">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_over_load_weight" value="OverLoad Weight:" />
+                                                    </label>
+                                                    <p:inputText id="tf_over_load_weight" maxlength="6" disabled="true" value="#{save.overLoadWeight}" />
+                                                </div>
+                                                <div class="ui-grid-col-3">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_comp_fee_over_weight" value="Compounding Fee(Rs):" />
+                                                    </label>
+                                                    <p:inputText id="tf_comp_fee_over_weight"  value="#{save.compoundingFee}" />
+                                                </div>
+                                                <div class="ui-grid-col-3">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_goods" value="OverLoad Goods:" />
+                                                    </label>
+                                                    <p:selectOneMenu id="tf_goods" value="#{save.carryGoods}" styleClass="bottom-space" filter="true"> 
+                                                        <f:selectItems value="#{save.carryGoodsList}"/> 
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                    <p:keyFilter for="tf_over_load_weight" mask="num"></p:keyFilter>
+                                    <p:keyFilter for="tf_actual_weight" mask="num"></p:keyFilter>
+                                    <p:panel  header="Access Passenger by Animal" id="penal_access_passanger" rendered="#{save.penalAccessPassanger}" styleClass="top-space bottom-space">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_actual_psgnr_weight" value="Actual Passanger:"/>
+                                                    </label>
+                                                    <p:inputText id="tf_actual_psgnr_weight" maxlength="3"  value="#{save.actualPassangerWeight}" >
+                                                        <p:ajax event="change" listener="#{save.overLoadPassanger()}" update="tf_over_load_psgnr_weight tf_comp_fee_over_psngr_weight"/>
+                                                    </p:inputText>
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_over_load_psgnr_weight" value="OverLoad Passanger:"/>
+                                                    </label>
+                                                    <p:inputText id="tf_over_load_psgnr_weight"  maxlength="3"  value="#{save.overLoadPassangerWeight}" />
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_comp_fee_over_psngr_weight" value="Compounding Fee(Rs):"/>
+                                                    </label>
+                                                    <p:inputText id="tf_comp_fee_over_psngr_weight" value="#{save.compoundingFee}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+
+                                    <p:keyFilter for="tf_actual_psgnr_weight" mask="num"></p:keyFilter>
+                                    <p:keyFilter for="tf_over_load_psgnr_weight" mask="num"></p:keyFilter>
+                                    <p:keyFilter for="tf_over_load_psgnr_weight" mask="num"></p:keyFilter>
+                                </p:outputPanel>
+                            </p:dialog>
+
+                            <p:panel id="DetailsOfFeePaidOnRoad_Panel" styleClass="top-space bottom-space">
+
+                                <f:facet name="header"> 
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6 left-position">
+                                            <h:outputText value="Details Of Fee Paid On Road" styleClass="inline-section font-bold" /></div>
+
+                                    </div>
+                                </f:facet>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_reciept_No" value="Receipt No:"/>
+                                        </label>
+                                        <p:inputText id="tf_reciept_No" size="6" maxlength="12" styleClass="text-uppercase" required="#{save.settleAtSpot}" 
+                                                     requiredMessage="Receipt No is required"  converter="toUpperCaseConverter"
+                                                     value="#{save.rcieptNoInCompFee}"  autocomplete="off" disabled="#{save.recieptDateDisabled}">
+                                            <p:ajax event="blur" process="@this" listener="#{save.fetchadvcmpfee()}"
+                                                    update="DetailsOfFeePaidOnRoad_Panel cal_RecieptDate bt_comp_fee_payOnRoad" > </p:ajax>
+                                        </p:inputText>
+
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_CompFee" value="Compounding Fee:"/>
+                                        </label>
+                                        <p:inputText id="tf_CompFee" size="6" maxlength="5"
+                                                     onkeypress="return checkIt(event)"
+                                                     value="#{save.compFee}"  autocomplete="off" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="cal_RecieptDate" value="Receipt Date :"/>
+                                        </label>
+                                        <p:calendar 
+                                            id="cal_RecieptDate" size="5" value="#{save.rcieptDateInCompFee}"
+                                            pattern="dd/MM/yyyy" navigator="true" autocomplete="off" 
+                                            required="#{save.settleAtSpot}" requiredMessage="Receipt Date is required"
+                                            mindate="#{save.challanDateCal}" maxdate="#{save.challanDateCal}"
+                                            disabled="#{save.recieptDateDisabled}">
+                                            <p:ajax event="dateSelect"> </p:ajax>
+                                        </p:calendar>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_AdvanceCompFee" value="Advance Comp Fee:"/>
+
+                                        </label>
+                                        <p:inputText id="tf_AdvanceCompFee" size="6" maxlength="5" value="#{save.adCompFee}" autocomplete="off" disabled="#{save.advancedCompFeeDisabled}" >
+                                            <p:ajax event="blur" listener="#{save.setAdvanceFee(save.adCompFee)}"> </p:ajax>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-8">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_Remarks" value="Remarks"/>
+                                        </label>
+                                        <p:inputTextarea
+                                            id="tf_Remarks"
+                                            maxlength="500" 
+                                            value="#{save.accusedRemarks}"
+                                            styleClass="text-uppercase textareaforChallan"
+                                            converter="toUpperCaseConverter"
+                                            cols="120" required="#{save.settleAtSpot}" requiredMessage="Remarks is required"
+                                            >
+                                            <p:ajax event="blur"> </p:ajax>
+                                        </p:inputTextarea>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row center-position">
+                                    <div class="ui-grid-col-3">
+
+                                        <p:selectBooleanCheckbox id="checkbox_verify" value="#{save.settleAtSpot}" rendered="#{save.renderedSettleAtSpot}">
+                                            <p:ajax  event="change" listener="#{save.verifyFields()}" update="tf_reciept_No tf_CompFee cal_RecieptDate tf_AdvanceCompFee tf_Remarks"></p:ajax>
+                                        </p:selectBooleanCheckbox>
+                                        <p:outputLabel for="checkbox_verify" value="Settled at spot:" rendered="#{save.renderedSettleAtSpot}" styleClass="inline-section right-space bottom-space"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <p:commandButton id="bt_comp_fee_payOnRoad" value="Pay ON Road"  rendered="#{save.renderAtApproval}">
+                                            <p:ajax event="click" listener="#{save.feePayOnRoad()}" update="tf_reciept_No tf_AdvanceCompFee,cal_RecieptDate DetailsOfFeePaidOnRoad_Panel" disabled="#{save.disablePayonRoadButton}" ></p:ajax>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:keyFilter for="tf_AdvanceCompFee" mask="num"></p:keyFilter>
+                            <p:keyFilter for="tf_reciept_No" mask="alphanum"></p:keyFilter>
+                            <p:panel id="changedByPrevUser" rendered="#{save.prevChangedDataList.size()>0}" 
+                                     styleClass="top-space bottom-space" >
+                                <p:dataTable value="#{save.prevChangedDataList}" var="PrevUserdata" styleClass="panelRowHeight">
+                                    <p:column headerText="Changed by Employee" width="15%">
+                                        <h:outputText value="#{PrevUserdata.userName}" />
+                                    </p:column>
+
+                                    <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                        <h:outputText value="#{PrevUserdata.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                    </p:column>
+
+                                    <p:column headerText="Changed on" width="15%">
+                                        <h:outputText value="#{PrevUserdata.op_dt}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <p:panel rendered="#{save.appl_details.current_action_cd ne 11104}" styleClass="top-space bottom-space">
+                                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                    <ui:param name="app_disapp" value="#{save}"/>
+                                </ui:include>
+                            </p:panel>
+                            <p:dialog id="PrevchallanDetails" modal="true" widgetVar="dlgchallanDetails" header="Vehicle Challan Details">
+
+                                <p:dataTable value="#{save.previousChallanDetailsList}" var="data" styleClass="panelRowHeight" paginator="true" rows="6" >
+                                    <p:column headerText="Application No" width="15%">
+                                        <h:outputText value="#{data.applicationNO}" />
+                                    </p:column>
+
+                                    <p:column headerText="Owner Name" width="15%">
+                                        <h:outputText value="#{data.ownerName}" />
+                                    </p:column>
+
+                                    <p:column headerText="Challan No" width="15%">
+                                        <h:outputText value="#{data.challanNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Registration No" width="15%">
+                                        <h:outputText value="#{data.vehicleNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Challan Date" width="15%">
+                                        <h:outputText value="#{data.challanDt}"/>
+                                    </p:column>
+                                    <p:column headerText="Challan Officer" width="15%">
+                                        <h:outputText value="#{data.chalOff}"/>
+                                    </p:column>
+                                    <p:column headerText="Challan Place" width="15%">
+                                        <h:outputText value="#{data.challanPlace}"/>
+                                    </p:column>
+                                    <p:column headerText="Challan Status" width="15%">
+                                        <h:outputText value="#{data.statusOfChallan}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:dialog>
+                            <p:panel  rendered="#{save.appl_details.current_action_cd eq 11104}" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row center-position bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton id="bt_save_challan"   value="SAVE"
+                                                         action="#{save.saveChallanData()}"
+                                                         onclick="PF('bui_fancy').show()" 
+                                                         oncomplete="PF('bui_fancy').hide()" 
+                                                         ajax="false"
+                                                         rendered="#{save.disableSaveButton}"
+                                                         >
+
+                                        </p:commandButton>
+                                        <p:commandButton 
+                                            id="bt_reset" 
+                                            value="RESET"
+                                            update="@form"
+                                            onclick="PF('bui_fancy').show()" 
+                                            oncomplete="PF('bui_fancy').hide()" 
+                                            action="#{save.reset()}" 
+                                            immediate="true"
+                                            rendered="#{save.disableResetButton}"
+                                            >
+                                        </p:commandButton>
+
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/> 
+
+                                        </p:confirmDialog> 
+                                        <p:dialog id="printConfirmationPopup"  
+                                                  widgetVar="printParticular"
+                                                  modal="true" draggable="false" closable="false" hideEffect="explode"
+                                                  header="Printed Confirmation Panel" styleClass="center-position">  
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12 center-position bottom-space">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel value="Do you want to continue"/>
+                                                    </label>
+
+                                                    <p:commandButton  value="Confirm Print" onclick="PF('printParticular').hide();"                                   
+                                                                      action="/ui/reports/formVehicleChallanReport.xhtml?faces-redirect=true"
+                                                                      icon="ui-icon-check" ajax="false" immediate="true"/>
+                                                    <p:commandButton value="Cancel" onsuccess="PF('printParticular').hide();" icon="ui-icon-close"/>
+                                                </div>
+                                            </div>
+                                        </p:dialog>
+                                        <p:commandButton id ="bt_isprint" value="Print Challan Report"  action="#{save.confirmprintCertificate()}" rendered="#{save.disablePrintButton}" process="bt_isprint" immediate="true"/>   
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </div>
+                    </div>
+                </div>
+                <p:outputPanel id="rcptmsgDialog" >
+                    <p:dialog  header="Alert!" widgetVar="messageDialog_rcpt" modal="true" closeOnEscape="true" dynamic="true" resizable="false" >
+                        <p:outputLabel value="Receipt No is already exist. Please use unique Receipt No."/>               
+                    </p:dialog>
+                </p:outputPanel>
+                <vahan:vahanMessages messages="#{save.vahanMessages}"  rendered="#{save.vahanMessages ne null}"/>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

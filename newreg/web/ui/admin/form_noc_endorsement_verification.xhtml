@@ -1,0 +1,142 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formNocVerify"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.nocEndorsementVerification}</h1>
+                        <p class="red">#{language.lastNocIssued}</p>
+                    </div>
+
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputLabel id="showNocVerifiedMessg">
+                    <p:dialog widgetVar="successNocVerfiedDialog" id="successNocVerfiedMessage"  modal="true" closable="false" resizable="false" draggable="false" header="Success Message">
+                        <h:outputText value="#{nocVerifyBean.successNocVerificationMessg}" escape="false"/>
+                        <div class="center-position">
+                            <p:button value="#{language.ok}" onclick="PF('successNocVerfiedDialog').hide();"                                              
+                                      icon="ui-icon-check" outcome="home"/>
+                        </div>
+                    </p:dialog>
+                </p:outputLabel>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                    <div class="ui-grid-col-8">
+                        <p:panel id="noc_verification_subview_panelgrid" header="#{language.nocEndorsementVerification}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regnNo" value="#{language.home_rightpanelregno}" />
+                                    </label>
+                                    <p:inputText id="regnNo" value="#{nocVerifyBean.noc_dobj.regn_no}" required="true" 
+                                                 converter="toUpperCaseConverter" 
+                                                 requiredMessage="Blank Registration No" size="10" maxlength="10" autocomplete="off" styleClass="input">
+                                        <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="regnNo"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="chasi_no" value="#{language.chasi_no}"/>
+                                    </label>
+                                    <p:inputText id="chasi_no" value="#{nocVerifyBean.noc_dobj.chasiNo}" required="true" 
+                                                 converter="toUpperCaseConverter" 
+                                                 requiredMessage="Blank Chassis No" size="30" maxlength="30" autocomplete="off" styleClass="input">
+                                        <p:keyFilter regEx="#{constant.CHASIS_REG_EXPR}" for="chasi_no"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="state_from" value="#{language.stateFrom}:"/>
+                                    </label>
+                                    <p:selectOneMenu id="state_from" value="#{nocVerifyBean.noc_dobj.state_from}" filter="true" required="true" requiredMessage="State From Can not Be Empty">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                        <f:selectItems value="#{nocVerifyBean.state_list}"/>
+                                        <p:ajax event="change" listener="#{nocVerifyBean.updateRtoFromStateListener}" update="auth_from"/>
+                                        <f:validator for="state_from" validatorId="selectOneValidator_0"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="auth_from" value="#{language.authorityFrom}:"/>
+                                    </label>
+                                    <p:selectOneMenu id="auth_from" value="#{nocVerifyBean.noc_dobj.off_from}" filter="true" filterMatchMode="contains" required="true" 
+                                                     requiredMessage="Authority From Can not Be Empty">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                        <f:selectItems value="#{nocVerifyBean.office_list}"/>
+                                        <f:validator for="auth_from" validatorId="selectOneValidator_0"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="noc_date" value="#{language.nocIssueDate}:"/>
+                                    </label>
+                                    <p:calendar id="noc_date" value="#{nocVerifyBean.noc_dobj.noc_dt}" navigator="true" 
+                                                required="true" requiredMessage="Blank NOC Issue Date" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                                maxdate="#{nocVerifyBean.currentDate}" autocomplete="off">
+                                        <f:validateRequired for="noc_date"/>
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="noc_date"/>
+                                    </p:calendar>    
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="nocNo" value="#{language.nocNo}"/>
+                                    </label>
+                                    <p:inputText id="nocNo" value="#{nocVerifyBean.noc_dobj.noc_no}" required="true" 
+                                                 converter="toUpperCaseConverter" 
+                                                 requiredMessage="Blank NOC No" maxlength="30" autocomplete="off" styleClass="input">
+                                        <p:keyFilter regEx="/[a-zA-Z0-9/]/i" for="nocNo"/>  
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="ncrb_clear_no" value="#{language.ncrbClearanceNo}:"/>
+                                    </label>
+                                    <p:inputText id="ncrb_clear_no" value="#{nocVerifyBean.noc_dobj.ncrb_ref}" required="true" converter="toUpperCaseConverter"
+                                                 requiredMessage="Blank N.C.R.B. Clearance No" maxlength="20" autocomplete="off" styleClass="input">
+                                        <f:validateRequired for="ncrb_clear_no"/>
+                                        <f:validateLength maximum="20" for="ncrb_clear_no"/>
+                                        <p:keyFilter regEx="/[a-zA-Z0-9-/]/i" for="ncrb_clear_no"/>  
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row center-position top-space">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="#{language.nocVerification}" action="#{nocVerifyBean.verification()}"
+                                                     update="@form" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();">
+                                        <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:button value="#{language.login_back}" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </div>
+                </div>
+                <p:blockUI block="formNocVerify" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

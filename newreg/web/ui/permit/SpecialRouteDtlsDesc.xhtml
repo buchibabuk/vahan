@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <f:subview id="subview_permit_owner_dtlss">
+        <ui:composition>
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel>
+                    <h:outputText value="Travel within state: " />
+                    <p:selectBooleanButton id="value2"
+                                           value="#{splRouteDtlsDesc.withInState}" onLabel="Yes" offLabel="No" disabled="#{splRouteDtlsDesc.disableMenuCheck}"
+                                           onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px">
+                        <p:ajax update="routeDescription"
+                                listener="#{splRouteDtlsDesc.onClickWithInState}" />
+                    </p:selectBooleanButton>
+                </p:outputPanel>
+                <p:outputPanel id="routeDescription">
+                    <p:outputPanel rendered="#{!splRouteDtlsDesc.withInState}">
+                        <ol class="font-bold">
+                            <li><h:outputText
+                                    value="Starting date of journey in which vehicle travel in within state region" />
+                                <div class="ui-grid-row font-bold">
+                                    <div class="ui-grid-col-4 top-space bottom-space">
+                                        From
+                                        <p:calendar id="jourStartFrom" disabled="true" readonly="true"
+                                                    mindate="#{splRouteDtlsDesc.valid_from}"
+                                                    maxdate="#{splRouteDtlsDesc.valid_from}"
+                                                    value="#{splRouteDtlsDesc.valid_from}" readonlyInput="true"
+                                                    pattern="dd-MMM-yyyy" required="true"
+                                                    placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999">
+                                            <p:ajax event="dateSelect" process="@this"
+                                                    partialSubmit="true"
+                                                    update="jourStartUpto jourOthStateFrom jourOthStateTo jourEndStartFrom" />
+                                        </p:calendar>
+
+                                    </div>
+                                    <div class="ui-grid-col-4 top-space bottom-space">
+                                        To:
+                                        <p:calendar id="jourStartUpto"
+                                                    disabled="#{splRouteDtlsDesc.valid_from eq null or splRouteDtlsDesc.confirmCheckBox}"
+                                                    mindate="#{splRouteDtlsDesc.valid_from}"
+                                                    maxdate="#{splRouteDtlsDesc.valid_upto}"
+                                                    value="#{splRouteDtlsDesc.journeyStartValidUptoDate}"
+                                                    required="true" readonlyInput="true" pattern="dd-MMM-yyyy"
+                                                    placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999"
+                                                    requiredMessage="please fill date of journey in which vehicle travel in within state region">
+                                            <p:ajax event="dateSelect" process="@this"
+                                                    listener="#{splRouteDtlsDesc.updateDates}"
+                                                    partialSubmit="true"
+                                                    update="jourOthStateFrom jourOthStateTo jourEndStartFrom" />
+                                        </p:calendar>
+                                    </div>
+                                </div></li>
+                            <li><h:outputText
+                                    value="Date in which vehicle travel outside the state region" />
+                                <div class="ui-grid-row font-bold">
+                                    <div class="ui-grid-col-4 top-space bottom-space">
+                                        From
+                                        <p:calendar id="jourOthStateFrom" disabled="true"
+                                                    readonly="true"
+                                                    mindate="#{splRouteDtlsDesc.journeyStartValidUptoDate}"
+                                                    maxdate="#{splRouteDtlsDesc.journeyStartValidUptoDate}"
+                                                    value="#{splRouteDtlsDesc.journeyStartValidUptoDate}"
+                                                    required="true" readonlyInput="true" pattern="dd-MMM-yyyy"
+                                                    placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999"
+                                                    requiredMessage="please fill date" />
+                                    </div>
+                                    <div class="ui-grid-col-4 top-space bottom-space">
+                                        To:
+                                        <p:calendar id="jourOthStateTo"
+                                                    disabled="#{splRouteDtlsDesc.journeyStartValidUptoDate eq null or splRouteDtlsDesc.confirmCheckBox}"
+                                                    mindate="#{splRouteDtlsDesc.journeyStartValidUptoDate}"
+                                                    maxdate="#{splRouteDtlsDesc.valid_upto}"
+                                                    value="#{splRouteDtlsDesc.journeyEndsValidFromDate}"
+                                                    readonlyInput="true" pattern="dd-MMM-yyyy" required="true"
+                                                    placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999"
+                                                    requiredMessage="Please fill date in which vehicle travel outside the state region">
+                                            <p:ajax event="dateSelect" process="@this"
+                                                    partialSubmit="true"
+                                                    update="jourEndStartFrom jourEndStartUpto" />
+                                        </p:calendar>
+                                    </div>
+                                </div></li>
+                            <li><h:outputText
+                                    value="Date in which vehicle reach back from outside the state region" />
+                                <div class="ui-grid-row font-bold">
+                                    <div class="ui-grid-col-4 top-space bottom-space">
+                                        From
+                                        <p:calendar id="jourEndStartFrom" disabled="true"
+                                                    readonly="true"
+                                                    mindate="#{splRouteDtlsDesc.journeyEndsValidFromDate}"
+                                                    maxdate="#{splRouteDtlsDesc.valid_upto}" required="true"
+                                                    value="#{splRouteDtlsDesc.journeyEndsValidFromDate}"
+                                                    readonlyInput="true" pattern="dd-MMM-yyyy"
+                                                    placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999" />
+                                    </div>
+                                    <div class="ui-grid-col-4 top-space bottom-space">
+                                        To:
+                                        <p:calendar id="jourEndStartUpto" disabled="true"
+                                                    readonly="true" mindate="#{splRouteDtlsDesc.valid_upto}"
+                                                    maxdate="#{splRouteDtlsDesc.valid_upto}"
+                                                    value="#{splRouteDtlsDesc.valid_upto}" required="true"
+                                                    readonlyInput="true" pattern="dd-MMM-yyyy"
+                                                    placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999">
+                                            <p:ajax event="dateSelect" process="@this"
+                                                    partialSubmit="true" update="jourEndStartUpto" />
+                                        </p:calendar>
+                                    </div>
+                                </div></li>
+                        </ol>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <p:selectBooleanCheckbox id="confir"
+                                                         value="#{splRouteDtlsDesc.confirmCheckBox}" disabled="#{splRouteDtlsDesc.disableMenuCheck}"
+                                                         itemLabel="Whatever you've mentioned is correct.">
+                                    <p:ajax update="confir jourStartUpto jourOthStateTo"
+                                            listener="#{splRouteDtlsDesc.confirmation}" />
+                                </p:selectBooleanCheckbox>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+        </ui:composition>
+    </f:subview>
+</html>

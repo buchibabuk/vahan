@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <p:outputPanel id="doc_list_panel" rendered="#{docUpload.renderUiBasedDMSDocPanel}">
+        <p:outputPanel rendered="#{docUpload.documentUploadShow}">
+            <p:dataTable id="documentUploadDT" value="#{docUpload.docDescrList}" var="docDescr" rowIndexVar="index" >
+                <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                    <p:outputLabel value="#{index +1}."/></p:column>
+                <p:column headerText="Documents" style="width: 40%;">#{docDescr.doc_desc}</p:column>
+                <p:column headerText="Document Information">
+                    <h:outputLabel value="#{docDescr.doc_url}" />
+                </p:column>
+            </p:dataTable>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">  
+                    <p:commandButton id="idViewDoc" styleClass="red" value="Modify/View Documents for Application No #{docUpload.applNo}" onclick="PF('buiMaster').show();" onsuccess="PF('buiMaster').hide();"  action="#{docUpload.validateApplAndFileUpload()}" update="successFileUpload dmsFileUpload_panel" /> 
+                    <p:commandButton id="sent_mail_btn" styleClass="open-counter" value="Send Mail For Docs Modify" onclick="PF('buiMaster').show();" rendered="#{docUpload.renderedMailButton}" onsuccess="PF('buiMaster').hide();" action="#{docUpload.showSendMailDialog}" update="sent_mail_dialog" /> 
+                </div>
+            </div>
+        </p:outputPanel>
+    </p:outputPanel>
+
+    <p:outputPanel id="doc_list_panel_api" rendered="#{docUpload.renderApiBasedDMSDocPanel}">
+        <p:outputPanel id="doc_panel_api" rendered="#{docUpload.documentUploadShow}">
+            <ui:include src="/ui/form_api_based_digital_signed_doc_upload.xhtml">
+                <ui:param name="docDigitalSignDobj" value="#{docUpload}"/>
+            </ui:include>
+            <p:outputPanel styleClass="center-position">
+                <p:commandButton id="sent_mail_btn_api" styleClass="open-counter" value="Send Mail For Docs Modify" onclick="PF('buiMaster').show();" rendered="#{docUpload.renderedMailButton}" onsuccess="PF('buiMaster').hide();" action="#{docUpload.showSendMailDialog}" update="sent_mail_dialog" />              
+            </p:outputPanel>
+        </p:outputPanel>
+    </p:outputPanel>
+
+    <!--Veriy Upload Document for OwnerAdmin -->
+    <p:outputPanel id="verifyOwnerAdminId">
+        <p:outputPanel rendered="#{docUpload.uploadOwnerAdminDoc}">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position"> 
+                    <p:commandButton id="mdfOwnerid" styleClass="red" value="Upload Verify Documents for Application No #{docUpload.applNo}" onclick="PF('buiMaster').show();" onsuccess="PF('buiMaster').hide();"  action="#{docUpload.uploadVerifyOwnerAdminDoc()}" update="doc_list_panel successFileUpload dmsFileUpload_panel "  /> 
+                </div>
+            </div>
+        </p:outputPanel>
+    </p:outputPanel>
+    <!-- !!!End Veriy Upload Document for OwnerAdmin -->
+
+
+    <!--DOCUMENT UPLOAD BUTTON FOR RTO-->
+    <p:outputPanel id="office_doc_btn">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12 center-position">
+                <p:commandButton id="idUploadAtRto" styleClass="red" rendered="#{docUpload.renderDocumentUploadBtn and !docUpload.documentUploadShow}" value="Upload Documents" onclick="PF('buiMaster').show();" onsuccess="PF('buiMaster').hide();" action="#{docUpload.validateApplAndFileUpload}" />             
+            </div>
+        </div>
+    </p:outputPanel>
+    <!--END DOCUMENT UPLOAD BUTTON FOR RTO-->
+
+    <p:outputPanel id="dmsFileUpload_panel">
+        <p:dialog id="viewUploadedDms" modal="true" widgetVar="dmsfileUploaded" header="-- Displaying D.M.S Utility : Uploaded Documents Viewier -- " closeOnEscape="true" closable="true" dynamic="true" draggable="false" >
+            <p:ajax  event="close" onstart="PF('buiMaster').show();" process="@this" onsuccess="PF('buiMaster').hide();" listener="#{docUpload.dialogCloseEventListener()}" />
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <iframe  src="#{docUpload.dmsFileUploadUrl}"  height="600" width="1290" frameborder="0" scrolling="auto" marginheight="1" marginwidth="1"/>
+                </div> 
+            </div>
+        </p:dialog>
+    </p:outputPanel>
+
+    <p:outputPanel id="successFileUpload">
+        <p:dialog widgetVar="successUploadDialog" header="Confirmation !!!" modal="true" closable="true" dynamic="true">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h:outputLabel escape="false" value="#{docUpload.successUplodedMsg}"/> 
+                    <p:button value="Ok" outcome="home" rendered="#{!docUpload.documentUploadShow}" />
+                    <p:commandButton value="Ok" update="doc_list_panel sent_mail_dialog" onsuccess="PF('successUploadDialog').hide();" rendered="#{docUpload.renderedMailButton}" />
+                    <p:commandButton value="Ok" update="doc_list_panel sent_mail_dialog" onsuccess="PF('successUploadDialog').hide();" rendered="#{docUpload.renderverifyDocUpload}" />
+                </div>
+            </div>
+        </p:dialog>
+    </p:outputPanel>
+
+    <p:outputPanel id="sent_mail_dialog" >
+        <p:dialog modal="true" widgetVar="sendMailDialogVar" header="Sent Mail Utility" closeOnEscape="false" dynamic="true" closable="false" draggable="false" >
+            <ui:include src="/ui/form_send_mail.xhtml" />
+        </p:dialog>
+    </p:outputPanel>
+
+    <!--DOCUMENT UPLOAD AT RTO LEVEL-->
+    <p:outputPanel id="uploadDocumentPanel">
+        <p:dialog widgetVar="dialogUploadMsgVar" header="Confirmation !!!" modal="true" closable="true" dynamic="true">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h:outputLabel escape="false" value="#{docUpload.successUplodedMsg}"/> 
+                    <p:commandButton value="Ok" update="workbench_tabview:doc_list_panel workbench_tabview:office_doc_btn" onclick="PF('dialogUploadMsgVar').hide();" rendered="#{docUpload.documentUploadShow}"  />
+                </div>
+            </div>
+        </p:dialog>
+    </p:outputPanel>
+    <!--END DOCUMENT UPLOAD AT RTO LEVEL-->
+
+    <p:blockUI block=":masterLayout" widgetVar="buiMaster">
+        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+    </p:blockUI>
+</html>
+

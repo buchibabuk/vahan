@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22">
+        <h:form prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1><p:outputLabel value="#{pmtDupPrint.header}" styleClass="header-main"/></h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                </div>
+            </div>
+
+            <p:panel styleClass="top-space" rendered="#{!pmtDupPrint.panel_visible}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Registration No./Permit No." />
+                        </label>
+                        <p:inputText id="regn_no" value="#{pmtDupPrint.regn_no}" required="true" 
+                                     styleClass="text-uppercase" autocomplete="off" size="28">
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Get Details" action="#{pmtDupPrint.get_details()}" 
+                                         update="dup_cert allDetails saveDtls" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                        <p:commandButton value="Reset"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:panel id="dup_cert" header="Reasion Apply for Duplicale Permit" styleClass="top-space bottom-space" visible="#{pmtDupPrint.dup_cert_visible}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="cm_va_reason" value="Reason"/>
+                        </label>
+                        <p:selectOneMenu id="cm_va_reason" value="#{pmtDupPrint.reasonSelect}" filter="true">
+                            <f:selectItems value="#{pmtDupPrint.reasonList}"/>   
+                            <p:ajax event="change"  listener="#{pmtDupPrint.vehReasonChangeListener}" update="tf_Reason dupPanel"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_Reason" value="Reason:"/>
+                        </label>
+                        <p:inputText id="tf_Reason" value="#{pmtDupPrint.reason}"  disabled="#{pmtDupPrint.reasonDisable}"
+                                     converter="toUpperCaseConverter" 
+                                     requiredMessage="Blank : Reason" required="true" 
+                                     maxlength="25" autocomplete="off" styleClass="input">
+                            <f:validateLength maximum="25"/>
+                            <f:validateRequired/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Required Document:"/>
+                        </label>
+                        <p:selectCheckboxMenu id="listDocument"  value="#{pmtDupPrint.pmtDoc}" label="Permit Document" filter="true" filterMatchMode="contains" >
+                            <f:selectItems value="#{pmtDupPrint.pmtDocList}"/>
+                        </p:selectCheckboxMenu>
+                    </div>
+                </div>
+                <p:outputPanel id="dupPanel">
+                    <p:panel  rendered="#{pmtDupPrint.dupPanel}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_Fir_no" value="FIR No:"/> 
+                                </label>
+                                <p:inputText id="tf_Fir_no"  value="#{pmtDupPrint.fir_no}" 
+                                             converter="toUpperCaseConverter" size="30" 
+                                             required="true" requiredMessage="Blank : Fir No" maxlength="25"  
+                                             autocomplete="off" styleClass="input">
+                                    <f:validateLength maximum="25"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="dc_FirDt" value="FIR Date:"/>
+                                </label>
+                                <p:calendar  id="dc_FirDt" value="#{pmtDupPrint.fir_dt}" navigator="true" pattern="dd-MM-yyyy" requiredMessage="Blank : Fir Date" 
+                                             maxdate="#{pmtDupPrint.currDate}" required="true" autocomplete="off">
+                                    <f:validateRequired/>
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_PoliceStation" value="Police Station:"/>
+                                </label>
+                                <p:inputText id="tf_PoliceStation"  value="#{pmtDupPrint.police_station}" converter="toUpperCaseConverter" size="30" maxlength="35" 
+                                             required="true" requiredMessage="Blank : Police Station" autocomplete="off" styleClass="input">
+                                    <f:validateLength maximum="35"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel> 
+                </p:outputPanel>
+            </p:panel>
+
+            <p:outputPanel id="allDetails">
+                <p:tabView  styleClass="top-space bottom-space" >
+                    <p:tab id="Owner_Details" title="Owner/Permit Detail">
+                        <p:panel header="Permit Details" styleClass="top-space bottom-space">
+                            <ui:include src="/ui/permit/form_permit_dtls.xhtml"/>
+                        </p:panel>
+
+                        <p:outputPanel id="authDtls" >
+                            <p:panel header="Authorization Details" styleClass="top-space" rendered="#{pmtDupPrint.authDobj ne null}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="authNo" value="Authorization No"/> 
+                                        </label>
+                                        <p:inputText id="authNo" value="#{pmtDupPrint.authDobj.authNo}" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="authFrom" value="Authorization From"/> 
+                                        </label>
+                                        <p:calendar id="authFrom" pattern="dd-MMM-yyyy" value="#{pmtDupPrint.authDobj.authFrom}" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="authUpto" value="Authorization Upto"/> 
+                                        </label>
+                                        <p:calendar id="authUpto" pattern="dd-MMM-yyyy" value="#{pmtDupPrint.authDobj.authUpto}" disabled="true"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="top-space">
+                            <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                                <ui:param name="Owner_permit_detail" value="#{pmtDupPrint}"/>
+                            </ui:include>
+                        </p:outputPanel>
+                    </p:tab>
+                    <p:tab id="Other_Veh_Info" title="Other Vehicle Detail">
+                        <ui:include src="/ui/permit/form_permit_check_Details.xhtml">
+                            <ui:param name="Other_Veh_Info" value="#{pmtDupPrint}"/>
+                        </ui:include>
+                    </p:tab>
+                    <p:tab id="Upload" title="View/Upload Documents" rendered="#{pmtDupPrint.renderDocUploadTab}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 top-space-25">
+                                <p:commandButton value="View/Upload Documents"
+                                                 icon="ui-icon-check" action="#{pmtDupPrint.openModifyUploadedDocumentService}"
+                                                 style="margin-top: 0px !important;" update="test_opnFrame"  />
+                            </div>    
+                        </div>
+                    </p:tab>
+
+                </p:tabView>
+            </p:outputPanel>
+
+            <p:panel id="saveDtls" styleClass="top-space" rendered="#{!pmtDupPrint.panel_visible}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Save" action="#{pmtDupPrint.save_deatils()}" update="app_num_id" disabled="#{!pmtDupPrint.dup_cert_visible}">
+                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <p:commandButton value="Reset" action="action=/ui/permit/form_Dup_Permit_Print.xhtml?faces-redirect=true"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputLabel value="#{pmtDupPrint.app_no_msg}" escape="false"/>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Exit for Another Application" action="/ui/permit/form_Dup_Permit_Print.xhtml?faces-redirect=true"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+
+
+            <p:panel id="changedByPrevUser" rendered="#{pmtDupPrint.prevChangedDataList.size()>0}"
+                     toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                <p:dataTable value="#{pmtDupPrint.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                    <p:column headerText="Changed by Employee" width="15%">
+                        <h:outputText value="#{data.userName}" />
+                    </p:column>
+                    <p:column headerText="Changed Data by Previous Employee" width="70%">
+                        <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                    </p:column>
+                    <p:column headerText="Changed on" width="15%">
+                        <h:outputText value="#{data.op_dt}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+            </p:confirmDialog>
+
+            <p:outputPanel rendered="#{pmtDupPrint.panel_visible}" styleClass="top-space bottom-space">
+                <ui:include src="/ui/role/app_disapp_new.xhtml">
+                    <ui:param name="app_disapp" value="#{pmtDupPrint}"/>
+                </ui:include>
+            </p:outputPanel>
+            <p:outputPanel id="test_opnFrame">
+                <p:dialog widgetVar="ifrmDlg" modal="true" header="Upload Document">
+                    <p:ajax event="close" />
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <iframe id="iframeCenter" src="#{pmtDupPrint.dmsUrl}"
+                                    height="600" width="1200" frameborder="0" scrolling="auto"
+                                    marginheight="1" marginwidth="1"> </iframe>
+                        </div>
+                    </div>
+                </p:dialog>
+            </p:outputPanel>
+            <p:blockUI block="allDetails" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <vcomponent:vahanMessages messages="#{PasPermitDtls.vahanMessages}"  rendered="#{PasPermitDtls.vahanMessages ne null}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

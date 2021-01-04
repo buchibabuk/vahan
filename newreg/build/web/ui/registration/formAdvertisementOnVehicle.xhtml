@@ -1,0 +1,106 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"  
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{adv_veh_bean.appl_details}"/>            
+            </ui:include>  
+        </h:form>
+    </ui:define>
+    <ui:define name="content">  
+        <h:form id="formid">
+            <div class="ui-grid ui-grid-responsive">
+
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Advertisement on vehicle</h1>
+                    </div>
+                </div>
+
+                <!--################################# Vehicle Details ######################################## -->
+                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                    <ui:param name="ownerDetail" value="#{adv_veh_bean.ownerDetail}"/>
+                    <ui:param name="listOwnerCatg" value="#{adv_veh_bean.listOwnerCatg}"/>
+                </ui:include>
+
+
+                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                    <ui:param name="ownerDetail" value="#{adv_veh_bean.ownerDetail}"/>
+                </ui:include>
+
+                <p:panel header="Permit Details" styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section"> <p:outputLabel
+                                    value="Permit No." styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="tf_permit_no" value="#{adv_veh_bean.tf_permit_no}" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section"> <p:outputLabel
+                                    value="Issued by R.T.A." styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="tf_RTA" value="#{adv_veh_bean.tf_RTA}" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section"> <p:outputLabel
+                                    value="Valid upto"  styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="tf_permit_upto" value="#{adv_veh_bean.tf_permit_upto}" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel header="Period for the display of advertisment"
+                         styleClass="top-space">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-2">
+                            <label class="field-label resp-label-section"> <p:outputLabel
+                                    value="Start Date" styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="tf_ad_from_dt" value="#{adv_veh_bean.tf_ad_from_dt}" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-2">
+                            <label class="field-label resp-label-section"> <p:outputLabel
+                                    value="End Date" styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="tf_ad_upto_dt" value="#{adv_veh_bean.tf_ad_upto_dt}" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="outputpanel_appdisapp">    
+                            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                <ui:param name="app_disapp" value="#{adv_veh_bean}"/>
+                            </ui:include>
+                        </p:outputPanel>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog>   
+                    </div>
+                </div>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

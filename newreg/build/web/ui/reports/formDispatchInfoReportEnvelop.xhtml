@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+
+        <style>
+            * {
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+            }
+
+            @page {
+                padding: 0mm !important;
+                size: A4 portrait !important;
+                margin-left: 0mm !important; 
+                margin-bottom: 0mm !important; 
+                margin-right: 0mm !important; 
+                margin-top:  0mm !important; 
+            }
+
+            @media print {
+                html, body {
+                    width: 210mm;
+                    height: 297mm;
+                    size: A4 portrait !important;
+                }
+                .page-layout {
+                    margin: 0 !important;
+                }
+            }
+        </style>
+    </h:head>
+    <h:body onload="window.print();" style="margin: 0px !important;">
+        <h:form id="RcEnvInfo" prependId="false">
+            <div class="center-position">
+                <p:button id="back_to_dwld_disp_env" value="Back" outcome="/ui/reports/formDownloadDispatch.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <div class="page-layout">
+                <ui:repeat id="dt_rcEnvInfo" value="#{disReportBean.dispatchInfoReportDobjList}" var="rcDelList">    
+                    <p:outputPanel rendered="#{disReportBean.isStickerPrint}" styleClass="dl-dispatch-section">
+                        <div class="dl-dispatch-container">
+                            <div class="dl-dispatch-header-barcode">
+                                <h:outputText value="*#{rcDelList.dispatch_ref_no_for_display}*" styleClass="dispatch-barcode"/>
+                            </div>
+                            <div class="dl-dispatch-header">
+                                <h:outputText value="#{rcDelList.regnNo} - #{rcDelList.dispatch_ref_no_for_display}" styleClass="font-bold" />
+                            </div>
+                            <div class="content-position">                            
+                                <h:outputText value="#{rcDelList.ownerName} " styleClass="font-bold" /><br />
+                                <h:outputText value=" S/W/D of #{rcDelList.fname}" /> <br />
+                                <h:outputText value="#{rcDelList.add1} #{rcDelList.add2} #{rcDelList.add3}" />  <br />
+                                <h:outputText value="#{rcDelList.city}, #{rcDelList.stateName}-#{rcDelList.pincode}," /> 
+                                <h:outputText value="(M):91- #{rcDelList.mobile_no}" styleClass="font-bold"/>
+
+                            </div>
+
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{disReportBean.isEnvelopPrint}" >
+                        <div class="dispatch-section">
+                            <p:outputLabel value="#{rcDelList.regnNo}  -  #{rcDelList.dispatch_ref_no_for_display} " styleClass="font-bold" />                            
+                        </div>
+                        <div class="dispatch-section">                            
+                            <h:outputText value="#{rcDelList.ownerName} " styleClass="font-bold" /> <h:outputText value=" S/W/D of #{rcDelList.fname}" />
+                            <p:outputLabel value="#{rcDelList.add1}" />
+                            <p:outputLabel value="#{rcDelList.add2}" />
+                            <p:outputLabel value="#{rcDelList.add3}" />
+                            <p:outputLabel value="#{rcDelList.city}, #{rcDelList.stateName}, #{rcDelList.pincode}" />
+                            <p:outputLabel value="Mobile No #{rcDelList.mobile_no}"/>
+                        </div>
+
+
+                        <div class="page-break"></div>
+                    </p:outputPanel>
+                </ui:repeat>
+
+            </div>
+        </h:form>
+    </h:body>
+</html>
+
+

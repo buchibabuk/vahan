@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<html  
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"    
+    xmlns:f="http://java.sun.com/jsf/core"> 
+
+    <p:dataTable id="paidPmtFeeDtls" value="#{paidFeeDt.feeTaxPaidList}"
+
+                 rowIndexVar="index" var="paidFee" emptyMessage="#{language.feeTaxDtlsNotFound}">
+        <f:facet name="header">
+            <div class="left-position">
+                #{language.paidFeeDtls}
+            </div>                        </f:facet>
+        <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+            <h:outputText value="#{index+1}." />
+        </p:column>
+        <p:column headerText="#{language.purpose}">
+            <h:outputText value="#{paidFee.purpose}"/>
+        </p:column>
+        <p:column headerText="#{language.vehNo}" >
+            <h:outputText value="#{paidFee.regn_no}"/>
+        </p:column>
+        <p:column headerText="#{language.rcpt_no}" >
+            <h:outputText value="#{paidFee.rcpt_no}"/>
+        </p:column>
+        <p:column headerText="#{language.fee}">
+            <h:outputText value="#{paidFee.fees}"/>
+        </p:column>
+        <p:column headerText="#{language.fine}/#{language.penalty}">
+            <h:outputText value="#{paidFee.fine}"/>
+        </p:column>
+        <p:column headerText="#{language.rcpt_dt}">
+            <h:outputText value="#{paidFee.rcpt_dt}"/>
+        </p:column>
+    </p:dataTable>
+
+</html>

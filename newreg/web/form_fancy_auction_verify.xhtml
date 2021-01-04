@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <f:subview id="form_workbench">
+                        <p:growl id="growl" showSummary="true" sticky="true">
+                            <p:autoUpdate/>
+                        </p:growl>  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:tab id="wb_tab" title="Verify / Approve Auction">                                              
+                                    <!--################################# Purpose Wise Form Start ######################## -->                                    
+                                    <p:panel header="List Of Application " id="listofapplication">
+                                        <p:dataTable value="#{fancynumberverifyapprovebean.listAuctionApplicationNumbers}" var="listApplications"  rowIndexVar="rowIndex" styleClass="panelTableHeight">
+                                            <p:columnGroup type="header">
+                                                <p:row>
+                                                    <p:column headerText="Sr. No" />
+                                                    <p:column headerText="Details" />
+                                                    <p:column headerText="Amount Details" />
+                                                    <p:column headerText="Status" />
+                                                    <p:column headerText="Action" />
+                                                </p:row>
+                                            </p:columnGroup>
+                                            <p:column headerText="Sr. No">
+                                                <h:outputText value="#{rowIndex+1}"/>
+                                            </p:column>
+                                            <p:column>
+
+                                                <table>
+                                                    <tr >
+                                                        <td >
+                                                            Application No 
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.regn_appl_no}           
+                                                        </td>
+
+                                                        <td colspan="2">
+                                                            #{listApplications.recp_dt}           
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <strong> Receipt No</strong>            
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.recp_no}          
+                                                        </td>
+
+                                                        <td colspan="2">
+                                                            #{listApplications.recp_dt}           
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <strong> Owner Name    </strong>        
+                                                        </td>
+                                                        <td colspan="3">
+                                                            #{listApplications.owner_name}          
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </p:column>
+
+                                            <p:column>
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <strong>  Reserve </strong>
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.reserve_amt}  
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <strong> Offer </strong>
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.offer_amt}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <strong> DD </strong>
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.draft_amt}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <strong> Aution</strong>
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.auction_amt}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <hr/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Total 
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.total_amt} 
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Balance 
+                                                        </td>
+                                                        <td>
+                                                            #{listApplications.bal_amt}
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </p:column>
+                                            <p:column>
+                                                <table>
+                                                    <tr>
+                                                        <td colspan="2" style="background-color: #{listApplications.attendance_at_auction eq 'A' or listApplications.attendance_at_auction eq 'P'? (listApplications.attendance_at_auction eq 'A'? 'red':'green') :'#D358F7'};">
+                                                            #{listApplications.attendance_at_auction eq "A" or listApplications.attendance_at_auction eq "P"? (listApplications.attendance_at_auction eq "A"? "Absent":"Present") :"Attendance Pending"}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="background-color:#{listApplications.status eq 'A' or listApplications.status eq 'R'?listApplications.status eq 'A'?'#81F79F':'#FA5858':'#F3F781'};">
+                                                                    #{ listApplications.status eq "A" or listApplications.status eq "R"?listApplications.status eq "A"?"Allocated":"Rejected":listApplications.status}
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:panel>
+                                    <!--################################# Purpose Wise Form End ######################### -->
+                                </p:tab>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space">
+                            <div class="ui-grid-col-12">
+                                <p:panel id="app_dsapp_panel">            
+                                    <p:panel id="panelMoveCancel" binding="#{approveImpl.panelMoveCancel}"> 
+                                        <p:outputPanel>
+                                            <p:menuButton value="Save-Options">
+                                                <p:menuitem id="fileMove" value="File Movement" onclick="PF('panelAppDisapp').show();" icon="ui-icon-transferthick-e-w" immediate="true">
+                                                </p:menuitem>
+                                                <p:menuitem>
+                                                    <p:commandLink styleClass="ui-menuitem-link"  action="#{comparisonBean.saveChangedData()}" ajax="false">
+                                                        <h:outputText styleClass="ui-menuitem-icon ui-icon ui-icon-disk"/>
+                                                        <h:outputText styleClass="ui-menuitem-text" value="Save" />
+                                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                                    </p:commandLink>
+                                                </p:menuitem>
+                                                <p:separator />
+                                                <p:menuitem value="Homepage" url="/vahan/home.xhtml" icon="ui-icon-home" />
+                                            </p:menuButton>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                    <p:dialog header="File Movement" widgetVar="panelAppDisapp" modal="true" dynamic="true" closeOnEscape="true">
+
+                                        <p:panel id="panelAppDisapp" styleClass="top-space bottom-space">         
+
+                                            <h:panelGrid columns="2" cellspacing="3">
+
+                                                <h:panelGrid columns="2">
+                                                    <p:outputLabel value="Office Remarks" for="off_remark"/>                                 
+                                                    <p:inputTextarea id="off_remark" binding="#{approveImpl.office_remark}" maxlength="100"
+                                                                     cols="40" rows="1" placeholder="Office Remark ?" styleClass="text-uppercase"/>
+                                                    <p:outputLabel value="Public Remarks" for="pub_remark"/>                                   
+                                                    <p:inputTextarea id="pub_remark" binding="#{approveImpl.public_remark}" maxlength="100" 
+                                                                     cols="40" rows="1" placeholder="Public Remark ?" styleClass="text-uppercase"/>
+                                                </h:panelGrid>                      
+                                                <p:selectOneRadio id="bt_status"  binding="#{approveImpl.newStatus}" onchange="return showSeatList();"  columns="1" layout="grid" 
+                                                                  required="false" requiredMessage="You have to select atleast one option while Save">
+                                                    <f:selectItem itemLabel="Proceed to Next Seat" itemValue="#{constant.STATUS_COMPLETE}"/>                          
+                                                </p:selectOneRadio>
+                                            </h:panelGrid>
+                                            <p:separator style="color: #000;"/>
+                                            <p:spacer height="30"/>
+                                            <p:commandButton  value="Save" action="#{fancynumberverifyapprovebean.approveActionPerformed}" 
+                                                              ajax="true" onclick="PF('bui').show();" icon="ui-icon-disk">
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                <p:blockUI block="panelAppDisapp" widgetVar="bui">
+                                                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                </p:blockUI>
+                                            </p:commandButton>  
+                                        </p:panel>
+                                    </p:dialog> 
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                                    </p:confirmDialog>  
+                                </p:panel>   
+                            </div>
+                        </div>
+                    </f:subview>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

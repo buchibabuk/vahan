@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <f:subview id="subview_owner_dtls">
+        <p:panel id="stateTaken" header="Permit States "  styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-6 bottom-space">
+                    <p:selectManyMenu id="advanced" disabled="#{containerBean.disable_region}" value="#{containerBean.selectedStates}"
+                                      filter="true" showCheckbox="true" styleClass="permit-state-section">
+                        <f:selectItems value="#{containerBean.stateList}"/>
+                        <p:ajax update="stateName" event="change" listener="#{containerBean.onSelectState}"/> 
+                    </p:selectManyMenu>
+                </div>
+                <div class="ui-grid-col-4">
+                    <p:inputTextarea id="stateName" readonly="true" value="#{containerBean.selectedStatesNames}" rows="5" cols="30" autoResize="false" />
+                </div>
+            </div>
+        </p:panel>
+    </f:subview>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style type="text/css">
+            @page {
+                size: landscape;
+            }
+        </style>
+    </h:head>
+    <h:body  onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/reports/KMSDetail.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value="Transport Department, #{kmsReportBean.dobj.offName}, #{kmsReportBean.dobj.stateName} " styleClass="font-bold report-header text-uppercase bottom-line"/>
+            </div>
+            <table class="datatable-panel" style="margin: 0 auto;">
+                <tr>
+                    <td class="left-position top-align">
+                        <span class="font-bold"> From Date: </span> 
+                        <h:outputText value="#{kmsReportBean.dobj.frmDate} To  #{kmsReportBean.dobj.toDate}"/>
+                    </td>
+                    <td class="right-position top-align">
+                        <span class="font-bold"> Printed Date: </span>
+                        <h:outputText value="#{kmsReportBean.dobj.printedDate}"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <p:dataTable value="#{kmsReportBean.dobj.returnlist}" var="printDtls" rowIndexVar="rowkey" styleClass="border-transparent"> 
+                    <p:column headerText="S. No"  styleClass="collumn-width center-position">
+                        <h:outputText value="#{rowkey+1}"  />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Registration &lt;br /&gt; No" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.vehicleNo}"  />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Receipt &lt;br /&gt; Date" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.receiptDate}"  />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Receipt &lt;br /&gt; No" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.receiptNo}"   />
+                    </p:column>
+                    <p:column headerText="Purpose">
+                        <h:outputText value="#{printDtls.purpose}"  />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="RC Card &lt;br /&gt; Chip No" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.rccardchipno}"  />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Approval &lt;br /&gt; Date" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.opDate}"   />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="RC Issue &lt;br /&gt; Date" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.kmsDate}"   />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="DRTO1 &lt;br /&gt; Name" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.drtoNameFirst}"   />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="DRTO2 &lt;br /&gt; Name" escape="false" /></f:facet>
+                        <h:outputText value="#{printDtls.drtoNameSecond}"   />
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </h:form>
+    </h:body>
+</html>

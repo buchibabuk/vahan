@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form  prependId="false">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Action Management</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:growl id="msg" life="2000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-8">
+                        <p:outputPanel id="actionForm">
+                            <p:panel header="Add Action Form" styleClass="datatable-panel bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="actionType" value="Action Type"/>
+                                        </label>
+                                        <p:selectOneMenu id="actionType" value="#{actionMgmtBean.selectedAction_type}" required="true" 
+                                                         style="width: 220px;margin-bottom: 5px;" filter="true" requiredMessage="Please Select Role !!!">
+                                            <f:selectItem itemValue="0" itemLabel="Select Action Type"/>
+                                            <f:selectItems value="#{actionMgmtBean.actionTypeList}"/>
+                                            <f:validator validatorId="selectOneValidator_0" for="actionType" />
+                                            <p:ajax update="tree" listener="#{actionMgmtBean.createTree()}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="action_cd" value="Action Code"/>
+                                        </label>
+                                        <p:inputText id="action_cd" value="#{actionMgmtBean.action_cd}" maxlength="5" 
+                                                     required="true" requiredMessage="Blank Action Code !!!">
+                                            <p:ajax event="blur" listener="#{actionMgmtBean.uniqueActCode()}" update="actionForm,msg" />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="action_descr" value="Action Description"/>
+                                        </label>
+                                        <p:inputText id="action_descr" value="#{actionMgmtBean.action_descr}" maxlength="100" 
+                                                     disabled="#{actionMgmtBean.newAction}"  required="true" requiredMessage="Blank Action Description !!!" >
+                                            <f:ajax event="blur" render="@this" execute="@this" />
+                                        </p:inputText> 
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="action_abbr" value="Action Abbreviation"/>
+                                        </label>
+                                        <p:inputText id="action_abbr" value="#{actionMgmtBean.action_abbrv}" maxlength="50" 
+                                                     disabled="#{actionMgmtBean.newAction}"  required="true" requiredMessage="Blank Action Abbreviation !!!" >
+                                            <f:ajax event="blur" render="@this" execute="@this" />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="redirect_menu" value="Redirect Menu"/>
+                                        </label>
+                                        <p:inputText id="redirect_menu" value="#{actionMgmtBean.redirect_menu}" maxlength="30" 
+                                                     disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="redirect_url" value="Redirect URL"/>
+                                        </label>
+                                        <p:inputText id="redirect_url" value="#{actionMgmtBean.redirect_url}" maxlength="30" 
+                                                     disabled="true"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:panel styleClass="center-position datatable-panel bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton id="submitBtn" value="Save" icon="ui-icon-disk" title="Assign Actions" 
+                                                         action="#{actionMgmtBean.saveAction()}" update="tree,msg" ajax="true">
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:commandButton id="resetBtn" value="Reset" icon="ui-icon-refresh">
+                                            <p:ajax listener="#{actionMgmtBean.reset()}" update="actionForm,tree"/>
+                                        </p:commandButton>
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                        </p:confirmDialog>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <p:panel header="Action List">
+                            <p:tree id="tree" value="#{actionMgmtBean.root}" var="node" dynamic="true" styleClass="datatable-panel-100 scroll-panel-overflow scroll-panel-height border-none">
+                                <p:treeNode>
+                                    <h:outputText value="#{node}"/>
+                                </p:treeNode>
+                            </p:tree>
+                        </p:panel>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </ui:define>    
+</ui:composition>

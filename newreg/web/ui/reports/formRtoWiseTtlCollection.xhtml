@@ -1,0 +1,125 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form id="rtoWiseTtlCollection">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">Print Reports</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3 resp-blank-height"></div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Month"/>
+                        </label>
+                        <p:selectOneMenu id="monthId"  value="#{rtoWiseTtlCollectionBean.month}" required="true" filter="true" styleClass="bottom-space">
+                            <f:selectItem itemLabel="---------------SELECT---------------" itemValue="-1"/>
+                            <f:selectItems value="#{rtoWiseTtlCollectionBean.monthList}"/>
+                            <f:validator validatorId="selectOneValidator"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Year"/>
+                        </label>
+                        <p:inputText id="yearId" value="#{rtoWiseTtlCollectionBean.year}" size="4" maxlength="4" requiredMessage="Please Select Year" required="true"/>
+                        <p:keyFilter mask="pint" for="yearId"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <p:commandButton value="Get Details" action="#{rtoWiseTtlCollectionBean.getDetails()}" update="dataTable" />
+                        <p:commandButton  icon="ui-icon-print" action="#{rtoWiseTtlCollectionBean.print()}" onclick="PF('bui_fancy').show();" value="Print"  oncomplete="PF('bui_fancy').hide();"/>
+                    </div>
+                </div>
+            </div>
+
+            <p:outputPanel id="dataTable">
+                <p:panel header="Rto Wise Total Collection" rendered="#{rtoWiseTtlCollectionBean.formPanelVisibility}">
+                    <p:dataTable id="rtoWiseDataTable"  value="#{rtoWiseTtlCollectionBean.rtoWiseCollectionDobj}" var="rtoTotal"
+                                 styleClass="datatable-third-column-right datatable-fourth-column-right datatable-fifth-column-right datatable-six-column-right"
+                                 rowIndexVar="index" rows="10" paginator="true" paginatorPosition="bottom">
+                        <f:facet name="header">
+                            <div class="left-position">
+                                Print Rto Wise Total Collection 
+                            </div>
+                        </f:facet>
+                        <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}."/></p:column>
+                        <p:column headerText="Dealer Name">
+                            <p:outputLabel value="#{rtoTotal.dealerName}"/> 
+                            <!--                            <f:facet name="footer">
+                                                            <p:outputLabel value="SubTotal" styleClass="right-position font-bold" />
+                                                        </f:facet>-->
+                            <f:facet name="footer">
+                                <p:outputLabel value="GrandTotal"  styleClass="right-position font-bold" />
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="No. of Vehicles Sold">
+                            <p:outputLabel value="#{rtoTotal.totalRegn}" styleClass="right-space"/> 
+                            <!--                            <f:facet name="footer">
+                                                            <p:outputLabel value="#{rtoWiseTtlCollectionBean.subTotalRegn}" />
+                                                        </f:facet>-->
+                            <f:facet name="footer">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandTotalRegn}" />
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="Fee Collected">
+                            <p:outputLabel value="#{rtoTotal.fees}" styleClass="right-space"/> 
+                            <!--                            <f:facet name="footer">
+                                                            <p:outputLabel value="#{rtoWiseTtlCollectionBean.subFees}" />
+                                                        </f:facet>-->
+                            <f:facet name="footer">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandFees}" />
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="Tax Collected" >
+                            <p:outputLabel value="#{rtoTotal.tax}" styleClass="right-space"/> 
+                            <!--                            <f:facet name="footer">
+                                                            <p:outputLabel value="#{rtoWiseTtlCollectionBean.subTax}" />
+                                                        </f:facet>-->
+                            <f:facet name="footer">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandTax}" />
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="Total Collection">
+                            <p:outputLabel value="#{rtoTotal.totalAmount}" styleClass="right-space"/> 
+                            <!--                            <f:facet name="footer">
+                                                            <p:outputLabel value="#{rtoWiseTtlCollectionBean.subTotalAmount}" />
+                                                        </f:facet>-->
+                            <f:facet name="footer">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandTotalAmount}" />
+                            </f:facet>
+                        </p:column>                
+                    </p:dataTable>    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <p:commandButton value="Home" action="home"/>
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+            <p:blockUI block="rtoWiseTtlCollection" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </ui:define>
+</ui:composition>

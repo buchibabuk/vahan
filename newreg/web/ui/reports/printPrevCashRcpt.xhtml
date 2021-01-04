@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <ui:define name="content">
+        <f:subview id="frm_print">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Print Previous Generated Cash Receipt</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 bottom-space">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-5 resp-blank-height" />
+                <div class="ui-grid-col-4">
+                    <p:outputPanel id="selectionPanel" styleClass="bottom-space">
+                        <p:selectOneRadio id="selectRcpt" value="#{prevCashRcptbean.selectedRcpt}">
+                            <f:selectItem itemLabel="RTO Cash Receipt" itemValue="R" />
+                            <f:selectItem itemLabel="Online Payment Receipt" itemValue="O" />                            
+                            <p:ajax partialSubmit="true" listener="#{prevCashRcptbean.receiptListener}" update="ReceiptNoPnl" />
+                        </p:selectOneRadio>
+                    </p:outputPanel>
+                </div>
+                <div class="ui-grid-col-3" />
+            </div>
+            <p:outputPanel id="ReceiptNoPnl">
+                <p:outputPanel rendered="#{prevCashRcptbean.renderReceiptPanel}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="rcpt_no" value="Enter Receipt No: " styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText  id="rcpt_no"  value="#{prevCashRcptbean.rcpt_no}" autocomplete="off" size="30" maxlength="16" converter="toUpperCaseConverter" styleClass="text-uppercase" />
+                        </div>
+                    </div>
+                </p:outputPanel>                    
+            </p:outputPanel>
+
+
+
+            <div class="ui-grid-row center-position top-space bottom-space">
+                <div class="ui-grid-col-12">
+                    <p:commandButton  value="Print" icon="ui-icon-print" action ="#{prevCashRcptbean.confirmPrintReceipt()}"/>              
+                </div>
+            </div>
+
+            <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printConfDlgTax" modal="true" draggable="false" 
+                       closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Do you want to continue"/>
+                        </label>
+                        <p:commandButton  value="Confirm Print" onclick="PF('printConfDlgTax').hide();"                                   
+                                          action="#{prevCashRcptbean.printReceipt()}"
+                                          icon="ui-icon-check"/>
+                        <p:commandButton value="Cancel" onsuccess="PF('printConfDlgTax').hide();" icon="ui-icon-close" />
+                    </div>
+                </div>
+            </p:dialog>  
+        </f:subview>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"
+    xmlns:v4="http://java.sun.com/jsf/passthrough"
+    > 
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formRegistrationNoAssignment" prependId="false">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Registration No Assignment</h1>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages> 
+                                    <p:autoUpdate/>
+                                </p:messages>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton rendered="#{reg_no_assign.showBackButton}" value="OK" action="seatwork" icon="ui-icon-check"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block="formRegistrationNoAssignment" widgetVar="bui_fancy">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-9">
+                        <div class="datatable-panel">
+                            <ui:include src="/ui/registration/panel_applicationdetails.xhtml">
+                                <ui:param name="appl_details" value="#{reg_no_assign.appl_details}"/>            
+                            </ui:include>
+                            <p:outputPanel id="out_advance_no"  styleClass="top-space bottom-space">
+                                <p:outputPanel id="pg_advance_no"  rendered="#{owner_bean.blnPgAdvancedRegNo}">
+                                    <p:outputPanel id="pg_advance_no_option" >
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                                            <div class="ui-grid-col-4">
+                                                <div class="bottom-space">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="agvRegnSelection" value="#{owner_bean.advanceAllotedLabel}"/>
+                                                    </label>
+                                                    <p:selectOneMenu id="agvRegnSelection" value="#{owner_bean.advanceRegnAllotted}" disabled="#{owner_bean.disableAdvanceRegnAllotted}" required="true" requiredMessage="Select Advance Registration No / Retention No Allotted Option!!!">
+                                                        <f:selectItem itemLabel="NO" itemValue="No"/>   
+                                                        <f:selectItem itemLabel="YES" itemValue="Yes"/> 
+                                                        <p:ajax event="change" listener="#{owner_bean.advanceNoListener}" update="pg_advance_no"  partialSubmit="true"/>
+                                                        <f:validator validatorId="selectOneValidator" for="agvRegnSelection"/>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel>
+                                    <div class="ui-grid-row center-position">
+                                        <div class="ui-grid-col-12">
+                                            <h:outputLabel id ="lbAdvanceMsg" rendered="#{owner_bean.advanceRegnAllotted == 'Yes' and owner_bean.advanceRegNoDobj.regn_no != null}" styleClass="report-header font-bold red" 
+                                                           value="Fancy/Advance Registration No: #{owner_bean.advanceRegNoDobj.regn_no} will be allotted (Vide Receipt No:  #{owner_bean.advanceRegNoDobj.recp_no})" />
+                                            <h:outputLabel id="seriesAvaiMess" value="#{owner_bean.seriesAvailMessage}"  rendered="#{owner_bean.advanceRegnAllotted == 'No'}" styleClass="report-header font-bold red" />                            
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row center-position">
+                                        <div class="ui-grid-col-12">
+                                            <h:outputLabel id ="lbRetMsg" rendered="#{owner_bean.advanceRegnAllotted == 'Yes' and owner_bean.retenRegNoDobj.regn_no != null}" styleClass="report-header font-bold red" 
+                                                           value="Retention No: #{owner_bean.retenRegNoDobj.regn_no} will be allotted (Vide Receipt No:  #{owner_bean.retenRegNoDobj.recp_no})" />
+                                            <h:outputLabel id="seriesRetAvaiMess" value="#{owner_bean.seriesAvailMessage}"  rendered="#{owner_bean.retenRegNoDobj == 'No'}" styleClass="report-header font-bold red" />                            
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                            <p:tabView id="workbench_tabview" styleClass="top-space bottom-space"  >
+                                <!--################################# Owner Details ########################################## -->
+                                <p:tab  id="owner_details_tab" title="Owner Details">
+                                    <ui:include src="/ui/form_owner_dtls.xhtml" />
+                                </p:tab>
+                            </p:tabView>
+                        </div>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <p:panel id="fancy_table_list" header="Available Registration No" styleClass="top-space bottom-space">
+
+                            <p:panel id="fancyNoPanel" rendered="#{reg_no_assign.showFancyDetails}" styleClass="border-none">
+                                <div class="ui-grid-row center-position bottom-space font-bold report-subheader">
+                                    <div class="ui-grid-col-12">
+                                        <p:outputLabel value=" Registration No : #{reg_no_assign.alloted_regn_no}  Assigned in Advance" style="color: #FF0000 !important"></p:outputLabel>
+                                    </div>
+                                </div>
+                            </p:panel>
+
+                            <p:multiSelectListbox id="msb_reg"  value="#{reg_no_assign.alloted_regn_no}" disabled="#{reg_no_assign.showFancyDetails}" effect="slide" styleClass="scroll-panel-overflow scroll-panel-height">
+                                <f:selectItems  value="#{reg_no_assign.regnNoList}" />
+                            </p:multiSelectListbox>
+                        </p:panel>
+                    </div>
+                </div>
+                <p:dialog id="pd_choice_no" widgetVar="wd_choiceno" modal="true"
+                          draggable="false" closable="false" header="Choice Number Details" dynamic="true">
+                    <p:panel id="pn_adv_ret_radbtn" header="Advance Regn / Reten details" rendered="#{owner_bean.panelRadioBtn}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:selectOneRadio id="tf_advregnno_retenno" value="#{owner_bean.advRegnRetenRadiobtn}">                               
+                                    <f:selectItem itemLabel="Advance Registration No" itemValue="advregnno" noSelectionOption="true" />
+                                    <f:selectItem itemLabel="Advance Retention No" itemValue="retenno" />
+                                    <p:ajax process="pd_choice_no" event="change" listener="#{owner_bean.onSelectRetenRadiobtn()}" update="pd_choice_no" partialSubmit="true"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel id="pn_adv_app_dtl" rendered="#{owner_bean.panelAdvAppdtl}" header="Advance Regn details" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages id="choiceMsgAdv" closable="true" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_recp_no" value="Receipt No"/>
+                                </label>
+                                <p:inputText  id="tf_recp_no" value="#{owner_bean.advanceRegNoDobj.recp_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase">
+                                    <p:ajax listener="#{owner_bean.advanceRcptListener}" update="pn_adv_app_dtl pn_adv_cur_add pn_adv_ret_app_dtl pn_adv_ret_cur_add" partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_regn_no" value="Advance Regn No"/>
+                                </label>
+                                <p:inputText  id="tf_adv_regn_no" value="#{owner_bean.advanceRegNoDobj.regn_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_owner_name" value="#{label.owner_name}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_owner_name" value="#{owner_bean.advanceRegNoDobj.owner_name}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_mob_no" value="#{label.mob_no}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_mob_no" value="#{owner_bean.advanceRegNoDobj.mobile_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel id="pn_adv_cur_add" rendered="#{owner_bean.panelAdvAdddtl}" header="Current Address" styleClass="top-space bottom-space">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add1" value="#{label.address1}"/>
+                                </label>
+                                <p:inputText  id="add1" value="#{owner_bean.advanceRegNoDobj.c_add1}"
+                                              maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add2" value="#{label.address2}"/>
+                                </label>
+                                <p:inputText id="add2" value="#{owner_bean.advanceRegNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                             maxlength="35" autocomplete="off" style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add3" value="#{label.address3}"/>
+                                </label>
+                                <p:inputText  id="add3" value="#{owner_bean.advanceRegNoDobj.c_add3}"
+                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="state" value="#{label.state}"/>
+                                </label>
+                                <p:selectOneMenu id="state" value="#{owner_bean.advanceRegNoDobj.c_state}" filter="true"
+                                                 disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_c_state}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="district" value="#{label.district}"/>
+                                </label>
+                                <p:selectOneMenu id="district"  value="#{owner_bean.advanceRegNoDobj.c_district}"  filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_adv_district}"/>
+                                    <p:ajax partialSubmit="true"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pincode" value="Pin"/>
+                                </label>
+                                <p:inputText id="pincode" value="#{owner_bean.advanceRegNoDobj.c_pincode}" size="10"
+                                             requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel id="pn_adv_ret_app_dtl" rendered="#{owner_bean.panelAdvRetAppdtl}" header="Retention details" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages id="choiceMsgRet" closable="true" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_recp_no_ret" value="Receipt No"/>
+                                </label>
+                                <p:inputText  id="tf_recp_no_ret" value="#{owner_bean.retenRegNoDobj.recp_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase">
+                                    <p:ajax event="blur" listener="#{owner_bean.advanceRcptListener}" update="pn_adv_app_dtl pn_adv_cur_add pn_adv_ret_app_dtl pn_adv_ret_cur_add" partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_regn_no_ret" value="Retention No"/>
+                                </label>
+                                <p:inputText  id="tf_adv_regn_no_ret" value="#{owner_bean.retenRegNoDobj.regn_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_owner_name_ret" value="#{label.owner_name}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_owner_name_ret" value="#{owner_bean.retenRegNoDobj.owner_name}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_mob_no_ret" value="#{label.mob_no}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_mob_no_ret" value="#{owner_bean.retenRegNoDobj.mobile_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel id="pn_adv_ret_cur_add" rendered="#{owner_bean.panelAdvRetAdddtl}" header="Current Address(Retention)" styleClass="top-space bottom-space">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add1_ret" value="#{label.address1}"/>
+                                </label>
+                                <p:inputText  id="add1_ret" value="#{owner_bean.retenRegNoDobj.c_add1}"
+                                              maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add2_ret" value="#{label.address2}"/>
+                                </label>
+                                <p:inputText id="add2_ret" value="#{owner_bean.retenRegNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                             maxlength="35" autocomplete="off" style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add3_ret" value="#{label.address3}"/>
+                                </label>
+                                <p:inputText  id="add3_ret" value="#{owner_bean.retenRegNoDobj.c_add3}"
+                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="state_ret" value="#{label.state}"/>
+                                </label>
+                                <p:selectOneMenu id="state_ret" value="#{owner_bean.retenRegNoDobj.c_state}" filter="true"
+                                                 disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_c_state}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="district_ret" value="#{label.district}"/>
+                                </label>
+                                <p:selectOneMenu id="district_ret"  value="#{owner_bean.retenRegNoDobj.c_district}"  filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_adv_district}"/>
+                                    <p:ajax partialSubmit="true"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pincode_ret" value="Pin"/>
+                                </label>
+                                <p:inputText id="pincode_ret" value="#{owner_bean.retenRegNoDobj.c_pincode}" size="10"
+                                             requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="tf_button_save" value="Save" immediate="true" >
+                                <p:ajax listener="#{reg_no_assign.advanceSaveListener}" update="fancy_table_list workbench_tabview out_advance_no pn_adv_app_dtl pn_adv_cur_add pn_adv_ret_app_dtl pn_adv_ret_cur_add"  partialSubmit="true"/>
+                                <!--update="tabviewRender out_advance_no"-->
+
+                            </p:commandButton>
+
+                            <p:commandButton value="Exit" immediate="true" oncomplete="PF('wd_choiceno').hide();">
+                                <p:ajax listener="#{owner_bean.advanceExitListener}" update="workbench_tabview out_advance_no pn_adv_app_dtl pn_adv_cur_add pn_adv_ret_app_dtl pn_adv_ret_cur_add" partialSubmit="true"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:dialog>
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:panel id="panel_save">
+                            <p:commandButton 
+                                id="bt_assign_regn_no" 
+                                value="Assign Registration No"
+                                onclick="PF('bui_fancy').show()" 
+                                oncomplete="PF('bui_fancy').hide()"
+                                action="#{reg_no_assign.save()}"
+                                >
+                                <p:confirm header="Confirmation "  message="Are you sure to assign this Registration No to  #{reg_no_assign.alloted_regn_no} - #{ownerDetail.off_name} - #{ownerDetail.state_name}" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Back" action="seatwork"/>
+                            <p:commandButton 
+                                id="bt_revert_back" 
+                                rendered="#{reg_no_assign.renderReverBackButton}"
+                                value="Revert For Advance Registration No Mapping"
+                                onclick="PF('bui_fancy').show()" 
+                                oncomplete="PF('bui_fancy').hide()"
+                                action="#{reg_no_assign.revertBackForAdvanceRegistrationNo()}"
+                                >
+                                <p:confirm header="Confirmation "  message="Are you sure Revert Back For Advance Registration No" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="YES" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/> 
+                            </p:confirmDialog> 
+                        </p:panel>
+                    </div>
+                </div>
+                <vahan:vahanMessages messages="#{reg_no_assign.vahanMessages}"  rendered="#{reg_no_assign.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define>    
+</ui:composition>

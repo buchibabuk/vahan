@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c ="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="content22">       
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Advance Registration Series Entry</h1>
+                </div>
+            </div> 
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="false" showSummary="true"  closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div> 
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <h:form id="RegnMasterEntryForm">
+                        <div class="ui-grid-row" style="alignment-adjust: central">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-3 resp-blank-height"></div>
+                                    <div class="ui-grid-col-3">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="series_id" value=" Select Series" styleClass="inline-section" />
+                                        </label>
+                                        <p:selectOneMenu id="series_id" value="#{advance_regn_series.series_val}" >
+                                            <f:selectItem itemLabel="----Select Series----" itemValue="" noSelectionOption="true" />
+                                            <f:selectItems value="#{advance_regn_series.series}" />
+                                        </p:selectOneMenu> 
+                                    </div>
+                                    <div class="ui-grid-col-3">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="txt_advan_prefix_series" value="Prefix Series" />
+                                        </label>
+                                        <p:inputText id="txt_advan_prefix_series" value="#{advance_regn_series.prefix_series}" maxlength="6" 
+                                                     requiredMessage="Blank Prefix Series" 
+                                                     converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase">
+
+                                        </p:inputText>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton  value="Save" action="#{advance_regn_series.save_Advance_Series()}" 
+                                                  onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="series_id txt_advan_prefix_series "  >
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>                     
+                                </p:commandButton>
+                                <p:commandButton value="Back" action="home"/> 
+
+                                <p:blockUI block="RegnMasterEntryForm" widgetVar="bui">
+                                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                </p:blockUI>
+                            </div>
+                        </div>
+
+                    </h:form>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="show_id"> 
+                        <h:form>
+                            <p:dataTable id="table_advance_regn_series_details" 
+                                         value="#{advance_regn_series.listRegnSeries}"
+                                         var="rslist" paginator="true" rows="10" paginatorPosition="bottom"
+                                         emptyMessage="No Records Found" widgetVar='prefixTable' filteredValue="#{advance_regn_series.filteredSeat}">
+                                <f:facet name="header">
+                                    Advance Registration Number Series Details
+                                </f:facet>
+                                <p:column headerText="Sr No." styleClass="collumn-width center-position">                      
+                                    <h:outputText value="#{advance_regn_series.listRegnSeries.indexOf(rslist)+1}" />                                     
+                                </p:column>
+                                <p:column headerText="Series No." styleClass="center-position">                      
+                                    <h:outputText value="#{rslist.series_no}"/>                                     
+                                </p:column>
+                                <p:column headerText="Prefix Series" filterBy="#{rslist.prefix_series}" filterMatchMode="contains">                                     
+                                    <h:outputText value="#{rslist.prefix_series}" />
+
+                                </p:column>
+                            </p:dataTable>
+                        </h:form> 
+                    </p:outputPanel>
+                </div>
+            </div>
+        </div>     
+
+    </ui:define>
+
+</ui:composition>

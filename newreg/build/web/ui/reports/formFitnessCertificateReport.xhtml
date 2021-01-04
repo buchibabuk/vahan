@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="fitCertPrintForm" prependId="false">
+            <div class="center-position">
+                <p:button id="back_to_fc_print" value="Back" outcome="/ui/print/form_print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="fcList" value="#{FCPrint.selectedRclist}" varStatus="status">
+                <p:outputPanel id="fitFailDetls" rendered="#{!fcList.isfitFailed}" styleClass="position-relative">
+                    <div class="position-relative">
+                        <p:outputPanel  rendered="#{fcList.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{fcList.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="fitFailDtls" rendered="#{fcList.isfitFailed}" styleClass="position-relative">
+                    <div class="center-position top-space">
+                        <h:outputText  value="#{fcList.fitFailMsg}" styleClass="font-bold report-header bottom-line text-uppercase"/><br /><br />
+                    </div>
+                    <div class="left-position top-space">
+                        <h:outputText  value=" Remark: #{fcList.fcRemark}" styleClass="font-bold report-header text-uppercase"/><br />
+                        <h:outputText value="#{fcList.regnNO}" styleClass="font-bold report-header text-uppercase"/><br />
+                        <p:outputPanel>
+                            <table class="datatable-panel-100 table-width-three" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="height: 50px !important; min-height: 50px !important;">
+                                        <p:graphicImage id="showSignImgOffOne" value="#{FCPrint.viewSignFileOff1}" rendered="#{fcList.isSignFitOff1 and fcList.isFitInfecOff1}" cache="false" style="height: 50px !important; width: auto;"/>
+                                    </td>
+                                    <td style="height: 50px !important; min-height: 50px !important;">
+                                        <p:graphicImage id="showSignImgOffTwo" value="#{FCPrint.viewSignFileOff2}" rendered="#{fcList.isSignFitOff2 and fcList.isFitInfecOff2}" cache="false" style="height: 50px !important; width: auto;"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h:outputText value="Inspected by "  rendered="#{fcList.isFitInfecOff1}" styleClass="left-space" />
+                                        <h:outputText value="(#{fcList.fitInfecOff1})" rendered="#{fcList.isFitInfecOff1}" styleClass="right-space font-bold" />
+                                    </td>
+                                    <td>
+                                        <h:outputText value="Inspected by " rendered="#{fcList.isFitInfecOff2}" styleClass="left-space" />
+                                        <h:outputText value="(#{fcList.fitInfecOff2})" rendered="#{fcList.isFitInfecOff2}" styleClass="right-space font-bold" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </p:outputPanel>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="fitFailDetals" rendered="#{!fcList.isfitFailed}" styleClass="position-relative">
+                    <table class="datatable-panel-100 bottom-space">
+                        <tr>
+                            <td class="left-position" style="width: 70px;">
+                                <div class="inline-section vehicle-type">                                    
+                                    <p:outputPanel styleClass="inline-section" rendered="#{fcList.show_image_logo}"> 
+                                        <p:graphicImage name="#{fcList.image_logo}" library="images" style="width: 100px;"/>
+                                    </p:outputPanel>
+                                </div>
+                            </td>
+                            <td class="center-position">
+                                <div>
+                                    <h:outputText value="#{fcList.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+                                <div class="font-bold report-subheader"> <h:outputText value="#{fcList.subHeader}" escape="false"/> </div>
+                                <div class="font-bold report-subheader"> <h:outputText value="#{fcList.offName}"/> </div>
+                                <div class="font-bold report-subheader"> <h:outputText value="#{fcList.formName}"/> </div>
+                                <div class="font-bold report-subheader"> 
+                                    [See Rule 62(1)] 
+                                </div>
+
+                                <div class="center-position">
+                                    <h:outputText value="#{fcList.fcReportLabel}" styleClass="font-bold report-header text-uppercase"/>
+                                </div>
+
+                                <h:outputText value="(Applicable in the case of transport vehicles only)" styleClass="font-bold" rendered="#{fcList.showTextInCaseoftransportvehiclesonly}"/>
+
+                            </td>
+                            <td class="right-position" style="width: 70px;">
+                                <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                    <ui:param name="qrcodevalue" value="#{fcList.qrText}"/>   
+                                    <ui:param name="renderqrCode" value="true"/>   
+                                </ui:include>
+                            </td>
+
+                        </tr>
+                    </table>
+                </p:outputPanel>
+                <p:outputPanel id="fitDtls" rendered="#{!fcList.isfitFailed and !fcList.isFitDoneInOtherState}" styleClass="position-relative">
+
+                    <div class="datatable-panel" style="margin: 0px auto;">
+                        <div>
+                            <h:outputText styleClass="font-bold" value="#{fcList.regnNO}"/> 
+                            <h:outputText value="(#{fcList.vchDescr}) "/> 
+                            is certified as complying with the provisions of the Motor vehicles Act, 1988 and the rules made there under.
+                        </div>                      
+                        <div class="table-width-oneforth">
+                            <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">                                
+                                <h:outputLabel value="Registration No" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.regn_no}" styleClass="right-space " />
+                                <h:outputLabel value="Application No" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.applNO}" styleClass="right-space " /> 
+                                <h:outputLabel value="Inspection Fee Receipt No" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.rcptno}" styleClass="right-space " />                                 
+                                <h:outputLabel value="Receipt Date" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.rcptdt}" styleClass="right-space " /> 
+                                <h:outputLabel value="Chassis No" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.chasi_no}" styleClass="right-space " /> 
+                                <h:outputLabel value="Engine No" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.eng_no}" styleClass="right-space " /> 
+                                <h:outputLabel value="Seating Capacity" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.seat_cap} (Including Driver)" styleClass="right-space " />
+                                <h:outputLabel value="Type of Body" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.body_type}" styleClass="right-space " /> 
+                                <h:outputLabel value="Manufacturing Year" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.manu_yr}" styleClass="right-space " />
+                            </h:panelGrid>
+                        </div>
+                        <div class="table-width-four">
+                            <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                                <h:outputLabel value="Category of Vehicle" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.vch_catg}" styleClass="right-space " />                                 
+                                <h:outputLabel value="Certificate will expire on" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.fitUpto}" styleClass="right-space " /> 
+                                <h:outputLabel value="Inspected on" styleClass="right-space " />
+                                <h:outputText value=": #{fcList.fitCheckDate}" styleClass="right-space " />
+                                <h:outputLabel value="Next Inspection Due Date" styleClass=" font-bold right-space " />
+                                <h:outputText value=": #{fcList.nid}" styleClass="font-bold right-space " />                                                                
+
+                                <h:outputLabel value="Printed on"  styleClass="right-space "/>
+                                <h:outputText value=": #{fcList.printed_on}" styleClass="right-space "/> 
+                            </h:panelGrid>
+                        </div>
+                        <p:outputPanel>
+                            <table class="datatable-panel-100 table-width-three" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="height: 50px !important; min-height: 50px !important;">
+                                        <p:graphicImage id="showSignImgOff1" value="#{FCPrint.viewSignFileOff1}" rendered="#{fcList.isSignFitOff1 and fcList.isFitInfecOff1}" cache="false" style="height: 50px !important; width: auto;"/>
+                                    </td>
+                                    <td style="height: 50px !important; min-height: 50px !important;">
+                                        <p:graphicImage id="showSignImgOff2" value="#{FCPrint.viewSignFileOff2}" rendered="#{fcList.isSignFitOff2 and fcList.isFitInfecOff2}" cache="false" style="height: 50px !important; width: auto;"/>
+                                    </td>
+                                    <td style="height: 50px !important; min-height: 50px !important;">&#160;</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h:outputText value="Inspected by "  rendered="#{fcList.isFitInfecOff1}" styleClass="left-space" />
+                                        <h:outputText value="(#{fcList.fitInfecOff1})" rendered="#{fcList.isFitInfecOff1}" styleClass="right-space font-bold" />
+                                    </td>
+                                    <td>
+                                        <h:outputText value="Inspected by " rendered="#{fcList.isFitInfecOff2}" styleClass="left-space" />
+                                        <h:outputText value="(#{fcList.fitInfecOff2})" rendered="#{fcList.isFitInfecOff2}" styleClass="right-space font-bold" />
+                                    </td>
+                                    <td>
+                                        <div class="left-position top-align">
+                                            Signature of Inspecting Authority
+                                            <br /> #{fcList.offName}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </p:outputPanel>
+                    </div><br /><br /><br />
+                    <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                        <div class="bottom-space">
+                            <p:outputPanel id="fit38ADetals" rendered="#{fcList.noteOffName38A}" styleClass="position-relative">
+                                <span class="font-bold"> Note :</span>
+                                Fitness Certificate has been issued based on Form 38A issued at 
+                                <h:outputText value="#{fcList.offName38A}"  styleClass="font-bold" />
+                                by 
+                                <h:outputText value="#{fcList.offName}"  styleClass="font-bold" />
+                            </p:outputPanel>
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+                <p:outputPanel id="fitdoneDtls" rendered="#{!fcList.isfitFailed and fcList.isFitDoneInOtherState}" styleClass="position-relative">
+                    <div class="datatable-panel" style="margin: 0 auto;">
+                        <p class="top-space bottom-space">
+                            Report of inspection conducted on a transport vehicle by an Inspecting Officer or authorised testing station, other than the
+                            Inspecting Officer in the office of the registering authority
+                        </p>
+
+                        <p class="top-space bottom-space">
+                            Vehicle bearing registration number <h:outputText value="#{fcList.regnNO}" styleClass="font-bold text-uppercase"/> has been inspected by the undersigned today and it is
+                            certified that it complies with the provisions of the Motor Vehicles Act, 1988 (59 of 1988) and the Central Motor Vehicles
+                            Rules, 1989 and is fit for issue of a Fitness Certificate by the registering authority. 
+                        </p>
+                        <p class="top-space bottom-space">
+                            This report will be uploaded at the portal <u>https://parivahan.gov.in</u> and the inspection report signed under my hand
+                            and seal will be sent to the registering authority by speed post either today or on the next working day for processing the
+                            application for issue of certificate of fitness in respect of the vehicle by the registering authority.
+                        </p>
+                        <br/><br/><br/><br/>
+                        <table class="datatable-panel-100" style="margin: 0 auto;">
+                            <tr>
+                                <td class="left-position top-align" style="width: 65%;">
+                                    <div class="left-space ">
+                                        Date :<h:outputText value=" #{fcList.printed_on}" /><br />
+                                        Place: <h:outputText value="#{fcList.offName}" styleClass="text-uppercase"/>
+                                    </div>
+                                </td>
+                                <td class="right-position" style="width: 35%;">
+                                    <div class="float-right left-position">
+                                        <h:outputText rendered="#{fcList.isFitInfecOff1}" value="#{fcList.fitInfecOff1}" styleClass="text-uppercase"/><br/>
+                                        <h:outputText rendered="#{fcList.isFitInfecOff1}" value="#{fcList.inspectingOfficerOneDesig}" styleClass="text-uppercase"/><br/>
+                                        <h:outputText value="#{fcList.offName}" /><br />
+                                        <h:outputText value="#{fcList.stateName}" /><br /><br />
+                                        Official seal-<br />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </p:outputPanel> 
+                <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{fcList.showRoadSafetySlogan}">
+                    <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                        <div class="center-position" style="display: inline-block;">
+                            <br />
+                            <h:outputText value="#{fcList.roadSafetySloganDobj.english_lang}" /><br/>
+                            <h:outputText value="#{fcList.roadSafetySloganDobj.state_lang}" />
+
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

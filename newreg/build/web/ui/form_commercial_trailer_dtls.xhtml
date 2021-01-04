@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid ui-grid-responsive">
+
+
+
+        <f:subview id="subview_commercial_trailer_dtls">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h2 class="header-main">Attached Semi-Trailer Details</h2>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="body_type" value="#{language.bodyType}:" />
+                    </label>
+                    <p:inputText id="body_type" value="#{trailer_bean.body_type}" disabled="#{trailer_bean.disable}" maxlength="30" 
+                                 style="text-transform: uppercase" converter="toUpperCaseConverter">    
+
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="chasi_no_trailer" value="#{language.chasi_no}."/>
+                    </label>
+                    <p:inputText id="chasi_no_trailer" value="#{trailer_bean.chassis_no_trailer}" converter="toUpperCaseConverter"
+                                 style="text-transform: uppercase" size="20" maxlength="30" disabled="#{trailer_bean.disable}">
+                    </p:inputText>
+                </div>
+
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_trailer_rlw"  value="#{language.regLdWt}:" />
+                    </label>
+                    <p:inputText id="tf_trailer_rlw" autocomplete="off" size="20"  value="#{trailer_bean.ld_wt}" disabled="#{trailer_bean.disable}" maxlength="6"/>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_trailer_unleden_wt"   value="#{language.ulWeight}.:"/>
+                    </label>
+                    <p:inputText id="tf_trailer_unleden_wt" autocomplete="off" size="20"  value="#{trailer_bean.unld_wt}" disabled="#{trailer_bean.disable}" maxlength="6"/>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+
+                <div class="ui-grid-col-6">
+                    <p:panel id="no_desc_size_tyre" header="#{language.numberDescriptionandSizeofTyres}" styleClass="datatable-panel top-space bottom-space">   
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_f_axle_descp" value="#{language.front}:" />
+                                    </label>
+                                    <p:inputText id="tf_f_axle_descp" value="#{trailer_bean.f_axle_descp}" disabled="#{trailer_bean.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_r_axle_descp" value="#{language.rear}:" />
+                                    </label>
+                                    <p:inputText id="tf_r_axle_descp" value="#{trailer_bean.r_axle_descp}" disabled="#{trailer_bean.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_o_axle_descp" value="#{language.other}:" />
+                                    </label>
+                                    <p:inputText id="tf_o_axle_descp" value="#{trailer_bean.o_axle_descp}" disabled="#{trailer_bean.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="tf_t_axle_descp" value="#{language.tandem}:"/>
+                                    </label>
+                                    <p:inputText id="tf_t_axle_descp" value="#{trailer_bean.t_axle_descp}" disabled="#{trailer_bean.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                </div>
+
+                            </div>
+                        </div>                      
+                    </p:panel>
+                </div>
+                <div class="ui-grid-col-6">
+                    <p:panel id="registerd_axle_weight" header="#{language.registeredAxleWeight}" styleClass="top-space bottom-space">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_f_axle_weight" value="#{language.front}:" />
+                                    </label>
+                                    <p:inputText id="tf_f_axle_weight" value="#{trailer_bean.f_axle_weight}" disabled="#{trailer_bean.disable}"  maxlength="6" size="20" autocomplete="off"/>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_r_axle_weight" value="#{language.rear}:" />
+                                    </label>
+                                    <p:inputText id="tf_r_axle_weight" value="#{trailer_bean.r_axle_weight}" disabled="#{trailer_bean.disable}" maxlength="6" size="20" autocomplete="off" />                   
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_o_axle_weight" value="#{language.other}:" />
+                                    </label>
+                                    <p:inputText id="tf_o_axle_weight" value="#{trailer_bean.o_axle_weight}" disabled="#{trailer_bean.disable}"  maxlength="6" size="20" autocomplete="off"/>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="tf_t_axle_weight" value="#{language.tandem}:" />
+                                    </label>
+                                    <p:inputText id="tf_t_axle_weight" value="#{trailer_bean.t_axle_weight}" disabled="#{trailer_bean.disable}" maxlength="6" size="20" autocomplete="off"/>                                    </div>
+                            </div>
+                        </div>
+                    </p:panel> 
+                </div>
+            </div>
+            <!-- keyfilter is used for allowing particular key during typing in the textfield-->
+            <p:keyFilter mask="pint" for="tf_trailer_unleden_wt"/>
+            <p:keyFilter mask="pint" for="tf_trailer_rlw"/>
+            <p:keyFilter mask="pint" for="tf_f_axle_weight"/>
+            <p:keyFilter mask="pint" for="tf_r_axle_weight"/>
+            <p:keyFilter mask="pint" for="tf_o_axle_weight"/>
+            <p:keyFilter mask="pint" for="tf_t_axle_weight"/>
+        </f:subview>
+
+    </div>
+</html>

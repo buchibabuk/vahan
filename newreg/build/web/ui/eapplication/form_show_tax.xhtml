@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title><ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert></title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="stylesheet.min.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+        <h:outputScript library="js" name="utils.js" />
+    </h:head> 
+
+    <h:body>
+        <h:form id="form_eapp">
+            <ui:insert name="heading">
+                <ui:include src="/leftMenuPanel.xhtml"/>
+            </ui:insert>
+            <p:outputPanel id="pnl_show">
+                <h:panelGroup id="pg_show">
+                    <ui:include src="/ui/eapplication/form_collect_tax.xhtml"/>                               
+                </h:panelGroup>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

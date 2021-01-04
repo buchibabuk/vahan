@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head></h:head>
+    <h:body>
+        <h:form id="permitDtls" prependId="false">
+            <div class="ui-grid ui-grid-responsive">   
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <h:inputHidden value="#{permitDtls.regnNo}" />
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="applNo" value="Application No"/>
+                        </label>
+                        <p:inputText id="applNo" value="#{permitDtls.applicationNo}" disabled="true"/>
+                    </div>   
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="prmtNo" value="Permit No"/>
+                        </label>
+                        <p:inputText id="prmtNo" value="#{permitDtls.permitNo}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="purCd" value="Purpose Code"/>
+                        </label>
+                        <p:inputText id="purCd" value="#{permitDtls.purCd}" disabled="true"/>
+                    </div>
+                </div> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="vldFrm" value="Valid From"/>
+                        </label>
+                        <p:inputText id="vldFrm" value="#{permitDtls.validFrom}" disabled="true"/>                                
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="vldUpTo" value=" Valid Upto"/>
+                        </label>
+                        <p:inputText id="vldUpTo" value="#{permitDtls.validUpto}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="permitTyp" value="Permit Type"/>
+                        </label>
+                        <p:inputText id="permitTyp" value="#{permitDtls.permitType}" disabled="true"/>                                
+                    </div>
+                </div> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="JourneyPur" value="Journey Purpose"/>
+                        </label>
+                        <p:inputText id="JourneyPur" value="#{permitDtls.journeyPur}" disabled="true"/>                                
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="goodToCarry" value="Goods To Carry"/>
+                        </label>
+                        <p:inputText id="goodToCarry" value="#{permitDtls.goodToCarry}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtCatg" value="Permit Category"/>
+                        </label>
+                        <p:inputText id="pmtCatg" value="#{permitDtls.pmtCatg}" disabled="true"/>
+                    </div>   
+                </div> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="parking" value="Parking"/>
+                        </label>
+                        <p:inputText id="parking" value="#{permitDtls.parking}" disabled="true"/>
+                    </div>   
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="replaceDt" value=" Replace Date"/>
+                        </label>
+                        <p:inputText id="replaceDt" value="#{permitDtls.replaceDt}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                    </div>
+                </div> 
+                <p:panel header="Route and Area Details" toggleable="true"  styleClass="top-space bottom-space" rendered="#{permitDtls.routedata ne null or permitDtls.region_covered ne null}">
+                    <p:outputPanel rendered="#{permitDtls.routedata ne null}">
+                        <div class="datatable-panel" style="margin: 0 auto;">
+                            <p:dataTable var="routeDtls" value="#{permitDtls.routedata}" styleClass="datatable-panel-100">
+                                <f:facet name="header"> 
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <h:outputText value="Route Detail" />
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                <p:column headerText="Route Code" styleClass="center-position">
+                                    <h:outputText value="#{routeDtls.rout_code}" />
+                                </p:column>
+                                <p:column headerText="From">
+                                    <h:outputText value="#{routeDtls.floc}" />
+                                </p:column>
+                                <p:column headerText="To">
+                                    <h:outputText value="#{routeDtls.tloc}" />
+                                </p:column>
+                                <p:column headerText="Via" width="35%">
+                                    <h:outputText value="#{routeDtls.start_POINT}" />
+                                </p:column>
+                                <p:column headerText="No of Trip">
+                                    <h:outputText value="#{routeDtls.numberOfTrips}" />
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{permitDtls.region_covered ne null}" styleClass="top-space">
+                        <h:panelGrid columns="2" styleClass="left-position">
+                            <h:outputLabel value="Area Details : " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{permitDtls.region_covered}"/>
+                        </h:panelGrid>
+                    </p:outputPanel>
+                </p:panel>
+                <p:panel rendered="#{permitDtls.showAuthDetails}" header="Authorization Details" styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="authorizationNo" value="Authorization No"/>
+                            </label>
+                            <p:inputText id="authorizationNo" value="#{permitDtls.authNo}" disabled="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="authorizationFrom" value="Authorization From"/>
+                            </label>
+                            <p:inputText id="authorizationFrom" value="#{permitDtls.authFrom}" disabled="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="authorizationTo" value="Authorization To"/>
+                            </label>
+                            <p:inputText id="authorizationTo" value="#{permitDtls.authTo}" disabled="true"/>
+                        </div>
+                    </div>
+
+                </p:panel>
+                <p:panel header="Temporary Permit Details" rendered="#{permitDtls.showTempPermitDetails}" styleClass="top-space">
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no" value="Application No."/>
+                            </label>
+                            <p:inputText id="appl_no" value="#{permitDtls.tmp_Dobj.applicationNo}"  disabled="true" styleClass="text-uppercase">
+
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="pmt_no" value="Permit No."/>
+                            </label>
+                            <p:inputText id="pmt_no" value="#{permitDtls.tmp_Dobj.pmt_no}"  disabled="true" styleClass="text-uppercase" >
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="purCdescr" value="Purpose Type"/>
+                            </label>
+                            <p:inputText id="purCdescr" value="#{permitDtls.tmp_Dobj.purCdDesc}" disabled="true" styleClass="text-uppercase"/>
+                        </div>
+
+
+
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="issue_dt" value="Permit Issue Date"/>
+                            </label>
+                            <p:calendar id="issue_dt" value="#{permitDtls.tmp_Dobj.issue_dt}" pattern="dd-MMM-yyyy" disabled="true" styleClass="text-uppercase"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="valid_from" value="Permit Valid From"/>
+                            </label>
+                            <p:calendar id="valid_from" value="#{permitDtls.tmp_Dobj.valid_from}" pattern="dd-MMM-yyyy" disabled="true" styleClass="text-uppercase"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="valid_upto" value="Permit Valid Upto" />
+                            </label>
+                            <p:calendar id="valid_upto" value="#{permitDtls.tmp_Dobj.valid_upto}" pattern="dd-MMM-yyyy" disabled="true" styleClass="text-uppercase"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="rcpt_no" value="Receipt No"/>
+                            </label>
+                            <p:inputText id="rcpt_no" value="#{permitDtls.tmp_Dobj.rcpt_no}" disabled="true" styleClass="text-uppercase"/>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="goods_to_carry" value="Goods to carry"/>
+                            </label>  
+                            <p:inputText id="goods_to_carry" value="#{permitDtls.tmp_Dobj.goodsToCarry}" disabled="true" styleClass="text-uppercase"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="routeFr" value="Travel From:"/>
+                            </label>
+                            <p:inputText id="routeFr" value="#{permitDtls.tmp_Dobj.journey}" disabled="true" styleClass="text-uppercase"/>         
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="routeTo" value="Travel Upto"/>
+                            </label>
+                            <p:inputText id="routeTo" value="#{permitDtls.tmp_Dobj.parking}" disabled="true" styleClass="text-uppercase"/>         
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="rVia" value="Route Description:"/>
+                            </label>
+                            <p:inputText id="rVia" value="#{permitDtls.tmp_Dobj.authFrom}" disabled="true" styleClass="text-uppercase"/>         
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="reason" value="Reason:"/>
+                            </label>  
+                            <p:inputTextarea id="reason" value="#{permitDtls.tmp_Dobj.authTo}" disabled="true" styleClass="text-uppercase"/> 
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="pmtType" value="Permit Type" rendered="#{permitDtls.tmp_Dobj.pmt_type_desc ne ''}"/>
+                            </label>
+                            <p:inputText id="pmtType" value="#{permitDtls.tmp_Dobj.pmt_type_desc}" rendered="#{permitDtls.tmp_Dobj.pmt_type_desc ne ''}" disabled="true" styleClass="text-uppercase"/>        
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmpPmtCatg" value="Permit Category" rendered="#{permitDtls.tmp_Dobj.pmt_catg_desc ne ''}" />
+                            </label>
+                            <p:inputText id="tmpPmtCatg" value="#{permitDtls.tmp_Dobj.pmt_catg_desc}" rendered="#{permitDtls.tmp_Dobj.pmt_catg_desc ne ''}" disabled="true" styleClass="text-uppercase"/>            
+                        </div>
+                    </div>
+
+                </p:panel>
+
+                <p:blockUI block=":masterLayout" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+            </div>
+        </h:form>    
+    </h:body>
+</html>

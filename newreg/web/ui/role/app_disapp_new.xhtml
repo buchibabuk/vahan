@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div class="ui-grid ui-grid-responsive">
+        <f:subview id="app_disapp_new_form">
+            <p:outputPanel id="panelExemptionDtls">
+                <p:panel id="pnlExemption" header="#{language.exemptionOrderDetails}" rendered="#{app_disapp.renderExemptionOD}">
+                    <div class="ui-grid-row">   
+                        <div class="ui-grid-col-12 left-position">
+                            <h:outputText escape="false" value="#{app_disapp.appl_details.exemptionOD}"/>
+                        </div>
+                    </div>                        
+                </p:panel>
+            </p:outputPanel>
+            <p:panel id="panelMoveCancel" styleClass="top-space bottom-space">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="reasonList" value="#{language.showDisapproveReasons}" type="button" rendered="#{app_disapp.disappPrint}" style="margin-right: 10px;" />
+                        <p:commandButton value="#{language.printDisapprovalNotice}" action="#{app_disapp.disapprovalPrint}" rendered="#{app_disapp.disappPrint}" style="margin-right: 12px;"/>
+                        <p:menuButton value="#{language.saveOptions}" >
+                            <p:menuitem id="fileMove" value="#{language.fileMovement}" onclick="PF('panelAppDisapp').show();"
+                                        icon="ui-icon-transferthick-e-w" immediate="true">
+                            </p:menuitem>
+                            <p:menuitem>
+                                <p:commandLink styleClass="ui-menuitem-link"  action="#{app_disapp.save()}" ajax="false"
+                                               onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();">
+                                    <h:outputText styleClass="ui-menuitem-icon ui-icon ui-icon-disk"/>
+                                    <h:outputText styleClass="ui-menuitem-text" value="#{language.save}" />
+                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                </p:commandLink>
+                            </p:menuitem>
+                            <p:separator />
+                            <p:menuitem value="#{language.homepage}" url="/vahan/home.xhtml" icon="ui-icon-home" />
+                        </p:menuButton>
+                        <p:button value="#{language.login_back}" outcome="seatwork" onclick="PF('block_panel').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                        <ui:include src="/ui/registration/form_Reg_docs_upload_status.xhtml">
+                            <ui:param name="doc_status" value="#{app_disapp}"/>
+                        </ui:include>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:blockUI block="panelMoveCancel" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+
+
+            <p:dialog header="#{language.fileMovement}" widgetVar="panelAppDisapp" modal="true" dynamic="true" closeOnEscape="true">
+
+                <p:panel id="panelAppDisapp">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.officeRemarks}" for="off_remark"/>
+                            </label>
+                            <p:inputTextarea id="off_remark" value="#{app_disapp.app_disapp_dobj.office_remark}" maxlength="100"
+                                             cols="40" rows="1" placeholder="Office Remark ?" style="text-transform: uppercase" converter="toUpperCaseConverter"/>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:selectOneRadio id="bt_status"  value="#{app_disapp.app_disapp_dobj.new_status}" 
+                                              required="false" requiredMessage="#{language.atleastOneOption}"  layout="grid" columns="2">
+
+                                <f:selectItem itemLabel="#{language.proceedtoNextSeat}" itemValue="#{constant.STATUS_COMPLETE}"/>   <!-- Constant values comes from properties file -->
+                                <f:selectItem itemLabel="#{language.holdDuetoIncompleteAppl}" itemValue="#{constant.STATUS_DISPATCH_PENDING}"/>
+                                <f:selectItem itemLabel="#{language.revertBackforRectification}" itemValue="#{constant.STATUS_REVERT}"
+                                              value="#{app_disapp.app_disapp_dobj.revertBack}"
+                                              itemDisabled="#{!app_disapp.app_disapp_dobj.renderRevert}"/>
+                                <p:ajax event="click" listener="#{app_disapp.reverBackListener}" update="panel_prevAction,panelAppDisapp"/>
+                            </p:selectOneRadio>
+
+                            <h:outputText/>
+                            <p:outputPanel id="panel_prevAction">
+                                <p:selectOneMenu id="prevAction" value="#{app_disapp.app_disapp_dobj.pre_action_code}"
+                                                 rendered="#{app_disapp.app_disapp_dobj.renderRevertList}">
+                                    <f:selectItems value="#{app_disapp.app_disapp_dobj.prevRoleLabelValue}" />
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+                    <p:separator style="color: green" />
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:spacer height="30"/>
+                            <p:outputPanel id="saveAndMoveFilePanel">
+                                <p:commandLink value="#{language.save}" action="#{app_disapp.saveAndMoveFile()}" 
+                                               style="padding: .3em 1em;" update="showOwnerDiscPopup"
+                                               styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-text ui-c"
+                                               onclick="PF('bui').show();" oncomplete="PF('panelAppDisapp').hide();PF('bui').hide();">
+                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                </p:commandLink>
+                                <p:blockUI block="panelAppDisapp" widgetVar="bui">
+                                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                </p:blockUI>
+                                <p:commandButton value="#{language.compareChanges}"
+                                                 oncomplete="PF('compChangesDlg').show();"
+                                                 update="compChangesDlgId" ajax="true"
+                                                 immediate="false" icon="ui-icon-newwin"
+                                                 action="#{app_disapp.compareChanges()}" >
+                                </p:commandButton>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+                </p:panel>
+            </p:dialog>
+            <p:dialog id="showOwnerDiscPopup" widgetVar="successDialog" dynamic="true"
+                      modal="true" closable="false" resizable="false" draggable="false" header="#{language.printOwnerDisclaimer}">
+                #{language.printOwnerDisclaimerfor}:<br/>
+                #{language.home_rightpanelApplno}: <span class="red">#{app_disapp.appl_details.getAppl_no()}</span><br/>
+                #{language.home_rightpanelregno}: <span class="red">#{app_disapp.appl_details.getRegn_no()}</span>
+                <div class="center-position">
+                    <p:button value="#{language.ok}" onclick="PF('successDialog').hide();"                                              
+                              outcome="home" icon="ui-icon-check"/>
+                    <p:commandButton value="#{language.printDisclaimer}" onclick="PF('successDialog').hide();" oncomplete="PF('bui').hide();"                                              
+                                     action="#{app_disapp.printDisclaimer()}" icon="ui-icon-print" >
+                        <f:param name="APPL_NO" value="#{app_disapp.appl_details.getAppl_no()}"/>
+                        <f:param name="REGN_NO" value="#{app_disapp.appl_details.getRegn_no()}"/>
+                    </p:commandButton>
+                </div>
+            </p:dialog>
+            <p:dialog id="reasonDialog" header="#{language.addReasons}" widgetVar="reasonDlg" modal="true" dynamic="true">
+                <p:selectManyMenu id="reasons" value="#{app_disapp.app_disapp_dobj.selectedReasonList}" style="height: 150px;"
+                                  showCheckbox="true">
+                    <f:selectItems value="#{app_disapp.app_disapp_dobj.reasonList}" />
+                </p:selectManyMenu>
+                <p:commandButton  value="#{language.save}" action="#{app_disapp.saveWithReason()}" icon="ui-icon-disk">
+                </p:commandButton>
+            </p:dialog>
+
+            <p:overlayPanel id="reasonPanel" for="reasonList"  hideEffect="fade" dismissable="true" style="width:600px">
+                <p:dataList id="listofreason" value="#{app_disapp.app_disapp_dobj.assignedReasons}" var="reason" styleClass="bottom-space">
+                    <f:facet name="header">
+                        #{language.listOfReasons}
+                    </f:facet>
+                    #{reason}
+                </p:dataList>
+            </p:overlayPanel>
+
+
+            <p:dialog  id="compChangesDlgId" header="#{language.fileMovement}" widgetVar="compChangesDlg" modal="true" dynamic="true" closeOnEscape="true">
+                <p:dataTable var="comp" value="#{app_disapp.getCompBeanList()}"  paginator="true" rows="10" emptyMessage="No Changes Made by you">
+                    <p:column headerText="#{language.fieldName}">
+                        <h:outputText value="#{comp.fields}" />
+                    </p:column>
+
+                    <p:column headerText="#{language.oldValue}">
+                        <h:outputText value="#{comp.old_value}"/>
+                    </p:column>
+
+                    <p:column headerText="#{language.newValue}">
+                        <h:outputText value="#{comp.new_value}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+        </f:subview>
+    </div>
+</html>

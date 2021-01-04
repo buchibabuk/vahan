@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/permit/form_newPermit_Print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <table class="datatable-panel">
+                <tr>
+                    <td class="left-position">
+                        <div class="center-position inline-section">
+                            <h:outputText value="[#{printDocXHTML.purCdDescr}]"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left-position">
+                        <div class="center-position inline-section">
+                            <h:outputText value="[Reason : #{printDocXHTML.dupReason}]" rendered="#{printDocXHTML.dupReasonRender}"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position">
+                        <p:graphicImage library="images" name="#{printDocXHTML.image_logo}" rendered="#{printDocXHTML.show_image_logo}" width="80" />
+                    </td>
+                    <td>
+                        <p:outputPanel rendered="#{printDocXHTML.passPmtDobj.state_cd eq 'Odisha'}">
+                            <div class="center-position">
+                                <span class="font-bold report-subheader text-uppercase bottom-line"> <h:outputText value="REGIONAL TRANSPORT AUTHORITY #{printDocXHTML.passPmtDobj.off_cd}"/> </span>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{printDocXHTML.passPmtDobj.state_cd ne 'Odisha'}" >
+                            <div class="center-position">
+                                <span class="font-bold report-subheader text-uppercase bottom-line"> <h:outputText value="#{printDocXHTML.main_header},#{printDocXHTML.passPmtDobj.state_cd}"/> </span>
+                            </div>
+                        </p:outputPanel>
+                        <div class="center-position">
+                            <span class="font-bold report-subheader text-uppercase"> <h:outputText rendered="#{printDocXHTML.passPmtDobj.state_cd eq 'Odisha'}" value="#{printDocXHTML.passPmtDobj.state_cd}"/> </span>
+                        </div>
+                        <div class="center-position">
+                            <span class="font-bold report-subheader text-uppercase"> <h:outputText rendered="#{printDocXHTML.passPmtDobj.state_cd ne 'Odisha'}" value="#{printDocXHTML.passPmtDobj.off_cd}"/> </span>
+                        </div>
+                        <div class="center-position">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.formName}"/> </span>
+                        </div>
+                        <div class="center-position bottom-space">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.ruleAndSection}"/> </span>
+                        </div>
+
+                        <div class="center-position">
+                            <h:outputText value="Special Permit" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                            <h:outputText value="A ROUND TRIP SPECIAL PERMIT GRANTED U/S 88 SUB-SECTION(8) OF THE MV ACT’1988 FOR THE CONVENIENCE OF THE PUBLIC TO ANY PUBLIC SERVICE VEHICLE INCLUDING ANY VEHICLE COVERED BY A PERMIT ISSUED U/S72(INCLUDING A RESERVED STATE CARRIAGE) OR U/S 74 OR UNDER SUB-SECTION(9) OF THIS SECTION FOR
+                                          CARRYING A PASSENGER OR PASSENGERS FOR HIRE OR REWARS FOR UNDER A CONTRACT, EXPRESS OR IMPLIED
+                                          FOR USE OF THE VEHICLE AS A WHOLE WITHOUT STOPPING TO PICK UP OR SET DOWN ALONG THE LINE OF ROUTE
+                                          PASSENGERS NOT INCLUDED IN THE CONTRACT" rendered="#{printDocXHTML.renderPmtSpecial}" styleClass="report-header bottom-line text-uppercase"/>
+
+                        </div>
+                        <br/>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <pe:qrCode rendered="true"
+                                   renderMethod="canvas" 
+                                   renderMode="0" 
+                                   text="#{printDocXHTML.textQRcode}"
+                                   label="QR Code"
+                                   size="110"
+                                   fillColor="000000" 
+                                   ecLevel="H" 
+                                   radius="0.5"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{printDocXHTML.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{printDocXHTML.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="1. Permit Number " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold" />
+                    <h:outputLabel value="2. Name of The Permit Holder " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.owner_name}" styleClass="font-bold"/>
+                    <h:outputLabel value="3. Father's/Husband's Name (In Individual Case) " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.f_name}" />
+                    <h:outputLabel value="4. Address   " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add1} #{printDocXHTML.ownerPmtDobj.c_add2} #{printDocXHTML.ownerPmtDobj.c_add3}, #{printDocXHTML.ownerPmtDobj.c_state} #{printDocXHTML.ownerPmtDobj.districtInString}-#{printDocXHTML.ownerPmtDobj.c_pincode}" />
+                </h:panelGrid>
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    5.
+                </h:panelGrid>
+                <ol type="I">
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="a). Type of Vehicle" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.pmtFeeDobj.vh_class} " />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="b). Registration Mark" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}"  styleClass="font-bold"/>
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="c). Chassis Number" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.chasi_no}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="d). UnLaden Weight" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.unld_wt}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="e). Seating Capacity" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.pmtFeeDobj.seat_cap}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="f). Sleeper Capacity" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.sleeper_cap}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="g). Laden Weight" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.ld_wt}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="h) Make/Model" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.makerName}/#{printDocXHTML.ownerPmtDobj.modelName}"   />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="i) Engine Number" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.engnNo}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="j). Tax Valid Upto" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.dtlsDobj.taxUpto}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="k) Insurance Valid Upto" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.dtlsDobj.insUpto}"   />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="l) Fitness Valid Upto" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.dtlsDobj.fitValidTo}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" rendered="#{printDocXHTML.renderWBPrint}" style="width:98.5% !important;">
+                            <h:outputLabel value="m) Pucc Valid Upto" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.dtlsDobj.puccUpto}" />
+                        </h:panelGrid>
+                    </il>     
+                    <il>
+                        <h:panelGrid columns="2" rendered="#{printDocXHTML.registered_office ne null and printDocXHTML.renderWBPrint}" style="width:98.5% !important;">
+                            <h:outputLabel value="n) Register AuthoritY" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.registered_office}" />
+                        </h:panelGrid>
+                    </il>  
+
+                </ol>
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="6. Purpose of Journey(s)" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.tempPmtDobj.purpose}"  />
+                    <h:outputLabel value="[APPLICANT'S STATEMENT REGARDING PASSENGER LIST IS ANNEXED { CONTENT NOT VERIFIED)]
+                                   List of persons {enclosed) will be visiting the following places :-" styleClass="right-space bottom-space" rendered="#{printDocXHTML.renderWBPrint}" />
+                </h:panelGrid>
+            </div> 
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    7.
+                </h:panelGrid>
+                <ol type="I">
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;">
+                            <h:outputLabel value="a). Route or Area for which Temporary permit is valid" styleClass="right-space bottom-space" />
+                            <h:outputText value="From: &#160;&#160;#{printDocXHTML.tempPmtDobj.route_fr} &#160; To:&#160;&#160;#{printDocXHTML.tempPmtDobj.route_to}" />
+                        </h:panelGrid>
+                    </il>
+                    <il>
+                        <h:panelGrid columns="2" style="width:98.5% !important;" rendered="#{printDocXHTML.tempPmtDobj.via ne null}">
+                            <h:outputLabel value="b). -Via" rendered="#{printDocXHTML.tempPmtDobj.via ne null}" styleClass="right-space bottom-space" />
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.via}" rendered="#{printDocXHTML.tempPmtDobj.via ne null}"/>
+                        </h:panelGrid>
+                    </il>
+                </ol>
+            </div>
+            <p:outputPanel rendered="#{printDocXHTML.splroutedata ne null}">
+                <div class="datatable-panel bottom-space position-relative" style="margin: 0 auto;">                    
+                    <h:outputLabel value="Route for which permit is valid:" styleClass="right-space bottom-space" />
+                </div>
+                <div class="center-position position-relative">
+                    <h:outputText value="Route Detail" styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="datatable-panel bottom-space position-relative" style="margin: 0 auto;">
+                    <p:dataTable var="splrouteDtls" value="#{printDocXHTML.splroutedata}">
+                        <p:column headerText="sr. no.">
+                            <h:outputText value="#{splrouteDtls.srl_no}" />
+                        </p:column>
+                        <p:column headerText="Journey Date">
+                            <h:outputText value="#{splrouteDtls.valid_fr}" />
+                        </p:column>
+                        <p:column headerText="From">
+                            <h:outputText value="#{splrouteDtls.route_fr}" />
+                        </p:column>
+                        <p:column headerText="To">
+                            <h:outputText value="#{splrouteDtls.route_to}" />
+                        </p:column>
+                        <p:column headerText="Via">
+                            <h:outputText value="#{splrouteDtls.via}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{printDocXHTML.routedata ne null}">
+                <div class="datatable-panel bottom-space position-relative" style="margin: 0 auto;">                    
+                    <h:outputLabel value="Route for which permit is valid:" styleClass="right-space bottom-space" />
+                </div>
+                <div class="center-position position-relative">
+                    <h:outputText value="Route Detail" styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                    <p:dataTable var="routeDtls" value="#{printDocXHTML.routedata}" styleClass="datatable-panel-100">
+                        <p:column headerText="Route Code">
+                            <h:outputText value="#{routeDtls.rout_code}" />
+                        </p:column>
+                        <p:column headerText="From">
+                            <h:outputText value="#{routeDtls.floc}" />
+                        </p:column>
+                        <p:column headerText="To">
+                            <h:outputText value="#{routeDtls.tloc}" />
+                        </p:column>
+                        <p:column headerText="Via">
+                            <h:outputText value="#{routeDtls.start_POINT}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{printDocXHTML.passPmtDobj.region_covered ne null}" styleClass="top-space">
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="Region Covered" styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.region_covered}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="8. Date of journey" styleClass="right-space bottom-space" rendered="#{printDocXHTML.renderWBPrint}"/>
+                    <h:outputLabel value="8. Date of expiry" styleClass="right-space bottom-space" rendered="#{!printDocXHTML.renderWBPrint}"/>
+                    <h:outputText value="From: &#160;&#160;#{printDocXHTML.tempPmtDobj.prv_valid_fr} &#160;&#160;&#160;&#160; To:&#160;&#160;#{printDocXHTML.tempPmtDobj.prv_valid_to}"  />
+                </h:panelGrid>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="9. Nature of goods if to be carried " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.tempPmtDobj.goods_to_carry}" />
+                </h:panelGrid>
+            </div>
+            <p:outputPanel id="vtpmtdtls" rendered="#{!(printDocXHTML.passPmtDobj.pmt_no == null || printDocXHTML.passPmtDobj.pmt_no == '')}">
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                        10. Number and Description of Permit already held
+                    </h:panelGrid>
+                    <ol type="a">
+                        <il>
+                            <h:panelGrid columns="2" style="width:98.5% !important;">
+                                <h:outputLabel value="a). Permit No" styleClass="right-space bottom-space" />
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no} " />
+                            </h:panelGrid>
+                        </il>
+                        <il>
+                            <h:panelGrid columns="2" style="width:98.5% !important;">
+                                <h:outputLabel value="b). Type of Permit" styleClass="right-space bottom-space" />
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_type}(#{printDocXHTML.passPmtDobj.pmtCatg})" />
+                            </h:panelGrid>
+                        </il>
+                        <il>
+                            <h:panelGrid columns="2" style="width:98.5% !important;">
+                                <h:outputLabel value="c). Validity of Permit" styleClass="right-space bottom-space" />
+                                <h:outputText value="From: &#160;&#160;#{printDocXHTML.passPmtDobj.validFromInString} &#160; To:&#160;&#160;#{printDocXHTML.passPmtDobj.validUptoInString}" />
+                            </h:panelGrid>
+                        </il>
+                    </ol>
+                </div>
+            </p:outputPanel>
+            <br/>
+            <p:outputPanel rendered="#{printDocXHTML.specialFeeDetail ne null}">
+                <div class="datatable-panel position-relative"  style="margin: 0 auto;">                    
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" rendered="#{printDocXHTML.specialFeeDetail ne null}">
+                        <h:outputLabel value="#{printDocXHTML.specialFeeDetail}"  styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" rendered="#{printDocXHTML.specialFeeDetail ne null}">
+                        <h:outputLabel value="Passenger List Enclosed" styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{printDocXHTML.renderWBPrint}">
+                <div class="datatable-panel"  style="margin: 0 auto;">                    
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                        <h:outputLabel value="Certified that in respect of the vehicle mentioned above, all taxes and fees payable in this State up to the date of expiry of
+                                       this special permit have been paid."  styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" >
+                        <h:outputLabel value=" This special permit is valid throughout India without countersignature by any other Regional/ State Transport Authority. It
+                                       shall be produced on demand by any authority authorised by the Govt. " styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" >
+                        <h:outputLabel value="In addition to the above general conditions, the permit holder shall also comply with any of the special conditions
+                                       stipulated by the STA. " styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" >
+                        <h:outputLabel value="The permit holder shall comply with all the relevant provisions of the Motor Vehicles Act. 1988 and of the Central Motor
+                                       Vehicles Rules,1989 and of the West-Bengal Motor Vehicles Rules, 1989. " styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'KA'}">
+                <div class="datatable-panel"  style="margin: 0 auto;">                    
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                        <h:outputLabel value="Certified That in respect of the Vehicle mentioned above,all taxes,and fees payable in this State up to the date of expiry of this permit have been paid."  styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" >
+                        <h:outputLabel value="[This Permit holder shall pay the tax due to other states,if any, as per the rates specified by each state to the nearest taxation authority of that states,if the tax of other state is not already paid. The Permit shall be produced on demand by the Police Officer in Uniform.] " styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100" >
+                        <h:outputLabel value="[The holder of the permit shall maintain trip sheets in such form as the Regional Transport Authority may be general or special order, direct and shall carry them in the vehicle.] " styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <br/>
+            <br/>
+            <div class="top-space bottom-space datatable-panel position-relative"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <p:graphicImage id="showSignImgOff1" value="#{printDocXHTML.viewSignFileOff1}" rendered="#{printDocXHTML.viewSignFileOff1 ne null}" cache="false" style="height: 50px !important; width: auto;"/>
+                                <br/>
+                                <h:outputText value="#{printDocXHTML.footerSignature}"/> <br/>
+                                <h:outputText value="#{printDocXHTML.main_footer},"/><br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd},#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="page-break"></div>
+            <ui:include src="/ui/permitreports/formTermsConditionTP.xhtml"/>          
+        </h:form>
+    </h:body>
+</html>

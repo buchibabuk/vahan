@@ -1,0 +1,171 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"> 
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="flatFileDelete" prependId="false">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Delete Flat File</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel id="regnNumber">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="Registration No"/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{deletesmartcardflatfilebean.dobj.regn_no}" 
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="Please Enter Registration No."
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"
+                                          disabled="#{deletesmartcardflatfilebean.enableDisable}">
+                                <p:keyFilter regEx="/[0-9A-Z]/i"/>   
+                            </p:inputText> 
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details" action="#{deletesmartcardflatfilebean.generatedFlatFileDetails()}"  update="flatFileDetails saveButton regnNumber" disabled="#{deletesmartcardflatfilebean.enableDisable}"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id ="flatFileDetails">                   
+                    <p:panel header="Reason for Deletion Flat File" rendered="#{deletesmartcardflatfilebean.flatFileDetails}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <h:outputText value="Flat File Generated On: " styleClass="font-bold red" />
+                                <h:outputText value=" #{deletesmartcardflatfilebean.dobj.genrated_on}" styleClass="font-bold" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfReason" value="Reason"/>
+                                </label>
+                                <p:inputTextarea id="tfReason" value="#{deletesmartcardflatfilebean.dobj.reason}" 
+                                                 converter="toUpperCaseConverter"
+                                                 maxlength="100"
+                                                 required="true"
+                                                 requiredMessage="Please Enter Reason"
+                                                 styleClass="input">
+
+                                </p:inputTextarea>
+                            </div>
+                        </div>
+
+                    </p:panel>
+                    <p:outputPanel id="saveButton" rendered="#{deletesmartcardflatfilebean.flatFileDetails}">
+                        <p:panel styleClass="top-space bottom-space" rendered="#{(deletesmartcardflatfilebean.appl_details.ownerDobj eq null)}">
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">                                    
+                                    <p:commandButton value="Save" action="#{deletesmartcardflatfilebean.saveDeleteEntry()}">
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                    </p:commandButton>                            
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:panel id="changedByPrevUser" rendered="#{deletesmartcardflatfilebean.prevChangedDataList.size()>0}"
+                             toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                        <p:dataTable value="#{deletesmartcardflatfilebean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                            <p:column headerText="Changed by Employee" width="15%">
+                                <h:outputText value="#{data.userName}" />
+                            </p:column>
+                            <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                            </p:column>
+                            <p:column headerText="Changed on" width="15%">
+                                <h:outputText value="#{data.op_dt}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:outputPanel id="outputpanel_appdisapp" rendered="#{deletesmartcardflatfilebean.appl_details.ownerDobj ne null}">    
+                        <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                            <ui:param name="app_disapp" value="#{deletesmartcardflatfilebean}"/>
+                        </ui:include>
+                    </p:outputPanel>
+                    <p:dialog id="db_reopened"  dynamic="true" widgetVar="dlgdb_reopened"
+                              modal="true" draggable="false" closable="false" hideEffect="explode" header="Info">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Application Number is Generted Successfully.Application Number is : #{deletesmartcardflatfilebean.appl_no}"/>
+                                </label>                            
+                            </div>
+                        </div>
+                        <p:button value="Ok" outcome="home" />
+
+                    </p:dialog>  
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                    </p:confirmDialog>
+                </p:outputPanel>
+
+                <vahan:vahanMessages messages="#{deletesmartcardflatfilebean.vahanMessages}"  rendered="#{deletesmartcardflatfilebean.vahanMessages ne null}"/>
+                <!--                OTP-->
+                <p:outputPanel id="otp_confirmation">
+                    <p:dialog  widgetVar="otp_confrm" header="OTP for Delete Smartcard Flat File"  closable="false" dynamic="true" modal="true">
+                        <p:messages showDetail="true" showSummary="false" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 red">
+                                OTP has been sent to your registered mobile no.
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label>
+                                    <p:outputLabel value="Enter OTP:"/>
+                                </label>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <p:inputText value="#{deletesmartcardflatfilebean.enterSmartRcptOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <p:commandLink value="Resend OTP" action="#{deletesmartcardflatfilebean.otpDeleteSmartcardFlatfile('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                               onsuccess="PF('ajax_status').hide()"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="Confirm And Move File" action="#{deletesmartcardflatfilebean.otpDeleteSmartcardFlatfile('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide();" >
+                                </p:commandButton>
+                                <p:commandButton value="Close" immediate="true" oncomplete="PF('otp_confrm').hide();" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block="flatFileDelete" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+
+

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formRestoreApplNo" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.restoreDispose}</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelApplRestore">
+                    <p:panel id="restorePanel" rendered="#{!restoreDisposeApplicationBean.render}">
+                        <p:focus context="restorePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfAppNo" value="#{language.home_rightpanelApplno}"/>
+                                </label>
+                                <p:inputText  id="tfAppNo" value="#{restoreDisposeApplicationBean.appl_no}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="#{language.applNoMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" validator="#{validateFunction.validateApplNo}">
+                                    <f:ajax event="blur" render="@this" execute="@this"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="#{language.showDetails}" action="#{restoreDisposeApplicationBean.showDetails()}"
+                                                 update="formRestoreApplNo:panelOwnerInfo formRestoreApplNo msg" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()"/>
+                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfAppNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{restoreDisposeApplicationBean.render}">                    
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <div class="ui-grid-row top-space bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="requestForPurCD" value="#{language.restoreApplno} - #{restoreDisposeApplicationBean.appl_no} #{language.fordis}"/>
+                                        </label>
+                                        <p:selectManyMenu id="requestForPurCD" 
+                                                          value="#{restoreDisposeApplicationBean.selectedPurposeCode}" 
+                                                          required="true"
+                                                          requiredMessage="#{language.restoreTrans}"
+                                                          showCheckbox="true"
+                                                          styleClass="scroll-panel-overflow">
+                                            <f:selectItems value="#{restoreDisposeApplicationBean.purCodeList}"/> 
+                                        </p:selectManyMenu>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row top-space bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="reason" value="#{language.reason}"/>
+                                        </label>
+                                        <p:inputTextarea id="reason"  value="#{restoreDisposeApplicationBean.reason}" 
+                                                         required="true" requiredMessage="#{language.reasonFieldMsg}"
+                                                         converter="toUpperCaseConverter" maxlength="100"
+                                                         styleClass="input" validator="#{validateFunction.validateReason}">
+                                            <f:ajax event="blur" render="@this" execute="@this"/>
+                                        </p:inputTextarea>
+                                    </div>
+                                </div>
+
+
+                                <div class="ui-grid-row center-position top-space bottom-space">                                    
+                                    <div class="ui-grid-col-12">                                      
+                                        <p:commandButton id="btn_save" value="#{language.restoreApplno}" 
+                                                         action="#{restoreDisposeApplicationBean.sendOtpMailForConfirm('sendOtp')}"
+                                                         update="panelApplRestore formRestoreApplNo msg" onclick="PF('ajax_status').show()"
+                                                         onsuccess="PF('ajax_status').hide()"> 
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.restore_confirmTran}" icon="ui-icon-alert"/>
+                                        </p:commandButton>                            
+                                        <p:commandButton value="#{language.login_back}" action="/ui/registration/formReStoreDisposeApplication.xhtml" 
+                                                         process="@this" update="formRestoreApplNo" immediate="true" onclick="PF('ajax_status').show()"
+                                                         onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-col-9">
+                                <p:tabView styleClass="top-space bottom-space" >
+                                    <!--################################# Paid Fee Details ########################################## -->
+                                    <p:tab  id="paidFee_details_tab" title="#{language.paidFeeDtls}">
+                                        <ui:include src="/ui/registration/formReceiptDetails.xhtml">
+                                            <ui:param name="paidFeeDt" value="#{restoreDisposeApplicationBean}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+                                    <!--################################# Owner Details ########################################## -->
+                                    <p:tab  id="owner_details_tab" title="#{language.ownerDetails}">
+                                        <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{restoreDisposeApplicationBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+
+                                    <!--################################# Vehicle Details ######################################## -->
+                                    <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}">                                
+                                        <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{restoreDisposeApplicationBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+                                    <!--###################### Insurance Details ############################### -->
+                                    <p:tab id="insuranceDetails"  title="#{language.ins_dtls}">      
+                                        <ui:include src="/ui/form_ins_dtls.xhtml">
+                                            <ui:param  name="ins_bean" value="#{restoreDisposeApplicationBean.ins_bean}">
+                                            </ui:param>
+                                        </ui:include>
+                                    </p:tab>  
+                                    <!--########################################################################################## -->     
+
+                                    <!--###################### Hypothecation Details ########################################  -->
+                                    <p:tab id="hypothecationDetails"  title="#{language.hypth_header}">  
+                                        <ui:include src="/ui/registration/form_hypothecationDetails.xhtml">
+                                            <ui:param name="hypothecationDetails_bean" value="#{restoreDisposeApplicationBean.hypothecationDetails_bean}">
+                                            </ui:param>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+                                </p:tabView>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>             
+
+                <!--OTP-->
+                <p:outputPanel id="otp_confirmation">
+                    <p:dialog  widgetVar="otp_confrm" header="#{language.restore_otp}"  closable="false" dynamic="true" >
+                        <p:messages showDetail="true" showSummary="false">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 red">
+                                #{language.OTPSentMsg}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label>
+                                    <p:outputLabel value="#{language.login_enter_otp}:"/>
+                                </label>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <p:inputText value="#{restoreDisposeApplicationBean.enterRcptOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <p:commandLink value="#{language.login_resend_otp}" action="#{restoreDisposeApplicationBean.sendOtpMailForConfirm('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                               onsuccess="PF('ajax_status').hide()"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="Confirm And Restore Application " action="#{restoreDisposeApplicationBean.sendOtpMailForConfirm('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide();" >
+                                </p:commandButton>
+                                <p:commandButton value="Back" action="/ui/registration/formReStoreDisposeApplication.xhtml?faces-redirect=true" 
+                                                 process="@this" update="formRestoreApplNo" immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:blockUI block="formRestoreApplNo" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

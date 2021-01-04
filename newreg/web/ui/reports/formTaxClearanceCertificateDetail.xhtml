@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <f:subview id="frm_print_clr" rendered="#{taxClearCertificateBean.tax_clr_amt_rendred}">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_printTCC_clr">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputLabel value="#{taxClearCertificateBean.main_header_label}"/> </h1>
+                        </div>
+                    </div>
+                    <p:outputPanel>
+                        <p:autoUpdate/>
+                        <p:dialog id="msgDialog_clr" header="Alert!" widgetVar="messageDialog_regn" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                            <p:messages>  
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </p:dialog>
+                    </p:outputPanel>
+                    <p:panel styleClass="top-space bottom-space" header="Print Tax Clearance Certificate">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no_clr" value="Registration No"/>
+                                </label>
+                                <p:inputText id="regn_no_clr" value="#{taxClearCertificateBean.regn_No}"  maxlength="10" styleClass="text-uppercase">
+                                    <f:ajax/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Print TCC" action="#{taxClearCertificateBean.printTCC_Report_Regn()}"/>  
+                            </div>
+                        </div>
+                    </p:panel>
+
+
+                </p:outputPanel>
+            </div>
+        </f:subview>
+        <f:subview id="frm_printttt" rendered="#{!taxClearCertificateBean.tax_clr_amt_rendred}">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_printTCC">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputLabel value="#{taxClearCertificateBean.main_header_label}"/> </h1>
+                        </div>
+                    </div>
+
+                    <p:outputPanel>
+                        <p:autoUpdate/>
+                        <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                            <p:messages> 
+                                <p:autoUpdate/>
+                            </p:messages>                       
+                        </p:dialog>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="test">
+                        <p:dataTable id="printCertificates" rowKey="#{printCert.appl_no}"  value="#{taxClearCertificateBean.printCertDobj}" selection="#{taxClearCertificateBean.selectedCertDobj}" var="printCert" rows="10"  paginatorPosition="bottom"
+                                     widgetVar="seatWorkList" filteredValue="#{taxClearCertificateBean.filteredSeat}" paginator="true" rowIndexVar="rowkey">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    Print Tax Clearance Certificate for last seven days only.
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application no" filterBy="#{printCert.appl_no}" filterMatchMode="contains" sortBy="#{printCert.appl_no}">#{printCert.appl_no}</p:column>                        
+                            <p:column headerText="Registration No" filterBy="#{printCert.regno}" filterMatchMode="contains" sortBy="#{printCert.regno}">#{printCert.regno}</p:column>
+                            <p:column headerText="TCC No" filterBy="#{printCert.tcc_no}" filterMatchMode="contains" sortBy="#{printCert.tcc_no}" rendered="#{taxClearCertificateBean.render_TCC_No}">#{printCert.tcc_no}</p:column>
+                            <p:column headerText="Select" selectionMode="multiple" style="text-align: center" />  
+                        </p:dataTable>
+                    </p:outputPanel>
+
+
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <p:commandButton id ="bt_printRc" value="#{taxClearCertificateBean.btn_print_label}"  action="#{taxClearCertificateBean.confirmprintCertificate()}" > 
+                            </p:commandButton>
+                        </div>
+                    </div>
+                    <p:panel styleClass="top-space bottom-space" header="Print Tax Clearance Certificate for last more than seven days.">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no_id" value="Registration No"/>
+                                </label>
+                                <p:inputText id="regn_no_id" value="#{taxClearCertificateBean.regn_No}"  maxlength="10" styleClass="text-uppercase">
+                                    <f:ajax/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Print TCC" action="#{taxClearCertificateBean.printTCC_Report_before_SevenDays()}"/>  
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:outputPanel id="testhist">
+                        <p:dataTable id="tb_showTaxdetailttt"  value="#{taxClearCertificateBean.histprintCertDobj}" 
+                                     paginator="#{taxClearCertificateBean.histprintCertDobj.size()>5}" rows="5" paginatorPosition="bottom"
+                                     scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    Today's Already Printed Tax Clearance Certificate
+                                </div>
+                            </f:facet>
+                            <p:column headerText="SI.No" width="5%" styleClass="collumn-width center-position">
+                                <h:outputText value="#{index+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application no"  styleClass="collumn-width center-position">
+                                <h:outputText value="#{sc.appl_no_hist}" styleClass="right-space"/>
+                            </p:column>
+                            <p:column headerText="Registration No"  styleClass="collumn-width center-position">
+                                <h:outputText value="#{sc.regno_hist}" styleClass="right-space"/>
+                            </p:column>
+                            <p:column headerText="TCC No"  styleClass="collumn-width center-position" rendered="#{taxClearCertificateBean.render_TCC_No}">
+                                <h:outputText value="#{sc.tcc_no}" styleClass="right-space"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+
+
+                    <p:panel styleClass="top-space bottom-space" header="For Today's Already Printed Tax Clearance Certificate">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="appl_no" value="Application No"/>
+                                </label>
+                                <p:inputText id="appl_no" value="#{taxClearCertificateBean.applno}"  maxlength="16" styleClass="text-uppercase">
+                                    <f:ajax/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Print TCC" action="#{taxClearCertificateBean.confirmPrintTCC()}"/>  
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printCertificate" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" 
+                                                  onclick="PF('printCertificate').show();
+                                                          PF('blockPrintRC').show();"  oncomplete="PF('printCertificate').hide(); PF('blockPrintRC').hide();"                                 
+                                                  action="#{taxClearCertificateBean.printCertificate()}"
+                                                  icon="ui-icon-check"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('printCertificate').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                    <p:dialog  id="isPrintConfirmationPopup"  styleClass="center-position" widgetVar="isPrintCertificate"
+                               modal="true" draggable="false" closable="false" hideEffect="explode" header="Print History Panel" >  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Are you sure the TCC has been printed correctly?"/>
+                                </label>
+                                <p:commandButton  value="Yes" onclick="PF('isPrintCertificate').show();
+                                                          PF('blockPrintRC').show();" oncomplete="PF('isPrintCertificate').hide();PF('blockPrintRC').hide();"                                   
+                                                  actionListener="#{taxClearCertificateBean.deleteAndSaveHistory}" update="test"
+                                                  icon="ui-icon-check"  />
+                                <p:commandButton value="No" onsuccess="PF('isPrintCertificate').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                    <p:blockUI block="frm_printTCC" widgetVar="blockPrintRC">
+                        <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+            </div>
+        </f:subview>
+    </ui:define>
+</ui:composition>

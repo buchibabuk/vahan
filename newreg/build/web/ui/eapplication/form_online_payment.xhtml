@@ -1,0 +1,225 @@
+<ui:composition
+    template="#{onlinePaymentBean.masterLayout}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">  
+    <ui:define name="content">        
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="online_fee_subview">   
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="bottom-space left-position" rendered="#{onlinePaymentBean.showMakePaymentPanel and !onlinePaymentBean.tradeCertificate and onlinePaymentBean.onlinePaymentType eq 'freshPay'}">
+                    <div class="ui-grid-row center-position top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">Online Payment</h1>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-1 resp-blank-height"></div>
+                        <div class="ui-grid-col-5"> 
+                            <h:outputText value="Owner Name: " class="report-header font-bold" /> <h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.owner_name}" class="report-header font-bold red" />
+                        </div>
+                        <div class="ui-grid-col-5"> 
+                            <h:outputText value=" Son/Wife/Daughter of:  " class="report-header font-bold" /> <h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.f_name}" class="report-header font-bold red"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-1 resp-blank-height"></div>
+                        <div class="ui-grid-col-5">
+                            <h:outputText value="Chassis No: " class="report-header font-bold" /> <h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.chasi_no}" class="report-header font-bold red"/>
+                        </div>
+                        <div class="ui-grid-col-5">
+                            <h:outputText value="Engine No: " class="report-header font-bold" /> <h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.eng_no}" class="report-header font-bold red" />
+                            <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.regn_type_descr} " class="report-header font-bold red"/><h:outputText value=" ) " class="report-header font-bold"/>  
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-1 resp-blank-height"></div>
+                        <div class="ui-grid-col-5">
+                            <h:outputText value="Vehicle: ( " class="report-header font-bold"/><h:outputText value="#{onlinePaymentBean.ownerDetailsDobj.vehTypeDescr}" class="report-header font-bold green"/><h:outputText value=" ) " class="report-header font-bold"/>
+                            <h:outputText value="#{onlinePaymentBean.ownerDetailsDobj.vh_class_desc}" class="report-header font-bold red" />
+                            <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.vch_catg} " class="report-header font-bold red" /> <h:outputText value=" ) " class="report-header font-bold" />
+                            <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.fuel_descr} " class="report-header font-bold red"/>  <h:outputText value=" ) " class="report-header font-bold" />
+                        </div>
+                        <div class="ui-grid-col-5">
+                            <h:outputText value="Sale Amount: " class="report-header font-bold" /><h:outputText value="Rs. #{onlinePaymentBean.ownerDetailsDobj.sale_amt}/-" class="report-header font-bold red"/>
+                            <h:outputText value="( Purchase Date: " class="report-header font-bold" /><h:outputText value=" #{onlinePaymentBean.ownerDetailsDobj.purchaseDateDescr} " class="report-header font-bold red"/><h:outputText value=" ) " class="report-header font-bold" />
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel rendered="#{onlinePaymentBean.showLoginPanel}">
+                    <div class="ui-grid-row center-position top-space">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">Online Payment</h1>
+                        </div>
+                    </div>
+                  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <p:panel id="onlinePay" header="Online Payment" styleClass="top-space bottom-space">
+                                <h:inputHidden id="txtNumber" value="#{onlinePaymentBean.hiddenRandomNo}"/>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 bottom-space top-space">
+                                        <p:selectOneRadio id="payment_type_id" styleClass="inline-radio-section" value="#{onlinePaymentBean.onlinePaymentType}" layout="responsive" columns="1" >
+                                            <f:selectItem itemLabel="Fresh/Re-Verify Pending Payment" itemValue="freshPay" />
+                                            <f:selectItem itemLabel="Check Previous Failed Payment(Amount debited and bank sent the fail status)" itemValue="checkFail" />
+                                            <p:ajax update="form_online_pay:online_fee_subview:onlinePay" event="valueChange" listener="#{onlinePaymentBean.openReverifyDialog()}" process="@this" />
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="user_id" value="Application No / User ID"/>
+                                        </label>
+                                        <p:inputText id="user_id" value="#{onlinePaymentBean.appl_No}" required="true" maxlength="16" converter="toUpperCaseConverter"
+                                                     styleClass="text-uppercase" autocomplete="off" requiredMessage="User ID can't be Blank" size="28" />
+                                    </div>
+                                </div>  
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="passwordID" value="Password"/>
+                                        </label>
+                                        <p:password id="passwordID" value="#{onlinePaymentBean.password}" autocomplete="off" required="true"
+                                                    feedback="false" requiredMessage="Password Field Can't be Blank" size="28" onblur="return makePassword()">
+                                        </p:password>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <vahan:vahanCaptcha labelName="Enter Verification Code: " catpchaRefresh="true"/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="Login Online Payment"
+                                                         action="#{onlinePaymentBean.validUser()}" 
+                                                         icon="ui-icon-disk" onclick="PF('bui').show()" oncomplete="PF('bui').hide()" update="@form"/>
+                                        <p:button id="back_to_login_home" value="Home" outcome="/ui/login/login.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:panel id="detailId" header="Fee And Tax Details" rendered="#{onlinePaymentBean.showMakePaymentPanel and onlinePaymentBean.onlinePaymentType eq 'freshPay'}">
+                    <p:dataTable id="detailTableId" value="#{onlinePaymentBean.getDetailList}" var="getDetail" rowIndexVar="index">
+                        <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}."/></p:column>  
+                        <p:column headerText="Purpose">#{getDetail.purpose}</p:column>
+                        <p:column headerText="Tax From">#{getDetail.periodFrom}</p:column>
+                        <p:column headerText="Tax Upto">#{getDetail.periodUpto}</p:column>
+                        <p:column headerText="Amount">#{getDetail.amount}</p:column>
+                        <p:column headerText="Fine">#{getDetail.penalty}</p:column>
+                    </p:dataTable>
+
+                    <div class="ui-grid-row top-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton id="submitButtonId" value="Make Payment" action="#{onlinePaymentBean.makePayment()}"  rendered="#{onlinePaymentBean.makePaymentButtonVisibility}" ajax="false"  
+                                             onclick="if (!confirm('Are You Sure You Want To Make Payment?'))
+                                                         return false;
+                                                     this.style.display = 'none';
+                                                     PF('bui').show();">
+                            </p:commandButton>
+                            <p:commandButton id="verifyButtonId" value="Verify" action="#{onlinePaymentBean.doubleVerification()}"  rendered="#{onlinePaymentBean.verifyButtonVisibility}" ajax="false"  
+                                             onclick="if (!confirm('Are You sure want to Verify?'))
+                                                         return false;
+                                                     this.style.display = 'none';
+                                                     PF('bui').show();">
+                            </p:commandButton>
+                            <p:commandButton id="submitrRevertId" onclick="if (!confirm('Are You Sure You Want To Decline Online Payment?'))
+                                        return false;
+                                    this.style.display = 'none';
+                                    PF('bui').show();" value="Decline Online Payment" action="#{onlinePaymentBean.revertBack()}"  rendered="#{onlinePaymentBean.renderRevertBackPayment}" ajax="false">
+
+                            </p:commandButton>
+                        </div>
+                    </div>
+                    <p:outputPanel id="totalPayableAmountPanel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 right-position right-space">
+                                <h:outputText value="Total Payable Amount: " styleClass="font-bold"/>
+                                <h:outputText value="#{onlinePaymentBean.totalPayableAmount}" styleClass="font-bold"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <h:outputText value="Online Payment Credentials are valid for one day(If user have not initiated the payment)." class="red font-bold top-space right-position"/>
+                        </div>
+                    </div>
+                </p:panel>
+
+
+                <p:outputPanel id="failListId" styleClass="bottom-space" rendered="#{onlinePaymentBean.checkFailList.size() > 0}">
+                    <div class="ui-grid-row center-position top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main red">Failed Transaction(s)</h1>
+                        </div>
+                    </div>
+                    <p:dataTable id="cartDataTable" value="#{onlinePaymentBean.checkFailList}" var="fail" rows="10" paginator="true" paginatorPosition="bottom" rowIndexVar="index" >
+                        <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}."/></p:column>
+                        <p:column headerText="Payment Id" filterBy="#{fail.paymentId}" filterMatchMode="contains">#{fail.paymentId}</p:column>                        
+                        <p:column headerText="Bank Reference No"  priority="2">#{fail.bankReferenceNo}</p:column>
+                        <p:column headerText="Transaction Id" filterBy="#{fail.pgiTransId}" filterMatchMode="contains"  priority="7">#{fail.pgiTransId}</p:column>
+                        <p:column headerText="Bank Verified Date" style="width: 8%;"  priority="5">#{fail.bankVerifiedDate}</p:column>
+                        <p:column headerText="Total Amount" style="width: 9%;"  priority="6">#{fail.ttlAmount}</p:column>
+                        <p:column headerText="Reason" priority="3">#{fail.reason}</p:column>
+                        <p:column headerText="Application Nos" style="width: 10.4%;" filterBy="#{fail.applicationNumberList}" priority="4" filterMatchMode="contains">#{fail.applicationNumberList}</p:column>
+                        <p:column headerText="ReVerify" styleClass="center-position" priority="8">
+                            <p:commandButton id="idReverify" value="ReVerify" action="#{onlinePaymentBean.reVerifyPayment(fail)}" ajax="false" onclick="if (!confirm('Are You sure want to ReVerify?'))
+                                        return false;
+                                    this.style.display = 'none';
+                                    PF('bui').show();">
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                    <div class="ui-grid-row center-position top-space bottom-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:button id="back_id_login_home" value="Home" outcome="/ui/login/login.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel id="verify_steps_pnl_id">
+                    <p:dialog widgetVar="reVerifyVar" header="Terms" closeOnEscape="false" modal="true" draggable="false" responsive="true" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 left-position font-bold report-subheader red">
+                                Note:- If payment has been debited from Account and got failed, then follow below steps to re-verify your failed transaction.
+                            </div>
+                        </div>
+                        <ol class="lists">
+                            <li class="top-space">Please Login through User ID/Password which is provided by RTO.</li>
+                            <li class="top-space">You will receive all failed transactions against Application After Login.</li>
+                            <li class="top-space">Click on <b>Re-verify</b> Button.</li>
+                            <li class="top-space"><b>Re-verify</b> transaction which was failed but amount has been debited from the Bank A/C.</li>
+                            <li class="top-space">Receipt will be generated if response is <b>Successful</b> After re-verifying ,Otherwise </li>
+                            <li class="top-space">Response from <b>Bank Side</b> will be shown.</li>
+                        </ol>
+                    </p:dialog>
+                </p:outputPanel>
+
+
+                <p:blockUI widgetVar="bui" block="form_online_pay">  
+                    <h:panelGrid columns="2">  
+                        <h:graphicImage library="images" name="small-wait.gif"  
+                                        style="margin-right: 12px; vertical-align: middle;"/>  
+                        <h:outputText value="Please wait..." style="white-space: nowrap;"/>  
+                    </h:panelGrid>  
+                </p:blockUI>  
+            </f:subview> 
+        </div>    
+    </ui:define>
+</ui:composition>

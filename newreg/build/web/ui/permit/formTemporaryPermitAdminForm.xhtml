@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22" >
+        <h:form id="permitForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main"><p:outputLabel value="Temporary Permit Admin" /></h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Registration/Permit No. :" />
+                            </label>
+                            <p:inputText id="uer_regn_no" styleClass="text-uppercase" value="#{tempAdminBean.pmtNo_regNO}" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Details" action="#{tempAdminBean.pmtGetDetails()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="tempTabView All_detail"/>
+                            <p:button value="Reset" outcome="/ui/permit/permitAdminstratorForm.xhtml?faces-redirect=true"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="tempTabView" styleClass="top-space bottom-space">
+                    <p:tabView id="All_detail" styleClass="top-space bottom-space" rendered="#{tempAdminBean.tpDobj ne null and tempAdminBean.ownerBean ne null}">
+                        <p:tab id="Owner_Details" title="Owner Detail">
+                            <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                                <ui:param name="Owner_permit_detail" value="#{tempAdminBean}"/>
+                            </ui:include>
+                        </p:tab>
+                        <p:tab id="Temporary_Permit_Details" title="Temporary Permit Detail">
+                            <p:panel header="Temporary Permit Details">
+                                <p:outputPanel id="permit_ratification_details">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmt_no" value="Permit No."/>
+                                            </label>
+                                            <p:inputText id="pmt_no" value="#{tempAdminBean.tpDobj.pmt_no}" maxlength="25" autocomplete="off" styleClass="text-uppercase">
+                                                <f:ajax event="blur" listener="#{tempAdminBean.checkPmtNo()}"/>  
+                                            </p:inputText>
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="regn_no" value="Registration No."/>
+                                            </label>
+                                            <p:inputText id="regn_no" value="#{tempAdminBean.tpDobj.regn_no}" maxlength="10" autocomplete="off" styleClass="text-uppercase">
+                                                <f:ajax event="blur" listener="#{tempAdminBean.checkRegnNo()}"/>  
+                                            </p:inputText>
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="appl_no" value="Application No."/>
+                                            </label>
+                                            <p:inputText id="appl_no" value="#{tempAdminBean.tpDobj.appl_no}" maxlength="16" autocomplete="off" styleClass="text-uppercase">
+                                                <f:ajax event="blur" listener="#{tempAdminBean.checkApplNo()}"/>  
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="issue_dt" value="Permit Issue Date"/>
+                                            </label>
+                                            <p:calendar id="issue_dt" value="#{tempAdminBean.tpDobj.issue_dt}" pattern="dd-MMM-yyyy"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="valid_from" value="Permit Valid From"/>
+                                            </label>
+                                            <p:calendar id="valid_from" value="#{tempAdminBean.tpDobj.valid_from}" pattern="dd-MMM-yyyy"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="valid_upto" value="Permit Valid Upto"/>
+                                            </label>
+                                            <p:calendar id="valid_upto" value="#{tempAdminBean.tpDobj.valid_upto}" pattern="dd-MMM-yyyy"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="rcpt_no" value="Permit Receipt No"/>
+                                            </label>
+                                            <p:inputText id="rcpt_no" value="#{tempAdminBean.tpDobj.rcpt_no}" maxlength="16" autocomplete="off" styleClass="text-uppercase"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="purCd" value="Permit Purpose Type"/>
+                                            </label>
+                                            <p:selectOneMenu id="purCd" value="#{tempAdminBean.tpDobj.pur_cd}">
+                                                <f:selectItems value="#{tempAdminBean.purCdList}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="goods_to_carry" value="Goods to carry"/>
+                                            </label>  
+                                            <p:inputText id="goods_to_carry" value="#{tempAdminBean.tpDobj.goods_to_carry}" maxlength="40"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="routeFr" value="Route From"/>
+                                            </label>
+                                            <p:inputText id="routeFr" value="#{tempAdminBean.tpDobj.route_fr}" maxlength="16" autocomplete="off" styleClass="text-uppercase"/>         
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="routeTo" value="Route To"/>
+                                            </label>
+                                            <p:inputText id="routeTo" value="#{tempAdminBean.tpDobj.route_to}" maxlength="16" autocomplete="off" styleClass="text-uppercase"/>         
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tem_Via" value="Route Description"/>
+                                            </label>
+                                            <p:inputText id="tem_Via" value="#{tempAdminBean.tpDobj.vt_temp_Route_via}" styleClass="text-uppercase" maxlength="95" autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmtType" value="Permit Type" rendered="#{tempAdminBean.temp_pmt_type}"/>
+                                            </label>
+                                            <p:selectOneMenu id="pmtType" value="#{tempAdminBean.tpDobj.pmt_type}" rendered="#{tempAdminBean.temp_pmt_type}">
+                                                <f:selectItems value="#{tempAdminBean.pmt_type_list}"/>
+                                            </p:selectOneMenu>         
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="pmtCatg" value="Permit Category" rendered="#{tempAdminBean.temp_pmt_type}"/>
+                                            </label>
+                                            <p:selectOneMenu id="pmtCatg" value="#{tempAdminBean.tpDobj.pmt_catg}" rendered="#{tempAdminBean.temp_pmt_type}">
+                                                <f:selectItems value="#{tempAdminBean.pmtCategory_list}"/>
+                                            </p:selectOneMenu>         
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="reason" value="Reason"/>
+                                            </label>  
+                                            <p:inputTextarea id="reason" value="#{tempAdminBean.tpDobj.reason}" maxlength="100" styleClass="text-uppercase"/> 
+                                        </div>
+                                    </div>
+
+                                </p:outputPanel>
+                            </p:panel>
+                            <p:panel id="area_details" rendered="#{tempAdminBean.route_status}" header="Area-Details" styleClass="top-space bottom-space">
+                                <p:pickList id="Area_pickList" rendered="#{tempAdminBean.tpDobj ne null and tempAdminBean.tpDobj.regionManage ne null}" value="#{tempAdminBean.tpDobj.regionManage}"  styleClass="text-uppercase" filterMatchMode="contains"
+                                            showSourceFilter="true" showTargetFilter="true" effect="bounce"
+                                            var="area_mast" itemLabel="#{area_mast.value}" itemValue="#{area_mast.key}"/>
+                            </p:panel>
+                            <p:panel id="route_details" rendered="#{tempAdminBean.route_status}" header="Route-Details" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <p:pickList id="pickList" styleClass="text-uppercase" filterMatchMode="contains" rendered="#{tempAdminBean.tpDobj ne null and tempAdminBean.tpDobj.routeManage ne null}"
+                                                    value="#{tempAdminBean.tpDobj.routeManage}" showSourceFilter="true" showTargetFilter="true"
+                                                    effect="bounce" var="route_mast" itemLabel="#{route_mast.value}" itemValue="#{route_mast.key}" >
+                                            <p:ajax event="transfer" listener="#{tempAdminBean.onTransfer}" update="via trips"/>
+                                        </p:pickList>
+                                    </div>
+                                    <div class="ui-grid-col-8">
+                                        <p:outputPanel id="via">
+                                            <div class="route-details-header">Selected Route Direction</div>
+                                            <div class="left-position">
+                                                <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                                    <p:outputLabel escape="false" id="route_via" value="#{tempAdminBean.tpDobj.via}" />
+                                                </p:scrollPanel>
+                                            </div>
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <p:outputPanel id="trips">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="no_trips" value="#{pmtLabel.no_of_trips}" rendered="#{tempAdminBean.tpDobj ne null  and !tempAdminBean.tpDobj.getVia().isEmpty()}"/>
+                                            </label>
+                                            <p:inputText id="no_trips" maxlength="3" autocomplete="off" value="#{tempAdminBean.tpDobj.no_of_trips}" size="3" rendered="#{tempAdminBean.tpDobj ne null  and !tempAdminBean.tpDobj.getVia().isEmpty()}">
+                                                <p:keyFilter regEx="/[\d\-]/"/>
+                                            </p:inputText>
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:tab>
+                    </p:tabView>
+
+
+                    <p:panel styleClass="top-space bottom-space center-position" rendered="#{tempAdminBean.tpDobj ne null and tempAdminBean.ownerBean ne null}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Save" action="#{tempAdminBean.compairList()}"/>
+                                <p:button value="Reset" outcome="/ui/permit/formTemporaryPermitAdminForm.xhtml?faces-redirect=true"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:dialog id="compair" header="Compair Old Value To New Value" widgetVar="compairVar" modal="true" closable="true">
+                        <p:dataTable value="#{tempAdminBean.compairValue}" var="data">
+                            <p:column headerText="Purpose">
+                                #{data.purpose}
+                            </p:column>
+                            <p:column headerText="Old Value">
+                                #{data.oldValue}
+                            </p:column>
+                            <p:column headerText="New Value">
+                                #{data.newValue}
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton value="Submit" action="#{tempAdminBean.saveTempPmtDetails()}">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                                <p:commandButton value="Cancel" action="/ui/permit/formTemporaryPermitAdminForm.xhtml?faces-redirect=true" />
+                            </f:facet>
+                        </p:dataTable>
+                    </p:dialog>
+
+                    <p:dialog id="pendingApplicationID" header="Application Number" widgetVar="pendingAppication" modal="true" resizable="false" closable="false">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <h:outputLabel  escape="false"  value="#{tempAdminBean.errorMsg}"/>
+                                <f:facet name="footer">
+                                    <p:commandButton value="Exit for Another Application" immediate="true" action="/ui/permit/formTemporaryPermitAdminForm.xhtml?faces-redirect=true"/>
+                                </f:facet>
+                            </div>
+                        </div>
+                    </p:dialog>
+
+
+                </p:outputPanel>
+            </div>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

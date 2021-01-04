@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <h:form id="frm_print_hsrp" prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">HSRP Authorization Print Form</h1>
+                    </div>
+                </div>
+
+                <p:panel styleClass="top-space bottom-space" header="HSRP Authorization Slip" rendered="#{hsrpprintBean.hsrpApprovedApplPanel}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no" value="Application No"/>
+                            </label>
+                            <p:inputText id="appl_no" value="#{hsrpprintBean.applno}" converter="toUpperCaseConverter"  maxlength="16" styleClass="text-uppercase" >
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="Print HSRP" action="#{hsrpprintBean.confirmprintCertificate()}"/>  
+                                <p:commandButton  value="Back" action="home" immediate="true"/>            
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-col-12">
+                    <p:dataTable id="print_hsrp"  value="#{hsrpprintBean.printCertDobj}" var="printHsrp" rows="10" 
+                                 widgetVar="seatWorkList" filteredValue="#{hsrpprintBean.filteredSeat}" paginator="true" rowIndexVar="rowkey" rendered="#{hsrpprintBean.ntApprovedHsrpDataTable}">
+                        <f:facet name="header">  
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 left-position">
+                                    <h:outputText value="HSRP Authorization Slip print for not approved applications" />
+                                </div>
+                            </div>
+                        </f:facet>
+                        <p:column headerText="Sr.No"  styleClass="collumn-width center-position">
+                            <h:outputText value="#{rowkey+1}" />                                
+                        </p:column>
+                        <p:column headerText="Application no" filterBy="#{printHsrp.appl_no}" filterMatchMode="contains" sortBy="#{printHsrp.appl_no}">#{printHsrp.appl_no}</p:column>                        
+                        <p:column headerText="Registration No" filterBy="#{printHsrp.regno}" filterMatchMode="contains" sortBy="#{printHsrp.regno}">#{printHsrp.regno}</p:column>
+                        <p:column headerText="Application Date">#{printHsrp.appl_dt}</p:column>
+                        <p:column headerText="Action" > 
+                            <p:commandButton id ="bt_print_hsrp" value="Print HSRP"  action="#{hsrpprintBean.confirmprintCertificate()}"> 
+                                <f:param name="applno" value="#{printHsrp.appl_no}"/>
+                                <f:param name="approveStatus" value="#{printHsrp.isApproved}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </div>
+            </div>
+            <!--            <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton  value="Back" action="home" immediate="true"/>              
+                            </div>
+                        </div>-->
+        </h:form>
+    </ui:define>
+</ui:composition>

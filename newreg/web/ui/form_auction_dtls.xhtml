@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:p="http://primefaces.org/ui"    
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition>
+        <div class="ui-grid ui-grid-responsive"> 
+            <p:panel header="Auction Vehicle Details"> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="orderNo" value="Auction Order No"/>
+                        </label>
+                        <p:inputText  id="orderNo" value="#{auctionDobj.orderNo}"
+                                      maxlength="20"
+                                      requiredMessage="Please Enter Auction Order No"
+                                      converter="toUpperCaseConverter"
+                                      autocomplete="off"
+                                      styleClass="text-uppercase"
+                                      required="true" disabled="#{auctionDobj.disableAuctionPanel}"/>
+                        <p:keyFilter regEx="/[a-zA-Z0-9~*/]/" for="orderNo"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="auctionDate" value="Auction Date"/>
+                        </label>
+                        <p:calendar id="auctionDate" value="#{auctionDobj.auctionDate}" pattern="dd-MMM-yyyy" 
+                                    maxdate="#{auctionDobj.currentDate}"   requiredMessage="Blank Auction Date" readonlyInput="true" navigator="true" required="true" mindate="#{auctionDobj.purchaseDate}" disabled="#{auctionDobj.disableAuctionPanel}">
+                            <f:convertDateTime pattern="dd-MMM-yyyy"  for="auctionDate"/> 
+                        </p:calendar>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="firDate" value="FIR Date/CR Date"/>
+                        </label>
+                        <p:calendar id="firDate" value="#{auctionDobj.firDate}" 
+                                    pattern="dd-MMM-yyyy" 
+                                    mindate="#{auctionDobj.purchaseDate}"
+                                    maxdate="#{auctionDobj.currentDate}"
+                                    requiredMessage="Blank FIR Date/CR Date" 
+                                    readonlyInput="true" navigator="true" 
+                                    required="true" disabled="#{auctionDobj.disableAuctionPanel}">
+                            <f:convertDateTime pattern="dd-MMM-yyyy"  for="firDate"/> 
+                            <p:ajax event="dateSelect" process="@this"/>
+                        </p:calendar>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="firNo" value="FIR No/CR No"/>
+                        </label>
+                        <p:inputText  id="firNo" value="#{auctionDobj.firNo}"
+                                      maxlength="20"
+                                      requiredMessage="Please Enter FIR No/CR No"
+                                      converter="toUpperCaseConverter"
+                                      autocomplete="off"
+                                      styleClass="text-uppercase"
+                                      required="true" disabled="#{auctionDobj.disableAuctionPanel}"/>
+                        <p:keyFilter regEx="/[a-zA-Z0-9~*/]/" for="firNo"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="reason" value="Reason"/>
+                        </label>
+                        <p:inputText  id="reason" value="#{auctionDobj.reason}"
+                                      maxlength="100"
+                                      requiredMessage="Please Enter Reason"
+                                      converter="toUpperCaseConverter"
+                                      autocomplete="off"
+                                      styleClass="text-uppercase"
+                                      required="true" disabled="#{auctionDobj.disableAuctionPanel}"/>
+                        <p:keyFilter regEx="/[a-zA-Z\u0020]/i" for="reason"/>
+                    </div>
+                </div>
+            </p:panel>
+        </div>
+    </ui:composition>
+</html>

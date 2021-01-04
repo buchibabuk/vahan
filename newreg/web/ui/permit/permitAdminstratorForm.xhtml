@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22" >
+        <h:form id="permitForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main"><p:outputLabel value="Permit Administrator Form" /></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Registration/Permit No. :" />
+                            </label>
+                            <p:inputText id="uer_regn_no" styleClass="text-uppercase" value="#{adminBean.userInfo}" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Details" action="#{adminBean.pmtGetDetails()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="All_detail"/>
+                            <p:button value="Reset" outcome="/ui/permit/permitAdminstratorForm.xhtml?faces-redirect=true"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:tabView id="All_detail" styleClass="top-space bottom-space">
+                    <p:tab id="Owner_Details" title="Owner Detail">
+                        <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                            <ui:param name="Owner_permit_detail" value="#{adminBean}"/>
+                        </ui:include>
+                    </p:tab>
+                    <p:tab id="Permit_Details" title="Permit Detail">
+                        <p:panel header="Permit Details">
+                            <p:outputPanel id="permit_ratification_details">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="regn_no" value="Regestration No."/>
+                                        </label>
+                                        <p:inputText id="regn_no" value="#{adminBean.adminDobj.regn_no}" maxlength="10" autocomplete="off" styleClass="text-uppercase">
+                                            <f:ajax event="blur" listener="#{adminBean.checkRegnNo()}"/>  
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="valid_from" value="Permit Valid From"/>
+                                        </label>
+                                        <p:calendar id="valid_from" value="#{adminBean.adminDobj.valid_from}" readonlyInput="true" navigator="true" pattern="dd-MMM-yyyy" />
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="valid_upto" value="Permit Valid Upto"/>
+                                        </label>
+                                        <p:calendar id="valid_upto" value="#{adminBean.adminDobj.valid_upto}" readonlyInput="true" maxdate="#{adminBean.vehicleAgeUpto}" navigator="true" pattern="dd-MMM-yyyy" />
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pmt_no" value="Permit No."/>
+                                        </label>
+                                        <p:inputText  id="pmt_no" value="#{adminBean.adminDobj.pmt_no}" maxlength="25" autocomplete="off" styleClass="text-uppercase">
+                                            <f:ajax event="blur" listener="#{adminBean.checkPmtNo()}"/>  
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pmt_type" value="Permit Type"/>
+                                        </label>
+                                        <p:selectOneMenu id="pmt_type" value="#{adminBean.adminDobj.pmt_type}">
+                                            <f:selectItem itemLabel="Select Permit Type" itemValue="-1"/>
+                                            <f:selectItems value="#{adminBean.pmtTypeList}"/>
+                                            <p:ajax event="change" listener="#{adminBean.onSelectPermitType()}"  update="pmt_catg pmtAreaLabel pmtArea area_details"/>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pmt_catg" value="Permit Category"/>
+                                        </label>
+                                        <p:selectOneMenu id="pmt_catg" value="#{adminBean.adminDobj.pmt_catg}">
+                                            <f:selectItem itemLabel="Select Permit Category" itemValue="-1"/>
+                                            <f:selectItems value="#{adminBean.pmtCatgList}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="appl_no" value="Application No."/>
+                                        </label>
+                                        <p:inputText id="appl_no" value="#{adminBean.adminDobj.appl_no}" maxlength="16" autocomplete="off" styleClass="text-uppercase">
+                                            <f:ajax event="blur" listener="#{adminBean.checkApplNo()}"/>  
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="ser_type" value="Services Type"/>
+                                        </label>
+                                        <p:selectOneMenu id="ser_type" value="#{adminBean.adminDobj.service_type}">
+                                            <f:selectItem itemLabel="Select Services Type" itemValue="-1"/>
+                                            <f:selectItems value="#{adminBean.serTypeList}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="replace_date" value="Permit Replacement Date"/>
+                                        </label>
+                                        <p:calendar id="replace_date" value="#{adminBean.adminDobj.replace_date}" pattern="dd-MMM-yyyy"/>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="rcpt_no" value="Permit Receipt No"/>
+                                        </label>
+                                        <p:inputText id="rcpt_no" value="#{adminBean.adminDobj.rcpt_no}" maxlength="16" autocomplete="off" styleClass="text-uppercase"/>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="issue_dt" value="Permit Issue Date"/>
+                                        </label>
+                                        <p:calendar id="issue_dt" value="#{adminBean.adminDobj.issue_dt}" pattern="dd-MMM-yyyy"/>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="purCd" value="Permit Purpose Type"/>
+                                        </label>
+                                        <p:selectOneMenu id="purCd" value="#{adminBean.adminDobj.pur_cd}">
+                                            <f:selectItems value="#{adminBean.purCdList}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                        </p:panel>
+
+                        <p:panel id="area_details" header="Area-Details" styleClass="top-space bottom-space" rendered ="#{!adminBean.renderRouteArea}">
+                            <p:pickList id="Area_pickList" value="#{adminBean.areaManage}"  styleClass="text-uppercase" filterMatchMode="contains"
+                                        showSourceFilter="true" showTargetFilter="true" effect="bounce"
+                                        var="area_mast" itemLabel="#{area_mast.value}" itemValue="#{area_mast.key}"/>
+                        </p:panel>
+
+                        <p:panel id="route_details" header="Route-Details" styleClass="top-space bottom-space" rendered="#{!adminBean.renderRouteArea}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <p:pickList id="pickList" styleClass="text-uppercase" filterMatchMode="contains"
+                                                value="#{adminBean.routeManage}" showSourceFilter="true" showTargetFilter="true"
+                                                effect="bounce" var="route_mast" itemLabel="#{route_mast.value}" itemValue="#{route_mast.key}" >
+                                        <p:ajax event="transfer" listener="#{adminBean.onTransfer}" update="via trips"/>
+                                    </p:pickList>
+                                </div>
+
+                                <div class="ui-grid-col-8">
+                                    <p:outputPanel id="via">
+                                        <div class="route-details-header">Selected Route Direction</div>
+                                        <div class="left-position">
+                                            <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                                <p:outputLabel escape="false" id="route_via" value="#{adminBean.via_route}" />
+                                            </p:scrollPanel>
+                                        </div>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="trips">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="no_trips" value="#{pmtLabel.no_of_trips}" rendered="#{adminBean.noOfTripsrendered}"/>
+                                        </label>
+                                        <p:inputText id="no_trips" maxlength="3" autocomplete="off" value="#{adminBean.adminDobj.no_of_trips}" size="3" rendered="#{adminBean.noOfTripsrendered}">
+                                            <p:keyFilter regEx="/[\d\-]/"/>
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:panel id="otherOffRoutedetail" header="Other offices route details" styleClass="top-space bottom-space"  visible="#{adminBean.showOtherRoute}" >
+                            <h:panelGrid columns="2">
+                                <h:outputLabel for="menu" value="Office Name :" />
+                                <p:selectCheckboxMenu id="menu" value="#{adminBean.selectedOffice}"  label="Select Office" disabled="false"
+                                                      filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                                    <f:selectItems value="#{adminBean.officeList}" />
+                                </p:selectCheckboxMenu>
+                                <p:commandButton value="Get Route details of Selected office" action="#{adminBean.onSelectOfficeName()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" update="routeTaken" disabled="false"/>
+                            </h:panelGrid>
+
+                            <p:outputPanel id="routeTaken" styleClass="top-space bottom-space">
+                                <c:if test="true">
+
+                                    <p:fragment autoUpdate="true">
+                                        <p:dataTable styleClass="table-no-select-all" var="dobj"
+                                                     rowKey="#{dobj.rowKey}"
+                                                     paginator="#{adminBean.route_list.size() gt 10}"
+                                                     rows="10" paginatorPosition="bottom"
+                                                     rendered="#{adminBean.route_list ne null}"
+                                                     value="#{adminBean.route_list}"
+                                                     selection="#{adminBean.selectedRouteList}"
+                                                     disabledTextSelection="true"
+                                                     disabledSelection="false" reflow="true"
+                                                     emptyMessage="There are no routes to be select related to your vehicle (Against Selected Permit Type and Category)">
+                                            <f:facet name="header">
+                                                <p:outputLabel value="Route-Details" />
+                                            </f:facet>
+                                            <p:ajax event="rowSelectCheckbox"
+                                                    listener="#{adminBean.onSelectRoute}" />
+                                            <p:ajax event="rowUnselectCheckbox"
+                                                    listener="#{adminBean.onSelectRoute}" />
+                                            <p:ajax event="toggleSelect"
+                                                    listener="#{adminBean.onSelectRouteUnknowing}" />
+                                            <p:ajax event="rowSelect"
+                                                    listener="#{adminBean.onSelectRouteUnknowing}" />
+                                            <p:ajax event="rowUnselect"
+                                                    listener="#{adminBean.onSelectRouteUnknowing}" />
+                                            <p:column selectionMode="multiple"
+                                                      style="width:25px;text-align:center" />
+                                            <p:column headerText="office Name" filterBy="#{dobj.off_cd_descr}" filterMatchMode="contains">
+                                                <p:outputLabel value="#{dobj.off_cd_descr}" />
+                                            </p:column>
+                                            <p:column headerText="Route Code" filterBy="#{dobj.route_code}" filterMatchMode="contains">
+                                                <p:outputLabel value="#{dobj.route_code}" />
+                                            </p:column>
+                                            <p:column headerText="Route Starts From">
+                                                <p:outputLabel value="#{dobj.from_loc}" />
+                                            </p:column>
+                                            <p:column headerText="Via">
+                                                <p:outputLabel value="#{dobj.via}" />
+                                            </p:column>
+                                            <p:column headerText="Route Ends Upto">
+                                                <p:outputLabel value="#{dobj.to_loc}" />
+                                            </p:column>
+                                            <p:column headerText="Route Length in KM">
+                                                <p:outputLabel value="#{dobj.length}" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:fragment>
+                                </c:if>
+                            </p:outputPanel>
+                        </p:panel>
+                        <p:outputPanel id="regionPanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel id="pmtAreaLabel" for="pmtArea" value="Region-Details" rendered="#{adminBean.showRegionCovered}"/>
+                                    </label>
+                                    <p:selectOneMenu id="pmtArea" filter="true" value="#{adminBean.adminDobj.regionCoveredNP}" rendered="#{adminBean.showRegionCovered}">
+                                        <f:selectItems value="#{adminBean.regionCoveredListNP}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel id="statePanel">
+
+                            <c:if test="#{adminBean.renderRouteArea}">
+                                <ui:include src="../permit/formPermitStateTaken.xhtml" >
+                                    <ui:param name="containerBean" value="#{adminBean}" />
+                                </ui:include>
+                            </c:if>
+                            <c:if test="#{adminBean.render_payment_table_aitp}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:outputPanel id="payment_panel"  rendered="#{adminBean.paymentList != null and adminBean.paymentList.size()>0}" styleClass="top-space bottom-space">                    
+                                            <p:dataTable id="pay_table" value="#{adminBean.paymentList}" 
+                                                         rendered="#{adminBean.render_payment_table_aitp}" editable="true" var="payment" rowIndexVar="index">
+                                                <f:facet name="header">
+                                                    <div class="left-position">
+                                                        <p:outputLabel value="#{adminBean.header_name}"/>                        
+                                                    </div>
+                                                </f:facet>
+                                                <p:column headerText="S.No." styleClass="collumn-width center-position">
+                                                    <p:outputLabel value="#{index +1}."/>
+                                                </p:column>
+                                                <p:column headerText="Name of state" >
+                                                    <p:selectOneMenu value="#{payment.pay_state_cd}" filter="true" filterMatchMode="contains">
+                                                        <f:selectItems value="#{adminBean.state_list}"/>
+                                                        <p:ajax/>
+                                                    </p:selectOneMenu>
+                                                </p:column>
+                                                <p:column headerText="Amount" >
+                                                    <p:inputText id="Amount" value="#{payment.instrument_amt}"
+                                                                 autocomplete="off"
+                                                                 styleClass="right-position" maxlength="8" >                               
+                                                        <p:keyFilter mask="num"></p:keyFilter>    
+                                                        <p:ajax/>
+                                                    </p:inputText>
+                                                </p:column>
+                                                <p:column headerText="Instrument">
+                                                    <p:selectOneMenu id="payment_type" value="#{payment.instrument_type}" >  
+                                                        <f:selectItems value="#{adminBean.instrumentList}"/>  
+                                                        <p:ajax/>
+                                                    </p:selectOneMenu>
+                                                </p:column>
+                                                <p:column headerText="Bank Name">
+                                                    <p:selectOneMenu value="#{payment.bank_code}" filter="true" filterMatchMode="contains">
+                                                        <f:selectItems value="#{adminBean.bank_list}"/>
+                                                        <p:ajax/>
+                                                    </p:selectOneMenu>
+                                                </p:column>
+                                                <p:column headerText="Bank Branch">
+                                                    <p:inputText id="branchName" value="#{payment.branch_name}"
+                                                                 autocomplete="off"
+                                                                 styleClass="right-position" style="text-transform: uppercase" converter="toUpperCaseConverter" maxlength="30">   
+                                                        <p:ajax/>
+                                                    </p:inputText>
+                                                </p:column>
+                                                <p:column headerText="Number">
+                                                    <p:inputText value="#{payment.instrument_no}" 
+                                                                 maxlength="10" 
+                                                                 style="text-transform: uppercase" size="10"
+                                                                 autocomplete="off"
+                                                                 validatorMessage="Minimum Length of Instrument No should be 5"
+                                                                 converter="toUpperCaseConverter">
+                                                        <p:keyFilter regEx="/[0-9]/"></p:keyFilter>
+                                                        <f:validateLength minimum="5"/>     
+                                                        <p:ajax event="change" listener="#{adminBean.validateInstrumentNumber}" update="pay_table"/>
+                                                        <f:attribute name="paymentDobj" value="#{payment}"/>
+                                                    </p:inputText>                        
+                                                </p:column>
+                                                <p:column headerText="Dated">                       
+                                                    <p:calendar value="#{payment.instrument_dt}" pattern="dd-MMM-yyyy" navigator="true" maxdate="#{payment.max_draft_date}" mindate="#{payment.min_draft_date}">
+                                                        <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                                        <p:ajax/>
+                                                    </p:calendar>                            
+                                                </p:column>
+                                                <p:column headerText="Recieved Date">                       
+                                                    <p:calendar value="#{payment.recieved_dt}" pattern="dd-MMM-yyyy" navigator="true">
+                                                        <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                                        <p:ajax/>
+                                                    </p:calendar>                            
+                                                </p:column>
+                                                <p:column headerText="Payable To">
+                                                    <p:inputText id="payableTo" value="#{payment.payable_to}"
+                                                                 autocomplete="off"
+                                                                 styleClass="right-position">   
+                                                        <p:ajax/>
+                                                    </p:inputText>
+                                                </p:column>
+                                                <p:column id="commandButton" headerText="Add/Remove Fee">
+                                                    <p:commandButton id="add" action="#{adminBean.addNewRow(payment)}" icon="ui-icon-plusthick"  update="pay_table" onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                                                        <f:param name="actionmode" value="add"/>
+                                                    </p:commandButton>
+                                                    <p:tooltip id="toolTipGrow1" for="add" value="Add new Fee details"
+                                                               showEffect="clip" hideEffect="clip"  />
+                                                    <p:commandButton id="minus" action="#{adminBean.addNewRow(payment)}"  icon="ui-icon-minusthick"  update="pay_table" onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                                                        <f:param name="actionmode" value="minus"/>
+                                                    </p:commandButton>
+                                                    <p:tooltip id="toolTipGrow2" for="minus" value="Remove Fee details"
+                                                               showEffect="clip" hideEffect="clip" />
+                                                </p:column>
+                                            </p:dataTable>                        
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+                            </c:if>
+                        </p:outputPanel>
+
+                        <p:panel header="Optional Details"  styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="park_plce" value="Parking Place"/>
+                                    </label>
+                                    <p:inputText id="park_plce" value="#{adminBean.adminDobj.parking}"  autocomplete="off" maxlength="100" styleClass="text-uppercase">
+                                        <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="pup_jour" value="Purpose of Journey"/>
+                                    </label>
+                                    <p:inputText id="pup_jour" value="#{adminBean.adminDobj.jorney_purpose}"  autocomplete="off" maxlength="300" styleClass="text-uppercase">
+                                        <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                    </p:inputText> 
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="good_carry" value="Goods to Carry"/>
+                                    </label>
+                                    <p:inputText id="good_carry"  value="#{adminBean.adminDobj.goods_to_carry}" autocomplete="off" maxlength="40" styleClass="text-uppercase">
+                                        <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab>
+                </p:tabView>
+                <p:panel styleClass="top-space bottom-space center-position">
+                    <p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Save" action="#{adminBean.compairList()}"/>
+                                <p:commandButton value="Reset" action="/ui/permit/permitAdminstratorForm.xhtml?faces-redirect=true"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:dialog id="compair" header="Compair Old Value To New Value" widgetVar="compairVar" modal="true" closable="true">
+                    <p:dataTable value="#{adminBean.compairValue}" var="data">
+                        <p:column headerText="Purpose">
+                            #{data.purpose}
+                        </p:column>
+                        <p:column headerText="Old Value">
+                            #{data.oldValue}
+                        </p:column>
+                        <p:column headerText="New Value">
+                            #{data.newValue}
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton value="Submit" action="#{adminBean.savePmtDetails()}">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton value="Cancel" action="/ui/permit/permitAdminstratorForm.xhtml?faces-redirect=true" />
+                        </f:facet>
+                    </p:dataTable>
+                </p:dialog>
+
+                <p:dialog id="pendingApplicationID" header="Application Number" widgetVar="pendingAppication" modal="true" resizable="false" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel  escape="false"  value="#{adminBean.errorMsg}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Exit for Another Application" immediate="true" action="/ui/permit/permitAdminstratorForm.xhtml?faces-redirect=true"/>
+                            </f:facet>
+                        </div>
+                    </div>
+                </p:dialog>
+            </div>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

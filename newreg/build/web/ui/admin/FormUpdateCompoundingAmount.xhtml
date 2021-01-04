@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formUpdateCompAmt" prependId="false">
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelRegnNo">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="#{language.home_rightpanelregno}"/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{updateCompoundingAmountBean.regn_no}" 
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="#{language.enter_regn_no}"
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="#{language.showDetails}" action="#{updateCompoundingAmountBean.showDetails()}"
+                                             update="formUpdateCompAmt:BlackListedList formUpdateCompAmt"
+                                             onclick="PF('ajax_status').show()"
+                                             oncomplete="PF('ajax_status').hide()"/>
+                            <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="BlackListedList" rendered="#{updateCompoundingAmountBean.amtPanel}">
+                    <p:dataTable id="ComplaintList" value="#{updateCompoundingAmountBean.dobjList}" var="onscreen" rowIndexVar="rowkey" paginator="true" rows="15">                        
+                        <p:column styleClass="center-position" headerText="#{language.complain_type}">                                    
+                            <h:outputText value="#{onscreen.complainDesc}"/>                                
+                        </p:column>
+                        <p:column styleClass="center-position" headerText="#{language.file_no}">                                    
+                            <h:outputText value="#{onscreen.firNo}"/>
+                        </p:column>
+                        <p:column styleClass="center-position" headerText="#{language.complain_date}">                                    
+                            <h:outputText value="#{onscreen.complain_dt}" />
+                        </p:column>
+                        <p:column styleClass="center-position" headerText="#{language.compounding_amt}">                                    
+                            <h:inputText value="#{onscreen.compounding_amt}" />
+                        </p:column>
+                        <p:column styleClass="center-position" >                                    
+                            <p:commandButton value="#{language.update}" 
+                                             update="formUpdateCompAmt"  action="#{updateCompoundingAmountBean.update(onscreen)}" />
+                        </p:column>
+                    </p:dataTable>                   
+                </p:outputPanel> 
+                <p:dialog id="db_reopened"  dynamic="true" widgetVar="dlgdb_reopened"
+                          modal="true" draggable="false" closable="false" hideEffect="explode" header="Info">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Amount Updated Successfully."/>
+                            </label>                            
+                        </div>
+                    </div>
+                    <p:button value="Ok" outcome="home" />
+
+                </p:dialog>
+                <p:blockUI block="formUpdateCompAmt" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

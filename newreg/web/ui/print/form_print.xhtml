@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content">
+        <f:subview id="frm_print">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_printRC">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputText value="#{printCerts.main_header_label}"/></h1>
+                        </div>
+                    </div>
+                    <p:outputPanel rendered="#{printCerts.isRCLabel}">
+                        <div class=" center-position red h4">Note: Please clear your Browser History first, if you are facing the issue in RC-Printing </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="radiopanel" styleClass="top-space bottom-space" rendered="#{printCerts.printRc}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-5 left-position">
+                                <p:selectOneRadio id="rb_rc" value="#{printCerts.rcRadiobtn}" layout="responsive" columns="3">                               
+                                    <f:selectItem itemLabel="By Regn No" itemValue="REGNNORC" />
+                                    <f:selectItem itemLabel="Pending RC(Last 15 Days)" itemValue="PENRC" />
+                                    <f:selectItem itemLabel="Today Printed RC" itemValue="PRTRC" />
+                                    <p:ajax event="change" listener="#{printCerts.rcRadioBtnListener}" update="tempAuthPrint btnPrint radioOutputpanel regnpanel" onstart="PF('blockPrintRC').show();" oncomplete="PF('blockPrintRC').hide();"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel styleClass="top-space bottom-space" rendered="#{printCerts.printFc}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 center-position">
+                                <p:selectOneRadio id="rbfor38and38A" value="#{printCerts.form38And38ARadiobtn}"  layout="responsive" columns="2"> 
+                                    <f:selectItem itemLabel="Form-38 (Same State Vehicles)" itemValue="FORM38" />
+                                    <f:selectItem itemLabel="Form-38A (Other State Vehicles)" itemValue="FORM38A"/>                          
+                                    <p:ajax event="change" listener="#{printCerts.form38And38ARadBtnListener}" update="printform38 printform381 tempAuthPrint btnPrint radioOutputpanel regnpanel fc_regnpanel fc_radioOutputpanel fc_regn_no" onstart="PF('blockPrintRC').show();" oncomplete="PF('blockPrintRC').hide();"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:panel rendered="#{printCerts.printFc}" header="#{printCerts.main_header_label}" styleClass="top-space bottom-space">
+                        <p:outputPanel rendered="#{printCerts.renderSearchBy}" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="printform38">
+                                        <p:outputPanel id="printform381">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12 left-position">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel value="Search By" />
+                                                    </label>
+                                                    <p:selectOneMenu disabled="#{printCerts.printRcbyRegnNo and !printCerts.isform38}" id="rb_fc" value="#{printCerts.rcRadiobtn}"> 
+                                                        <f:selectItem itemLabel="Registration No" itemValue="REGNNOFC" />
+                                                        <f:selectItem itemLabel="Pending FC(Last 15 Days)" itemValue="PENFC"/>
+                                                        <f:selectItem itemLabel="Today Printed FC" itemValue="PRTFC"/>
+                                                        <p:ajax event="change" listener="#{printCerts.rcRadioBtnListener}" update="tempAuthPrint btnPrint radioOutputpanel regnpanel fc_regnpanel fc_radioOutputpanel fc_regn_no" onstart="PF('blockPrintRC').show();" oncomplete="PF('blockPrintRC').hide();"/> 
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel id="fc_radioOutputpanel" >
+                                        <p:outputPanel id="fc_regnpanel">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="fc_regn_no" value="#{printCerts.labelRegnNotxtField}" />
+                                                    </label>
+                                                    <p:inputText id="fc_regn_no" disabled="#{!printCerts.printRcbyRegnNo}" value="#{printCerts.regn_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase"/>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{!printCerts.renderSearchBy}" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regn_no_fc" value="#{printCerts.labelRegnNotxtField}" />
+                                    </label>
+                                    <p:inputText id="regn_no_fc" value="#{printCerts.regn_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase" >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="getDtlsFC" value="Get Details" disabled="#{!printCerts.printRcbyRegnNo}" action="#{printCerts.confirmPrintRC}" update="tempAuthPrint"/>  
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:outputPanel styleClass="top-space bottom-space" rendered="#{printCerts.printTempRC}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-5 left-position">
+                                <p:selectOneRadio id="rb_trc" value="#{printCerts.rcRadiobtn}"  layout="responsive" columns="3"> 
+                                    <f:selectItem itemLabel="By Temp Regn No" itemValue="TEMPRC" />
+                                    <f:selectItem itemLabel="Pending Temp RC(Last 15 Days)" itemValue="PENDINGTEMPRC"/>
+                                    <f:selectItem itemLabel="Today Printed Temp RC" itemValue="PRINTEDTEMPRC"/>
+                                    <p:ajax event="change" listener="#{printCerts.rcRadioBtnListener}" update="tempAuthPrint btnPrint radioOutputpanel regnpanel" onstart="PF('blockPrintRC').show();" oncomplete="PF('blockPrintRC').hide();"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="radioOutputpanel" >
+                        <p:panel id="regnpanel" header="#{printCerts.btn_print_label} by Registration No" rendered="#{printCerts.printRcbyRegnNo and !printCerts.printFc}" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regn_no" value="#{printCerts.labelRegnNotxtField}" />
+                                    </label>
+                                    <p:inputText id="regn_no" value="#{printCerts.regn_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase" >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 top-space">
+                                    <p:outputPanel rendered="#{(printCerts.printTempRC or printCerts.isprintedRc) and (printCerts.rcRadiobtn eq 'REPRINTTEMPRC' ? true : false or printCerts.rcRadiobtn eq 'TEMPRC' ? true : false)}">
+                                        <label class="field-label resp-label-section center-position">
+                                            <p:outputLabel value="'OR'" />
+                                        </label>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel rendered="#{(printCerts.printTempRC or printCerts.isprintedRc) and (printCerts.rcRadiobtn eq 'REPRINTTEMPRC' ? true : false or printCerts.rcRadiobtn eq 'TEMPRC' ? true : false)}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="appl_no" value="Application No" />
+                                        </label>
+                                        <p:inputText id="appl_no" value="#{printCerts.appl_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase" >
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtls" value="Get Details" action="#{printCerts.confirmPrintRC}" update="tempAuthPrint"/>  
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:outputPanel id="tempAuthPrint" >
+                        <p:dataTable id="printCertificates" rowKey="#{printCert.appl_no}"  value="#{printCerts.printCertDobj}" selection="#{printCerts.selectedCertDobj}" var="printCert" rows="10"  paginatorPosition="bottom"
+                                     widgetVar="seatWorkList" filteredValue="#{printCerts.filteredSeat}" paginator="true" rowIndexVar="rowkey" rendered="#{printCerts.printCertDobj.size()>0 ? true : flase}">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    <p:outputLabel value="#{printCerts.selectDataTableHeader}" />
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application No" filterBy="#{printCert.appl_no}" filterMatchMode="contains" sortBy="#{printCert.appl_no}">#{printCert.appl_no}</p:column>                        
+                            <p:column headerText="Registration No" filterBy="#{printCert.regno}" filterMatchMode="contains" sortBy="#{printCert.regno}">#{printCert.regno}</p:column>
+                            <p:column  headerText="Printed On" rendered="#{printCerts.isprintedRc}"> <h:outputText value="#{printCert.printed_on}" />  </p:column>
+                            <p:column headerText="Printed By" rendered="#{printCerts.isprintedRc}"><h:outputText value="#{printCert.printed_by}" /></p:column>
+                            <p:column headerText="#{printCerts.selectPrintColumnHeader}" selectionMode="multiple" style="text-align: center" />  
+                            <p:column headerText="Temp.Authorization" styleClass="center-position" rendered="#{printCerts.provRcButtonVisibility}">
+                                <p:commandButton icon="ui-icon-print" value="Print" onclick="PF('blockPrintRC').show();
+                                        this.style.display = 'none';" action="#{printCerts.printProvisionalRC(printCert)}"  oncomplete="PF('blockPrintRC').hide();"/>         
+                            </p:column>       
+                        </p:dataTable>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:outputPanel id="btnPrint">
+                                    <p:commandButton id ="bt_printRc" value="#{printCerts.btn_print_label}" rendered="#{printCerts.printCertDobj.size()>0 ? true : flase}"  action="#{printCerts.confirmprintCertificate()}" /> 
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printCertificate" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" 
+                                                  onclick="PF('blockPrintRC').show();"  oncomplete="PF('printCertificate').hide(); PF('blockPrintRC').hide();"                                 
+                                                  action="#{printCerts.printCertificate()}"
+                                                  icon="ui-icon-check"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('printCertificate').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <p:blockUI block="frm_printRC" widgetVar="blockPrintRC">
+                        <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+                <p:dialog header="HSRP Disclaimer" widgetVar="dlghsrpltd"
+                          modal="true" closable="false" resizable="false"
+                          draggable="false" visible="#{printCerts.renderHsrpDialog}" width="50%">
+                    <ui:include src="/ui/form_HSRPDisclaimer.xhtml" />
+                </p:dialog>
+            </div>
+        </f:subview>
+    </ui:define>
+</ui:composition>

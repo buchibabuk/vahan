@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">       
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:panel header="Hypothecation Details">
+                    <p:outputPanel id="hpapanel">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_hp_type" value="Hypothecation Type:"/>            
+                                    </label>
+                                    <p:selectOneMenu id="hpa_hp_type" value="#{hpa_bean.hpaDobj.hp_type}" 
+                                                     filter="true" required="true" disabled="#{hpa_bean.disable}">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                        <f:selectItems value="#{hpa_bean.list_hp_type}"/> 
+                                        <f:validator validatorId="selectOneValidator" for="hpa_hp_type"/>
+                                        <p:ajax partialSubmit="true" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_fncr_name" value="Financer Name:"/>
+                                    </label>
+                                    <p:inputText  id="hpa_fncr_name" value="#{hpa_bean.hpaDobj.fncr_name}" 
+                                                  maxlength="35" required="true" rendered="true" 
+                                                  requiredMessage="Blank:Financer Name" disabled="#{hpa_bean.disable}"
+                                                  style="text-transform: uppercase" converter="toUpperCaseConverter" autocomplete="off"  validator="#{validateFunction.validateFinancerName}">                                                
+                                        <p:ajax partialSubmit="true" />
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_from_dt" value="From Date #{label.datePattern}"/>
+                                    </label>
+                                    <p:calendar  id="hpa_from_dt" value="#{hpa_bean.hpaDobj.from_dt}" mindate="#{hpa_bean.minDate}"
+                                                 required="true" requiredMessage="Blank:HPA From Date" maxdate="#{hpa_bean.maxDate}"
+                                                 navigator="true" pattern="dd-MMM-yyyy" autocomplete="off" readonlyInput="true"
+                                                 disabled="#{hpa_bean.disable}">
+                                        <p:ajax event="click" update="@this" partialSubmit="true"/>
+                                    </p:calendar>
+                                </div>
+
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="hpa_fncr_add1" value="#{label.address1}"/>
+                                            </label>
+                                            <p:inputText  id="hpa_fncr_add1" value="#{hpa_bean.hpaDobj.fncr_add1}"
+                                                          maxlength="35" required="true" requiredMessage="Blank:Financer Address" 
+                                                          autocomplete="off" style="text-transform: uppercase"
+                                                          converter="toUpperCaseConverter" disabled="#{hpa_bean.disable}" validator="#{validateFunction.validateAddress}">
+                                                <f:validateLength maximum="35"/>   
+                                                <p:ajax partialSubmit="true" />
+                                            </p:inputText>
+
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="hpa_fncr_add2" value="#{label.address2}"/>
+                                            </label>
+                                            <p:inputText id="hpa_fncr_add2" value="#{hpa_bean.hpaDobj.fncr_add2}" 
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase"
+                                                         converter="toUpperCaseConverter" disabled="#{hpa_bean.disable}">
+                                                <f:validateLength maximum="35"/>     
+                                                <p:ajax partialSubmit="true" />
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="hpa_fncr_add3" value="#{label.address3}"/>
+                                            </label>
+                                            <p:inputText id="hpa_fncr_add3" value="#{hpa_bean.hpaDobj.fncr_add3}" 
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase"
+                                                         converter="toUpperCaseConverter" disabled="#{hpa_bean.disable}">
+                                                <f:validateLength maximum="35"/>      
+                                                <p:ajax partialSubmit="true" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_fncr_state" value="State"/>
+                                    </label>
+                                    <p:selectOneMenu id="hpa_fncr_state"  value="#{hpa_bean.hpaDobj.fncr_state}"  
+                                                     required="true" filter="true" styleClass="bottom-space" disabled="#{hpa_bean.disable}">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                        <f:selectItems value="#{hpa_bean.list_state}"/>
+                                        <f:validator validatorId="selectOneValidator"/>
+                                        <p:ajax event="change" listener="#{hpa_bean.StateFncrListener}" update="hpa_fncr_district" partialSubmit="true"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_fncr_district" value="District"/>
+                                    </label>
+                                    <p:selectOneMenu id="hpa_fncr_district"  value="#{hpa_bean.hpaDobj.fncr_district}"  
+                                                     required="true" filter="true" styleClass="bottom-space" disabled="#{hpa_bean.disable}">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                        <f:selectItems value="#{hpa_bean.list_district}"/>
+                                        <f:validator validatorId="selectOneValidator"/>
+                                        <p:ajax partialSubmit="true" />
+                                    </p:selectOneMenu>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_fncr_pincode" value="PIN Code"/>
+                                    </label>
+                                    <p:inputText id="hpa_fncr_pincode" value="#{hpa_bean.hpaDobj.fncr_pincode}" 
+                                                 required="true" requiredMessage="Blank:Financer PIN Code"
+                                                 maxlength="6" autocomplete="off" disabled="#{hpa_bean.disable}">
+                                        <f:validateLength maximum="6"/> 
+                                        <f:validator validatorId="pinCodeValidator" for="hpa_fncr_pincode"/>
+                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <!-- keyfilter is used for allowing particular key during typing in the textfield-->
+                    <p:keyFilter mask="pint" for="hpa_fncr_pincode"/>
+                </p:panel>
+            </div>
+        </div>
+    </div>
+</html>

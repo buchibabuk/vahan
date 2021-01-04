@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content" >       
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Fee / Tax Slab Management</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>  
+                    </p:messages> 
+                </div>
+            </div>
+            <div class="ui-grid-row bottom-space">
+                <div class="ui-grid-col-3 resp-blank-height"></div>
+                <div class="ui-grid-col-3"> 
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel value="Class Type:"/>
+                    </label>
+                    <p:selectOneMenu id="class_type" binding="#{taxSlab_bean.class_type}">               
+                        <f:selectItems value="#{taxSlab_bean.classtypelist}"/>
+                    </p:selectOneMenu>
+                </div>
+                <div class="ui-grid-col-3">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel value="Purpose:"/>
+                    </label>
+                    <p:selectOneMenu id="pur_cd" binding="#{taxSlab_bean.pur_cd}" filter="true" filterMatchMode="contains">
+                        <f:selectItems value="#{taxSlab_bean.purposeLabelValue}"/>
+                    </p:selectOneMenu>
+                </div>
+            </div>
+
+            <div class="ui-grid-row center-position bottom-space">
+                <div class="ui-grid-col-12">  
+                    <p:commandButton value="Get Slab Details" 
+                                     action="#{taxSlab_bean.onSelectGetDetails()}" 
+                                     onclick="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                     update="panel_tax_slab_new"> 
+                    </p:commandButton>                    
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">  
+                    <p:outputPanel id="panel_tax_slab_new">           
+                        <p:panel rendered="#{taxSlab_bean.taxSlabRendered}">
+                            <f:facet name="header">
+                                <p:commandButton value="Add New Slab" 
+                                                 icon="ui-icon-extlink"                             
+                                                 onsuccess="PF('dlg').show();"
+                                                 update="openDlgPanel"                                         
+                                                 actionListener="#{taxSlab_bean.onSelectAddNewRecord}">
+                                </p:commandButton>
+                            </f:facet>
+
+                            <p:dataTable id="vm_tax_slab_new"
+                                         value="#{taxSlab_bean.taxslabnewlist}"
+                                         filteredValue="#{taxSlab_bean.taxSlabNewListFilter}"
+                                         var="result" styleClass="font-bold">
+
+                                <f:facet name="header">  
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 top-space bottom-space">
+                                            <h:outputText value="#{taxSlab_bean.tax_slab_header}" class="h5 text-uppercase font-bold underline-text" />
+                                        </div>
+                                    </div>
+                                </f:facet>
+
+                                <p:column headerText="Slab Code" width="10%">  
+                                    #{result.slab_code}
+                                </p:column>
+
+                                <p:column headerText="Description" width="20%">                   
+                                    #{result.descr}
+                                </p:column>             
+
+                                <p:column headerText="Tax Mode" filterBy="#{result.tax_mode}" filterMatchMode="contains" width="10%">                   
+                                    #{result.tax_mode}
+                                </p:column>
+
+                                <p:column headerText="Tax on Vehicle" filterBy="#{result.tax_on_vch}" filterMatchMode="contains" width="20%">                   
+                                    #{result.tax_on_vch}
+                                </p:column>
+
+                                <p:column headerText="From" width="10%">                   
+                                    #{result.date_from}
+                                </p:column>
+
+                                <p:column headerText="To" width="10%">                   
+                                    #{result.date_to}
+                                </p:column>
+
+                                <p:ajax event="rowToggle" listener="#{taxSlab_bean.onRowSelectToggler(result)}" update="rowExpansionID"/>
+
+                                <p:column headerText="Details" width="10%">
+                                    <p:rowToggler/>  
+                                </p:column>
+
+                                <p:column headerText="Action"  width="10%">
+                                    <p:commandButton value="Edit"
+                                                     icon="ui-icon-extlink"                                         
+                                                     oncomplete="PF('dlg').show();"
+                                                     update=":masterLayout:openDlg"
+                                                     action="#{taxSlab_bean.onClickTaxSlabNewUpdate(result)}">   
+                                        <f:attribute name="slab_code" value="#{nresult.slab_code}"/>
+                                        <f:attribute name="type_flag" value="#{nresult.type_flag}"/>
+                                        <f:attribute name="add_code" value="#{nresult.add_code}"/>
+                                        <f:attribute name="condition" value="#{nresult.condition_formula}"/>
+                                        <f:attribute name="rate" value="#{nresult.rate_formula}"/>
+                                        <f:attribute name="slab_descr" value="#{result.descr}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:rowExpansion id="rowExpansionID">
+
+                                    <div class="ui-grid-row center-position top-space bottom-space">
+                                        <div class="ui-grid-col-12">
+                                            <p:commandButton value="Add New-Additional Slab" 
+                                                             icon="ui-icon-extlink"
+                                                             actionListener="#{taxSlab_bean.viewEmptyTaxSlabAddNewForm}">
+                                                <f:attribute name="slab_code" value="#{result.slab_code}"/>
+                                                <f:attribute name="slab_descr" value="#{result.descr}"/>
+                                                <p:ajax event="dialogReturn" listener="#{taxSlab_bean.onSaveAddTaxSlabNew(result.slab_code)}" update="tax_slab_list"/>
+                                            </p:commandButton> 
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row center-position top-space bottom-space">
+                                        <div class="ui-grid-col-1 resp-blank-height"></div>
+                                        <div class="ui-grid-col-10">
+                                            <p:dataTable value="#{taxSlab_bean.taxslabaddnewlist}"
+                                                         var="nresult" id="tax_slab_list">
+                                                <f:facet name="header">
+                                                    <h2 class="field-label-white"> #{taxSlab_bean.header}</h2>
+                                                </f:facet>        
+
+                                                <p:column headerText="Sr.No" width="10%">                   
+                                                    #{nresult.add_code}
+                                                </p:column>
+
+                                                <p:column headerText="Rate" width="80%">
+                                                    <h:outputText value="#{nresult.ifCondFormula}" escape="false"/>
+                                                </p:column>
+
+                                                <p:column headerText="Action"  width="10%">
+                                                    <p:commandButton value="Edit" 
+                                                                     icon="ui-icon-extlink"
+                                                                     actionListener="#{taxSlab_bean.viewTaxSlabAddNew}">                           
+                                                        <f:attribute name="slab_code" value="#{nresult.slab_code}"/>
+                                                        <f:attribute name="type_flag" value="#{nresult.type_flag}"/>
+                                                        <f:attribute name="add_code" value="#{nresult.add_code}"/>
+                                                        <f:attribute name="condition" value="#{nresult.condition_formula}"/>
+                                                        <f:attribute name="rate" value="#{nresult.rate_formula}"/>
+                                                        <f:attribute name="slab_descr" value="#{result.descr}"/>
+                                                        <p:ajax event="dialogReturn" listener="#{taxSlab_bean.onSaveAddTaxSlabNew(nresult.slab_code)}" update="tax_slab_list"/>
+                                                    </p:commandButton>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                    </div>
+                                </p:rowExpansion>
+                            </p:dataTable>
+                        </p:panel>           
+                    </p:outputPanel>
+                </div>
+            </div>
+            <p:dialog  id="openDlg" header="Add or Update Record" widgetVar="dlg" modal="true" height="500" width="800">       
+                <p:panel  id="openDlgPanel" styleClass="top-space bottom-space right-space left-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Description:"/>
+                            </label>
+                            <p:inputText id="descr" binding="#{taxSlab_bean.descr}" converter="toUpperCaseConverter" styleClass="text-uppercase" size="70" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-6">
+                            <h:outputText value="Class Type:" styleClass="right-space"/>
+                            <h:outputText value="#{taxSlab_bean.class_desc}"/>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <h:outputText value="Purpose:" styleClass="right-space"/>
+                            <h:outputText value="#{taxSlab_bean.pur_desc}"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-6">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tax_mode" value="Tax Mode"/>
+                                    </label>
+                                    <p:selectOneMenu id="tax_mode" binding="#{taxSlab_bean.tax_mode}" filter="true" filterMatchMode="contains">
+                                        <f:selectItems value="#{taxSlab_bean.taxModeLabelValue}"/>
+                                        <f:selectItem itemLabel="ANY TAX MODE" itemValue="ANY"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="date_from" value="From (dd-MM-yyyy)"/>
+                                    </label>
+                                    <p:calendar id="date_from"
+                                                value="#{taxSlab_bean.date_from}"
+                                                pattern="dd-MM-yyyy"
+                                                navigator="true"                                         
+                                                autocomplete="off">
+                                        <f:convertDateTime pattern="dd-MM-yyyy"/>                                
+                                    </p:calendar>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="date_to" value="To (dd-MM-yyyy)"/>
+                                    </label>
+                                    <p:calendar id="date_to"
+                                                value="#{taxSlab_bean.date_to}"
+                                                pattern="dd-MM-yyyy"
+                                                navigator="true"                                        
+                                                autocomplete="off">
+                                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                    </p:calendar> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-6">   
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tax_on_vch" value="Tax on Vehicle"/>
+                                <h:selectBooleanCheckbox id="checkAllBox" value="#{taxSlab_bean.selectAllCheckBox}" onclick="$('.ui-chkbox-box').click()"/>
+                                <h:outputText value="Select All" styleClass="left-space"/>
+                            </label>
+                            <p:selectManyMenu id="tax_on_vch"
+                                              binding="#{taxSlab_bean.tax_on_vch}"
+                                              showCheckbox="true"                                              
+                                              style="width: 300px; height:200px !important;">
+                                <f:selectItems value="#{taxSlab_bean.taxOnVehicleLabelValue}"/>                               
+                            </p:selectManyMenu>
+                        </div>               
+                    </div>
+                    <div class="ui-grid-row center-position top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Save"
+                                             oncomplete="PF('dlg').hide();"
+                                             action="#{taxSlab_bean.saveTaxSlabNewRecord(taxSlab_bean.isNew)}"
+                                             update="panel_tax_slab_new">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                    </p:confirmDialog> 
+                </p:panel>         
+            </p:dialog> 
+        </div>
+
+        <p:blockUI block=":masterLayout" widgetVar="bui">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI> 
+    </ui:define>
+</ui:composition>

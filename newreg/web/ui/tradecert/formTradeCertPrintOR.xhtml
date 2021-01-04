@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="formPrint" prependId="false">
+
+            <div class="center-position">
+                <p:button value="Back" outcome="#{issueTradeCertPrintBean.outcome}" icon="ui-icon-arrowreturnthick-1-w" onclick="PF('bui').show();" styleClass="display-none" />      
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" icon="ui-icon-print"/>
+            </div>
+
+            <ui:repeat var="tcPrintDobj" value="#{issueTradeCertPrintBean.selectedTcDobjList}" varStatus="status">
+                <div class="position-relative bottom-space-50">
+                    <div class="center-position">
+                        <h:outputLabel value="#{issueTradeCertPrintBean.reportHeading}" styleClass="font-bold report-header bottom-line text-uppercase bottom-space"/>
+                        <span class="font-bold report-subheader"> 
+                            <h:outputLabel value="Regional Transport Office, #{tcPrintDobj.officeName}" styleClass="bottom-space"/>
+                        </span>
+                    </div>
+                    <div class="center-position">    
+                        <h:outputLabel value="Form 17 " styleClass="font-bold report-header  text-uppercase"/>
+                    </div>
+                    <div class="center-position">
+                        <span class="font-bold report-subheader"> 
+                            <h:outputLabel value=" [ See Rule 35(1) ] " styleClass="bottom-space"/>
+                        </span>
+
+                        <h:outputLabel value="Form Of Trade Certificate " styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        <h:outputLabel value="(To be printed in circle shape of 70 millimetres diameter)" styleClass="bottom-space"/>
+                    </div>
+                    <div class="right-position">
+                        <h:outputLabel value="Trade Certificate" styleClass=" left-space center-position text-italic"/>
+                    </div>
+                    <div class="inline-section qrcode-position-absolute">
+                        <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                            <ui:param name="qrcodevalue" value="#{tcPrintDobj.text}"/>   
+                            <ui:param name="renderqrCode" value="true"/>   
+                        </ui:include>
+                    </div>
+                </div>
+                <div class="bottom-space-50">
+                    <h:panelGrid columns="3" styleClass="left-space left-position datatable-panel table-top-align  top-align" style="margin: 0 auto;">
+                        <h:outputText value="1." styleClass="right-space bottom-space-50" />
+                        <h:outputText value="Serial number of certificate   "  styleClass="right-space bottom-space-50"/>
+                        <h:outputText  value="1" styleClass="right-space bottom-space-50" /> 
+
+                        <h:outputText value="2." styleClass="right-space bottom-space-50" />
+                        <h:outputText value="Full name and address of certificate holder " styleClass="right-space bottom-space-50" />
+                        <h:outputText  value="#{tcPrintDobj.dealerName} &lt;br /&gt;#{tcPrintDobj.dealerAddress}" styleClass="right-space bottom-space-50" escape="false" /> 
+
+                        <h:outputText value="" styleClass="right-space bottom-space-50" rendered="#{tcPrintDobj.applicantType eq 'D'}"/>
+                        <h:outputText value="Showroom name and address " styleClass="right-space bottom-space-50" rendered="#{tcPrintDobj.applicantType eq 'D'}" />
+                        <h:outputText  value="#{tcPrintDobj.showroomName} &lt;br /&gt;#{tcPrintDobj.showroomAddress}" styleClass="right-space bottom-space-50" escape="false" rendered="#{tcPrintDobj.applicantType eq 'D'}"/> 
+
+                        <h:outputText value="3." styleClass="right-space bottom-space-50" />
+                        <h:outputText value="Trade number assigned in respect of the certificate "  styleClass="right-space bottom-space-50"/>
+                        <h:outputText  value="#{tcPrintDobj.tcNo}" styleClass="right-space bottom-space-50" /> 
+
+                        <h:outputText value="4." styleClass="right-space" />
+                        <h:outputText value="Class of motor vehicle in respect of which "  styleClass="right-space"/>
+                        <h:outputText value=" #{tcPrintDobj.vchClass}" styleClass="left-space" />
+                        <h:outputText value="" styleClass="right-space bottom-space-50" />
+                        <h:outputText value="the certificate is to be used"  styleClass="right-space bottom-space-50"/>
+                        <h:outputText  value="" styleClass="left-space bottom-space-50" />
+
+                        <h:outputText value="5." styleClass="right-space bottom-space-50" />
+                        <h:outputText value="Date of expiry of certificate  "  styleClass="right-space bottom-space-50"/>
+                        <h:outputText  value="#{tcPrintDobj.validUptoAsString}" styleClass="right-space bottom-space-50" /> 
+
+                        <h:outputText value="6." styleClass="right-space bottom-space-50" />
+                        <h:outputText value="Amount of fee paid  "  styleClass="right-space bottom-space-50"/>
+                        <h:outputText  value="#{tcPrintDobj.fees} Rs" styleClass="right-space" /> 
+
+                        <h:outputText value="7." styleClass="right-space bottom-space-50" />
+                        <h:outputText value="Details of vehicle(s) to be sold : " />
+                        <h:outputText value=" "  styleClass="right-space bottom-space-50"/>
+
+                    </h:panelGrid>
+                </div>
+                <div class="bottom-space-50 datatable-panel" style="margin: 0px auto;">
+                    <table class="datatable-panel-100 top-space bottom-space-50">
+                        <tr>
+                            <td class="center-position collumn-width font-bold">S. No</td>
+
+                            <td class="left-position font-bold"> Vehicle Category</td>
+
+                            <c:if test="#{issueTradeCertPrintBean.displayFuel}">
+                                <td class="left-position font-bold"> Fuel </td>
+                            </c:if>
+
+                            <td class="center-position font-bold">Vehicle Count</td>
+
+                            <td class="center-position font-bold">Trade Certificate Number Range </td>
+
+                        </tr>
+                        <ui:repeat value="#{tcPrintDobj.dobjSubList}" var="data" >
+                            <tr>
+                                <td class="center-position collumn-width"><p:outputLabel value="#{data.srNo}" /></td>
+
+                                <td class="left-position"><p:outputLabel value="#{data.vehCatgName}" /></td>
+
+                                <c:if test="#{issueTradeCertPrintBean.displayFuel}">
+                                    <td class="left-position"><p:outputLabel value="#{data.fuelTypeName}" /></td>
+                                </c:if>
+
+
+                                <p:outputPanel rendered="#{issueTradeCertPrintBean.tcForEachVehCatg and data.flagNotToPrintNoOfVehicleRange}">    
+                                    <td class="center-position"><p:outputLabel value="#{data.noOfAllowedVehicles}"/></td>
+                                </p:outputPanel>  
+                                <p:outputPanel rendered="#{issueTradeCertPrintBean.tcForEachVehCatg and !data.flagNotToPrintNoOfVehicleRange}">
+                                    <td class="center-position"><p:outputLabel value="#{data.noOfVehiclePrint} - #{data.noOfAllowedVehicles}"/></td>
+                                </p:outputPanel>  
+
+
+                                <p:outputPanel rendered="#{issueTradeCertPrintBean.tcForEachVehCatg and data.flagNotToPrintNoOfVehicleRange}">
+                                    <td class="center-position"><p:outputLabel value="NA"  /></td>
+                                </p:outputPanel>
+                                <p:outputPanel rendered="#{issueTradeCertPrintBean.tcForEachVehCatg and !data.flagNotToPrintNoOfVehicleRange}">
+                                    <td class="center-position"><p:outputLabel value="#{data.tradeCertNo}/#{data.noOfVehiclePrint} - #{data.tradeCertNo}/#{data.noOfAllowedVehicles}"/></td>
+                                </p:outputPanel>
+                            </tr>
+                        </ui:repeat>
+                    </table>
+                </div>
+                <div class="table-width-two ">
+                    <h:panelGrid columns="2" styleClass="left-space left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputLabel value="8. Date and Stamp of Office of Issue" styleClass="right-space bottom-space-50" />
+                        <h:outputLabel  value="" styleClass="right-space bottom-space-50" />
+
+                        <h:outputText  value="Station : #{tcPrintDobj.officeName}" styleClass="right-space bottom-space-50" /> 
+                        <h:outputLabel value="" styleClass="right-space bottom-space-50" />
+
+                        <h:outputText value="Date : #{issueTradeCertPrintBean.currentDate}"  styleClass="right-space bottom-space-50"/>
+                        <h:outputLabel value="" styleClass="right-space bottom-space-50" />
+                    </h:panelGrid>
+                </div>
+                <div class="right-position">
+                    <h:outputLabel  value="Registering Authority of #{tcPrintDobj.officeName}" /> 
+                    <h:outputLabel  value="Valid throughout India"/>
+                </div>
+                <div class="page-break"></div>
+            </ui:repeat>
+
+            <p:blockUI block="formPrint" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </h:body>
+</html>

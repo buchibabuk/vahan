@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head> 
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body  onload="window.print();">
+        <h:form id="CCRCReportInfo" prependId="false">
+            <div class="center-position">
+                <p:button id="back" value="Back" outcome="/ui/reports/formCommonCarrierRC.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="CommCarrRCList" value="#{CommCarrRCReportBean.selectedComCarRClist}" varStatus="status">
+                <div class="position-relative">
+                    <div class="center-position">
+                        <h:outputText value="FORM – 2" styleClass="font-bold report-header text-uppercase"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="[See Rule 5(1)]" styleClass="font-bold report-subheader"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="CERTIFICATE OF REGISTRATION OF COMMON CARRIERS" styleClass="font-bold report-subheader text-uppercase"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="#{CommCarrRCList.pur_Desc}" styleClass="font-bold report-subheader text-uppercase"/>
+                    </div>
+                </div>
+                <br />
+                <div class="table-width-six">
+                    <h:panelGrid columns="6" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputLabel value="Registration No:" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{CommCarrRCList.regn_no}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Issue Date:" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{CommCarrRCList.issue_Date}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Valid upto:" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{CommCarrRCList.valid_upto}" styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div><br/>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="The Certificate issued to" styleClass="font-bold report-subheader right-space bottom-space" />
+                </div>
+                <div class="table-width-oneforth">
+                    <h:panelGrid columns="2" styleClass="left-space datatable-panel" style="margin: 0 auto;">
+                        <h:outputLabel value="Name of the Organization:" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{CommCarrRCList.organization_name}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Address of Main Office:" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{CommCarrRCList.office_details}" styleClass="right-space bottom-space" />
+                        <h:outputLabel value="Authorized Person:" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{CommCarrRCList.auth_Person_name}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Contact Details:" styleClass="font-bold right-space bottom-space" />
+                        <h:outputText value="#{CommCarrRCList.auth_Person_contact_Details}" styleClass="right-space bottom-space" /> 
+                    </h:panelGrid>
+                </div><br/>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="Total Number of Branches" styleClass="font-bold right-space bottom-space" />
+                </div>
+                <div class="datatable-panel" style="margin: 0px auto;">
+                    <p:dataTable id="dt_sublist" value="#{CommCarrRCList.printCCSubList}" var="dataSubList" >
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Location /&lt;br /&gt; State" escape="false" /></f:facet>
+                            <h:outputText value="#{dataSubList.location}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Full Address &amp; &lt;br /&gt; Contact" escape="false" /></f:facet>
+                            <h:outputText value="#{dataSubList.fullAddress_withContact}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Usage Office /&lt;br /&gt; Godown /&lt;br /&gt; Hub Centre" escape="false" /></f:facet>
+                            <h:outputText value="#{dataSubList.nameOf_usageOffice_Godown_Centre}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Date of &lt;br /&gt; Commencement" escape="false" /></f:facet>
+                            <h:outputText value="#{dataSubList.date_Of_Commencement}" />
+                        </p:column>
+                    </p:dataTable>
+                </div><br/>
+                <div class="table-width-two">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputLabel value="Particulars of the registering authority issuing the Certificate of Registration." styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div><br/><br/>
+                <table class="datatable-panel" style="margin: 0px auto;">
+                    <tr>
+                        <td class="right-position">
+                            <div class="right-space">                                                       
+                                Secretary <br /> State Transport Authority <br />  <h:outputText value="#{CommCarrRCList.off_name}" styleClass="font-bold "/>.
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>
+

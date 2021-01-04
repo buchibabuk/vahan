@@ -1,0 +1,658 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="script">
+        <h:outputScript library="js" name="tradecertutil.js"/>
+    </ui:define>
+    <ui:define name="content"> 
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="new_trade_cert_application_subview">
+                <p:outputPanel id="trade_panel">
+                    <p:dialog id="vehClassCategoryMappingDialog" modal="true" widgetVar="vehClassCategoryMappingDialog" header="Displaying Vehicle Class - Vehicle Category Mapping Table" closeOnEscape="true" closable="true" dynamic="true" draggable="false" resizable="false" width="1000" height="400" >
+                        <p:outputPanel id="vehicleClassCategoryMappingOutputPanel">                           
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <h1 class="header-subheader">Mapping of vehicle classes and vehicle categories (Help On Selection of Vehicle Categories)</h1>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable var="dobj" id="veh_class_category_mapping_data_tc_table" styleClass="top-space" value="#{applicationTradeCert.vehicleClassCategoryMappingList}"  paginator="true" paginatorPosition="bottom" rows="15">
+                                        <p:column headerText="Vehicle Classes">
+                                            <p:outputLabel  id="lb_veh_class" value="#{dobj.vehicleClass}"/>
+                                        </p:column>
+                                        <p:column headerText="Vehicle Categories">
+                                            <p:outputLabel  id="lb_vehicle_category" value="#{dobj.vehicleCategory}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+                    <p:dialog id="confirmationPopup" visible="#{not empty facesContext.messageList and applicationTradeCert.showNewTradeCertificateApplication}"
+                              style="text-align:center" widgetVar="confDlgTradeCert"
+                              modal="true" draggable="false" closable="false" hideEffect="explode"
+                              header="Trade Certificate Application Confirmation Panel"> 
+                        <p:blockUI block="new_trade_cert_application_subview:confirm_panel1" widgetVar="bui_confirm_panel1" >
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+                        <p:outputPanel id="confirm_panel1">
+                            <p:messages />
+                            <p:outputLabel value="Do you want to continue ?"/>
+
+                            <br/> 
+                            <br/>
+
+                            <div class="center-position">
+                                <p:commandButton value="OK"  oncomplete="PF('confDlgTradeCert').hide(); PF('bui_dlg').hide();" 
+                                                 update="new_trade_cert application_sections_panel new_entry_details renew_trade_cert dup_trade_cert"
+                                                 icon="ui-icon-check" onclick="PF('bui_dlg').show();"/>
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+                    <!-- __________________________________________MH DMS WORK [START]________________________________________________________________________________ -->
+                    <p:dialog id="viewUploaded__dialogShowImage" modal="true" widgetVar="ShowImage" header="== Displaying D.M.S Utility : Uploaded Documents Viewier ==" closeOnEscape="true" closable="true" dynamic="true" draggable="false" resizable="false">
+                        <p:ajax event="close" listener="#{applicationTradeCert.handleShowImageClose}" />
+                        <p:outputPanel id="scandocument">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <iframe  src="#{applicationTradeCert.dmsFileServerAPIString}"  height="550" width="1200" frameborder="0" scrolling="yes" marginheight="1" marginwidth="1"/>
+                                </div> 
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+                    <p:dialog id="deficiencyMailGeneratePopupTC"  responsive="true" closeOnEscape="true" maximizable="true"   
+                              widgetVar="mailGenerateDlgTradeCert" width="60%" height="100%" minimizable="true"
+                              modal="true" closable="true" hideEffect="explode"
+                              header="Trade Certificate Application Receive Deficiency Mail Generation Panel..."> 
+                        <p:blockUI block="mail_panel_tc" widgetVar="mailGenerationBlocker">
+                            Sending the generated deficiency mail... please wait<br />
+                            <p:graphicImage name="#{imageName.ajaxLoader}"  library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+
+                        <p:outputPanel id="mail_panel_tc">
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText  value="To: &#160;&#160;" styleClass="font-bold"/>
+                                    <h:outputText value="#{applicationTradeCert.applicantMailId}" />
+                                </div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText  value="From: &#160;&#160;" styleClass="font-bold"/>
+                                    <h:outputText value="nic-vahandl@nic.in via nic.in" />
+
+
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+                                    <label class="field-label resp-label-section">
+                                        <h:outputText  value="Subject: &#160;&#160; #{applicationTradeCert.deficiencyMailSubject}" styleClass="font-bold"/>
+                                    </label>
+                                    <p:outputLabel id="deficiencyMailSubject" value="" />
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+                                    <h:outputText id="deficiencyMailContentToBeSent" value="#{applicationTradeCert.deficiencyMailContent}" escape="false"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-11">
+                                    <p:inputTextarea id="rejectionReasons" value="#{applicationTradeCert.rejectionReasons}" rows="4" cols="120" maxlength="400" autoResize="false"/>
+                                </div>
+                            </div>
+
+
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+
+                                    <div class="text-info bottom-space">** Allowed to enter 400 characters having {0-9}, {a-z}, {A-Z}, {space}, {coma}, {forward-slash}, {back-slash}, {colon}, {semi-colon}, {square-brackets}, {parentheses}, {hyphen}, {underscore}, {period}, {single-quote}, {double-quote}, {curly-braces}, {dollar}, {percentage}, {^},(ampersant), {star}, {plus}, {tilt}, {Exclamation-point}</div>                               
+                                    <div class="text-info bottom-space">** Not Allowed to enter {|}, {=}, {escape-sequences [\n,\t,\r....]}</div>
+                                    <div>Best Regards,<br/>
+                                        Transport Department
+                                        <h:outputText id="stateNameMentionedInDeficiencyMail_txt" value="Government Of #{applicationTradeCert.stateNameMentionedInDeficiencyMail}" styleClass="bottom-space inline-section font-bold" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="deficiencyMailGenerationDlgButton" value="Send" action="#{applicationTradeCert.sendRejectionMessages()}" oncomplete="PF('mailGenerateDlgTradeCert').hide();PF('mailGenerationBlocker').hide();"
+                                                     icon="ui-icon-mail-closed" onclick="PF('mailGenerationBlocker').show();"/>
+                                    <p:commandButton value="Cancel" oncomplete="PF('mailGenerateDlgTradeCert').hide();"  icon="ui-icon-close" />
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position red">
+                                    *** <span class="font-bold">NOTE: </span> This is a system generated email, please do not reply. ***
+                                </div>
+
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+
+                    <p:dialog id="confirmationPopupOnlineApp" visible="#{not empty facesContext.messageList and !applicationTradeCert.rtoSideAppl}"
+                              style="text-align:center" widgetVar="confirmationPopupOnlineApp"
+                              modal="true" draggable="false" closable="false" hideEffect="explode"
+                              header="Trade Certificate Application Confirmation Panel"> 
+                        <p:outputPanel id="confirm_panelOnlineApp">
+                            <p:messages />
+                            <p:outputLabel value="Do you want to continue ?"/><br/> 
+                            <br />
+
+                            <div class="center-position">
+                                <p:commandButton value="OK" icon="ui-icon-check"  onclick="PF('confirmationPopupOnlineApp').hide();" action="#{applicationTradeCert.click()}"/>
+                            </div>
+                        </p:outputPanel>
+                    </p:dialog>
+                    <!-- __________________________________________MH DMS WORK [END]________________________________________________________________________________ -->
+
+                    <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printTradeCertificateApplication" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                        <p:outputPanel id="confirm_panel3">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Do you want to continue"/>
+                                    </label>
+                                    <p:commandButton  value="Confirm Print" onsuccess="PF('printTradeCertificateApplication').hide();"                                   
+                                                      action="#{applicationTradeCert.printTradeCertApplicationDetails()}" 
+                                                      icon="ui-icon-check" onclick="PF('bui_dlg').show()" 
+                                                      oncomplete="PF('bui_dlg').hide()"  />
+                                    <p:commandButton value="Cancel" onsuccess="PF('printTradeCertificateApplication').hide();" icon="ui-icon-close" />
+                                </div>
+                            </div>
+                        </p:outputPanel>  
+                        <p:blockUI block="confirm_panel3" widgetVar="bui_dlg" >
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+                    </p:dialog>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <c:choose>
+                                <c:when test="#{applicationTradeCert.showVerifyTradeCertificateApplication}">
+                                    <h1 class="header-main">Verify Application for Trade Certificate</h1> 
+                                </c:when>
+                                <c:otherwise>
+                                    <h1 class="header-main">Application for Trade Certificate</h1> 
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
+
+
+
+                    <p:outputPanel id="choose_trade_cert_type" rendered="#{!applicationTradeCert.verifyMode}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-6">
+                                <p:selectOneRadio id="console" value="#{applicationTradeCert.applicationTradeCertDobj.newRenewalTradeCert}" columns="3" layout="responsive"  disabled="#{applicationTradeCert.dissableChooseNewRenewTradeCertificateOption}">
+                                    <f:selectItem itemLabel="New Trade Certificate" itemValue="New_Trade_Certificate" />
+                                    <f:selectItem itemLabel="Renew Trade Certificate " itemValue="Renew_Trade_Certificate" />
+                                    <f:selectItem itemLabel="Duplicate Trade Certificate " itemValue="Duplicate_Trade_Certificate"  />
+                                    <p:ajax  event="change" listener="#{applicationTradeCert.fillNewRenewTradeCerticateOption}" update="trade_panel"/>
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="choose_trade_cert_type_note" rendered="#{!applicationTradeCert.verifyMode}">
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <b>Note: </b> <span class="red font-bold">Only one time 'choose' option is available to manage consistency. If you are required to change your chosen option, press 'Back' to reopen the form or press 'F5' and reload the form to choose again.</span>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <div class="ui-grid-row">                   
+                        <div class="ui-grid-col-12">
+                            <p:panel header=" Renew Trade Certificate" id="renew_trade_cert" styleClass="top-space bottom-space" visible="#{applicationTradeCert.showRenewTradeCertificateApplication}">
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="lb_dealer" value="#{label.dealer}"/>
+                                        </label>
+                                        <p:selectOneMenu id="cb_dealer_name" value="#{applicationTradeCert.applicationTradeCertDobj.dealerFor}" filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{applicationTradeCert.listDealerFor}"/>
+                                            <p:ajax  event="change"  listener="#{applicationTradeCert.checkDealerSelectedRenew}" update="new_trade_cert_application_subview:renew_trade_cert application_sections_panel_renew control_buttons control_buttons_file_mov"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <p:panel header="Application Sections Details" id="application_sections_panel_renew" visible="#{applicationTradeCert.visibleTradeCertificateApplicationPanel}" styleClass="top-space bottom-space" >
+                                    <p:dataTable selection="#{applicationTradeCert.applicationTradeCertDobj}" rowKey="#{applicationTradeCertDobj.srNo}" var="applicationTradeCertDobj" id="application_sections_data_table_renew" styleClass="top-space bottom-space" value="#{applicationTradeCert.applicationSectionsList}"  paginator="false" >
+                                        <p:column headerText="#{label.sr_no}" styleClass="collumn-width">
+                                            <h:outputText  id="lb_sr_no" value="#{applicationTradeCertDobj.srNo}" />
+                                        </p:column>
+                                        <p:column headerText="T.C No." width="10%">
+                                            <h:outputText  id="lb_cert_no" value="#{applicationTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.vh_catg}">
+                                            <h:outputText  id="lb_veh_catg_name" value="#{applicationTradeCertDobj.vehCatgName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{label.fuel}" rendered="#{applicationTradeCert.displayFuel}">
+                                            <p:outputLabel  id="lb_fuel_type_for" value="#{applicationTradeCertDobj.fuelTypeName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="8%">
+                                            <h:outputText  id="lb_valid_upto" value="#{applicationTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                        <p:column headerText="Count" width="9%" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                            <h:inputText disabled="true" id="lb_no_of_allowed_vehicles_editable" value="#{applicationTradeCertDobj.noOfAllowedVehicles}" maxlength="4" />  
+                                            <!--disabled="#{!applicationTradeCertDobj.expired}"-->
+                                            <p:keyFilter for="lb_no_of_allowed_vehicles_editable" mask="pnum" />
+                                        </p:column>
+                                        <p:column headerText="Expired" width="7%">
+                                            <p:outputLabel id ="expired_true_label" value="TRUE"   rendered="#{applicationTradeCertDobj.expired}"/>
+                                            <p:outputLabel id ="expired_false_label" value="FALSE" rendered="#{!applicationTradeCertDobj.expired}"/>
+                                        </p:column>
+                                        <p:column headerText="To Renew" width="8%"> 
+                                            <div class="ui-grid ui-grid-responsive" style="width:150px">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-1">
+                                                        <p:selectBooleanCheckbox value="#{applicationTradeCertDobj.toBeRenew}" disabled="#{!applicationTradeCertDobj.expired}">
+                                                            <p:ajax update="new_trade_cert_application_subview:renew_trade_cert" listener="#{applicationTradeCert.addInListToBeRenewedListener}" />
+                                                        </p:selectBooleanCheckbox>
+                                                    </div>                         
+                                                </div>
+                                            </div>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                                <p:panel header="To Be Renewed Application Section Details" id="toBeRenewed_application_section_panel"  rendered="#{applicationTradeCert.listOfCheckedTCRecordsToRenew.size()>0}" styleClass="top-space bottom-space" >
+                                    <p:dataTable selection="#{applicationTradeCert.applicationTradeCertDobj}" rowKey="#{applicationTradeCertDobj.srNo}" var="applicationTradeCertDobj" id="renew_sections_data_table_renew" styleClass="top-space bottom-space" value="#{applicationTradeCert.listOfCheckedTCRecordsToRenew}"  paginator="false" >
+                                        <p:column headerText="#{label.sr_no}" styleClass="collumn-width">
+                                            <h:outputText  id="lb_sr_no" value="#{applicationTradeCertDobj.srNo}" />
+                                        </p:column>
+                                        <p:column headerText="T.C No." width="10%">
+                                            <h:outputText  id="lb_cert_no" value="#{applicationTradeCertDobj.tradeCertNo}" />
+                                        </p:column>
+                                        <p:column headerText="#{label.vh_catg}">
+                                            <h:outputText  id="lb_veh_catg_name" value="#{applicationTradeCertDobj.vehCatgName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{label.fuel}" rendered="#{applicationTradeCert.displayFuel}">
+                                            <p:outputLabel  id="lb_fuel_type_for" value="#{applicationTradeCertDobj.fuelTypeName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{label.prev_valid_upto}" width="8%">
+                                            <h:outputText  id="lb_valid_upto" value="#{applicationTradeCertDobj.validUptoAsString}"/>
+                                        </p:column>
+                                        <p:column headerText="Count" width="6%" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                            <h:inputText id="lb_no_of_allowed_vehicles_editable" value="#{applicationTradeCertDobj.noOfAllowedVehicles}" maxlength="4" disabled="#{!applicationTradeCertDobj.expired}"/>
+                                            <p:keyFilter for="lb_no_of_allowed_vehicles_editable" mask="pnum" />
+                                        </p:column>
+                                        <p:column headerText="Expired" width="7%">
+                                            <p:outputLabel id ="expired_true_label" value="TRUE"   rendered="#{applicationTradeCertDobj.expired}"/>
+                                            <p:outputLabel id ="expired_false_label" value="FALSE" rendered="#{!applicationTradeCertDobj.expired}"/>
+                                        </p:column>
+                                        <p:column headerText="To Renew" width="8%"> 
+                                            <div class="ui-grid ui-grid-responsive" style="width:150px">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-1">
+                                                        <p:selectBooleanCheckbox value="#{applicationTradeCertDobj.toBeRenew}">
+                                                            <p:ajax update="new_trade_cert_application_subview:renew_trade_cert" listener="#{applicationTradeCert.removeInListToBeRenewedListener}" />
+                                                        </p:selectBooleanCheckbox>
+                                                    </div>                         
+                                                </div>
+                                            </div>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:panel>
+                        </div>
+                    </div>
+                    <p:panel header=" Verify Trade Certificate Application" id="verify_trade_cert" styleClass="top-space bottom-space" visible="#{applicationTradeCert.showVerifyTradeCertificateApplication}">
+                        <p:outputPanel rendered="#{applicationTradeCert.tmConfigDobj.tmTradeCertConfigDobj.documentsUploadNRevert
+                                                   and !applicationTradeCert.rtoSideAppl
+                                                   and applicationTradeCert.applicationTradeCertDobj.getNewRenewalTradeCert() ne applicationTradeCert.ENDORSEMENT_CONSTANT_VAL}" >
+                            <!-- __________________________________________MH DMS WORK [START]________________________________________________________________________________ -->
+                            <br/>
+                            <h:outputText value="*Working with the form:-" styleClass="text-info bottom-line"/>
+                            <br/>
+                            <h:outputText value="Step 1: Click on 'Hard Copy Physically Received' to log the latest timestamp of receiving the hard copies of [Fee-Receipt and Uploaded mandatory Document(s)]" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 2: Click on 'Open Uploaded Documents' to check all the uploaded attached documents" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 3: (If deficiency found in the uploaded documents):" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="|----> Click on 'Compose Deficiency Mail' to send deficiency mail to the applicant" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="|----> Click on 'Revert Application For Rectification' to revert the application to the applicant" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 4: (If NO deficiency found in the uploaded documents):" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="|----> Click on 'Save-Options' -> 'File Movement' -> 'Proceed to Next Seat' in order to forward the application to approver" styleClass="green"/>
+                            <br/>
+                            <h:outputText value="Step 5: Click on 'Print Application for Trade Certificate' in order to take print-out of Form 16." styleClass="green"/>
+                            <br/>
+                            <div class="ui-grid-row bottom-space-50">
+
+                                <div class="ui-grid-col-5 ">
+                                    <p:commandButton id="hardCopyPhysicallyReceivedBtn_for_verify" rendered="#{applicationTradeCert.showHardCopyReceivedButton}" value="Hard Copy Physically Received" icon="ui-icon-circle-check" action="#{applicationTradeCert.markHardCopyReceived}"  update="verify_trade_cert">
+                                        <p:confirm header="Confirmation" message="Have you received the hard copies of all the mandatory documents ?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                    <p:outputPanel id ="markHardCopyReceivedOutputPanel_for_verify" rendered="#{applicationTradeCert.currentTimeStampAsMarkHardCopyReceivedInStringFormat ne '' and applicationTradeCert.showHardCopyReceivedButton}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 green font-bold">
+                                                Hard copies(self-attested) of all mandatory documents have been received at <h:outputText id="hardCopyPhysicallyReceivedTimeStamp_for_verify" value="'#{applicationTradeCert.currentTimeStampAsMarkHardCopyReceivedInStringFormat}'" styleClass="red font-bold"/>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel> 
+                                </div>
+
+                                <div class="ui-grid-col-2 right-position">
+                                    <p:commandButton id ="open_uploaded_documents_for_verify" value="Open Uploaded Documents"  ajax="true" immediate="true"  onclick="PF('bui_fancy').show();" 
+                                                     actionListener="#{applicationTradeCert.openUploadedDocuments()}" update="viewUploaded__dialogShowImage" icon="ui-icon-folder-open" />
+                                </div>
+
+                                <div class="ui-grid-col-2 left-position">
+                                    <p:commandButton id ="mail_for_verify" value="Compose Deficiency Mail"  ajax="true" immediate="true"  onclick="PF('bui_fancy').show();" 
+                                                     oncomplete="PF('mailGenerateDlgTradeCert').show();PF('bui_fancy').hide();" 
+                                                     onsuccess="PF('mailGenerateDlgTradeCert').show();PF('bui_fancy').hide();" 
+                                                     actionListener="#{applicationTradeCert.generateDeficiencyMailOpeningMatter()}" icon="ui-icon-script" update="deficiencyMailGeneratePopupTC"/>
+                                </div>
+                                <div class="ui-grid-col-2 right-position">
+                                    <p:commandButton id="revertReceivedOnlineApplicationBtn" value="Revert Application For Rectification" icon="ui-icon-circle-arrow-w" action="#{applicationTradeCert.revertPendingApplication()}" onclick="PF('bui_fancy').show();" onsuccess="PF('bui_fancy').hide();" oncomplete="PF('bui_fancy').hide();">
+                                        <p:confirm header="Confirmation" message="The displayed online application will now be revert back for rectification. Would you like to continue ?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </div>
+
+                            </div>
+                        </p:outputPanel>
+
+                        <!-- __________________________________________MH DMS WORK [END]________________________________________________________________________________ -->
+
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-1 right-position right-space">
+                                <p:outputLabel  id="lb_appl" value="#{label.appl_no}" />
+                            </div>
+                            <div class="ui-grid-col-2">
+                                <h:outputText  id="lb_appl_no" value="#{applicationTradeCert.applicationTradeCertDobj.applNo}" styleClass="font-bold"/>
+                            </div>
+                            <div class="ui-grid-col-1 right-position right-space">
+                                <p:outputLabel id="lb_dealer_label_for_name" value="#{label.applicant}"/>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <h:outputText id="lb_dealer_name" value="#{applicationTradeCert.applicationTradeCertDobj.dealerName}" styleClass="font-bold"/>
+                            </div>
+                            <div class="ui-grid-col-2 right-position right-space">
+                                <p:outputLabel id="lb_trade_cert_type_label" value="#{label.appl_trade_cert_type}"/>
+                            </div>
+                            <div class="ui-grid-col-1">
+                                <h:outputText id="lb_trade_cert_type" value="#{applicationTradeCert.tradeCertType}" styleClass="font-bold"/>
+                            </div>
+                        </div>
+                        <p:panel header="Application Sections Details" id="application_sections_panel_verify" visible="#{applicationTradeCert.visibleApplicationVerifyPanel}">
+                            <p:dataTable selection="#{applicationTradeCert.applicationTradeCertDobj}" rowKey="#{applicationTradeCertDobj.srNo}" var="applicationTradeCertDobj" id="application_sections_data_table_verify" styleClass="top-space bottom-space" value="#{applicationTradeCert.applicationSectionsList}"  paginator="false" >
+                                <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                    <h:outputText  id="lb_sr_no" value="#{applicationTradeCertDobj.srNo}" />
+                                </p:column>
+                                <c:if test="#{applicationTradeCert.tradeCertNoNotBlank}">    
+                                    <p:column headerText="T.C No." width="15%">
+                                        <h:outputText  id="lb_cert_no" value="#{applicationTradeCertDobj.tradeCertNo}" />
+                                    </p:column>
+                                    <c:choose>
+                                        <c:when test="#{applicationTradeCert.applicationTradeCertDobj.newRenewalTradeCert eq 'Renew_Trade_Certificate'}">
+                                            <p:column headerText="Previous #{label.valid_upto}" style="width: 10%;">
+                                                <h:outputText  id="lb_valid_upto" value="#{applicationTradeCertDobj.validUptoAsString}"/>
+                                            </p:column>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p:column headerText="#{label.prev_valid_upto}" style="width: 10%;">
+                                                <h:outputText  id="lb_valid_upto" value="#{applicationTradeCertDobj.validUptoAsString}"/>
+                                            </p:column>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                                <p:column headerText="#{label.vh_catg}">
+                                    <h:outputText  id="lb_veh_catg_for" value="#{applicationTradeCertDobj.vehCatgName}"/>
+                                </p:column>
+                                <p:column headerText="#{label.fuel}" rendered="#{applicationTradeCert.displayFuel}">
+                                    <p:outputLabel  id="lb_fuel_type_for" value="#{applicationTradeCertDobj.fuelTypeName}"/>
+                                </p:column>
+                                <p:column headerText="#{label.no_of_allowed_vehicles}" width="15%" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                    <h:outputText  id="lb_no_of_allowed_vehicles_editable" value="#{applicationTradeCertDobj.noOfAllowedVehicles}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <p:outputPanel rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 right-position right-space">
+                                        Total number of trade certificates issued to '<h:outputText value="#{applicationTradeCert.applicationTradeCertDobj.dealerName}" styleClass="font-bold"/>': &#160;&#160;&#160;&#160;&#160;&#160;
+                                        <h:outputText id="tf_grand_total_verify" value="#{applicationTradeCert.noOfVehGrandTotal}" styleClass="font-bold welcome-sub-heading-size" />
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                        </p:panel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Print Application for Trade Certificate"
+                                                 icon="ui-icon-print" 
+                                                 action="#{applicationTradeCert.confirmTradeCertApplicationPrint()}" 
+                                                 onclick="PF('bui_fancy').show()" 
+                                                 oncomplete="PF('bui_fancy').hide()"  />
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel header="New Trade Certificate" id="new_trade_cert" styleClass="top-space bottom-space" visible="#{applicationTradeCert.showNewTradeCertificateApplication}">
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="lb_mode_for" value="Application Mode "/>
+                                </label>
+                                <p:selectOneRadio id="select_new_edit" value="#{applicationTradeCert.tcNewEditRadiobtn}" >
+                                    <f:selectItem itemLabel="New Application" itemValue="New_Application" />
+                                    <f:selectItem itemLabel="Edit Application" itemValue="Edit_Application" />
+                                    <p:ajax  event="change" listener="#{applicationTradeCert.tcNewEditListener}" update="trade_panel" />
+                                </p:selectOneRadio>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel id="lb_stock_application" value="Stock Transfer Application " rendered="#{applicationTradeCert.renderStockTransferReqCkbox}"/>
+                                </label>
+                                <p:selectBooleanCheckbox value="#{applicationTradeCert.stockTransferReq}" rendered="#{applicationTradeCert.renderStockTransferReqCkbox}"/>
+                            </div>
+                        </div>
+                        <p:panel  id="dealer_entry" rendered="#{applicationTradeCert.displayDealer}" styleClass="border-none">
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel id="lb_dealer_for" value="#{label.dealer}"/>
+                                    </label>
+                                    <p:selectOneMenu id="cb_dealer" value="#{applicationTradeCert.applicationTradeCertDobj.dealerFor}" filter="true" filterMatchMode="contains">
+                                        <f:selectItems value="#{applicationTradeCert.listDealerFor}"/>
+                                        <p:ajax  event="change" listener="#{applicationTradeCert.checkDealerSelected}" update="new_trade_cert_application_subview:application_sections_panel new_trade_cert_application_subview:new_entry_details"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:panel header="New Entry Details" id="new_entry_details"  visible="#{applicationTradeCert.visibleNewEntryDetailPanel}"  styleClass="top-space bottom-space">
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <h:outputText value="#{label.vh_catg} "/> ( <p:commandLink id="hint_veh_catg" value ="+ Vehicle Class - Category Mapping" title="Help in selecting vehicle category as per vehicle class"  action="#{applicationTradeCert.displayVehClassCatgMapping()}" update="new_trade_cert_application_subview:vehClassCategoryMappingDialog" styleClass="content-link" />)
+                                    </label>
+                                    <p:selectOneMenu id="cb_veh_catg_for_new_entry" value="#{applicationTradeCert.applicationTradeCertDobj.vehCatgFor}" >
+                                        <f:selectItems value="#{applicationTradeCert.listVehCatgFilteredFor}"/>
+                                        <p:ajax  rendered="#{applicationTradeCert.displayFuel}" event="change" listener="#{applicationTradeCert.checkVehicleCategorySelected}" update="cb_fuel_type_for_new_entry tf_no_of_allowed_vehicles_new_entry"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <p:outputPanel rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}" styleClass="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{label.no_of_allowed_vehicles}"/>
+                                    </label>
+                                    <p:inputText  id="tf_no_of_allowed_vehicles_new_entry" value="#{applicationTradeCert.applicationTradeCertDobj.noOfAllowedVehicles}" size="4" maxlength="4"
+                                                  autocomplete="off" >
+                                    </p:inputText>
+                                </p:outputPanel>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{label.fuel}" rendered="#{applicationTradeCert.displayFuel}"/>
+                                    </label>
+                                    <p:selectOneMenu id="cb_fuel_type_for_new_entry" value="#{applicationTradeCert.applicationTradeCertDobj.fuelTypeFor}" rendered="#{applicationTradeCert.displayFuel}" >
+                                        <f:selectItems value="#{applicationTradeCert.listFuelTypeFilteredFor}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton action="#{applicationTradeCert.addNewSectionsToApplication()}"  value="Add New" icon="ui-icon-plusthick" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" disabled="#{applicationTradeCert.disableAddNew}"/>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:panel header="Added Application Sections Detail" id="application_sections_panel" visible="#{applicationTradeCert.visibleApplicationDetailPanel}">
+                            <p:dataTable var="applicationTradeCertDobj" id="application_sections_data_table" 
+                                         rowIndexVar="index" styleClass="top-space bottom-space" value="#{applicationTradeCert.newApplicationSectionsAddedList}"  paginator="false" >
+                                <p:column headerText="#{label.sr_no}" styleClass="collumn-width">
+                                    <p:outputLabel  id="lb_sr_no" value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="#{label.vh_catg}">
+                                    <p:outputLabel  id="lb_veh_catg_for" value="#{applicationTradeCertDobj.vehCatgName}"/>
+                                </p:column>
+                                <p:column headerText="#{label.fuel}" rendered="#{applicationTradeCert.displayFuel}">
+                                    <p:outputLabel  id="lb_fuel_type_for" value="#{applicationTradeCertDobj.fuelTypeName}"/>
+                                </p:column>
+                                <p:column headerText="#{label.no_of_allowed_vehicles}" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                    <p:outputLabel  id="lb_no_of_allowed_vehicles" value="#{applicationTradeCertDobj.noOfAllowedVehicles}"/>
+                                </p:column>
+
+                                <p:column headerText="Action" width="10%">
+                                    <p:commandButton value="Remove" immediate="true" action="#{applicationTradeCert.removeNewSectionsToApplication(applicationTradeCertDobj)}" icon="ui-icon-minusthick" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" update="new_trade_cert_application_subview:trade_panel" />
+                                </p:column>
+                            </p:dataTable>
+                            <p:outputPanel rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 right-position right-space">
+                                        Grand total number of vehicles issued to '<h:outputText value="#{applicationTradeCert.applicationTradeCertDobj.dealerName}" styleClass="font-bold"/>' in the given trade certificate: &#160;&#160;&#160;&#160;&#160;&#160;
+                                        <h:outputText id="tf_grand_total" value="#{applicationTradeCert.noOfVehGrandTotal}" styleClass="font-bold welcome-sub-heading-size" />
+                                    </div>
+                                </div>
+                            </p:outputPanel>    
+                        </p:panel>
+                    </p:panel>
+                    <p:panel header="Duplicate Trade Certificate" id="dup_trade_cert" styleClass="top-space bottom-space" visible="#{applicationTradeCert.showDupTradeCertificateApplication}">
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="lb_applNo_for" value="#{label.trade_cert_no_label}"/>
+                                </label>
+                                <p:inputText  id="tf_applNo_dup_entry" value="#{applicationTradeCert.applicationTradeCertDobj.tradeCertNo}" size="25" maxlength="25"
+                                              autocomplete="off" styleClass="text-uppercase"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton update="trade_panel" action="#{applicationTradeCert.issueDuplicateCertificate()}" value="Get Details" icon="ui-icon-copy" />
+                            </div>
+                        </div>
+                        <p:panel header="Application Sections Details" id="application_sections_panel_dup" visible="#{applicationTradeCert.visibleTradeCertificateApplicationPanel}">
+                            <p:dataTable selection="#{applicationTradeCert.applicationTradeCertDobj}" rowKey="#{applicationTradeCertDobj.srNo}" var="applicationTradeCertDobj" id="application_sections_data_table_dup" styleClass="top-space bottom-space" value="#{applicationTradeCert.applicationSectionsList}"  paginator="false" >
+                                <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                    <h:outputText  id="lb_sr_no" value="#{applicationTradeCertDobj.srNo}" />
+                                </p:column>
+                                <p:column headerText="T.C No." width="10%">
+                                    <h:outputText  id="lb_cert_no" value="#{applicationTradeCertDobj.tradeCertNo}" />
+                                </p:column>
+                                <p:column headerText="#{label.valid_upto}" style="width: 8%;">
+                                    <h:outputText  id="lb_valid_upto" value="#{applicationTradeCertDobj.validUptoAsString}"/>
+                                </p:column>
+                                <p:column headerText="#{label.vh_catg}">
+                                    <h:outputText  id="lb_veh_catg_name" value="#{applicationTradeCertDobj.vehCatgName}"/>
+                                </p:column>
+                                <p:column headerText="#{label.fuel}" rendered="#{applicationTradeCert.displayFuel}" style="width: 20%;">
+                                    <p:outputLabel  id="lb_fuel_type_for" value="#{applicationTradeCertDobj.fuelTypeName}"/>
+                                </p:column>
+                                <p:column headerText="#{label.no_of_allowed_vehicles}" width="15%" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                    <h:outputText  id="lb_no_of_allowed_vehicles_editable" value="#{applicationTradeCertDobj.noOfAllowedVehicles}"/>
+
+                                </p:column>
+
+                            </p:dataTable>
+                            <p:outputPanel rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 right-position right-space">
+                                        Grand total number of vehicles issued to '<h:outputText value="#{applicationTradeCert.applicationTradeCertDobj.dealerName}" styleClass="font-bold"/>' in the given trade certificate: &#160;&#160;&#160;&#160;&#160;&#160;
+                                        <h:outputText id="tf_grand_total_duplicate" value="#{applicationTradeCert.noOfVehGrandTotal}" styleClass="font-bold welcome-sub-heading-size" />
+                                    </div>
+                                </div>
+                            </p:outputPanel>    
+                        </p:panel>
+                    </p:panel>
+                    <p:dialog id="confirmationSavePopup" widgetVar="confSaveDlgTradeCert"
+                              modal="true" draggable="false" closable="false" hideEffect="explode"
+                              header="Trade Certificate Application Confirmation Panel" >  
+                        <p:outputPanel id="confirm_panel2">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space top-space">
+                                    <p:messages/>
+                                    <br/>
+                                    <h:outputText value="*This application is regarding stock transfer, which is meant for distributors."  rendered="#{applicationTradeCert.stockTransferReq}" class="red font-bold"/>
+                                    <br/>
+                                    <br/>
+                                    <p:outputLabel value="Do you want to continue ?"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space top-space">
+                                    <p:commandButton id="popup_btn_save" value="Save Trade Certificate Application " oncomplete="PF('confSaveDlgTradeCert').hide();PF('bui_dlg').hide();" 
+                                                     update="new_trade_cert application_sections_panel new_entry_details renew_trade_cert dup_trade_cert"
+                                                     actionListener="#{applicationTradeCert.save()}" icon="ui-icon-check" onclick="PF('bui_dlg').show();" disabled="#{applicationTradeCert.disableSavePopup}">
+                                    </p:commandButton>
+
+                                    <p:commandButton value="Cancel" oncomplete="PF('confSaveDlgTradeCert').hide();" action="#{applicationTradeCert.formToBeValidated()}" icon="ui-icon-close" update="@form" />
+
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:blockUI block="confirm_panel2" widgetVar="bui_dlg" >
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI> 
+                    </p:dialog>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel rendered="#{applicationTradeCert.renderFileMovement}" id="control_buttons_file_mov" styleClass="bottom-space top-space">
+                                <ui:include src="/ui/role/file_movement_app_disapp.xhtml" >
+                                    <ui:param name="app_disapp" value="#{applicationTradeCert}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+                    <p:outputPanel rendered="#{!applicationTradeCert.renderFileMovement}" id="control_buttons"  styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="bt_save"   value="Save" action="#{applicationTradeCert.saveForm}"
+                                                 update="@form" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" disabled="#{applicationTradeCert.disableSave}" icon="ui-icon-disk">
+                                </p:commandButton>
+                                <p:button value="Back" outcome="home" onclick="PF('bui_fancy').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+            </f:subview>
+            <p:blockUI block="new_trade_cert_application_subview:trade_panel" widgetVar="bui_fancy" >
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+
+
+        </div>
+    </ui:define>
+</ui:composition>

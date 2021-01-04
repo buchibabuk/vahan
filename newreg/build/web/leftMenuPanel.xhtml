@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <script type="text/javascript">
+        $(function() {
+            $('.marquee').marquee();
+            $('.marquee-with-options').marquee({
+                speed: 50000,
+                gap: 2,
+                delayBeforeStart: 0,
+                duration: 10,
+                direction: 'left',
+                duplicated: false,
+                pauseOnHover: true
+            });
+        });
+
+        function changemysize(myvalue) {
+            var div = document.getElementById("mymain");
+            div.style.fontSize = myvalue + "px";
+        }
+    </script>
+    <style>
+        .language-link {
+            font-weight: normal !important; 
+            color: #000000 !important; 
+            padding: 3px 20px !important; 
+            line-height: 1.42857143; 
+            display: block;
+            text-decoration: none !important;
+        }
+        .language-link:hover, .language-link:focus {
+            color: #FFFFFF !important; 
+            background: #00648C!important;
+        }
+    </style>
+    <f:view locale="#{languageBean.locale}">
+        <div class="top-navigation-section">
+            <div class="right-position text-resize-section">
+
+                <ul>
+                    <li class="skip-responsive-section"> 
+                        <a href="/vahan/" title="Home">
+                            <span class="glyphicon glyphicon-home"></span> #{language.home}
+                        </a>
+                    </li>
+                    <li class="skip-responsive-section"> 
+                        <a href="#navbar">
+                            <span class="glyphicon glyphicon-arrow-down"></span> #{language.login_skip_content}
+                        </a>
+                    </li>
+                    <li class="skip-responsive-section"> 
+                        <a href="#main-content">
+                            <span class="glyphicon glyphicon-arrow-down"></span> #{language.login_skip_navigation}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="decfont">A<sup>-</sup></a>
+                    </li>
+                    <li>
+                        <a href="#" id="resetfont"> A</a>
+                    </li>
+                    <li>
+                        <a href="#" id="incfont">A<sup>+</sup></a>
+                    </li>
+                    <!--                <li>
+                                        <a href="#">English</a>
+                                    </li>-->
+                    <li class="dropdown" style="width: 100px">
+                        <a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-globe"></span> #{language.home_language} <span class="caret"></span></a>
+                        <ul class="dropdown-menu" style="margin-left: -5px; margin-top: 0px;  min-width: 100px;">
+                            <ui:repeat value="#{languageBean.languageList.entrySet().toArray()}" var="list">
+                                <li style="display: block !important;">
+                                    <h:commandLink value="" action="#{languageBean.changeLanguage(list.value)}" styleClass="language-link"  immediate="true" > <span class="glyphicon glyphicon-arrow-right"></span> #{list.key}</h:commandLink>
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="logo-header-section">
+            <div class="container">
+                <div class="inline-section vertical-right-divider">
+                    <h:link id="loginId" outcome="/ui/login/login.xhtml?faces-redirect=true">
+                        <p:graphicImage library="images" name="logo-national-emblem.png" alt="National Emblem" styleClass="logo-resize"/>
+                    </h:link>
+                </div>
+                <div class="inline-section fix-width">
+                    <div class="slogan-name">
+                        #{language.login_ministry} 
+                    </div>
+                    <div class="govt-india">
+                        #{language.login_govt_of_india} 
+                    </div>
+                </div>
+                <div class="inline-section float-right">
+                    <h:link id="loginId1" outcome="/ui/login/login.xhtml?faces-redirect=true">
+                        <p:graphicImage library="images" name="logo-evahan.png" alt="e-vahan4" styleClass="logo-resize"/>
+                    </h:link>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar-default navigation-background" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse navigation-background-nav" id="navbar">
+                <div class="container">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="/vahan/" target="_parent" > <span class="glyphicon glyphicon-home"></span>  #{language.home}</a>
+                        </li>
+                        <li>
+                            <a href="https://parivahan.gov.in/" target="_blank"> <span class="glyphicon glyphicon-road"></span> #{language.login_parivahan}</a>
+                        </li>
+                        <li>
+                            <h:commandLink value=""  action="#{masterHome.showEApplication()}" immediate="true">
+                                <span class="glyphicon glyphicon-book"></span> 
+                                <span>#{language.login_known_mv_tax}</span>
+                                <f:param name="pur_cd" value="0"/>
+                                <f:ajax/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink value=""  action="#{masterHome.showOnlineCashPayment()}" immediate="true">
+                                <span class="glyphicon glyphicon-credit-card"></span> 
+                                <span>#{language.login_online_payment}</span>
+                            </h:commandLink> 
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-book"></span> #{language.login_trans_status}  <b class="caret"></b></a> 
+                            <ul class="dropdown-menu">
+                                <li><a href="https://vahan.parivahan.gov.in/vahanpgi/faces/ui/transactionStatus.xhtml" target="_blank">#{language.login_trans_online_status}</a></li>
+                                <li><a href="https://vahan.parivahan.gov.in/vahanpgi/faces/ui/applPayments.xhtml" target="_blank">#{language.login_know_appl_pay_status}</a></li> 
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-info-sign"></span> #{language.login_inform_servics}  <b class="caret"></b></a> 
+                            <ul class="dropdown-menu">
+                                <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">#{language.login_ab_regn}</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/temporary-registration" target="_blank">#{language.login_tmp_regn}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/permanent-registration" target="_blank">#{language.login_permnt_regn}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/renewal-rc" target="_blank">#{language.login_renewal_rc}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/duplicate-rc" target="_blank">#{language.login_dup_rc}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/no-objection-certificate" target="_blank">#{language.login_obj_cert}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/address-change" target="_blank">#{language.login_addrss_change}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/hp-endorsement" target="_blank">#{language.login_hp_endorsmnt}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/hp-termination" target="_blank">#{language.login_hp_termination}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/reassignment-0" target="_blank">#{language.login_reassgmnt}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/trade-certificate" target="_blank">#{language.login_trade_cert}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/issue-duplicate-trade-certificate" target="_blank">#{language.login_issue_trade_cert}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/diplomatic-vehicles" target="_blank">#{language.login_diplomtic_veh}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/ownership-transfer" target="_blank">#{language.login_owner_transfer}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/registration-display" target="_blank">#{language.login_regn_display}</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">#{language.login_ab_permt}</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/types-permit-and-its-condition" target="_blank">#{language.login_contrt_carriage} </a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/fees-user-charges" target="_blank">#{language.login_fee_usr_chrges}</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="https://parivahan.gov.in/parivahan/en/content/act-rules-and-policies" target="_blank">#{language.login_act_rules_policies}</a></li>
+                                <li><a href="https://parivahan.gov.in/parivahan/en/content/fees-user-charges" target="_blank">#{language.login_fee_usr_chrges}</a></li>
+                                <li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">#{language.login_downld_forms} </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/node/1886" target="_blank">#{language.login_permit}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/motor-vehicles-dealer" target="_blank">#{language.login_motor_vehicles_dealer}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/driving-licence-0" target="_blank">#{language.login_driving_licence}</a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/all-forms" target="_blank">#{language.login_all_forms} </a></li>
+                                        <li><a href="https://parivahan.gov.in/parivahan/en/content/vehicle-registration" target="_blank">#{language.login_veh_regn}</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h:link id="contact" value="" outcome="/ui/contactus.xhtml?faces-redirect=true"> <span class="glyphicon glyphicon-map-marker"></span> #{language.login_contract_us}</h:link>
+                        </li>
+
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <h:link id="loginId2" value="" outcome="/ui/login/login.xhtml?faces-redirect=true"> <span class="glyphicon glyphicon-log-in"></span> #{language.login}</h:link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+        <div class="main_news_w">
+            <div class="news_w">
+                <div class="container">
+                    <div  data-direction="left" class='marquee-with-options'>
+                        #{language.login_vahan_msg}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </f:view>
+</html>

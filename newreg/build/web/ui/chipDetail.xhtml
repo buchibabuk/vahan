@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div class="ui-grid-row center-position">
+            <div class="ui-grid-col-12">
+                <h1 class="header-main">#{language.modifyChipDtls}</h1>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:messages closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+            </div>
+        </div>
+
+        <p:panel id="chip_dtls" header="#{language.modifyChipDtls}">
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="#{language.stateName}" />
+                    </label>
+                    <p:inputText disabled="true" value="#{chipDetailBean.chipDetail.stateName}"/> 
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="#{language.officeName}" />
+                    </label>
+                    <p:inputText disabled="true" value="#{chipDetailBean.chipDetail.officeName}"/>
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="#{language.testingServerIP4}" />
+                    </label>
+                    <p:inputText maxlength="20" autocomplete="off" value="#{chipDetailBean.chipDetail.test_server_ip4}">
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="#{language.stagingServerIP4}" />
+                    </label>
+                    <p:inputText maxlength="20" autocomplete="off" value="#{chipDetailBean.chipDetail.stage_server_ip4}"/>
+                </div>
+            </div>
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="#{language.productionServerIP4}" />
+                    </label>
+                    <p:inputText maxlength="20" autocomplete="off" value="#{chipDetailBean.chipDetail.prod_server_ip4}"/> 
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="IA1 #{language.chipNo}" />
+                    </label>
+                    <p:inputText  maxlength="100" autocomplete="off" value="#{chipDetailBean.chipDetail.ia1_chip_no}"/> 
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="IA2 #{language.chipNo}" />
+                    </label>
+                    <p:inputText  maxlength="100" autocomplete="off" value="#{chipDetailBean.chipDetail.ia2_chip_no}"/>
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="IA3 #{language.chipNo}" />
+                    </label>
+                    <p:inputText maxlength="100" autocomplete="off" value="#{chipDetailBean.chipDetail.ia3_chip_no}"/>
+                </div>
+            </div>
+            <div class="ui-grid-row top-space">
+
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="IA4 #{language.chipNo}" />
+                    </label>
+                    <p:inputText maxlength="100" autocomplete="off" value="#{chipDetailBean.chipDetail.ia4_chip_no}"/>
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="IA5 #{language.chipNo}" />
+                    </label>
+                    <p:inputText maxlength="100" autocomplete="off" value="#{chipDetailBean.chipDetail.ia5_chip_no}"/> 
+                </div>
+                <div class="ui-grid-col-3">
+                    <label>
+                        <p:outputLabel value="IA6 #{language.chipNo}" />
+                    </label>
+                    <p:inputText maxlength="100" autocomplete="off" value="#{chipDetailBean.chipDetail.ia6_chip_no}"/>
+                </div>
+
+            </div>
+        </p:panel>
+        <div class="ui-grid-row top-space">
+            <div class="ui-grid-col-12 center-position">
+                <p:commandButton value="#{language.save}" rendered="#{chipDetailBean.chipDetail.saveButton}" action="#{chipDetailBean.save()}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();"/>
+                <p:commandButton value="#{language.user_modify}" rendered="#{!chipDetailBean.chipDetail.saveButton}" action="#{chipDetailBean.save()}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();"/>
+                <p:button value="#{language.login_back}" outcome="seatwork" icon="ui-icon-arrowreturnthick-1-w"/>
+            </div>
+        </div>
+
+        <p:blockUI block="chip_dtls" widgetVar="block_panel">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+    </ui:define>
+</ui:composition>

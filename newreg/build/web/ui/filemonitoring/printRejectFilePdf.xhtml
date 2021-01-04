@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+    </h:head>
+    <h:body>
+        <h:form prependId="false">
+            <div class="position-relative">
+                <div class="center-position">
+                    <p:commandButton id="btnBack" value="Back" action="#{missingdocsbean.backtoApplication()}" immediate="true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                    <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{submmitfilepdf.mainHeading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{submmitfilepdf.subHeading}" styleClass="font-bold report-subheader"/>
+                </div>
+                <div class="center-position bottom-space">
+                    <h:outputText value="#{submmitfilepdf.rto_name}" styleClass="font-bold report-subheader"/>
+                </div>
+            </div>
+            <div class="table-width-oneforth">
+                <h:panelGrid columns="2" styleClass="border-transparent datatable-panel" style="margin: 0 auto !important;">
+                    <h:outputLabel   value="Rejected By :" styleClass="right-space bottom-space " rendered="#{missingdocsbean.reject_by.length()>0}" />
+                    <h:outputText value=": #{missingdocsbean.reject_by}" styleClass="right-space bottom-space" rendered="#{missingdocsbean.reject_by.length()>0}" /> 
+                    <h:outputLabel  value="Rejection Date :" styleClass="right-space bottom-space " rendered="#{missingdocsbean.reject_date.length()>0}" />
+                    <h:outputText  value=": #{missingdocsbean.reject_date}" styleClass="right-space bottom-space" rendered="#{missingdocsbean.reject_date.length()>0}" /> 
+                    <h:outputLabel  value="Reason For Rejection :" styleClass="right-space bottom-space " rendered="#{missingdocsbean.reason.length()>0}" />
+                    <h:outputText  value=": #{missingdocsbean.reason}" styleClass="right-space bottom-space" rendered="#{missingdocsbean.reason.length()>0}" />
+                </h:panelGrid>
+            </div>
+            <div class="left-position top-space bottom-space">
+                <h:outputText value="Missing Documents" rendered="#{missingdocsbean.docsList.size()>0}" styleClass="font-bold report-subheader bottom-line text-uppercase"/>
+            </div>
+            <p:dataTable  var="pendingfiles" styleClass="top-space" id="bidwiserevenuenn" rendered="#{missingdocsbean.docsList.size()>0}"  value="#{missingdocsbean.docsList}" >
+                <p:column headerText="Sr. No." styleClass="center-position collumn-width" >
+                    <h:outputText value="#{pendingfiles.serialNo}"/>
+                </p:column>
+                <p:column headerText="Documents" >
+                    <h:outputText value="#{pendingfiles.serviceName}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>

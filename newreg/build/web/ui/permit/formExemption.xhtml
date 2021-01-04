@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1><p:outputLabel value="#{pmtExem.header}" styleClass="header-main"/></h1>
+                </div>
+            </div>
+            <p:outputPanel rendered="#{pmtExem.registrationPanal}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{label.regn_no}" />
+                        </label>
+                        <p:inputText id="regno" required="true" styleClass="text-uppercase"
+                                     value="#{pmtExem.exemDobj.regn_no}" autocomplete="off"
+                                     maxlength="10" size="28">
+                            <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>                                                             
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Get Details" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{pmtExem.get_details()}" update="tabView"/>
+                        <p:button value="Reset" outcome="PmtExemption"  onclick="PF('bui').show();" icon="ui-icon-arrowrefresh-1-w"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{!pmtExem.registrationPanal}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{label.appl_no}" />
+                        </label>
+                        <p:inputText id="applNo" styleClass="text-uppercase" value="#{pmtExem.exemDobj.appl_no}" />
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:tabView id="tabView" styleClass="top-space bottom-space" >
+                <p:tab id="exeTab" title="Exemption Detail">
+                    <p:panel id="exePurpose" header="Purpose" styleClass="top-space bottom-space" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class=" field-label resp-label-section">
+                                    <p:outputLabel for="purpose" value="Purpose Of Exemption" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="purpose" value="#{pmtExem.exemDobj.pur_cd}" disabled="#{pmtExem.exemPurposeDisable}">
+                                    <f:selectItem itemValue="-1" itemLabel="Select Purpose"/>
+                                    <f:selectItems value="#{pmtExem.exemPurposeArrayList}"/>
+                                    <p:ajax event="change" listener="#{pmtExem.onPurposeSelect()}" update="detailsPanal" onstart="PF('bui').show()" oncomplete="PF('bui').hide();"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:outputPanel id="detailsPanal">
+                        <p:panel id="pmtDetails" header="Permit Details" styleClass="top-space bottom-space" visible="#{pmtExem.pmtDtlsShow}">
+                            <ui:include src="/ui/permit/form_permit_dtls.xhtml"/>
+                        </p:panel>
+                        <p:panel id="fitDetails" header="Fitness Details" styleClass="top-space bottom-space" visible="#{pmtExem.fitDtlsShow}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Fitness Valid Upto" />
+                                    </label>
+                                    <p:inputText id="fitUpto" styleClass="text-uppercase" value="#{pmtExem.exemDobj.fitValidUpto}" readonly="true"/>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:panel id="parkDetails" header="Parking Details" styleClass="top-space bottom-space" visible="#{pmtExem.parkDtlsShow}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Parking Valid Upto" />
+                                    </label>
+                                    <p:inputText id="parkUpto" styleClass="text-uppercase" value="#{pmtExem.exemDobj.parkValidUpto}" readonly="true"/>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <p:panel id="exemDtls">
+                        <f:facet name="header">                                        
+                            Exemption Details
+                            <span class="float-right">
+                                <p:selectBooleanCheckbox id="exemMoney" value="#{pmtExem.exemMoney}">
+                                    <p:ajax event="change" listener="#{pmtExem.pmtExemptedMoneyDetail}" update="exemDtls"/>
+                                </p:selectBooleanCheckbox>
+                                <h:outputText value=" If Value of Moeny is Exempted" />
+                            </span>
+                        </f:facet>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class=" field-label resp-label-section">
+                                    <p:outputLabel for="exemFrom" value="Exemption From :" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar id="exemFrom" value="#{pmtExem.exemDobj.exem_from_date}" placeholder="(DD-MM-YYYY) Ex: 01-01-1991" navigator="true" readonlyInput="true" pattern="dd-MMM-yyyy" />
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class=" field-label resp-label-section">
+                                    <p:outputLabel for="exemUpto" value="Exemption Upto :" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar id="exemUpto" value="#{pmtExem.exemDobj.exem_to_date}" placeholder="(DD-MMM-YYYY) Ex: 01-Jan-1991" navigator="true" readonlyInput="true" pattern="dd-MMM-yyyy"  />
+                            </div>
+                        </div>
+                        <p:outputPanel rendered="#{pmtExem.exemMoneyDisable}">
+                            <p:separator/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <p:selectOneRadio id="select_task" value="#{pmtExem.amountTaken}">
+                                        <f:selectItem itemLabel="Fine to be Taken" itemValue="1"/> 
+                                        <f:selectItem itemLabel="Exempted Amount" itemValue="2"/>
+                                        <f:ajax render="exemDtls"/>
+                                    </p:selectOneRadio>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <p:inputText id="fineTaken" placeholder="Fine to be Taken" styleClass="text-uppercase" maxlength="5" autocomplete="off" value="#{pmtExem.exemDobj.fine_to_be_taken}" rendered="#{pmtExem.amountTaken == '1'}">
+                                        <p:keyFilter regEx="/[\d\-\.]/"/>
+                                        <f:validateLength maximum="5" for="fineTaken"/>
+                                    </p:inputText>
+                                    <p:inputText id="exemAmount" placeholder="Exempted Amount" styleClass="text-uppercase" maxlength="5" autocomplete="off" value="#{pmtExem.exemDobj.exem_amount}" rendered="#{pmtExem.amountTaken == '2'}">
+                                        <p:keyFilter regEx="/[\d\-\.]/"/>
+                                        <f:validateLength maximum="5" for="exemAmount"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:outputPanel> 
+                    </p:panel>
+
+                    <p:panel header="Order Details" styleClass="top-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="orderNo" value="Order Number :"/>
+                                </label>
+                                <p:inputText id="orderNo" styleClass="text-uppercase" autocomplete="off" value="#{pmtExem.exemDobj.order_no}" >
+                                    <p:keyFilter regEx="/[a-z0-9/-]/"/>
+                                    <f:validateLength maximum="10" for="orderNo"/>
+                                </p:inputText>   
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="orderBy" value="Order By :"/>
+                                </label>
+                                <p:inputText id="orderBy" styleClass="text-uppercase" autocomplete="off" value="#{pmtExem.exemDobj.order_by}" >
+                                    <f:validateLength maximum="15" for="orderBy"/>
+                                    <p:keyFilter regEx="/[\sa-z_]/i"/>
+                                </p:inputText> 
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="orderDt" value="Order Date :" />
+                                </label>
+                                <p:calendar id="orderDt" effect="fold" immediate="true" value="#{pmtExem.exemDobj.order_dt}"
+                                            placeholder="(DD-MMM-YYYY) Ex: 01-Jan-1991"  readonlyInput="true" pattern="dd-MMM-yyyy" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="exeReason" value="Exempted Reason :"/>
+                                </label>
+                                <p:inputText id="exeReason"  styleClass="text-uppercase" autocomplete="off" value="#{pmtExem.exemDobj.exem_reason}">
+                                    <p:keyFilter regEx="/[\sa-z/_]/i"/>
+                                </p:inputText>   
+                            </div>
+                        </div>                           
+                    </p:panel>
+                </p:tab>
+                <p:tab id="Owner_Details" title="Owner Detail">
+                    <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                        <ui:param name="Owner_permit_detail" value="#{pmtExem}"/>
+                    </ui:include>
+                </p:tab>
+            </p:tabView>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:panel id="changedByPrevUser" rendered="#{pmtExem.prevChangedDataList.size()>0}"
+                             toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                        <p:dataTable value="#{pmtExem.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                            <p:column headerText="Changed by Employee" width="15%">
+                                <h:outputText value="#{data.userName}" />
+                            </p:column>
+
+                            <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                            </p:column>
+
+                            <p:column headerText="Changed on" width="15%">
+                                <h:outputText value="#{data.op_dt}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel> 
+                </div>
+            </div>
+
+            <p:panel id="saveExemDtls" rendered="#{pmtExem.eApplshowHide}">
+                <div class="ui-grid-row center-position"> 
+                    <div class="ui-grid-col-12">
+                        <p:commandButton value="Save" action="#{pmtExem.saveExemDtls()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="app_num_id">
+                            <p:confirm header="Confirmation"  message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:button value="Reset" outcome="PmtExemption"  onclick="PF('bui').show();" icon="ui-icon-arrowrefresh-1-w"/>
+                        <p:button value="Back" outcome="home" onclick="PF('bui').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                    </div>
+                </div>
+            </p:panel>
+            <p:dialog id="app_num_id"  header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <h:outputLabel  escape="false"  value="#{pmtExem.app_no_msg}"/>
+                        <f:facet name="footer">
+                            <p:button value="Exit for Another Application" outcome="PmtExemption" icon="ui-icon-arrowrefresh-1-w"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:outputPanel rendered="#{!pmtExem.eApplshowHide}" styleClass="top-space bottom-space">
+                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                    <ui:param name="app_disapp" value="#{pmtExem}"/>
+                </ui:include>
+            </p:outputPanel>
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

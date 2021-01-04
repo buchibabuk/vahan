@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"     
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <div class="font-bold report-header center-position"> 
+                    #{language.home_rightpanelregno}: <span class="red font-bold">#{ownerDetail.regn_no}</span>
+                    #{language.user_state} <span class="red font-bold">#{ownerDetail.state_name}</span>
+                    #{language.Office} <span class="red font-bold">#{ownerDetail.off_name}</span>
+                </div> 
+                <p:panel id="owner_details" header="#{language.owner_information}">                    
+
+                    <p:outputPanel id="reg" styleClass="bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_type" value="#{language.regn_type}"/>
+                                </label>
+                                <p:inputText id="regn_type" value="#{ownerDetail.regn_type_descr}" disabled="true"/>
+                            </div>   
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="purchase_dt" value="#{language.purchase_dt}"/>
+                                </label>
+                                <p:inputText id="purchase_dt" value="#{ownerDetail.purchaseDateDescr}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_dt" value="#{language.regn_dt}"/>
+                                </label>
+                                <p:inputText id="regn_dt" value="#{ownerDetail.regnDateDescr}" disabled="true"/>                                
+                            </div>
+                        </div>  
+
+                        <div class="ui-grid-row">                            
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_name" value="#{language.owner_name}" />
+                                </label>
+                                <p:inputText id="tf_owner_name" value="#{ownerDetail.owner_name}" disabled="true"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_f_name" value="#{language.f_name}"/>
+                                </label>
+                                <p:inputText id="tf_f_name" value="#{ownerDetail.f_name}" disabled="true"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_cd" value="#{language.owner_cd}"/>
+                                </label>
+                                <p:inputText id="tf_owner_cd" value="#{ownerDetail.owner_cd_descr}" disabled="true"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_sr" value="#{language.owner_sr}"/>
+                                </label>
+                                <p:inputText id="tf_owner_sr"  value="#{ownerDetail.owner_sr}" disabled="true"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_regn_upto" value="#{language.registrationValidUpto}"/>
+                                </label>
+                                <p:inputText id="tf_regn_upto"  value="#{ownerDetail.regnUptoDescr}" disabled="true"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_fit_upto" value="#{language.fitnessValidUpto}"/>
+                                </label>
+                                <p:inputText id="tf_fit_upto" value="#{ownerDetail.fitUptoDescr}" disabled="true"/>
+                            </div>
+                        </div>
+
+                        <p:outputPanel rendered="#{ownerDetail.ownerIdentity ne null}">
+                            <ui:include src="/ui/form_ownerIdentification.xhtml">
+                                <ui:param name="owner_identification" value="#{ownerDetail.ownerIdentity}"/>  
+                                <ui:param name="listOwnerCategory" value="#{listOwnerCatg}"/>
+                            </ui:include>
+                        </p:outputPanel>
+
+                    </p:outputPanel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <p:panel id="caddress_panel" header="#{language.current_add}" styleClass="datatable-panel">
+
+                                <p:outputPanel id="caddress">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_add1" value="#{language.address1}"/>
+                                            </label>
+                                            <p:inputText  id="tf_c_add1" value="#{ownerDetail.c_add1}" disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_add2" value="#{language.address2}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_add2" value="#{ownerDetail.c_add2}" disabled="true"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_add3" value="#{language.address3}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_add3" value="#{ownerDetail.c_add3}" disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_state" value="#{language.state}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_state"  value="#{ownerDetail.c_state_name}" disabled="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_district" value="#{language.district}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_district"  value="#{ownerDetail.c_district_name}" disabled="true"/>
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_c_pincode" value="#{language.pin}"/>
+                                            </label>
+                                            <p:inputText id="tf_c_pincode" value="#{ownerDetail.c_pincode}" disabled="true"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:panel>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:panel id="paddress_panel"> 
+                                <f:facet name="header">                                        
+                                    #{language.permanent_add}
+                                </f:facet>
+
+                                <p:outputPanel id="paddress">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add1" value="#{language.address1}"/>
+                                            </label> 
+                                            <p:inputText id="tf_p_add1" value="#{ownerDetail.p_add1}" disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add2" value="#{language.address2}"/>
+                                            </label> 
+                                            <p:inputText id="tf_p_add2" value="#{ownerDetail.p_add2}" disabled="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add3" value="#{language.address3}"/>
+                                            </label>
+                                            <p:inputText id="tf_p_add3" value="#{ownerDetail.p_add3}" disabled="true"/>
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_state" value="#{language.state}"/>
+                                            </label>
+                                            <p:inputText id="tf_p_state" value="#{ownerDetail.p_state_name}" disabled="true"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_district" value="#{language.district}"/>
+                                            </label>
+                                            <p:inputText id="tf_p_district" value="#{ownerDetail.p_district_name}" disabled="true"/>
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_pincode" value="#{language.pin}"/>
+                                            </label>
+                                            <p:inputText id="tf_p_pincode" value="#{ownerDetail.p_pincode}" disabled="true"/>                                            
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:panel>
+                        </div>
+                    </div>
+
+                    <!--                    <p:outputPanel id="exArmyVehicleDetails" 
+                                                       rendered="#{ownerDetail.regn_type eq 'A'}"
+                                                       styleClass="top-space bottom-space">
+                                            <ui:include src="/ui/form_ExArmyVehicle.xhtml"/>                          
+                                        </p:outputPanel>-->
+
+                </p:panel>
+            </div>
+        </div>
+    </div>
+</html>

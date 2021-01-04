@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">    
+
+    <ui:define name="content22">    
+        <h:form id="errorForm" prependId="false">
+            <div class="message-content-panel form-legend">
+                <div class=" header-section error-message-header">
+                    <h:outputLabel id="lblHeader" value="Error" class="red"/>
+                </div>
+
+                <div>
+                    <h1>Exception Occurred!</h1>    
+                </div>
+
+                <div>
+                    <h2>Please contact system administrator.</h2>
+                </div>
+                <div>
+                    <p:button value="Back to Work-Area" outcome="/home.xhtml?faces-redirect=true" onclick="PF('bui').show();"/>
+                </div>
+                <p:blockUI block="errorForm" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

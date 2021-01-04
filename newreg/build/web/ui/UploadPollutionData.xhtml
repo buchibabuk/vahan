@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content22">
+        <h:form prependId="false" id="uploadPollutionDataFrm" enctype="multipart/form-data">
+            <script type="text/javascript">
+                function start() {
+                    PF('statusDialog').show();
+                }
+
+                function stop() {
+                    PF('statusDialog').hide();
+                }
+            </script>
+            <h:body>
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <span class="header-main">Upload Pollution Data</span>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="error_msg"  ></p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:panel id="mastertable">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section center-position">
+                                                <p:outputLabel id="selectLabel" value="Please Select File" styleClass="caption dialogTitle-text"/>
+                                            </label>
+
+                                            <p:fileUpload id="fIleUploadId" fileUploadListener="#{uploadPollutionDataBean.handleFileUpload}" mode="advanced" update="messages pollutionDataId" label="Import"
+                                                          auto="true"  />
+
+                                            <p:growl id="messages" showDetail="true" />
+                                        </div>
+                                    </div>
+
+                                </p:panel>
+                                <p:panel id="pollutionTable">
+
+                                    <p:dataTable  id="pollutionDataId" var="tableData" value="#{uploadPollutionDataBean.uploadPollutionList}" rows="10"
+                                                  paginator="true"
+                                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                  rowsPerPageTemplate="5,10,15" >
+
+
+
+
+
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Sl No" />
+                                            </f:facet>
+                                            <h:outputText value="#{tableData.srNo}" />
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Registration no" />
+                                            </f:facet>
+                                            <h:outputText value="#{tableData.regn_no}" />
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="office code" />
+                                            </f:facet>
+                                            <h:outputText value="#{tableData.off_cd}" />
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Notice date" />
+                                            </f:facet>
+                                            <h:outputText value="#{tableData.fir_dt}" > 
+                                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Notice No" />
+                                            </f:facet>
+                                            <h:outputText value="#{tableData.fir_no}" > 
+                                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                                            </h:outputText>
+                                        </p:column>
+
+
+
+
+
+                                    </p:dataTable>
+                                </p:panel>
+                                <p:panel>
+                                    <p:commandButton id="chlnbksave" value="Save"  action="#{uploadPollutionDataBean.SaveDetails}" styleClass="buttonlabel" ajax="false" update="messages" >                                
+                                    </p:commandButton>
+                                     <p:commandButton value="Success File Download" type="button" onclick="PF('dlg1').show();" />
+                                   
+                                    <p:commandButton value="Fail File Download" type="button" onclick="PF('dlg2').show();" />
+                                   
+                                </p:panel>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             
+                  <p:dialog header="Success Records Details" widgetVar="dlg1" modal="true"  width="800" height="600" >
+                    <h:outputText value="Success Records Details" />
+                    <p:dataTable  id="successtableData" var="successtableData" value="#{uploadPollutionDataBean.sucessUploadPollutionList}"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                 paginator="true" rows="10" rendered="#{not empty uploadPollutionDataBean.sucessUploadPollutionList}" >
+                                  
+
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Registration no" />
+                            </f:facet>
+                            <h:outputText value="#{successtableData.regn_no}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="office code" />
+                            </f:facet>
+                            <h:outputText value="#{successtableData.off_cd}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Notice date" />
+                            </f:facet>
+                            <h:outputText value="#{successtableData.fir_dt}" > 
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Notice No" />
+                            </f:facet>
+                            <h:outputText value="#{successtableData.fir_no}" > 
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+
+                        <f:facet name="footer">
+                          
+                            <h:commandLink>
+                                <p:graphicImage library="images" name="excel.png" />
+                                <p:dataExporter  type="xls" target="successtableData" fileName="successtableDataExcel" />
+                            </h:commandLink>
+                           
+                        </f:facet>
+                    </p:dataTable>
+
+                </p:dialog>   
+            
+            </h:body>
+        </h:form>
+        <h:form prependId="false">
+               <p:dialog header="Fail Records Details" widgetVar="dlg2"  dynamic="true" closable="true" modal="true"   width="800" height="600" >
+                    <h:outputText value="Fail Records Details" />
+                    <p:dataTable  id="failpollutionDataId" var="failtableData" value="#{uploadPollutionDataBean.failUploadPollutionList}"  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                 paginator="true" rows="10" rendered="#{not empty uploadPollutionDataBean.failUploadPollutionList}" >
+                                  
+
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Registration no" />
+                            </f:facet>
+                            <h:outputText value="#{failtableData.regn_no}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="office code" />
+                            </f:facet>
+                            <h:outputText value="#{failtableData.off_cd}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Notice date" />
+                            </f:facet>
+                            <h:outputText value="#{failtableData.fir_dt}" > 
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Notice No" />
+                            </f:facet>
+                            <h:outputText value="#{failtableData.fir_no}" > 
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+
+                        <f:facet name="footer">
+                           
+                            <h:commandLink>
+                                <p:graphicImage  library="images" name="excel.png" />
+                                <p:dataExporter type="xls" target="failpollutionDataId" fileName="failpollutionDataExcel" />
+                            </h:commandLink>
+                           
+                        </f:facet>
+                    </p:dataTable>
+
+                </p:dialog>   
+            
+        </h:form>
+    </ui:define>
+</ui:composition>

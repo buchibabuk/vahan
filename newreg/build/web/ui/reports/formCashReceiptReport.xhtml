@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="bootstrap-3.3.1" name="css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <script>
+            var formSubmitted = false;
+            function onSubmitButton() {
+                if (!formSubmitted) {
+                    formSubmitted = true;
+                } else {
+                    // disable event propagation if form is already submitted
+                    event.preventDefault();
+                }
+            }
+        </script>
+    </h:head>
+    <h:body >
+        <h:form id="formPrint" prependId="false">
+            <div class="center-position">
+                <p:commandButton value="Back" action="#{cashRcptReportBean.backButton}" onclick="PF('bui').show();" 
+                                 icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none"/>   
+
+                <p:commandButton value="Print Electronic Tax Licence" icon="ui-icon-print" action="#{cashRcptReportBean.printTaxTokenCertificate}" rendered="#{cashRcptReportBean.dobj.print_tax_token}" onclick="PF('bui').show();" 
+                                 styleClass="display-none"/> 
+
+                <p:commandButton onclick="window.print();" icon="ui-icon-print" value="Print" styleClass="display-none" />
+            </div>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{cashRcptReportBean.dobj.show_image_background}" styleClass="print-certificate-background double-screen-background-size" style="background: #{cashRcptReportBean.dobj.image_background} no-repeat !important; background-size: contain !important;" ></p:outputPanel>
+            </div>
+
+            <table class="datatable-panel-100" style="font-size: 11px;">
+                <tr>
+                    <td class="left-position">
+                        <h:outputText value="Office Copy"/>
+                    </td>
+                    <td class="right-position">
+                        <h:outputText value="Printed On: " styleClass="font-bold"/> <h:outputText value="#{cashRcptReportBean.dobj.printedDate}"/>
+                    </td>
+                </tr>
+            </table>
+
+
+            <p:outputPanel id="dept_copy" style="min-height: 490px !important;">
+                <ui:include src="formCashReceiptDetail.xhtml" />
+            </p:outputPanel>
+
+            <hr class="top-space bottom-space" />
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{cashRcptReportBean.dobj.show_image_background}" styleClass="print-certificate-background double-screen-background-size" style="background: #{cashRcptReportBean.dobj.image_background} no-repeat !important; background-size: contain !important;" ></p:outputPanel>
+            </div>
+
+            <table class="datatable-panel-100" style="font-size: 11px;">
+                <tr>
+                    <td class="left-position">
+                        <h:outputText value="Customer Copy"/>
+                    </td>
+                    <td class="right-position">
+                        <h:outputText value="Printed On: " styleClass="font-bold"/> <h:outputText value="#{cashRcptReportBean.dobj.printedDate}" />
+                    </td>
+                </tr>
+            </table>
+
+            <p:outputPanel id="cust_copy">
+                <ui:include src="formCashReceiptDetail.xhtml" />
+            </p:outputPanel>
+            <p:blockUI block="formPrint" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </h:body>
+</html>

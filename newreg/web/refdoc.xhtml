@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
+        <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE,no-store"/>
+        <META HTTP-EQUIV="Expires" CONTENT="-1"/>
+    </h:head>
+    <f:subview id="ref_doc_subview">
+        <p:panel header="Referal Document List" id="pnl2">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:dataTable value="#{ref_doc_bean.imagePurposeList}" var="imgList" id="data1" styleClass="top-space bottom-space" rowIndexVar="rowIndex">  
+                        <p:column headerText="Sr. No">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="purpose">  
+                            <h:outputText value="#{imgList.ref_doc_purpose_descr}"/>
+                        </p:column>  
+                        <p:column headerText="Action">
+                            <p:commandButton action="#{ref_doc_bean.showImage(data1)}" 
+                                             disabled="#{imgList.scan_doc_no eq null}" 
+                                             value="View" id="cmdButtonView"  
+                                             ajax="true" 
+                                             immediate="true" 
+                                             oncomplete="PF('dialogShowImage').show();" 
+                                             update=":masterLayout:workbench_tabview:ref_doc_subview:dialogShowImage "
+                                             >
+
+                                <f:param name="refdoc_purpose_cd" value="#{imgList.ref_doc_purpose_cd}"/>
+                                <f:param name="appl_no" value="#{workBench.APPL_NO}"/>
+                            </p:commandButton>
+                            <p:graphicImage value="${pageContext.request.contextPath}images/success.png" cache="false" rendered="#{imgList.verified_on ne null}"/>
+                        </p:column>
+                        <p:column headerText="Verification Status">
+                            <h:outputText value='#{imgList.scan_doc_no eq null?"Document Not Submitted":imgList.verified eq "false"? "No":"Yes"}' /> 
+
+
+
+                        </p:column>
+                        <p:column headerText="Verification Date">
+                            <h:outputText value="#{imgList.verified_on}"/>
+                        </p:column>
+                        <p:column headerText="Remarks">
+                            <h:outputText value="#{imgList.remarks}"/>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <p:outputLabel value="#{ref_doc_bean.ref_doc_source_descr}" style="font-size: large"/>
+                </div>
+            </div>
+        </p:panel>
+
+
+        <p:dialog widgetVar="dialogShowImage" modal="true" id="dialogShowImage" height="600" width="800" >
+
+            <p:panel header=" -- Scan Document --" id="scandocument">
+                <table>
+                    <tr>
+                        <td colspan="4">
+                            <p:messages id="dialogShowImageErrors"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            Document Source #{ref_doc_bean.selected_doc_obj.ref_doc_source_descr}
+                            <br/>
+                            <p:outputLabel id='messageText' value=" Message: #{ref_doc_bean.messageText}"/>
+
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <img  src="${pageContext.request.contextPath}DisplayImageServlet?scan_doc_purpose_cd=#{ref_doc_bean.selected_doc_obj.scan_doc_purpose_cd}&amp;appl_no=#{ref_doc_bean.selected_doc_obj.appl_no}&amp;scan_doc_no=#{ref_doc_bean.selected_doc_obj.scan_doc_no}"  id="image22" cache="false" alt="Nothing to Display for - #{(ref_doc_bean.selected_doc_obj.ref_doc_source_descr)}" height="500" width="600">
+
+
+                            </img>
+
+                        </td>
+                        <td  >
+                            Select : 
+                            <p:selectOneRadio value="#{ref_doc_bean.isverified}" id="isverified" layout="pageDirection">
+                                <f:selectItem itemValue="true" itemLabel="Verified" />
+                                <f:selectItem itemValue="false" itemLabel="Not Verified"/>
+                            </p:selectOneRadio>
+                        </td>
+                    </tr>
+                    <tr align="center">
+
+                        <td colspan="4" >
+                            <p:outputLabel for="txtRemarks" value="Remarks" ></p:outputLabel>
+                            <p:inputText id="txtRemarks" value="#{ref_doc_bean.remarks}" size="100" />
+                        </td>
+
+                        <td align="left">
+
+                            <p:commandButton  value="Save" action="#{ref_doc_bean.verifyImage()}" disabled="#{ref_doc_bean.selected_doc_obj eq null or workBench.ROLE_CD!= '4'}" 
+                                              update=":masterLayout:workbench_tabview:ref_doc_subview:messageText 
+                                              :masterLayout:workbench_tabview:ref_doc_subview:data1 
+                                              :masterLayout:workbench_tabview:ref_doc_subview:txtRemarks 
+                                              :masterLayout:workbench_tabview:ref_doc_subview:isverified"
+                                              ajax="true" 
+
+                                              oncomplete="PF('dialogShowImage').hide();" 
+                                              icon="ui-icon-disk">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+
+                            </p:commandButton>  
+                        </td>
+
+                    </tr>
+                </table>
+
+            </p:panel>
+        </p:dialog>
+
+
+
+
+    </f:subview>
+</html>

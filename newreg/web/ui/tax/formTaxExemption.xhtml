@@ -1,0 +1,204 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formTaxExemption" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.taxExemption} </h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel id="outerPanel">
+                    <p:outputPanel id="vehregn" rendered="#{taxExemptionBean.appl_details.ownerDobj eq null}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRegNo" value="#{language.home_rightpanelregno}"/>
+                                </label>
+                                <p:inputText  id="tfRegNo" value="#{taxExemptionBean.taxExemDobj.regn_no}"
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="#{language.enter_regn_no}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="text-uppercase"/>
+                                <p:keyFilter mask="alphanum" for="tfRegNo"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="#{language.showDetails}" action="#{taxExemptionBean.showDetailAction()}"
+                                                 update="ownerInformationPanel" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="ownerInformationPanelrender" rendered="#{taxExemptionBean.appl_details.ownerDobj ne null}">
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">
+                                <div class="report-header font-bold bottom-line">#{language.taxExemptionforVehicleRegnNo} #{taxExemptionBean.taxExemDobj.regn_no} </div>
+                            </div>                            
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="ownerInformationPanel">
+                        <p:panel id="innerPanel" rendered="#{taxExemptionBean.rendern}" styleClass="top-space bottom-space">
+                            <p:tabView >
+                                <p:tab  id="owner_details_tab" title="#{language.ownerDetails}">
+                                    <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{taxExemptionBean.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}">                                
+                                    <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{taxExemptionBean.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <p:tab id="tax_exem_dtls" title="Tax Details">
+                                    <ui:include src="/ui/tax/formTaxExemDetails.xhtml">
+                                        <ui:param name="ownerDetail" value="#{taxExemptionBean.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                            </p:tabView>
+                            <p:panel id="panelTaxExempDtls" rendered="#{taxExemptionBean.ownerDobj ne null}" header="#{language.taxExemptionDetail}" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="taxexempfrom" value="#{language.fromDate}"/>
+                                        </label>
+                                        <p:calendar id="taxexempfrom" value="#{taxExemptionBean.taxExemDobj.exemFromDt}" pattern="dd-MMM-yyyy" 
+                                                    requiredMessage="#{language.blankTtaxExemptfrom}" readonlyInput="true" navigator="true" required="true">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"  for="taxexempfrom"/> 
+                                            <p:ajax event="dateSelect" process="@this" listener="#{taxExemptionBean.taxExemFromDateListener}"
+                                                    update="panelTaxExempDtls"/>
+
+                                        </p:calendar>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="taxexempupto" value="#{language.upto}"/>
+                                        </label>
+                                        <p:calendar id="taxexempupto" value="#{taxExemptionBean.taxExemDobj.exemTo}" 
+                                                    pattern="dd-MMM-yyyy" 
+                                                    mindate="#{taxExemptionBean.minDate}"
+                                                    requiredMessage="#{language.blankTaxExemptUpto}" 
+                                                    readonlyInput="true" navigator="true" 
+                                                    required="true">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"  for="taxexempupto"/> 
+                                            <p:ajax event="dateSelect" process="@this"/>
+                                        </p:calendar>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tfAuthby" value="#{language.authorizedBy}"/>
+                                        </label>
+                                        <p:inputText  id="tfAuthby" value="#{taxExemptionBean.taxExemDobj.authBy}"
+                                                      maxlength="15"
+                                                      requiredMessage="#{language.enterAuthrizedBy}"
+                                                      converter="toUpperCaseConverter"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true"/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="permissiondt" value="#{language.conv_permission_date}"/>
+                                        </label>
+                                        <p:calendar id="permissiondt"  value="#{taxExemptionBean.taxExemDobj.permissionDt}" 
+                                                    requiredMessage="#{language.blankPermitssiondate}" readonlyInput="true"
+                                                    maxdate="#{taxExemptionBean.maxDate}"
+                                                    pattern="dd-MMM-yyyy" navigator="true" required="true">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" for="permissiondt"/> 
+                                            <p:ajax event="dateSelect" process="@this"/>
+                                        </p:calendar>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tfpermissionno" value="#{language.permissionNo}"/>
+                                        </label>
+                                        <p:inputText  id="tfpermissionno" value="#{taxExemptionBean.taxExemDobj.permissionNo}"
+                                                      maxlength="10"
+                                                      requiredMessage="#{language.pleaseEnterPermissionNo}"
+                                                      converter="toUpperCaseConverter"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tfperpose" value="#{language.purpose}"/>
+                                        </label>
+                                        <p:inputText  id="tfperpose" value="#{taxExemptionBean.taxExemDobj.perpose}"
+                                                      maxlength="30"
+                                                      requiredMessage="#{language.pleaseEnterPurpose}"
+                                                      converter="toUpperCaseConverter"
+                                                      autocomplete="off"
+                                                      styleClass="text-uppercase"
+                                                      required="true"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:panel id="changedByPrevUser" rendered="#{taxExemptionBean.prevChangedDataList.size()>0}"
+                                     toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                                <p:dataTable value="#{taxExemptionBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                    <p:column headerText="#{language.change_by_employee}" width="15%">
+                                        <h:outputText value="#{data.userName}" />
+                                    </p:column>
+                                    <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                                        <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                    </p:column>
+                                    <p:column headerText="#{language.changed_on}" width="15%">
+                                        <h:outputText value="#{data.op_dt}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:outputPanel id="pg_save" styleClass="center-position" rendered="#{taxExemptionBean.appl_details.ownerDobj eq null}">
+                                        <p:commandButton value="#{language.save}" action="#{taxExemptionBean.saveTaxExemptData()}" update="outerPanel">
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>   
+                                        </p:commandButton>
+                                        <!--<p:button  value="Back" outcome ="/home.xhtml?faces-redirect=true"/>-->
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <p:outputPanel id="outputpanel_appdisapp" rendered="#{taxExemptionBean.appl_details.ownerDobj ne null}">    
+                                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                    <ui:param name="app_disapp" value="#{taxExemptionBean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <p:blockUI block="formTaxExemption" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

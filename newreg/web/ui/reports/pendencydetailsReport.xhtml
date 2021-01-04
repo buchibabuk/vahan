@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <h:form prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Pendency Report Details </h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Application Date"/>
+                        </label>
+                        <p:calendar id="recpt_Date"  value="#{pendingdetailReportBean.appl_Date}" required="true"
+                                    maxdate="#{pendencydetailReportBean.current_Date}"    requiredMessage="Blank Date:  Receipt Date" pattern="dd-MMM-yyyy" navigator="true">
+                            <f:convertDateTime pattern="dd-MMM-yyyy" for="appl_Date"/> 
+                            <f:validateRequired for="appl_Date"/>
+                        </p:calendar>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <p:commandButton  value="Display" action="#{pendingdetailReportBean.displayPendencyReport()}" icon="ui-icon-check" update="printkms" />
+
+                        <p:button  value="Cancel" outcome="home" icon="ui-icon-home"/>  
+                    </div>
+                </div> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <p:dataTable id="printkms"  value="#{pendingdetailReportBean.dobj.returnlist}" var="routeDtls" rows="10"  
+                                     paginator="true" rowIndexVar="rowkey"> 
+
+                            <p:column styleClass="collumn-width center-position" >
+                                <f:facet name="header"><h:outputText value="Sr. &lt;br /&gt; No." escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.srNo}"  />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Application &lt;br /&gt; No" escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.applNo}"  />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Application &lt;br /&gt; Date " escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.applDate}"  />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Purpose &lt;br /&gt;" escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.purpose}"   />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Action &lt;br /&gt;Description " escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.actionDescr}"  />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="File Movement &lt;br /&gt;Serial No " escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.file_movement_slno}"  />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="status &lt;br /&gt;" escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.status}"  />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Entered &lt;br /&gt;By" escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.entered_by}"   />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header"><h:outputText value="Entered &lt;br /&gt;On " escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.entered_On}"   />
+                            </p:column>
+                            <p:column styleClass="collumn-width center-position" >
+                                <f:facet name="header"><h:outputText value="Delay &lt;br /&gt;Days" escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.delay_days}"   />
+                            </p:column>
+                            <p:column styleClass="collumn-width center-position" >
+                                <f:facet name="header"><h:outputText value="KMS &lt;br /&gt;Date " escape="false" /></f:facet>
+                                <h:outputText value="#{routeDtls.kms_dt}"   />
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div> 
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

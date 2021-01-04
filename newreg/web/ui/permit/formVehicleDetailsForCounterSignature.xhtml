@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22" >
+        <h:form id="permitForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main"><p:outputLabel value="Vehicle Details For Counter Signature" /></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="state" value="Registered State Name" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:selectOneMenu id="state"  value="#{vchForCSBean.stateFrom}" filter="true">
+                                <f:selectItem itemValue="-1" itemLabel="Select Any State"/>
+                                <f:selectItems value="#{vchForCSBean.stateList}"/>
+                                <p:ajax event="change" listener="#{vchForCSBean.getRunningVacancyNo()}" update="state vacancy_no"/>                               
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="regn_no" value="Registration No. " />
+                            </label>
+                            <p:inputText id="regn_no" required="true" maxlength="10" size="28" styleClass="text-uppercase" value="#{vchForCSBean.regnNo}" autocomplete="off"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Vacancy Number " />
+                            </label>
+                            <p:inputText id="vacancy_no" maxlength="5" size="28" styleClass="text-uppercase" value="#{vchForCSBean.vacancyNo}" disabled="true"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Permit Number " />
+                            </label>
+                            <p:inputText id="pmt_no" maxlength="25" size="28" styleClass="text-uppercase" value="#{vchForCSBean.pmtNo}" autocomplete="off"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section" >
+                                <p:outputLabel for="pmtUpto" value="Valid Upto"/> 
+                            </label>
+                            <p:calendar id="pmtUpto" required="true" pattern="dd-MMM-yyyy" navigator="true" value="#{vchForCSBean.pmtValidUpto}" mindate="#{vchForCSBean.minDate}" maxdate="#{vchForCSBean.maxDate}" readonlyInput="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="purpose" value="Purpose" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:selectOneMenu id="purpose"  value="#{vchForCSBean.pur_cd}">                              
+                                <f:selectItems value="#{vchForCSBean.purpose_list}"/>                               
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                </p:outputPanel>                                                       
+            </div>
+            <p:panel styleClass="top-space bottom-space center-position">
+                <p:outputPanel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Save" action="#{vchForCSBean.save_details()}" update="show_table1"/>
+                            <p:commandButton value="Reset" action="/ui/permit/formVehicleDetailsForCounterSignature.xhtml?faces-redirect=true"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </p:panel>
+
+            <p:outputPanel id="show_table1">
+                <p:panel  rendered="#{vchForCSBean.reservationList ne null}">
+                    <p:dataTable id="pmt_catg" var="s" value="#{vchForCSBean.reservationList}" rowKey="#{s.vacancy_no}" editable="true"  paginator="true" rows="10" reflow="true">
+                        <f:facet name="header">
+                            Other State Reservation Data
+                        </f:facet>
+                        <p:column headerText="State Name"  filterBy="#{s.state_cd_from}" filterMatchMode="contains" sortBy="#{s.state_cd_from}">
+                            <h:outputText value="#{s.state_cd_from}"/>
+                        </p:column>
+                        <p:column headerText="Vacancy Number">
+                            <h:outputText value="#{s.vacancy_no}"/>
+                        </p:column>
+                        <p:column headerText="Vehicle number" filterBy="#{s.regn_no}" filterMatchMode="contains" sortBy="#{s.regn_no}">
+                            <h:outputText value="#{s.regn_no}" />
+                        </p:column>
+                        <p:column headerText="Permit Number">
+                            <h:outputText value="#{s.pmt_no}" />
+                        </p:column>
+                        <p:column headerText="Valid Upto">
+                            <h:outputLabel value="#{s.pmtvaliduptostring}" styleClass="textUpperCase"/>
+                        </p:column>
+                        <p:column headerText="Purpose">
+                            <h:outputLabel value="#{s.purpose}" styleClass="textUpperCase"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </p:outputPanel>
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

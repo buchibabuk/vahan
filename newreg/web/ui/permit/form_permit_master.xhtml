@@ -1,0 +1,1892 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+    <ui:define name="content22">
+        <h:form id="masterForm" prependId="false">
+            <h:body>
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Master of Permit Tables</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="messagess"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="masterpermittable" >
+                            <p:panel rendered="#{master_permit_bean.masterButton}" styleClass="border-none">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="salectLabel" value="Select Master Table"/>
+                                        </label>
+                                        <p:selectOneMenu id="select_master" value="#{master_permit_bean.masterValue}">
+                                            <f:selectItems value="#{master_permit_bean.masterPermitTableList}"  />
+                                            <p:ajax event="change" onstart="PF('block_panel').show();"  partialSubmit="true" onsuccess="PF('block_panel').hide();"
+                                                    listener="#{master_permit_bean.showTableData()}" update=" masterpermittable messagess  :masterForm:inclFeeSlab show_table1 show_table2 show_table3 show_table4 show_table5 show_table6 show_table7"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row center-position top-space bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton id="masterAddButton"  value="Add New Record"  immediate="true">
+                                            <p:ajax event="click"  listener="#{master_permit_bean.hideandshowpanel(master_permit_bean.widgetVar)}"  partialSubmit="true"  onstart="PF('block_panel').show();" onsuccess="PF('block_panel').hide();" update="messagess Alldialog "/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                        <p:outputPanel id="inclFeeSlab">
+                            <p:panel  rendered="#{master_permit_bean.panelFees_Slab_Render}" styleClass="border-none">
+                                <ui:include src="/ui/permit/form_Fees_Slab.xhtml"/>            
+                            </p:panel>
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <p:outputPanel id="Alldialog" rendered="#{!master_permit_bean.panelFees_Slab_Render}">
+                    <p:dialog id="select" widgetVar="select" modal="true" draggable="false" resizable="false">
+                        <div class="top-space bottom-space left-space right-space">
+                            <h:outputText value="#{master_permit_bean.messageText}"/>
+                        </div> 
+                    </p:dialog>
+
+                    <p:dialog id="Permit_catg" widgetVar="PERMIT.vm_permit_catg" width="40%" header="Permit Category" draggable="false" closable="true" modal="true" dynamic="true" styleClass="ui-dialog-body" closeOnEscape="true" resizable="false">
+                        <p:ajax event="close"  update="Permit_catg"  partialSubmit="true"/>
+                        <p:messages id="mes" closable="true"></p:messages>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">                       
+                                <h:outputLabel value="#{master_permit_bean.createUpdateTitle}" styleClass="dialogTitle-text"/>
+                                <h:outputLabel id="errmsgs" value="#{master_permit_bean.errLabelMsg}" escape="false" styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                            <div class="ui-grid-col-10">
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-6">
+                                        <p:outputLabel for="st_cd" value="State Code"/>
+                                        <p:inputText id="st_cd" value="#{master_permit_bean.state_cd}" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <p:outputLabel for="catcode" value="Category Code"/> 
+                                        <p:inputText id="catcode" value="#{master_permit_bean.code}" maxlength="5" autocomplete="off" onkeypress="return NumericOnly(event, false);" required="true" requiredMessage="Please Enter Code Number">
+                                            <p:ajax event="blur" listener="#{master_permit_bean.checkDataExistorNot(master_permit_bean.code)}"  partialSubmit="true" update="errmsgs"/>
+                                            <f:validateRequired/>
+                                            <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-6">
+                                        <p:outputLabel for="cat_descr" value="Category Description"/>
+                                        <p:inputText id="cat_descr" value="#{master_permit_bean.descr}" required="true" styleClass="text-uppercase" maxlength="50" requiredMessage="please enter description">
+                                            <f:validateRequired/>
+                                            <p:ajax event="blur" rendered="@this"  partialSubmit="true"/>
+                                            <p:keyFilter regEx="/[a-zA-Z\s_]/i"/>  
+                                        </p:inputText> 
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <p:outputLabel for="permit_code" value="Permit Type"/> 
+                                        <p:selectOneMenu id="permit_code" value="#{master_permit_bean.permitcode}" required="true">
+                                            <f:selectItems value="#{master_permit_bean.permitList}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-6">
+                                        <p:outputLabel for="cat_flag" value="Offer Flag"/>
+                                        <p:selectOneMenu id="cat_flag" value="#{master_permit_bean.flag_value}" required="true" requiredMessage="Please Select Flag Value">
+                                            <f:selectItem itemLabel="Select Flag"/>
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton id="Btn_save" value="Save" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.addNewRecordTable}" update="mes cat_flag permit_code cat_descr catcode st_cd show_table1 errmsgs" process="Permit_catg"/>
+                                    </div>
+                                </div> 
+                            </div>
+                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                        </div>
+                    </p:dialog> 
+                    <p:dialog id="Permit_route" widgetVar="PERMIT.vm_route_master" header="Permit Route Master" draggable="false" width="40%" modal="true" dynamic="true" styleClass="ui-dialog-body" closeOnEscape="true" resizable="false">
+                        <p:ajax event="close"  update="Permit_route" partialSubmit="true"/>
+                        <p:messages id="mes_route" closable="true"></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{master_permit_bean.createUpdateTitle}" styleClass="caption dialogTitle-text"/>
+                                <h:outputLabel id="errmsg1" value="#{master_permit_bean.errLabelMsg}" escape="false" styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="statecd" value="State Code"/>
+                                <p:inputText id="statecd" value="#{master_permit_bean.state_cd}" disabled="true" />
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="off_code" value="Office Name"/> 
+                                <p:selectOneMenu id="off_code" value="#{master_permit_bean.off_code}" disabled="true">
+                                    <f:selectItems value="#{master_permit_bean.officeList}"  />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="route_flag" value="Route Flag" rendered="#{master_permit_bean.state_cd eq 'RJ'}"/>
+                                <p:selectOneMenu id="route_flag" value="#{master_permit_bean.route_flag}" rendered="#{master_permit_bean.state_cd eq 'RJ'}">
+                                    <f:selectItem itemLabel="Select Flag"/>
+                                    <f:selectItem itemLabel="Diversion" itemValue="D" />
+                                    <f:selectItem itemLabel="Extension" itemValue="E" />
+                                    <f:selectItem itemLabel="Curtailment" itemValue="C" />
+                                    <p:ajax event="change" listener="#{master_permit_bean.showNewRouteTo()}" update="new_tloc_panel new_floc_panel" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="new_route_code" value="New Route Code" rendered="#{master_permit_bean.state_cd eq 'RJ'}"/> 
+                                <p:inputText id="new_route_code" value="#{master_permit_bean.new_route_code}" maxlength="5" rendered="#{master_permit_bean.state_cd eq 'RJ'}">                                    
+                                    <p:keyFilter regEx="/[A-Z0-9\s-]/i"/> 
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="route_cd" value="Route Code"/> 
+                                <p:inputText id="route_cd" value="#{master_permit_bean.route_code}" styleClass="text-uppercase" required="true" requiredMessage="Enter The Route Code !!!" maxlength="8" disabled="#{master_permit_bean.disableexistroute}">
+                                    <p:ajax event="blur" listener="#{master_permit_bean.getRouteDetailsByRouteCode(master_permit_bean.route_code)}"  partialSubmit="true" update="floc tloc length route via overlapping overlapping_length route_flag new_route_code" />
+                                    <f:validateRequired/>
+                                    <p:keyFilter regEx="/[A-Z0-9\s-]/i"/> 
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="length" value="Route Length"/> 
+                                <p:inputText id="length" value="#{master_permit_bean.length}" required="true" requiredMessage="Enter The Length Value !!!" maxlength="5" >
+                                    <f:validateRequired/>
+                                    <p:keyFilter regEx="/[0-9]/"/> 
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="floc" value="Route From"/> 
+                                <p:inputText id="floc" value="#{master_permit_bean.floc}" required="true" styleClass="text-uppercase" requiredMessage="Enter From Location !!!" maxlength="40" disabled="#{master_permit_bean.disableexistroute}">
+                                    <f:validateRequired/>
+                                    <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>  
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="tloc" value="Route To"/> 
+                                <p:inputText id="tloc" value="#{master_permit_bean.tloc}" required="true" styleClass="text-uppercase" requiredMessage="Enter To Location !!!" maxlength="50" disabled="#{master_permit_bean.disableexistroute}">
+                                    <f:validateRequired/>
+                                    <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/> 
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputPanel id="new_floc_panel">
+                                    <p:outputLabel for="new_floc" value="New Route From" rendered="#{master_permit_bean.shownewfrom}"/> 
+                                    <p:inputText id="new_floc" value="#{master_permit_bean.new_floc}" styleClass="text-uppercase" maxlength="40" rendered="#{master_permit_bean.shownewfrom}">                                        
+                                        <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>  
+                                    </p:inputText>
+                                </p:outputPanel>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputPanel id="new_tloc_panel">
+                                    <p:outputLabel for="new_route_to" value="New Route To" rendered="#{master_permit_bean.shownewroute}" /> 
+                                    <p:inputText id="new_route_to" value="#{master_permit_bean.new_tloc}" styleClass="text-uppercase" maxlength="40" rendered="#{master_permit_bean.shownewroute}">
+                                        <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>  
+                                    </p:inputText>
+                                </p:outputPanel>
+                            </div>             
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="via" value="Via (Enter Number of Via details By Comma Separate (,) values)"/> 
+                                <p:inputTextarea id="via" value="#{master_permit_bean.via}" rows="6" cols="33" styleClass="text-uppercase" required="true" requiredMessage="Enter Via Detail !!!" maxlength="2000">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9\s_,]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputTextarea>
+                                <p:tooltip id="toolTipFade" for="via" trackMouse="true" value="Enter Number of Stoppage details By Comma Separate (,) values only. " position="top"/>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="route" value="Region Covered"/> 
+                                <p:inputText id="route" value="#{master_permit_bean.region_cover}" required="true" requiredMessage="Enter The Region Covered !!!" maxlength="2" disabled="#{master_permit_bean.disableexistroute}">
+                                    <f:validateRequired/>
+                                    <p:keyFilter regEx="/[0-9]/"/> 
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="overlapping" value="NH Overlapping" rendered="#{master_permit_bean.state_cd eq 'RJ'}"/> 
+                                <p:inputTextarea id="overlapping" value="#{master_permit_bean.nhOverlapping}" rows="6" cols="33" styleClass="text-uppercase" maxlength="100"  rendered="#{master_permit_bean.state_cd eq 'RJ'}">
+                                    <p:keyFilter regEx="/[a-zA-Z\s_,]/i"/> 
+                                </p:inputTextarea>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="overlapping_length" value="NH Overlapping Length" rendered="#{master_permit_bean.state_cd eq 'RJ'}"/> 
+                                <p:inputText id="overlapping_length" value="#{master_permit_bean.nhOverlappingLength}" maxlength="3" rendered="#{master_permit_bean.state_cd eq 'RJ'}">   
+                                    <p:keyFilter regEx="/[0-9]/"/>                                     
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="state_to" value="To State Name" styleClass="field-label-mandate" rendered="#{master_permit_bean.show_state_to}"/>
+                                </label>
+                                <p:selectOneMenu id="state_to"  value="#{master_permit_bean.state_to}" filter="true" rendered="#{master_permit_bean.show_state_to}">
+                                    <f:selectItem itemValue="" itemLabel="Select Any State"/>
+                                    <f:selectItems value="#{master_permit_bean.stateList}"/>
+                                    <p:ajax event="change" update="state_to" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>    
+                        <div class="ui-grid-row center-position top-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="Btn_route" value="Save" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.addNewRecordTable}" styleClass="buttonlabel"  update="mes_route show_table2 route length tloc via floc route_cd off_code statecd errmsg1 overlapping overlapping_length route_flag new_route_code" process="Permit_route"/>
+                                <p:commandButton id="Btn_reset" value="Reset" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.callReset()}" styleClass="buttonlabel"  update="mes_route show_table2 route length tloc via floc route_cd off_code statecd errmsg1 overlapping overlapping_length route_flag new_route_code" process="Permit_route"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <p:dialog id="Permit_region" widgetVar="PERMIT.vm_region" header="Permit Region" width="35%" draggable="false" modal="true" dynamic="true" styleClass="ui-dialog-body" closeOnEscape="true" resizable="false">
+                        <p:ajax event="close"  update="Permit_region" partialSubmit="true"/>
+                        <p:messages id="mes_region" closable="true"></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{master_permit_bean.createUpdateTitle}" styleClass="caption dialogTitle-text"/>
+                                <h:outputLabel id="errmsg2" value="#{master_permit_bean.errLabelMsg}" escape="false" styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel id="statelbl" value="State Code"/>
+                                <p:inputText value="#{master_permit_bean.state_cd}" disabled="true" />
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel id="office_code" value="Office Name"/> 
+                                <p:selectOneMenu id="off_code1" value="#{master_permit_bean.off_code}" disabled="true">
+                                    <f:selectItems value="#{master_permit_bean.officeList}"  />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="regioncode" value="Region Code"/> 
+                                <p:inputText id="regioncode" value="#{master_permit_bean.code}" required="true" requiredMessage="Enter Region Code !!!" maxlength="3">
+                                    <p:ajax event="blur" listener="#{master_permit_bean.checkDataExistorNot(master_permit_bean.code)}"  partialSubmit="true" update="errmsg2"/>  
+                                    <p:keyFilter regEx="/[0-9]/"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="regiondetail" value="Region Detail"/> 
+                                <p:inputText id="regiondetail" value="#{master_permit_bean.region}" required="true" styleClass="text-uppercase" requiredMessage="Enter Region Detail !!!" maxlength="100">
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="regionCov" value="Region Covered"/> 
+                                <p:inputText id="regionCov" value="#{master_permit_bean.region_cover}" required="true" requiredMessage="Enter Region Covered !!!" maxlength="2">
+                                    <p:keyFilter regEx="/[0-9]/"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="Btn_rgn_save" value="Save" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.addNewRecordTable}" styleClass="buttonlabel"  update="mes_region regioncode regiondetail regionCov show_table3 errmsg2" process="Permit_region"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <p:dialog id="Permit_fee" widgetVar="PERMIT.vm_permit_fee" header="Permit Fee" width="50%" modal="true" draggable="false" dynamic="true" styleClass="ui-dialog-body" closeOnEscape="true" resizable="false">
+                        <p:ajax event="close"  update="Permit_fee" partialSubmit="true"/>
+                        <p:messages id="mes_fee" closable="true"></p:messages>
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-12 center-position">                       
+                                <h:outputLabel value="#{master_permit_bean.createUpdateTitle}" styleClass="dialogTitle-text"/>
+                                <h:outputLabel id="errormsgs3" value="#{master_permit_bean.errLabelMsg}" escape="false" styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="statelabel5" value="State Code"/>
+                                </label>
+                                <p:inputText id="statelabel5" value="#{master_permit_bean.state_cd}" disabled="true" styleClass="textUpperCase" />   
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="porps_cd" value="Purpose Type"/> 
+                                </label>
+                                <p:selectOneMenu id="porps_cd" value="#{master_permit_bean.purcode}" required="true">
+                                    <f:selectItems value="#{master_permit_bean.permitPurposeList}"  />
+                                    <p:ajax event="change" listener="#{master_permit_bean.purposeTypeCheck()}"  partialSubmit="true" update="permit_cd"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="permit_cd" value="Permit Type"/> 
+                                </label>
+                                <p:selectOneMenu id="permit_cd" value="#{master_permit_bean.permitcode}" required="true">
+                                    <f:selectItems value="#{master_permit_bean.permittypeList}"  />
+                                    <p:ajax event="change" listener="#{master_permit_bean.onchangePmtType()}"  partialSubmit="true" update="select_catg"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="select_catg" value="Permit Category"/>
+                                </label>
+                                <p:selectOneMenu id="select_catg" value="#{master_permit_bean.permitcatg}">
+                                    <f:selectItem itemLabel="Select Category" itemValue="0" noSelectionOption="true" />
+                                    <f:selectItems value="#{master_permit_bean.catgdata}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="l_vh_class" value="Lower Vehicle Class"/> 
+                                </label>
+                                <p:selectOneMenu id="l_vh_class" value="#{master_permit_bean.lvh}" required="true">
+                                    <f:selectItem itemLabel="Select Vehicle" itemValue="-1"/>
+                                    <f:selectItem itemLabel="Minimum Class" itemValue="0"/>
+                                    <f:selectItems value="#{master_permit_bean.vhclassList}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="u_vh_class" value="Upper Vehicle Class"/> 
+                                </label>
+
+                                <p:selectOneMenu id="u_vh_class" value="#{master_permit_bean.uvh}" required="true">
+                                    <f:selectItem itemLabel="Select Vehicle" itemValue="-1"/>
+                                    <f:selectItem itemLabel="Maximum Class" itemValue="999"/>
+                                    <f:selectItems value="#{master_permit_bean.vhclassList}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="l_seat_cap" value="Lower Seat Capacity"/>
+                                </label>
+                                <p:inputText id="l_seat_cap" value="#{master_permit_bean.lseat}" required="true" requiredMessage="Please Enter l_seat_cap !!!" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="u_seat_cap" value="Upper Seat Capacity"/> 
+                                </label>
+                                <p:inputText id="u_seat_cap" value="#{master_permit_bean.useat}" required="true" requiredMessage="Please Enter u_seat_cap !!!" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="l_unld_wt" value="Lower Unladen weight"/> 
+                                </label>
+                                <p:inputText id="l_unld_wt" value="#{master_permit_bean.lunldwt}" required="true" requiredMessage="Please Enter l_unld_wt !!!" maxlength="6">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="u_unld_wt" value="Upper Unladen weight"/>
+                                </label>
+                                <p:inputText id="u_unld_wt" value="#{master_permit_bean.uunldwt}" required="true" requiredMessage="Please Enter u_unld_wt !!!" maxlength="6">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="l_ld_wt" value="Laden weight"/> 
+                                </label>
+                                <p:inputText id="l_ld_wt" value="#{master_permit_bean.lldwt}" required="true" requiredMessage="Please Enter l_ld_wt !!!" maxlength="6">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="u_ld_wt" value="Unladen weight"/> 
+                                </label>
+                                <p:inputText id="u_ld_wt" value="#{master_permit_bean.uldwt}" required="true" requiredMessage="Please Enter u_ld_wt !!!" maxlength="6">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="per_region" value="Pre Region"/>
+                                </label>
+                                <p:selectOneMenu id="per_region" value="#{master_permit_bean.per_region}" required="true" requiredMessage="Please select Pre region">
+                                    <f:selectItem itemLabel="Select" />
+                                    <f:selectItem itemLabel="YES" itemValue="Y" />
+                                    <f:selectItem itemLabel="NO" itemValue="N" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="per_period" value="Pre Period"/> 
+                                </label>
+                                <p:selectOneMenu id="per_period" value="#{master_permit_bean.per_period}" required="true" requiredMessage="Please select pre period">
+                                    <f:selectItem itemLabel="Select" />
+                                    <f:selectItem itemLabel="YES" itemValue="Y" />
+                                    <f:selectItem itemLabel="NO" itemValue="N" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="input_fee" value="Fee"/> 
+                                </label>
+                                <p:inputText id="input_fee" value="#{master_permit_bean.fee}" required="true" requiredMessage="Enter The Permit Fee" maxlength="6">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="PERMIT_fine" value="Fine"/> 
+                                </label>
+                                <p:inputText id="PERMIT_fine" value="#{master_permit_bean.fine}" required="true" requiredMessage="Enter the fine" maxlength="6">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/>
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="Btn_save2" value="Save" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.addNewRecordTable}" styleClass="buttonlabel"  update="mes_fee errormsgs3 show_table4 PERMIT_fine input_fee porps_cd permit_cd u_ld_wt l_ld_wt u_unld_wt l_unld_wt u_seat_cap l_seat_cap u_vh_class l_vh_class select_catg per_region per_period" process="Permit_fee"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <p:dialog id="State_Map" widgetVar="PERMIT.vm_permit_doc_state_map" header="Permit State Document Mapping " width="35%" draggable="false" modal="true" dynamic="true" styleClass="ui-dialog-body" closeOnEscape="true" resizable="false">
+                        <p:ajax event="close"  update="State_Map"  partialSubmit="true"/>
+                        <p:messages id="mes_doc" closable="true"></p:messages>
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-12 center-position">                       
+                                <h:outputLabel value="#{master_permit_bean.createUpdateTitle}" styleClass="dialogTitle-text"/>
+                                <h:outputLabel id="errmsgstatedocument" value="#{master_permit_bean.errLabelMsg}" escape="false" styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="statelabel" value="State Code"/>
+                                <p:inputText id="statelabel" value="#{master_permit_bean.state_cd}"  disabled="true"/>   
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="purpose_code" value="Purpose Type"/> 
+                                <p:selectOneMenu id="purpose_code" value="#{master_permit_bean.purposecode}" required="true">
+                                    <f:selectItems value="#{master_permit_bean.permitPurposeList}"  />
+                                    <p:ajax event="change" listener="#{master_permit_bean.conditionCheck()}"  partialSubmit="true" update="permit_codes menu" />
+                                </p:selectOneMenu>
+                            </div>   
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="permit_codes" value="Permit Type"/> 
+                                <p:selectOneMenu id="permit_codes" value="#{master_permit_bean.pmtcode}" required="true">
+                                    <f:selectItems value="#{master_permit_bean.permitList}"  />
+                                    <p:ajax event="change" listener="#{master_permit_bean.permitTypeCheck()}"  partialSubmit="true" update=" purpose_code menu " />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <p:outputLabel for="menu" value="Permit Documents"/> 
+                                <p:selectCheckboxMenu id="menu" value="#{master_permit_bean.selectedDocid}" label="Documents" required="true" requiredMessage="Please Select any Document"
+                                                      panelStyle="width:250px">
+                                    <f:selectItems value="#{master_permit_bean.docList}" />
+                                </p:selectCheckboxMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="save_doc_btn" value="Save" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.addNewRecordTable}"  update="mes_doc errmsgstatedocument purpose_code permit_codes  show_table5 menu" process="State_Map" />
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                    <p:dialog id="Permit_fee_configure" widgetVar="PERMIT.vm_permit_fee_state_configuration" header="Permit Fee Configure" width="45%" draggable="false" modal="true" dynamic="true" styleClass="ui-dialog-body" closeOnEscape="true" resizable="false">
+                        <p:ajax event="close"  update="Permit_fee_configure"  partialSubmit="true"/>
+                        <p:messages id="mes_fee_config" closable="true"></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{master_permit_bean.createUpdateTitle}" styleClass="dialogTitle-text"/>
+                                <h:outputLabel id="errorms" value="#{master_permit_bean.errLabelMsg}" escape="false" styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="statelabel6" value="State Code"/>
+                                </label>
+                                <p:inputText id="statelabel6" value="#{master_permit_bean.state_cd}" disabled="true" styleClass="textUpperCase" />   
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="porps_cdE" value="Purpose Type"/> 
+                                </label>
+
+                                <p:selectOneMenu id="porps_cdE" value="#{master_permit_bean.purcode}" required="true">
+                                    <f:selectItems value="#{master_permit_bean.permitPurposeList}"  />
+                                    <p:ajax event="change" listener="#{master_permit_bean.purposeTypeCheck()}"  partialSubmit="true" update="permit_cdE" />
+                                </p:selectOneMenu>
+                            </div>
+
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="permit_cdE" value="Permit Type"/> 
+                                </label>
+                                <p:selectOneMenu id="permit_cdE" value="#{master_permit_bean.permitcode}" required="true">
+                                    <f:selectItems value="#{master_permit_bean.permittypeList}" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="pMT_FLAGE" value="Permit Type Flag" /> 
+                                </label>
+
+                                <p:selectOneMenu id="pMT_FLAGE" value="#{master_permit_bean.pmt_type_flag}" required="true" requiredMessage="Please select permit type flag">
+                                    <f:selectItem itemLabel="Select" />
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="pMT_CAT_FLAGE" value="Permit Category Flag" /> 
+                                </label>
+                                <p:selectOneMenu id="pMT_CAT_FLAGE" value="#{master_permit_bean.pmt_catg_flag}" required="true" requiredMessage="Please select permit category flag">
+                                    <f:selectItem itemLabel="Select" />
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="VH_FLAGE" value="Vehicle Class Flag" /> 
+                                </label>
+                                <p:selectOneMenu id="VH_FLAGE" value="#{master_permit_bean.vh_class_flag}" required="true" requiredMessage="Please select vehicle class flag">
+                                    <f:selectItem itemLabel="Select"/>
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="SEAT_CAP_FLAGE" value="Seating Capacity Flag" /> 
+                                </label>
+                                <p:selectOneMenu id="SEAT_CAP_FLAGE" value="#{master_permit_bean.seat_cap_flag}" required="true" requiredMessage="Please select Seating Capacity flag">
+                                    <f:selectItem itemLabel="Select" />
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="UNLDWT_FLAGE" value="Unladen Weight Flag" /> 
+                                </label>
+                                <p:selectOneMenu id="UNLDWT_FLAGE" value="#{master_permit_bean.unld_wt_flag}" required="true" requiredMessage="Please select Unladen weight flag">
+                                    <f:selectItem itemLabel="Select"/>
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="LDWT_FLAGE" value="Laden Weight Flag" /> 
+                                </label>
+                                <p:selectOneMenu id="LDWT_FLAGE" value="#{master_permit_bean.ld_wt_flag}" required="true" requiredMessage="Please select Laden weight flag">
+                                    <f:selectItem itemLabel="Select"/>
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="region_FLAGE" value="Per Region Flag" /> 
+                                </label>
+                                <p:selectOneMenu id="region_FLAGE" value="#{master_permit_bean.per_region}" required="true" requiredMessage="Please select region flag">
+                                    <f:selectItem itemLabel="Select" />
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="period_FLAGE" value="Per Period Flag" /> 
+                                </label>
+                                <p:selectOneMenu id="period_FLAGE" value="#{master_permit_bean.per_period}" required="true" requiredMessage="Please select Period flag">
+                                    <f:selectItem itemLabel="Select" />
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="Btn_save6" value="Save" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.addNewRecordTable}" styleClass="buttonlabel"  update="mes_fee_config errorms show_table6 period_FLAGE region_FLAGE LDWT_FLAGE UNLDWT_FLAGE SEAT_CAP_FLAGE VH_FLAGE pMT_CAT_FLAGE pMT_FLAGE permit_cdE porps_cdE" process="Permit_fee_configure"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                    <p:dialog id="Permit_state" widgetVar="PERMIT.vm_permit_state_configuration" header="Permit State Configuration" width="75%" height="600px" modal="true" draggable="false" dynamic="true" styleClass="ui-dialog-body" closeOnEscape="true" resizable="false">
+                        <p:ajax event="close"  update="Permit_state"  partialSubmit="true"/>
+                        <p:messages id="mes_state_config" closable="true"></p:messages>
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">                       
+                                <h:outputLabel value="#{master_permit_bean.createUpdateTitle}" styleClass="dialogTitle-text"/>
+                                <h:outputLabel id="errormsgs7" value="#{master_permit_bean.errLabelMsg}" escape="false" styleClass="red dialogTitle-text"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="statelabel7" value="State Code"/>
+                                </label>
+                                <p:inputText id="statelabel7" value="#{master_permit_bean.state_cd}" disabled="true" styleClass="textUpperCase" />   
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="tdvu" value="Temp Day Valid Upto"/> 
+                                </label>
+                                <p:inputText id="tdvu" value="#{master_permit_bean.temp_days_valid_upto}" required="true" requiredMessage="Enter Temp Day Valid Upto" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="twvu" value="Temp Week Valid Upto"/> 
+                                </label>
+                                <p:inputText id="twvu" value="#{master_permit_bean.temp_weeks_valid_upto}" required="true" requiredMessage="Enter Temp Week Valid Upto" maxlength="2">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="spvu" value="Spec Day Valid Upto"/> 
+                                </label>
+                                <p:inputText id="spvu" value="#{master_permit_bean.spec_days_valid_upto}" required="true" requiredMessage="Enter Spec Day Valid Upto" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="swvu" value="Spec Week Valid Upto"/> 
+                                </label>
+                                <p:inputText id="swvu" value="#{master_permit_bean.spec_weeks_valid_upto}" required="true" requiredMessage="Enter Spec Week Valid Upto" maxlength="2">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="srbd" value="Sc Renew Before Days"/> 
+                                </label>
+                                <p:inputText id="srbd" value="#{master_permit_bean.sc_renew_before_days}" required="true" requiredMessage="Enter Sc Renew Before Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="crbd" value="Cc Renew Before Days"/> 
+                                </label>
+                                <p:inputText id="crbd" value="#{master_permit_bean.cc_renew_before_days}" required="true" requiredMessage="Enter Cc Renew Before Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="arbd" value="Ai Renew Before Days"/> 
+                                </label>
+                                <p:inputText id="arbd" value="#{master_permit_bean.ai_renew_before_days}" required="true" requiredMessage="Enter Ai Renew Before Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="prbd" value="Psv Renew Before Days"/> 
+                                </label>
+                                <p:inputText id="prbd" value="#{master_permit_bean.psv_renew_before_days}" required="true" requiredMessage="Enter Psv Renew Before Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="grbd" value="Gp Renew Before Days"/> 
+                                </label>
+                                <p:inputText id="grbd" value="#{master_permit_bean.gp_renew_before_days}" required="true" requiredMessage="Enter Gp Renew Before Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="nrbd" value="Np Renew Before Days"/> 
+                                </label>
+                                <p:inputText id="nrbd" value="#{master_permit_bean.np_renew_before_days}" required="true" requiredMessage="Enter Np Renew Before Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="scrh" value="Sc Rule Heading"/> 
+                                </label>
+                                <p:inputText id="scrh" value="#{master_permit_bean.sc_rule_heading}"  maxlength="100">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="scfnh" value="Sc Form No Heading"/> 
+                                </label>
+                                <p:inputText id="scfnh" value="#{master_permit_bean.sc_formno_heading}"  maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="crh" value="Cc Rule Heading"/> 
+                                </label>
+                                <p:inputText id="crh" value="#{master_permit_bean.cc_rule_heading}"  maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="cfnh" value="Cc Form No Heading"/> 
+                                </label>
+                                <p:inputText id="cfnh" value="#{master_permit_bean.cc_formno_heading}"  maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="arh" value="Aitp Rule Heading"/> 
+                                </label>
+                                <p:inputText id="arh" value="#{master_permit_bean.aitp_rule_heading}"  maxlength="100">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="afnh" value="Aitp Form No Heading"/> 
+                                </label>
+                                <p:inputText id="afnh" value="#{master_permit_bean.aitp_formno_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="prh" value="Psvp Rule Heading"/> 
+                                </label>
+                                <p:inputText id="prh" value="#{master_permit_bean.psvp_rule_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="pfnh" value="Psvp Form No Heading"/> 
+                                </label>
+                                <p:inputText id="pfnh" value="#{master_permit_bean.psvp_formno_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="grh" value="Gp Rule Heading"/> 
+                                </label>
+                                <p:inputText id="grh" value="#{master_permit_bean.gp_rule_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="gfnh" value="Gp Form No Heading"/> 
+                                </label>
+                                <p:inputText id="gfnh" value="#{master_permit_bean.gp_formno_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="nrh" value="Np Rule Heading"/> 
+                                </label>
+                                <p:inputText id="nrh" value="#{master_permit_bean.np_rule_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="nfnh" value="Np Form No Heading"/> 
+                                </label>
+                                <p:inputText id="nfnh" value="#{master_permit_bean.np_formno_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="trh" value="Temp Rule Heading"/> 
+                                </label>
+                                <p:inputText id="trh" value="#{master_permit_bean.temp_rule_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="tfnh" value="Temp Form No Heading"/> 
+                                </label>
+                                <p:inputText id="tfnh" value="#{master_permit_bean.temp_formno_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="srh" value="Spec Rule Heading"/> 
+                                </label>
+                                <p:inputText id="srh" value="#{master_permit_bean.spec_rule_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="sfnh" value="Spec Form No Heading"/> 
+                                </label>
+                                <p:inputText id="sfnh" value="#{master_permit_bean.spec_formno_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="aarh" value="Auth Aitp Rule Heading"/> 
+                                </label>
+                                <p:inputText id="aarh" value="#{master_permit_bean.auth_aitp_rule_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="aafnh" value="Auth Aitp Form No Heading"/> 
+                                </label>
+                                <p:inputText id="aafnh" value="#{master_permit_bean.auth_aitp_formno_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="anrh" value="Auth Np Rule Heading"/> 
+                                </label>
+                                <p:inputText id="anrh" value="#{master_permit_bean.auth_np_rule_heading}" maxlength="100">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="anfnh" value="Auth Np Form No Heading"/> 
+                                </label>
+                                <p:inputText id="anfnh" value="#{master_permit_bean.auth_np_formno_heading}" maxlength="100">
+
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="nif" value="Note In Footer"/> 
+                                </label>
+                                <p:inputTextarea id="nif" value="#{master_permit_bean.note_in_footer}" rows="6" cols="33" maxlength="500">
+
+                                </p:inputTextarea>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tdvf" value="Temp Days Valid From"/> 
+                                </label>
+                                <p:inputText id="tdvf" value="#{master_permit_bean.temp_days_valid_from}" required="true" requiredMessage="Enter Temp Days Valid From" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="twvf" value="Temp Weeks Valid From"/> 
+                                </label>
+                                <p:inputText id="twvf" value="#{master_permit_bean.temp_weeks_valid_from}" required="true" requiredMessage="Enter Temp Weeks Valid From" maxlength="2">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="sdvf" value="Spec Days Valid From"/>
+                                </label>
+                                <p:inputText id="sdvf" value="#{master_permit_bean.spec_days_valid_from}" required="true" requiredMessage="Enter Spec Days Valid From" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="swvf" value="Spec Weeks Valid From"/> 
+                                </label>
+                                <p:inputText id="swvf" value="#{master_permit_bean.spec_weeks_valid_from}" required="true" requiredMessage="Enter Spec Weeks Valid From" maxlength="2">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="srad" value="Sc Renew After Days"/> 
+                                </label>
+                                <p:inputText id="srad" value="#{master_permit_bean.sc_renew_after_days}" required="true" requiredMessage="Enter Sc Renew After Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="crad" value="Cc Renew After Days"/> 
+                                </label>
+                                <p:inputText id="crad" value="#{master_permit_bean.cc_renew_after_days}" required="true" requiredMessage="Enter Cc Renew After Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="arad" value="Ai Renew After Days"/>
+                                </label>
+                                <p:inputText id="arad" value="#{master_permit_bean.ai_renew_after_days}" required="true" requiredMessage="Enter Ai Renew After Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="prad" value="Psv Renew After Days"/> 
+                                </label>
+                                <p:inputText id="prad" value="#{master_permit_bean.psv_renew_after_days}" required="true" requiredMessage="Enter Psv Renew After Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="grad" value="Gp Renew After Days"/> 
+                                </label>
+                                <p:inputText id="grad" value="#{master_permit_bean.gp_renew_after_days}" required="true" requiredMessage="Enter Gp Renew After Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="nrad" value="Np Renew After Days"/> 
+                                </label>
+                                <p:inputText id="nrad" value="#{master_permit_bean.np_renew_after_days}" required="true" requiredMessage="Enter Np Renew After Days" maxlength="3">
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                    <f:validateRequired/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="rpvff" value="Renewal of Permit Valid From Flag"/> 
+                                </label>
+                                <p:selectOneMenu id="rpvff" value="#{master_permit_bean.renewal_of_permit_valid_from_flag}" required="true">
+                                    <f:selectItem itemLabel="Approval Date" itemValue="A" />
+                                    <f:selectItem itemLabel="Fee Submit Date" itemValue="F" />
+                                    <f:selectItem itemLabel="Previous Permit valid upto +1 Date" itemValue="P" />
+                                </p:selectOneMenu>
+
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tra" value="Temp Route Area"/> 
+                                </label>
+                                <p:selectOneMenu id="tra" value="#{master_permit_bean.temp_route_area}" required="true">
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="goa" value="Genetate Ol Application"/> 
+                                </label>
+                                <p:selectOneMenu id="goa" value="#{master_permit_bean.genrate_ol_appl}" required="true">
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ppv" value="permanent_permit_valid"/> 
+                                </label>
+                                <p:selectOneMenu id="ppv" value="#{master_permit_bean.permanent_permit_valid}" required="true">
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="aspd" value="allowed_surr_pur_cd"/> 
+                                </label>
+
+                                <p:selectCheckboxMenu  id="aspd" value="#{master_permit_bean.selectedSurPurCd}"   filter="true" filterMatchMode="startsWith" label="Select Purpose" required="true" requiredMessage="Please Select surrender purpose">
+                                    <f:selectItems value="#{master_permit_bean.sur_pur_list}" />
+                                </p:selectCheckboxMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tpt" value="temp_pmt_type"/> 
+                                </label>
+                                <p:selectOneMenu id="tpt" value="#{master_permit_bean.temp_pmt_type}" required="true">
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="rtp" value="renew_temp_pmt"/> 
+                                </label>
+                                <p:selectOneMenu id="rtp" value="#{master_permit_bean.renew_temp_pmt}" required="true">
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="spr" value="spl_pmt_route"/> 
+                                </label>
+                                <p:selectOneMenu id="spr" value="#{master_permit_bean.spl_pmt_route}" required="true">
+                                    <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                    <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="Btn_save7" value="Save" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" actionListener="#{master_permit_bean.addNewRecordTable}" styleClass="buttonlabel"  update="mes_state_config errormsgs7 aspd show_table7 tdvu twvu spvu swvu srbd crbd arbd prbd grbd nrbd scrh scfnh crh cfnh arh afnh prh pfnh grh gfnh nrh nfnh trh tfnh srh sfnh aarh aafnh anrh anfnh nif tdvf twvf sdvf swvf srad crad arad prad grad nrad rpvff tra" process="Permit_state" />
+                            </div>
+                        </div>
+                    </p:dialog>
+
+
+                </p:outputPanel>
+
+                <!--Data Tables Starts-->
+                <p:outputPanel id="show_table1">
+                    <p:panel  rendered="#{master_permit_bean.panalhide}">
+                        <p:remoteCommand name="onCellEditT" update="pmt_catg" />
+                        <p:dataTable id="pmt_catg" var="s" value="#{master_permit_bean.testData}" rowKey="#{s.ccode}" editable="true"  paginator="true" rows="10" reflow="true">
+                            <f:facet name="header">
+                                Permit Category Master
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{master_permit_bean.onRowEdit}" oncomplete="onCellEditT()"  partialSubmit="true" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_catg"/>
+                            <p:ajax event="rowEditCancel" listener="#{master_permit_bean.onRowDelete}" oncomplete="onCellEditT()"   partialSubmit="true" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_catg"/>
+                            <p:column headerText="Category Code">
+                                <h:outputText value="#{s.ccode}"/>
+                            </p:column>
+
+                            <p:column headerText="Description">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{s.description}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{s.description}" style="width:100%" maxlength="100" styleClass="text-uppercase" onkeypress="alphabateRegex(event, this.text);"  /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Permit Type">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{s.pmt_type_descr}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{s.permit_code}" style="width:100%">
+                                            <f:selectItems value="#{master_permit_bean.permitList}" var="color" itemLabel="#{color}" itemValue="#{color}" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Permit Offer" styleClass="textUpperCase">
+                                <h:outputLabel value="#{s.flag}" styleClass="textUpperCase"/>
+                            </p:column>
+
+                            <p:column headerText="EDIT/DELETE" style="width:90px;">
+
+                                <p:rowEditor />
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:panel>
+                </p:outputPanel>
+
+
+                <p:outputPanel id="show_table2">
+                    <p:panel rendered="#{master_permit_bean.panalhideroute}">
+                        <p:remoteCommand name="onCellEditTableComplete" update="pmt_route" />
+                        <p:dataTable id="pmt_route" var="t" value="#{master_permit_bean.routemaster}" rowKey="#{t.route_code}" editable="true" paginator="true" rows="8" reflow="true">
+                            <f:facet name="header">
+                                Permit Route Master
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{master_permit_bean.onRowEdit}"  partialSubmit="true"  oncomplete="onCellEditTableComplete()" onstart="return confirm('Are you sure?')" onsuccess="PF('block_panel').hide();" update="pmt_route"/>
+                            <p:ajax event="rowEditCancel" listener="#{master_permit_bean.onRowDelete}"  partialSubmit="true" oncomplete="onCellEditTableComplete()" onstart="return confirm('Are you sure?')"  onsuccess="PF('block_panel').hide();" update="pmt_route"/>
+                            <p:column headerText="Code" filterBy="#{t.route_code}" filterMatchMode="contains">
+                                <h:outputText value="#{t.route_code}" />
+                            </p:column>
+
+                            <p:column headerText="From Location" filterBy="#{t.from_loc}" filterMatchMode="contains">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{t.from_loc}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="ro_from" value="#{t.from_loc}" style="width:100%" maxlength="40" styleClass="text-uppercase" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Via">
+                                <p:column headerText="To Location">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{t.via}" /></f:facet>
+                                        <f:facet name="input"><p:inputTextarea value="#{t.via}" style="width:100%" maxlength="2000" styleClass="text-uppercase" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                            </p:column>
+                            <p:column headerText="To Location" filterBy="#{t.to_loc}" filterMatchMode="contains">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{t.to_loc}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{t.to_loc}" style="width:100%" maxlength="50" styleClass="text-uppercase" /></f:facet>
+                                    <p:keyFilter regEx="/[a-zA-Z\s_]/i"/>  
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Route Length">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{t.length}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{t.length}" style="width:100%" maxlength="5" onkeypress="return checkIt(event);" /></f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Region Cover">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{t.region_cover}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{t.region_cover}" style="width:100%" maxlength="2" onkeypress="return checkIt(event);" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="NH Overlapping" rendered="#{master_permit_bean.state_cd eq 'RJ'}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{t.nhOverlapping}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{t.nhOverlapping}" style="width:100%" maxlength="100" styleClass="text-uppercase" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="NH Overlapping Length" rendered="#{master_permit_bean.state_cd eq 'RJ'}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{t.nhOverlappingLength}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{t.nhOverlappingLength}" style="width:100%" maxlength="3" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT/DELETE" style="width:90px;">
+                                <p:rowEditor />
+                            </p:column>                            
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="show_table3">
+                    <p:panel rendered="#{master_permit_bean.panalhideregion}">
+                        <p:remoteCommand name="onCellEditTable" update="pmt_region" />
+                        <p:dataTable id="pmt_region" var="u" value="#{master_permit_bean.regionmaster}" rowKey="#{u.code}" editable="true" paginator="true" rows="15" reflow="true">
+                            <f:facet name="header">
+                                Permit Region Master
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{master_permit_bean.onRowEdit}"  partialSubmit="true" oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_region"/>
+                            <p:ajax event="rowEditCancel" listener="#{master_permit_bean.onRowDelete}"  partialSubmit="true" oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_region"/>
+                            <p:column headerText="Region Code">
+                                <h:outputText value="#{u.code}" />
+                            </p:column>
+                            <p:column headerText="Region">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{u.region}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{u.region}" style="width:100%" maxlength="100" styleClass="text-uppercase"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Region Covered">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{u.region_covered}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{u.region_covered}" style="width:100%" maxlength="2" onkeypress="return checkIt(event);" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT/DELETE" style="width:90px;">
+                                <p:rowEditor />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="show_table4">
+                    <p:panel  rendered="#{master_permit_bean.panalhidefee}">
+                        <p:remoteCommand name="onCellEditTable" update="pmt_fee" />
+                        <p:dataTable id="pmt_fee" var="v" value="#{master_permit_bean.feemaster}" rowKey="#{v.permit_type}" paginator="true" rows="15" filteredValue="#{master_permit_bean.feefilter}" scrollable="true" editable="true" reflow="true">
+                            <f:facet name="header">
+                                Permit Fee Master
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{master_permit_bean.onRowEdit}"  partialSubmit="true" oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_fee"/>
+                            <p:ajax event="rowEditCancel" listener="#{master_permit_bean.onRowDelete}"  partialSubmit="true" oncomplete="onCellEditTable()" onstart="PF('block_panel').show();" onsuccess="PF('block_panel').hide();" update="pmt_fee"/>
+                            <p:column headerText="Purpose Type"  filterBy="#{v.pur_cd_descr}" style="width:200px;">
+                                <h:outputText value="#{v.pur_cd_descr}" />
+                            </p:column>
+                            <p:column headerText="Permit Type"  filterBy="#{v.pmt_type_descr}" style="width:200px;">
+                                <h:outputText value="#{v.pmt_type_descr}" />
+                            </p:column>
+                            <p:column headerText="Permit Category" style="width:200px;">
+                                <h:outputText value="#{v.pmt_catg_descr}" />
+                            </p:column>
+
+                            <p:column headerText="Lower Vehicle Class" style="width:200px;">
+                                <h:outputText value="#{v.l_vh_class_descr}" />
+                            </p:column>
+                            <p:column headerText="Upper Vehicle Class" style="width:200px;">
+                                <h:outputText value="#{v.u_vh_class_descr}" />
+                            </p:column>
+                            <p:column headerText="Lower Seat Capacity" style="width:200px;">
+                                <h:outputText value="#{v.l_seat_cap}" />
+                            </p:column>
+                            <p:column headerText="Upper Seat Capacity" style="width:200px;">
+                                <h:outputText value="#{v.u_seat_cap}" />
+                            </p:column>
+                            <p:column headerText="Lower Unladen weight" style="width:200px;">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{v.l_unld_wt}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{v.l_unld_wt}" style="width:100%" maxlength="6" onkeypress="return checkIt(event);"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Upper Unladen weight" style="width:200px;">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{v.u_unld_wt}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{v.u_unld_wt}" style="width:100%" maxlength="6" onkeypress="return checkIt(event);"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Laden weight" style="width:200px;">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{v.l_ld_wt}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{v.l_ld_wt}" style="width:100%" maxlength="6" onkeypress="return checkIt(event);"/></f:facet>
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/> 
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Unladen weight" style="width:200px;">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{v.u_ld_wt}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{v.u_ld_wt}" style="width:100%" maxlength="6" onkeypress="return checkIt(event);"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Per Region" style="width:200px;">
+                                <h:outputText value="#{v.per_region}" />
+                            </p:column>
+                            <p:column headerText="Per Period" style="width:200px;">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{v.per_period}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{v.per_period}" style="width:100%">
+                                            <f:selectItem itemLabel="YES" itemValue="Y" />
+                                            <f:selectItem itemLabel="NO" itemValue="N" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Permit Fee" style="width:200px;">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{v.fee}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{v.fee}" style="width:100%" maxlength="6" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Fine" style="width:200px;">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{v.fine}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{v.fine}" style="width:100%" maxlength="6" required="true" requiredMessage="Please enter Fine" onkeypress="return checkIt(event);"/></f:facet>
+
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="EDIT/DELETE" style="width:90px;">
+                                <p:rowEditor />
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:panel>
+
+                </p:outputPanel>
+                <p:outputPanel id="show_table5">
+                    <p:panel  rendered="#{master_permit_bean.panalhidedoc}">
+                        <p:remoteCommand name="onCellEditTable" update="pmt_doc_map" />
+                        <p:dataTable id="pmt_doc_map" var="w" value="#{master_permit_bean.docmaster}" rowKey="#{w.purpose_code}"  filteredValue="#{master_permit_bean.docfilter}" editable="true" paginator="true" rows="15" reflow="true">
+                            <f:facet name="header">
+                                Permit State Document Map 
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{master_permit_bean.onRowEdit}"  partialSubmit="true" oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_doc_map"/>
+                            <p:ajax event="rowEditCancel" listener="#{master_permit_bean.onRowDelete}"  partialSubmit="true" oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_doc_map"/>
+
+                            <p:column headerText="Purpose Code" filterBy="#{w.pur_cd_descr}">
+                                <h:outputText value="#{w.pur_cd_descr}" />
+                            </p:column>
+                            <p:column headerText="Permit Type" filterBy="#{w.pmt_type_descr}">
+                                <h:outputText value="#{w.pmt_type_descr}" />
+                            </p:column>
+                            <p:column headerText="Document ID">
+                                <h:outputText value="#{w.documentid}" />
+                            </p:column>
+                            <p:column headerText="Selected Documents" >
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{w.documentid}" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:selectCheckboxMenu id="adfd" value="#{w.documentList}" label="-SELECT DOCUMENTS-" >
+                                            <f:selectItems value="#{w.selectDocList}" />
+                                        </p:selectCheckboxMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="EDIT/DELETE" style="width:90px;">
+                                <p:rowEditor />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="show_table6">
+                    <p:panel  rendered="#{master_permit_bean.panalfeeconfigure}">
+                        <p:remoteCommand name="onCellEditTable" update="pmt_fee_config" />
+                        <p:dataTable id="pmt_fee_config" var="f" rowKey="#{f.pur_cd}" value="#{master_permit_bean.feeState}" paginator="true" rows="15" filteredValue="#{master_permit_bean.feeStatefilter}" editable="true" style="margin-bottom:20px" reflow="true">
+                            <f:facet name="header">
+                                Permit Fee State Configuration
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{master_permit_bean.onRowEdit}"  partialSubmit="true" oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_fee_config"/>
+                            <p:ajax event="rowEditCancel" listener="#{master_permit_bean.onRowDelete}"  partialSubmit="true"  oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_fee_config"/>
+                            <p:column headerText="Purpose Type" filterBy="#{f.pur_cd_descr}"  style="width:200px;">
+                                <h:outputText value="#{f.pur_cd_descr}" />
+                            </p:column>
+                            <p:column headerText="Permit Type" filterBy="#{f.pmt_cd_descr}"  style="width:170px;">
+                                <h:outputText value="#{f.pmt_cd_descr}" />
+                            </p:column>
+
+                            <p:column headerText="Permit Type Flag">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.pmt_type_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.pmt_type_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Permit Catgory">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.pmt_catg_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.pmt_catg_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Vehicle Class">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.vh_class_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.vh_class_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Seat Capacity">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.seat_cap_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.seat_cap_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="UnLaden weight">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.unld_wt_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.unld_wt_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Laden weight">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.ld_wt_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.ld_wt_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Per Region">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.per_region_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.per_region_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Per Period">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{f.per_period_flag}" /></f:facet>
+                                    <f:facet name="input">
+                                        <h:selectOneMenu value="#{f.per_period_flag}" style="width:100%">
+                                            <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                            <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="EDIT/DELETE" style="width:90px;">
+                                <p:rowEditor />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="show_table7">
+                    <p:panel  rendered="#{master_permit_bean.panalStateconfig}">
+                        <p:scrollPanel mode="native">
+                            <p:remoteCommand name="onCellEditTable" update="pmt_state_config" />
+                            <p:dataTable id="pmt_state_config" var="g" rowKey="#{g.state_cd}" value="#{master_permit_bean.stateConfig}" scrollable="true" editable="true" reflow="true">
+                                <f:facet name="header">
+                                    Permit State Configuration
+                                </f:facet>
+                                <p:ajax event="rowEdit" listener="#{master_permit_bean.onRowEdit}"   oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_state_config"/>
+                                <p:ajax event="rowEditCancel" listener="#{master_permit_bean.onRowDelete}"  partialSubmit="true"  oncomplete="onCellEditTable()" onstart="PF('block_panel').show();"  onsuccess="PF('block_panel').hide();" update="pmt_state_config"/>
+                                <p:column headerText="Temp_days_valid_upto" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_days_valid_upto}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.temp_days_valid_upto}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Temp_weeks_valid_upto" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_weeks_valid_upto}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.temp_weeks_valid_upto}"  maxlength="2" onkeypress="return checkIt(event);" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Spec_days_valid_upto" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.spec_days_valid_upto}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.spec_days_valid_upto}"  maxlength="3" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Spec_weeks_valid_upto" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.spec_weeks_valid_upto}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.spec_weeks_valid_upto}" maxlength="2" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Sc_renew_before_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.sc_renew_before_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.sc_renew_before_days}" maxlength="3" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cc_renew_before_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.cc_renew_before_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.cc_renew_before_days}" maxlength="3" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Ai_renew_before_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.ai_renew_before_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.ai_renew_before_days}" maxlength="3" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Psv_renew_before_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.psv_renew_before_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.psv_renew_before_days}" maxlength="3" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Gp_renew_before_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.gp_renew_before_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.gp_renew_before_days}" maxlength="3" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Np_renew_before_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.np_renew_before_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.np_renew_before_days}" maxlength="3" required="true" onkeypress="return checkIt(event);" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Sc_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.sc_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.sc_rule_heading}" maxlength="100" required="true" requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Sc_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.sc_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.sc_formno_heading}" maxlength="100" required="true"  requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cc_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.cc_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.cc_rule_heading}" maxlength="100" required="true"  requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cc_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.cc_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.cc_formno_heading}" maxlength="100" required="true"  requiredMessage="Please enter Fee Amount"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Aitp_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.aitp_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.aitp_rule_heading}" maxlength="100"  /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Aitp_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.aitp_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.aitp_formno_heading}" maxlength="100"  /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Psvp_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.psvp_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.psvp_rule_heading}" maxlength="100"  /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Psvp_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.psvp_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.psvp_formno_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Gp_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.gp_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.gp_rule_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Gp_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.gp_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.gp_formno_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Np_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.np_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.np_rule_heading}" maxlength="100"  /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Np_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.np_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.np_formno_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Temp_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.temp_rule_heading}" maxlength="100"  /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Temp_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.temp_formno_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Spec_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.spec_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.spec_rule_heading}" maxlength="100"  /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Spec_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.spec_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.spec_formno_heading}" maxlength="100"  /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Auth_aitp_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.auth_aitp_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.auth_aitp_rule_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Auth_aitp_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.auth_aitp_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.auth_aitp_formno_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Auth_np_rule_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.auth_np_rule_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.auth_np_rule_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Auth_np_formno_heading" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.auth_np_formno_heading}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.auth_np_formno_heading}" maxlength="100" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Note_in_footer" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.note_in_footer}" /></f:facet>
+                                        <f:facet name="input"><p:inputTextarea value="#{g.note_in_footer}" maxlength="500" rows="3"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Temp_days_valid_from" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_days_valid_from}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.temp_days_valid_from}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Temp_weeks_valid_from" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_weeks_valid_from}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.temp_weeks_valid_from}" maxlength="2" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Spec_days_valid_from" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.spec_days_valid_from}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.spec_days_valid_from}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Spec_weeks_valid_from" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.spec_weeks_valid_from}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.spec_weeks_valid_from}" maxlength="2" onkeypress="return checkIt(event);" /></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Sc_renew_after_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.sc_renew_after_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.sc_renew_after_days}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Cc_renew_after_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.cc_renew_after_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.cc_renew_after_days}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Ai_renew_after_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.ai_renew_after_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.ai_renew_after_days}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Psv_renew_after_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.psv_renew_after_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.psv_renew_after_days}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Gp_renew_after_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.gp_renew_after_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.gp_renew_after_days}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Np_renew_after_days" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.np_renew_after_days}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{g.np_renew_after_days}" maxlength="3" onkeypress="return checkIt(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Renewal_of_permit_valid_from_flag" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.renewal_of_permit_valid_from_flag}" /></f:facet>
+                                        <f:facet name="input">  <h:selectOneMenu value="#{g.renewal_of_permit_valid_from_flag}">
+                                                <f:selectItem itemLabel="Approval Date" itemValue="A" />
+                                                <f:selectItem itemLabel="Fee Submit Date" itemValue="F" />
+                                                <f:selectItem itemLabel="Previous Permit valid upto +1 Date" itemValue="P" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Temp_route_area" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_route_area}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{g.temp_route_area}">
+                                                <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                                <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="genrate_ol_appl" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.genrate_ol_appl}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{g.genrate_ol_appl}">
+                                                <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                                <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="permanent_permit_valid" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.permanent_permit_valid}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{g.permanent_permit_valid}">
+                                                <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                                <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="allowed_surr_pur_cd" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.sur_pur_cd}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:selectCheckboxMenu id="sur_pur_cd" value="#{g.surPurList}" label="-SELECT PURPOSE-" >
+                                                <f:selectItems value="#{g.salectedPurList}" />
+                                            </p:selectCheckboxMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="temp_pmt_type" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.temp_pmt_type}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{g.temp_pmt_type}">
+                                                <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                                <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="renew_temp_pmt" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.renew_temp_pmt}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{g.renew_temp_pmt}">
+                                                <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                                <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="spl_pmt_route" style="width:200px;">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{g.spl_pmt_route}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{g.spl_pmt_route}">
+                                                <f:selectItem itemLabel="TRUE" itemValue="TRUE" />
+                                                <f:selectItem itemLabel="FALSE" itemValue="FALSE" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="EDIT/DELETE" style="width:90px;">
+                                    <p:rowEditor />
+                                </p:column>
+                            </p:dataTable>
+                        </p:scrollPanel>
+                    </p:panel>
+                </p:outputPanel>
+
+
+                <!--Data Tables Ends-->
+
+
+                <p:outputPanel id="aaaa">
+                    <p:blockUI block="@form" widgetVar="block_panel">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+
+            </h:body>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

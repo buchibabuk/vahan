@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <p:outputPanel id="hsrpltd">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p class="font-bold">Dear Sir/Madam,</p>
+                <ul class="lists">
+                    <li class="top-space"> As per the MoRTH Notification S.O. 1018(E) dated 25-Feb-2019, A vehicle manufacturer shall comply with the following procedure in regard to High Security Registration Plates (HSRP) for the vehicles manufactured on or after <b>1st April, 2019</b> namely:-</li>
+                    <li class="top-space">(a) The type approved High Security Registration Plates including the third registration plate (sticker to be pasted on windscreen), shall be supplied by the vehicle manufacturers to their dealers, who shall place a mark of registration on such plates and affix them on the auto-mobiles.</li>
+                    <!--<li class="top-space">The module 'HSRP Entry' of linking the Front and Back HSRP in VAHAN 4 after the Registration of Vehicle at Dealer end and RTO end has been provided. Please contact Dealer/Office Admin to assign the Linking HSRP module.</li>-->
+                </ul>
+            </div>
+        </div>
+        <div class="ui-grid-row top-space">
+            <div class="ui-grid-col-12 red font-bold center-position">
+                <h:outputText value="The Registration Certificate will be printed only after the linking of both the plates unique code with assigned Vehicle Registration Mark."/>
+            </div>
+        </div>
+        <div class="ui-grid-row center-position">
+            <div class="ui-grid-col-12">
+                <p:commandButton value="OK" immediate="true" icon="ui-icon-check" onclick="PF('dlghsrpltd').hide()" />
+            </div>
+        </div>
+    </p:outputPanel>
+</html>
+

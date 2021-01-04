@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="delform">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.officeModification}</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:outputPanel id="officeList_id">
+                            <p:dataTable rowIndexVar="index" id="officeName" value="#{officeModificationBean.allOfficeListOfState}"
+                                         paginator="true" paginatorPosition="bottom" filterDelay="100" var="officelistofstate"
+                                         rows="7" >
+                                <f:facet name="header">#{language.offList}</f:facet>
+                                <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="#{language.officeName}" styleClass="center-position" filterBy="#{officelistofstate.statecdWithOffcd}" filterMatchMode="contains" sortBy="#{officelistofstate.statecdWithOffcd}">
+                                    <h:outputText value="#{officelistofstate.statecdWithOffcd}"  />
+                                </p:column>
+                                <p:column headerText="#{language.user_modify}" styleClass="center-position">
+                                    <p:commandButton title="Edit"  icon="ui-icon-pencil" immediate="true">
+                                        <p:ajax event="click" listener="#{officeModificationBean.updateListner(officelistofstate)}" update=":delform:offDtls"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </div>
+                    <div class="ui-grid-col-8">
+                        <p:outputPanel id="offDtls">
+                            <p:panel id="off_panel" header="#{language.officeModificationForm}" styleClass="bottom-space">
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel styleClass="field-label-mandate" value="#{language.officeName}"/>
+                                        </label>
+                                        <p:inputText styleClass="input" converter="toUpperCaseConverter"
+                                                     maxlength="99" autocomplete="off" required="true" requiredMessage="#{language.blank} #{language.officeName}"  
+                                                     value="#{officeModificationBean.offModification.off_name}">
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel styleClass="field-label-mandate" value="#{language.offAddress}  1" />
+                                        </label>
+                                        <p:inputText styleClass="input" converter="toUpperCaseConverter"
+                                                     maxlength="100" autocomplete="off" required="true" requiredMessage="#{language.blank} #{language.offAddress} 1 !" 
+                                                     value="#{officeModificationBean.offModification.off_add1}">
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.offAddress} 2"/>
+                                        </label>
+                                        <p:inputText styleClass="input" converter="toUpperCaseConverter"
+                                                     maxlength="100" autocomplete="off"   
+                                                     value="#{officeModificationBean.offModification.off_add2}">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel styleClass="field-label-mandate" value="#{language.pin}"/>
+                                        </label>
+                                        <p:inputText styleClass="input"
+                                                     maxlength="6" autocomplete="off" required="true" requiredMessage="#{language.blank} #{language.pin}" 
+                                                     value="#{officeModificationBean.offModification.pinCode}">
+                                            <p:keyFilter regEx="/[0-9]/i"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.district} #{language.code}"/>
+                                        </label>
+                                        <p:inputText styleClass="input"
+                                                     maxlength="5" autocomplete="off" 
+                                                     value="#{officeModificationBean.offModification.district_Cd}">
+                                            <p:keyFilter regEx="/[0-9]/i"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="mob_no" value="#{language.user_mobileNo}"/>
+                                        </label>
+                                        <p:inputText id="mob_no" required="true" requiredMessage="#{language.blank} #{language.user_mobileNo}"
+                                                     value="#{officeModificationBean.offModification.mobileNo}"
+                                                     autocomplete="off" maxlength="10" >
+                                            <p:keyFilter regEx="/[0-9]/i"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.user_offcphn}"/>
+                                        </label>
+                                        <p:inputText styleClass="input"
+                                                     maxlength="15" autocomplete="off" 
+                                                     value="#{officeModificationBean.offModification.landLine_No}">
+                                            <p:keyFilter regEx="/[0-9]/i"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="email" value="#{language.user_email}"/>
+                                        </label>
+                                        <p:inputText id="email" required="true" requiredMessage="#{language.blank} #{language.user_email}"
+                                                     value="#{officeModificationBean.offModification.email_Id}" 
+                                                     autocomplete="off" validatorMessage="#{language.user_invalidemail}!!!">
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="#{language.offUnderCode}"/>
+                                        </label>
+                                        <p:inputText styleClass="input"
+                                                     maxlength="10" autocomplete="off" 
+                                                     value="#{officeModificationBean.offModification.off_under_cd}">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="off_type_cd" value="#{language.offTypeCode}"/>
+                                        </label>
+                                        <!--                                        <p:inputText styleClass="input"
+                                                                                             maxlength="10" autocomplete="off"  
+                                                                                             value="# {officeModificationBean.offModification.off_type_cd}">
+                                                                                </p:inputText>-->
+                                        <p:selectOneMenu id="off_type_cd" value="#{officeModificationBean.offModification.off_type_cd}" >
+                                            <f:selectItem itemLabel="#{language.transport}" itemValue="1"></f:selectItem>  
+                                            <f:selectItem itemLabel="#{language.nonTransport}" itemValue="2"></f:selectItem>  
+                                            <f:selectItem itemLabel="#{language.both}(#{language.transport}/#{language.nonTransport})" itemValue="0"></f:selectItem>  
+                                            <f:selectItem itemLabel="#{language.fitnessCentre}" itemValue="5"></f:selectItem>  
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="dt_holiday" value="#{language.vahanLaunchDate}"/>
+                                        </label>
+                                        <p:calendar id="dt_holiday" value="#{officeModificationBean.offModification.vow4_dt}" 
+                                                    disabled="true"
+                                                    mindate="true"                                             
+                                                    pattern="dd-MM-yyyy" navigator="true" readonlyInput="true">
+                                            <f:convertDateTime pattern="dd-MM-yyyy" for="dt_holiday"/>
+                                            <p:ajax event="dateSelect" update="dt_holiday"/>
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-4">
+                                        <p:selectBooleanCheckbox id="cb_hsrp"  value="#{officeModificationBean.offModification.hsrpFlag}" >
+                                            <p:ajax event="change" listener="#{officeModificationBean.checkFlatfile()}" update="@form"/>
+                                        </p:selectBooleanCheckbox> 
+                                        &nbsp;<h:outputText value="#{language.home_hsrp}:"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="rb_Rc_option"  value="RC Type:"/>
+                                        </label>
+                                        <p:selectOneMenu id="rb_Rc_option" value="#{officeModificationBean.offModification.rcOption}" >
+                                            <f:selectItem itemLabel="#{language.smartcardChipBasedRC}" itemValue="S"></f:selectItem>  
+                                            <f:selectItem itemLabel="#{language.paperBasedRcA4}" itemValue="R"></f:selectItem>  
+                                            <f:selectItem itemLabel="#{language.paperBasedFrontBackRC} (92.50mm x 58mm)" itemValue="P"></f:selectItem>  
+                                            <f:selectItem itemLabel="#{language.pvcBasedRc} (85.60 mm x 53.98 mm)" itemValue="V"></f:selectItem>  
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <p:selectBooleanCheckbox id="cb_old_hsrp" value="#{officeModificationBean.offModification.oldHsrp}" ></p:selectBooleanCheckbox> 
+                                        &nbsp;<h:outputText value="#{language.oldhsrp}:"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:panel id="button_panel" styleClass="bottom-space">
+                                <div class="ui-grid-row ">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="#{language.user_modify}" rendered="#{officeModificationBean.saveButton}" action="#{officeModificationBean.sendOtpMailAndAddModify('sendOtp')}" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();" update=":delform:officeList_id :delform:offDtls">
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:button value="#{language.login_back}" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                            <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                            <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                        </p:confirmDialog>                                    
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <p:outputPanel id="otp_confirmation">
+                    <p:dialog id="dialog_id"  widgetVar="otp_confrm" header="#{language.otpAddModifyOff}"  closable="false" modal="true" dynamic="true" >
+                        <p:messages  showDetail="true" showSummary="true" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 red">
+                                #{language.OTPSentMsg}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label>
+                                    <p:outputLabel value="#{language.login_enter_otp}:"/>
+                                </label>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <p:inputText value="#{officeModificationBean.enterOffOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <p:commandLink value="#{language.login_resend_otp}" action="#{officeModificationBean.sendOtpMailAndAddModify('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                               onsuccess="PF('ajax_status').hide()"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="#{language.otp_confirmation}" action="#{officeModificationBean.sendOtpMailAndAddModify('confirmOtp')}" onclick="PF('ajax_status').hide();
+                                                PF('ajax_status1').show()"
+                                                 onsuccess="PF('ajax_status1').hide();" update="@form">
+                                </p:commandButton>
+                                <p:commandButton value="#{language.close}" immediate="true" onclick="PF('ajax_status').hide()"  oncomplete="PF('otp_confrm').hide();" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block="@form" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%" />
+                </p:blockUI> 
+                <p:blockUI block="@form" widgetVar="ajax_status1">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%" />
+                    <div class="red font-bold">#{language.changesLoadedMsg}</div>
+                </p:blockUI>
+                <vcomponent:vahanMessages messages="#{officeModificationBean.vahanMessages}"  rendered="#{officeModificationBean.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

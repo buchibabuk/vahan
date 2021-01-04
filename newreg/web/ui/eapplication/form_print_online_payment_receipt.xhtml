@@ -1,0 +1,409 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title><ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert></title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="stylesheet.min.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+        <h:outputScript library="js" name="md5.js" />
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+        <h:outputScript library="js" name="utils.js" />
+    </h:head> 
+    <h:body>
+
+        <h:form id="PrintReceipt">
+
+            <div class="ui-grid ui-grid-responsive">
+                <ui:insert name="heading" >
+                    <ui:include src="#{onlinePayRcpBean.leftMenuURL}" />
+                </ui:insert>
+                <p:outputPanel rendered="#{onlinePayRcpBean.flagInclude}">
+                    <div class="center-position">
+                        <p:button value="Home" outcome="homePage" styleClass="display-none"/>
+                        <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                    </div>
+                    <p:outputPanel rendered="#{!onlinePayRcpBean.flagForTC}" >
+                        <div class="datatable-panel left-position" style="margin: 0px auto;">
+                            <table class="datatable-panel-100">
+                                <tr>
+                                    <td class="left-position">
+                                        <h:outputText value="Customer Copy"/>
+                                    </td>
+                                    <td class="right-position">
+                                        <h:outputText value="Printed On: " styleClass="font-bold"/> <h:outputText value="#{payCashReceiptBean.dobj.printedDate}" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <ui:include src="/ui/eapplication/formPayCashReceiptDetail.xhtml">
+                            <ui:param value="#{onlinePayRcpBean.taxFieldLabel}" name="taxFieldLabel"/>
+                        </ui:include>
+
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{onlinePayRcpBean.flagForTC}">
+                        <div class="datatable-panel left-position" style="margin: 0px auto; font-size: 11px;">
+                            <table class="datatable-panel-100">
+                                <tr>
+                                    <td class="left-position">
+                                        <h:outputText value="Office Copy"/>
+                                    </td>
+                                    <td class="right-position">
+                                        <h:outputText value="Printed On: " styleClass="font-bold"/> <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.printedDate}" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <p:outputPanel style="min-height: 490px !important;">
+                            <ui:include src="/ui/eapplication/formPayCashReceiptDetailForOnlineTrade.xhtml" />
+                        </p:outputPanel>
+                        <hr class="top-space bottom-space" />
+                        <div class="datatable-panel left-position" style="margin: 0px auto; font-size: 11px;">
+                            <table class="datatable-panel-100">
+                                <tr>
+                                    <td class="left-position">
+                                        <h:outputText value="Customer Copy"/>
+                                    </td>
+                                    <td class="right-position">
+                                        <h:outputText value="Printed On: " styleClass="font-bold"/> <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.printedDate}" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <ui:include src="/ui/eapplication/formPayCashReceiptDetailForOnlineTrade.xhtml" />
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:outputPanel rendered="#{onlinePayRcpBean.flagIncludefail}">
+                    <p:outputPanel id="pnl_show2" rendered="#{onlinePayRcpBean.flagIncludefail}">
+
+                        <p:outputPanel  id = "tableFailureId" rendered="#{onlinePayRcpBean.failureTab}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <h:outputText value="#{onlinePayRcpBean.mainHeading}" escape="false" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <span class="font-bold report-subheader"> <h:outputText escape="false" value="#{onlinePayRcpBean.subHeading}"/> </span>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <h1 class="header-main">e-Receipt of Fee and Tax</h1>
+                                </div>
+                            </div>
+                            <p:panel styleClass="vahan-grey-background bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Payment Id:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.transactionNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Transaction No:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.bankTransactionId}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Transaction Date:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.transactionDate}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Registration Nos:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.regnNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold"> Chassis Nos:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.chassisNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Transaction Amount:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.transactionAmount}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Amount In Words:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.amountInWords}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Bank Reference No:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.bankReferenceNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Status:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.status}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Back" action="homePage"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                        <p:outputPanel  id = "tablePendingId" rendered="#{onlinePayRcpBean.pendingTab}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <h:outputText value="#{onlinePayRcpBean.mainHeading}" escape="false" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <span class="font-bold report-subheader"> <h:outputText escape="false" value="#{onlinePayRcpBean.subHeading}"/> </span>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <h1 class="header-main">e-Receipt of Fee and Tax</h1>
+                                </div>
+                            </div>
+                            <p:panel styleClass="vahan-grey-background bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Payment Id:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.transactionNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Transaction No:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.bankTransactionId}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Transaction Date:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.transactionDate}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Registration Nos:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.regnNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold"> Chassis Nos:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.chassisNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Transaction Amount:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.transactionAmount}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Amount In Words:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.amountInWords}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Bank Reference No:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.bankReferenceNo}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <span class="font-bold">Status:</span>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    #{onlinePayRcpBean.status}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Back" action="homePage"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+
+                </p:outputPanel>
+
+
+
+                <!--End by amit-->
+
+                <p:outputPanel  id = "tableErrorId" rendered="#{onlinePayRcpBean.errorTab}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <h:outputText value="#{onlinePayRcpBean.mainHeading}" escape="false" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <span class="font-bold report-subheader"> <h:outputText escape="false" value="#{onlinePayRcpBean.subHeading}"/> </span>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <h1 class="header-main">e-Receipt of Fee and Tax</h1>
+                        </div>
+                    </div>
+                    <p:panel styleClass="vahan-grey-background bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <div class="font-bold red">
+                                    #{onlinePayRcpBean.failureMessage}
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Back" action="homePage"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:blockUI block="PrintReceipt" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </div>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      >    
+    <f:subview id="sub_view_Refund_Exess">
+        <p:outputPanel  rendered="#{not empty containerBean}" id="pn_tax_diff">
+            <p:dataTable id="tableRefAndExcess"  
+                         rowIndexVar="index" var="taxEntity"  value="#{containerBean.ref_list}" >
+                <f:facet name="header">
+                    <div class="left-position">
+                        Refund And Excess
+                    </div>
+                </f:facet>
+                <p:column headerText="Tax Head">
+                    <p:selectOneMenu   value="#{taxEntity.pur_cd}" >
+                        <f:selectItem itemLabel="Select Tax Type" itemValue="-1" />
+                        <f:selectItems value="#{taxEntity.pur_cd_list}" />
+                        <p:ajax event="change" update="tableRefAndExcess" listener="#{containerBean.selectTaxListner(taxEntity.pur_cd)}"/>
+                    </p:selectOneMenu>
+                </p:column>
+
+                <p:column headerText="Tax From">
+                    <p:calendar id="cal_tax_from" 
+                                pattern="dd-MMM-yyyy"
+                                required="true"
+                                requiredMessage="Please Select The From Date"
+                                readonlyInput="true"
+                                navigator="true"
+                                value="#{taxEntity.taxFrom}">
+                        <p:ajax event="dateSelect" listener="#{containerBean.listnerUpdateUptoForBalance(taxEntity)}" update="cal_tax_upto"/>
+                    </p:calendar>
+                </p:column>
+                <p:column headerText="Tax Upto">
+                    <p:calendar id="cal_tax_upto" 
+                                navigator="true" 
+                                required="true"
+                                mindate="#{taxEntity.taxFrom}"
+                                requiredMessage="Please Select The Upto Date"
+                                readonlyInput="true"
+                                pattern="dd-MMM-yyyy" 
+                                value="#{taxEntity.taxUpto}" />
+                </p:column>
+                <p:column headerText="Excess Amount" style="text-align: right">
+                    <p:inputText id="excessAmt" value="#{taxEntity.excessAmt}"  maxlength="8">
+                        <p:keyFilter for="excessAmt" mask="num"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="Refund Amount" style="text-align: right">
+                    <p:inputText id="refundAmt" value="#{taxEntity.refundAmt}"  maxlength="8" >
+                        <p:keyFilter for="refundAmt" mask="num"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="Balance Amount" style="text-align: right">
+                    <p:inputText id="balanceAmt" value="#{taxEntity.balanceAmt}"  maxlength="8" >
+                        <p:keyFilter for="balanceAmt" mask="num"/>
+                    </p:inputText>
+                </p:column>
+                <p:column id="commandButtonTaxDiff">
+                    <p:commandButton id="addTaxDiff" process="tableRefAndExcess"  icon="ui-icon-plusthick">
+                        <p:ajax process="tableRefAndExcess" event="click" listener="#{containerBean.addNewRowTaxDiff(taxEntity)}"></p:ajax>
+                        <f:param name="actionmode" value="addTaxDiff"/>
+                    </p:commandButton>
+                    <p:tooltip id="toolTipGrow1TaxDiff" for="addTaxDiff" value="Add new details"
+                               showEffect="clip" hideEffect="clip"  />
+                    <p:commandButton  id="minusTaxDiff"   icon="ui-icon-minusthick" >
+                        <p:ajax event="click" process="tableRefAndExcess" listener="#{containerBean.addNewRowTaxDiff(taxEntity)}"></p:ajax>
+                        <f:param name="actionmode" value="minusTaxDiff"/>
+                    </p:commandButton>
+                    <p:tooltip id="toolTipGrow2TaxDiff" for="minusTaxDiff" value="Remove details"
+                               showEffect="clip" hideEffect="clip" />
+                </p:column>
+                <p:keyFilter mask="num"   />
+            </p:dataTable>                    
+        </p:outputPanel> 
+    </f:subview>
+</html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <f:subview id="subview_owner_dtls">
+        <ui:composition>
+            <p:panel id="owner_details1" header="#{language.owner_information}" rendered="#{containerBean.ownerDobj ne null}" styleClass="top-space bottom-space">
+                <div class="ui-grid ui-grid-responsive">
+                    <p:outputPanel id="reg1">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no1" value="#{language.regn_no}"/>
+                                </label>
+                                <p:inputText id= "regn_no1" value="#{containerBean.ownerDobj.regn_no}" required="true"
+                                             requiredMessage="Blank Registration No." maxlength="10" autocomplete="off" disabled="true" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_type1" value="#{language.regn_type}"/>
+                                </label>
+                                <p:selectOneMenu id="regn_type1" value="#{containerBean.ownerDobj.regn_type}" filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_regn_type}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_dt1" value="#{language.regn_dt}"/>
+                                </label>
+                                <p:calendar  id="regn_dt1" value="#{containerBean.ownerDobj.regn_dt}" required="true" disabled="true"  
+                                             requiredMessage="Blank Registration Date" pattern="dd-MMM-yyyy" navigator="true" readonly="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" for="regn_dt"/> 
+                                </p:calendar>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="purchase_dt1" value="#{language.purchase_dt}"/>
+                                </label>
+                                <p:calendar id="purchase_dt1"  value="#{containerBean.ownerDobj.purchase_dt}" required="true" disabled="true" 
+                                            requiredMessage="Blank Purchase Date" pattern="dd-MMM-yyyy" navigator="true" readonly="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" for="purchase_dt"/> 
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_name1" value="#{language.owner_name}" />
+                                </label>
+                                <p:inputText id="tf_owner_name1" value="#{containerBean.ownerDobj.owner_name}"  required="true" styleClass="text-uppercase" disabled="true"
+                                             requiredMessage="Owner Name can not be empty" maxlength="35" autocomplete="off" readonly="true" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_f_name1" value="#{language.f_name}"/>
+                                </label>
+                                <p:inputText id="tf_f_name1" value="#{containerBean.ownerDobj.f_name}"  required="true" styleClass="text-uppercase"
+                                             disabled="true" requiredMessage="Father/Husband's Name can not be empty" maxlength="35" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_cd1" value="#{language.owner_cd}"/>
+                                </label>
+                                <p:selectOneMenu id="tf_owner_cd1"  value="#{containerBean.ownerDobj.owner_cd}" filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_owner_cd}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="dealer_cd1" value="#{language.user_dealer}"/>
+                                </label>
+                                <p:selectOneMenu id="dealer_cd1"  value="#{containerBean.ownerDobj.dealer_cd}" filter="true" disabled="true">
+                                    <f:selectItems value="#{owner_bean.list_dealer_cd}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_mobile_no1" value="#{language.user_mobileNo}"/>
+                                </label>
+                                <p:inputText id="tf_mobile_no1" value="#{containerBean.ownerDobj.owner_identity.mobile_no}"  maxlength="10" autocomplete="off" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_email1" value="#{language.user_email}"/>
+                                </label>
+                                <p:inputText id="tf_email1" value="#{containerBean.ownerDobj.owner_identity.email_id}" disabled="true"
+                                             maxlength="100" autocomplete="off" size="20" />
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </p:panel>
+        </ui:composition>
+    </f:subview>
+</html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">    
+
+    <ui:define name="content22">       
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formCD" prependId="false" enctype="multipart/form-data"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Insert Data In Table From External Device</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="applGenMsg"  closable="true"/>
+                    </div>
+                </div>
+                <p:panel id="panelApplInward" header="Insert CD Data" >
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-row-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="file" value="Select File To Upload:"  />
+                            </label>
+                            <p:fileUpload id="file" value="#{insertCDDataInTableBean.file}" mode="simple" allowTypes="/(\.|\/)(txt)$/"  required="true" requiredMessage="Please Select File To Upload...!!!"/>
+                        </div>
+                    </div>
+                    <p:outputPanel>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-9">
+                                <p:commandButton value="save"  action="#{insertCDDataInTableBean.upload()}"  ajax="false" icon = "ui-icon-disk" 
+                                                 onclick="PF('ajax_status').show()" process="panelApplInward" update="applGenMsg"
+                                                 oncomplete="PF('ajax_status').hide()">
+
+                                </p:commandButton>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:blockUI block="formCD" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

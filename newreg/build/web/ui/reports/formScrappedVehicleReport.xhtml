@@ -1,0 +1,183 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false" id="rtoWiseTtlCollectionId">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/reports/formScrappedVehicle.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{scrappedvchReportBean.dobj.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{scrappedvchReportBean.dobj.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{scrappedvchReportBean.dobj.image_logo}" style="width: 100px;" rendered="#{scrappedvchReportBean.dobj.show_image_logo}" />
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position">
+                            <span class="font-bold text-uppercase report-header">#{scrappedvchReportBean.dobj.heading}<br/> 
+                                <h:outputText value="#{scrappedvchReportBean.dobj.subHeading}" escape="false"/>
+                            </span><br/>
+                            <span class="font-bold text-uppercase report-sub-header bottom-line">
+                                <h:outputText value="#{scrappedvchReportBean.dobj.offname} #{scrappedvchReportBean.dobj.stateName}"/>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <div class="inline-section qrcode-position-absolute">
+                            <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                <ui:param name="qrcodevalue" value="#{scrappedvchReportBean.text}"/>   
+                                <ui:param name="renderqrCode" value="true"/>   
+                            </ui:include>
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <table class="datatable-panel-100 position-relative" style="margin: 0 auto;">
+                <tr>
+                    <td class="left-position">
+                        <div>
+                            <h:outputText value="F. NO.=#{scrappedvchReportBean.dobj.loino}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                        </div>
+                    </td>
+                    <td class="right-position">
+                        <div class="left-space">
+                            Dated:-
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div class="top-space right-position">
+                                <h:outputText value="LETTER OF INTENT [LOI]" styleClass="font-bold report-header bottom-line text-uppercase"/>  
+                            </div>
+                        </div>
+                    </td>
+                    <td class="center-position">
+                        <div class="float-right">
+                            <div style="border: 1px solid #000 !important; height: 140px; width: 120px; font-size: 10px;">
+                                <div class="top-space-50"> 
+                                    Please affix your recent passport size color photograph
+                                </div>
+                            </div>
+                            <img src=""  />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="datatable-panel bottom-space position-relative" style="margin: 0 auto;">
+                To,<br />
+                <h:outputText value="#{scrappedvchReportBean.dobj.ownName} " /> <br />
+                <h:outputText value=" #{scrappedvchReportBean.dobj.fname}" /> <br />
+                <table class="table-width-two" style="font-size: 12px;">
+                    <tr>
+                        <td class="left-position">
+                            <h:outputText value="#{scrappedvchReportBean.dobj.currentAddress}" />
+                        </td>
+                        <td>&#160;</td>
+                    </tr>
+                </table>
+                <br />
+                <div>
+                    Ref: Application for replacement against existing vehicle under section 83 of Motor Vehicle Act 1988.
+                    <br />
+                    Sir,
+                    On submission of required documents, clearance of all dues, completion of codal formalities and scrapping of existing
+                    vehicle from authorized scrapper as details mentioned below:-
+                </div>                
+                <div class="table-width-two">
+                    <h:panelGrid columns="2" styleClass="datatable-panel-100 top-space" style="font-size: 12px;">
+                        <h:outputLabel value="Vehicle Registration No (SCRAPPED) " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.oldRegnno}"/>
+                        <h:outputLabel value="Retained Registration No : " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.newRegnno}"/>
+                        <h:outputLabel value="Make &amp; Model " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.maker} &amp; #{scrappedvchReportBean.dobj.model}" />
+                        <h:outputLabel value="Chassis No " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.chasino}" />
+                        <h:outputLabel value="Eng No " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.engno}" />
+                        <h:outputLabel value="No Dues Certificate &amp; Date " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.nodueCertno} &amp; #{scrappedvchReportBean.dobj.nodueCertdt}"/>
+                        <h:outputLabel value="Scrapping Certificate No &amp; Date " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.scrapCertno} &amp;  #{scrappedvchReportBean.dobj.scrapCertdt}" />
+                        <h:outputLabel value="LOI No &amp; Date " styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.loino} &amp; #{scrappedvchReportBean.dobj.opdt}" />
+                        <h:outputLabel value="Reason" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{scrappedvchReportBean.dobj.scrap_reason}" />
+                    </h:panelGrid>
+                </div>     
+                <br/>
+                <div>
+                    This letter of intent is issued on the basis if declaration that you will comply and abide with the permit conditions
+                    framed on 08/08/2012 for purchase of new vehicle from any manufacturer through their authorized dealer in State.
+                    If at any stage it is found that you have provided wrong information and obtained this LOI,the department shall
+                    cancel the LOI and registration of vehicle (if registered on the basis of this LOI) and legal action shall be initiated
+                    against you. Any loss occurred for obtaining the LOI by means of fraud or misrepresentation, you will be solely
+                    responsible.
+                </div>
+
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <div class="datatable-panel center-position top-space bottom-space position-relative" style="margin: 0px auto;">
+                <table class="datatable-panel-100" style="font-size: 12px;">
+                    <tr>
+                        <td class="left-position">
+                            <div class="left-space">
+                                <h:outputText value="#{scrappedvchReportBean.dobj.userName}"/><br />
+                                Prepared by name and signature<br />
+                                Printed on :<h:outputText value="#{scrappedvchReportBean.dobj.printedon}"/>
+                            </div>
+                        </td>
+                        <td class="right-position">
+                            <div class="right-space">
+                                MLO Registering Authority<br />
+                                <h:outputText value="#{scrappedvchReportBean.dobj.offname}" />
+                                [ <h:outputText value="#{scrappedvchReportBean.dobj.stateName}" /> ]
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="datatable-panel-100 top-space position-relative" style="border: 1px solid #000000;"></div>
+            <table class="datatable-panel position-relative" style="margin: 0px auto; font-size: 12px;">
+                <tr>
+                    <td class="left-position">
+                        <div class="font-bold top-space">Note:</div>
+                        <ol class="inline-section">
+                            <li> This LOI is valid for 30 days from the issuance.</li>
+                            <li>(II) The vehicle may be purchased if the applicant is not holding any permit otherwise the newly
+                                purchased TSR will not be registered, (if registered shall be cancelled)</li>
+                        </ol>
+                    </td>
+                </tr>
+            </table>
+            <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{scrappedvchReportBean.dobj.showRoadSafetySlogan}">
+                <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                    <div class="center-position" style="display: inline-block;">
+                        <h:outputText value="#{scrappedvchReportBean.dobj.roadSafetySloganDobj.english_lang}" /><br/>
+                        <h:outputText value="#{scrappedvchReportBean.dobj.roadSafetySloganDobj.state_lang}" />
+
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"> 
+
+    <p:panel styleClass="top-space bottom-space">
+
+        <p:panel header="Registration Details" styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="oldRegNo" value="Old Registration No"/> 
+                    </label>
+                    <p:inputText id="oldRegNo" value="#{containerBean.otherStateVehDobj.oldRegnNo}" disabled="#{containerBean.disableOtherState}"
+                                 converter="toUpperCaseConverter"  requiredMessage="Blank Old Registration No"
+                                 maxlength="10" autocomplete="off" styleClass="input"/>  
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="entryDate" value="Entry Date"/>
+                    </label>
+                    <p:calendar id="entryDate" value="#{containerBean.otherStateVehDobj.stateEntryDate}" navigator="true" disabled="#{containerBean.disableOtherState}"
+                                 requiredMessage="Blank Entry Date" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                maxdate="#{containerBean.otherStateVehDobj.maxDate}"  autocomplete="off">                       
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                    </p:calendar>
+                </div>
+            </div>
+        </p:panel>
+
+
+        <p:panel header="NOC Details" styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel  for="nocNo" value="NOC No"/>
+                    </label>
+                    <p:inputText id="nocNo" value="#{containerBean.otherStateVehDobj.nocNo}"  converter="toUpperCaseConverter" disabled="#{containerBean.disableOtherState}"
+                                 requiredMessage="Blank NOC No" maxlength="30" autocomplete="off" styleClass="input"/>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="nocDate" value="NOC Issue Date:"/>
+                    </label>
+                    <p:calendar  id="nocDate" value="#{containerBean.otherStateVehDobj.nocDate}" navigator="true" disabled="#{containerBean.disableOtherState}"
+                                  requiredMessage="Blank NOC Issue Date" pattern="dd-MMM-yyyy" 
+                                 maxdate="#{containerBean.otherStateVehDobj.maxDate}" readonlyInput="true" autocomplete="off">                       
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                    </p:calendar> 
+                </div>
+
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel  for="oldState" value="Old State"/>
+                    </label>
+                    <p:selectOneMenu id="oldState" value="#{containerBean.otherStateVehDobj.oldStateCD}" filter="true" disabled="#{containerBean.disableOtherState}" >
+                        <f:selectItems value="#{containerBean.list_c_state}"/>
+                        <!--<p:ajax event="change" listener="#{containerBean.updateRtoFromStateListener}" update="oldOffice"/>-->
+                    </p:selectOneMenu>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="oldOffice" value="Old Office"/>
+                    </label>
+                    <p:selectOneMenu id="oldOffice" value="#{containerBean.otherStateVehDobj.oldOffCD}" filter="true" disabled="#{containerBean.disableOtherState}" >
+                        <f:selectItems value="#{containerBean.list_office_to}"/>
+                    </p:selectOneMenu> 
+                </div>
+
+            </div>
+        </p:panel>
+
+
+        <p:panel header="NCRB Details" styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="ncrbRef" value="Referernce No"/> 
+                    </label>
+                    <p:inputText id="ncrbRef" value="#{containerBean.otherStateVehDobj.ncrbRef}" converter="toUpperCaseConverter" disabled="#{containerBean.disableOtherState}"
+                                 maxlength="20" autocomplete="off" styleClass="text-uppercase"/>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="confirmRef" value="Confirm No"/> 
+                    </label>
+                    <p:inputText id="confirmRef" value="#{containerBean.otherStateVehDobj.confirmRef}" converter="toUpperCaseConverter" disabled="#{containerBean.disableOtherState}"
+                                 maxlength="15" autocomplete="off"  styleClass="text-uppercase"/>
+                </div>
+            </div>
+
+        </p:panel>
+    </p:panel>
+</html>

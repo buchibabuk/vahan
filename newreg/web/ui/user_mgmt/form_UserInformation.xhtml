@@ -1,0 +1,342 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">#{language.allUsersDetails}</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <div class="ui-grid-row top-space" >
+                <div class="ui-grid-col-12 center-position" >
+                    <h:outputText value="#{language.state} : " class="font-bold " style="font-size: 19px;" /> 
+                    <h:outputText value="#{userinformationbean.state_name}" class="font-bold red" style="font-size: 19px;" />
+                </div>
+            </div>
+            <div class="ui-grid-row top-space" >
+                <div class="ui-grid-col-12 center-position" >
+                    <h:outputText rendered="#{userinformationbean.renderOffice}"  value="#{language.user_office} : " class="font-bold " style="font-size: 19px;" /> 
+                    <h:outputText rendered="#{userinformationbean.renderOffice}"  value="#{userinformationbean.officeName}"  class="font-bold red" style="font-size: 19px;" />
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 right-position">
+                    <p:commandButton value="#{language.blockUserlistButton}"  icon="ui-icon-locked" styleClass="open-counter"  action="#{userinformationbean.getblockUser()}" style="margin-top: 24px !important" update="blockdialog" />
+                </div>
+            </div>
+
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-6">
+                    <p:outputPanel>
+                        <p:dataTable rowIndexVar="index"  id="userinfo" value="#{userinformationbean.listOfficeAdmin}"
+                                     paginator="true" paginatorPosition="bottom" filterDelay="100" var="offinfo"
+                                     rows="8" emptyMessage="#{language.noRecordFound}" 
+                                     rendered="#{userinformationbean.listOfficeAdmin.size() > 0}">
+                            <f:facet name="header">#{language.offAdminList}</f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                <h:outputText value="#{index+1}" />
+                            </p:column>
+                            <p:column headerText="#{language.officeName}" styleClass="center-position">
+                                <h:outputText value="#{offinfo.officeName}"  />
+                            </p:column>
+                            <p:column headerText="#{language.user_userID}"  styleClass="center-position">
+                                <h:outputText value="#{offinfo.user_id}"  />
+                            </p:column>
+                            <p:column headerText="#{language.user_username}" styleClass="center-position">
+                                <h:outputText value="#{offinfo.user_name}"  />
+                            </p:column>
+                            <p:column headerText="#{language.userInfoUnderOffAdmin}" styleClass="center-position" style="word-break: break-word !important">
+                                <p:commandButton title="Show" value="#{language.show}"  immediate="true"
+                                                 update=":dialog_list" 
+                                                 action="#{userinformationbean.fillDataTable(offinfo)}">
+                                    <p:ajax event="click" />
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="#{language.dealerUnderOffAdmin}" styleClass="center-position" style="word-break: break-word !important">
+                                <p:commandButton title="Show" value="#{language.show}"  immediate="true"
+                                                 update=":dialog_list1" 
+                                                 action="#{userinformationbean.fillDealerDataTable(offinfo)}">
+                                    <p:ajax event="click" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+                </div>
+                <div class="ui-grid-col-6 left-space">
+                    <p:outputPanel id="dialog">
+                        <p:dataTable rowIndexVar="index"
+                                     paginator="true" paginatorPosition="bottom"
+                                     rows="5" value="#{userinformationbean.offtiminglist}" var="offtiming" 
+                                     emptyMessage="#{language.noRecordAvailable}" >
+                            <f:facet name="header">#{language.officeOpenCloseTiming}</f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                <h:outputText value="#{index+1}" />
+                            </p:column>
+                            <p:column headerText="#{language.officeName}" styleClass="center-position">
+                                <h:outputText value="#{offtiming.officeName}"  />
+                            </p:column>
+                            <p:column headerText="#{language.officeOpenTiming}" styleClass="center-position">
+                                <h:outputText value="#{offtiming.open_timing}"  />
+                            </p:column>
+                            <p:column headerText="#{language.officeCloseTiming}" styleClass="center-position">
+                                <h:outputText value="#{offtiming.close_timing}"  />
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="ipdialog">
+                        <p:dataTable rowIndexVar="index" styleClass="top-space"
+                                     paginator="true" paginatorPosition="bottom"
+                                     rows="5" value="#{userinformationbean.offiplist}" 
+                                     emptyMessage="#{language.noRecordAvailable}" var="iplogin" 
+                                     >
+                            <f:facet name="header">#{language.ipBasedLoginOffice}</f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                <h:outputText value="#{index+1}" />
+                            </p:column>
+                            <p:column headerText="#{language.officeName}" styleClass="center-position">
+                                <h:outputText value="#{iplogin.officeName}"  />
+                            </p:column>
+                            <p:column headerText="#{language.totalIP}" styleClass="center-position">
+                                <p:commandLink value="#{iplogin.total_ip}" styleClass="font-bold content-link" 
+                                               action="#{userinformationbean.getipDetails(iplogin)}"
+                                               update=":ipdlts" immediate="true"> 
+                                    <p:ajax event="click" />
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+
+                </div>
+            </div>
+            <p:dialog id="dialog_list" header="#{language.userListUnderOffAdmin}" width="870" widgetVar="userlistUnderOffAdmin" modal="true">
+                <p:dataTable  rowIndexVar="index"
+                              paginator="true" paginatorPosition="bottom"
+                              rows="5"  value="#{userinformationbean.listUser}"
+                              rendered="#{userinformationbean.listUser.size() > 0}"
+                              var="userinfo" emptyMessage="#{language.noRecordAvailable}"
+                              >
+                    <f:facet name="header"> 
+                        <h:outputText value="#{language.officeName}: " class="report-header font-bold" />
+                        <h:outputText value="#{userinformationbean.userOfficeName}" class="report-header font-bold red" />
+                    </f:facet>
+
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                        <h:outputText value="#{index+1}" />
+                    </p:column>
+                    <p:column headerText="#{language.user_username}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_name}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_userID}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_id}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_usercategory}" styleClass="center-position">
+                        <h:outputText value="#{userinfo.userCatg_descr}"  />
+                    </p:column>
+                    <p:column headerText="#{language.currentStatus}" styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_status}"  />
+                    </p:column>
+                    <p:column headerText="#{language.assignActionList}" styleClass="center-position">
+                        <p:commandButton title="Show" value="#{language.show}" 
+                                         immediate="true" 
+                                         action="#{userinformationbean.getAssignAction(userinfo)}"
+                                         update=":assignActionList">
+                            <p:ajax event="click" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:dialog id="dialog_list1" header="#{language.dealerAdminListUnderOffAdmin}" width="870" widgetVar="dlrAdminlistUnderOffAdmin" modal="true">
+                <p:dataTable  rowIndexVar="index"
+                              paginator="true" paginatorPosition="bottom"
+                              rows="5"  value="#{userinformationbean.dealerUser}"
+                              rendered="#{userinformationbean.dealerUser.size() > 0}"
+                              var="userinfo" emptyMessage="#{language.noRecordFound}"
+                              >
+                    <f:facet name="header"> 
+                        <h:outputText value="#{language.officeName}: " class="report-header font-bold" />
+                        <h:outputText value="#{userinformationbean.userOfficeName}" class="report-header font-bold red" />
+                    </f:facet>
+
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                        <h:outputText value="#{index+1}" />
+                    </p:column>
+                    <p:column headerText="#{language.dealerName}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.dealer_name}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_username}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_name}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_userID}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_id}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_usercategory}" styleClass="center-position">
+                        <h:outputText value="#{userinfo.userCatg_descr}"  />
+                    </p:column>
+                    <p:column headerText="#{language.currentStatus}" styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_status}"  />
+                    </p:column>
+                    <p:column headerText="#{language.assignActionList}" styleClass="center-position">
+                        <p:commandButton title="Show" value="#{language.show}" 
+                                         immediate="true" 
+                                         action="#{userinformationbean.getAssignAction(userinfo)}"
+                                         update=":assignActionList">
+                            <p:ajax event="click" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column headerText="#{language.dealerStaffUnderDlrAdmin}" styleClass="center-position" style="word-break: break-word !important">
+                        <p:commandButton title="Show" value="Show"  immediate="true"
+                                         update=":dialog_list2" 
+                                         action="#{userinformationbean.fillDealerStaffDataTable(userinfo)}">
+                            <p:ajax event="click" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:dialog id="dialog_list2" header="#{language.dealerStaffUnderDlrAdminlist}" width="870" widgetVar="dlrStafflistUnderDealerAdmin" modal="true">
+                <p:dataTable  rowIndexVar="index"
+                              paginator="true" paginatorPosition="bottom"
+                              rows="5"  value="#{userinformationbean.dealerStaff}"
+                              rendered="#{userinformationbean.dealerStaff.size() > 0}"
+                              var="userinfo" emptyMessage="#{language.noRecordAvailable}"
+                              >
+                    <f:facet name="header"> 
+                        <h:outputText value="#{language.officeName}: " class="report-header font-bold" />
+                        <h:outputText value="#{userinformationbean.userOfficeName}" class="report-header font-bold red" />
+                    </f:facet>
+
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                        <h:outputText value="#{index+1}" />
+                    </p:column>
+                    <p:column headerText="#{language.dealerName}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.dealer_name}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_username}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_name}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_userID}"  styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_id}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_usercategory}" styleClass="center-position">
+                        <h:outputText value="#{userinfo.userCatg_descr}"  />
+                    </p:column>
+                    <p:column headerText="#{language.currentStatus}" styleClass="center-position">
+                        <h:outputText value="#{userinfo.user_status}"  />
+                    </p:column>
+                    <p:column headerText="#{language.assignActionList}" styleClass="center-position">
+                        <p:commandButton title="Show" value="#{language.show}" 
+                                         immediate="true" 
+                                         action="#{userinformationbean.getAssignAction(userinfo)}"
+                                         update=":assignActionList">
+                            <p:ajax event="click" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-6">
+                    <p:dialog header="#{language.assignActionList}" id="assignActionList" width="900" widgetVar="assignActionListUser" modal="true">
+                        <p:dataTable rowIndexVar="index" scrollable="true" styleClass="top-space"
+                                     paginator="true" paginatorPosition="bottom"
+                                     rows="10" var="assignactn" 
+                                     value="#{userinformationbean.actionlist}"
+                                     emptyMessage="#{language.noRecordAvailable}">
+                            <f:facet name="header"> 
+                                <h:outputText value="#{language.user_username}: " class="report-header font-bold" />
+                                <h:outputText value="#{userinformationbean.userName}" class="report-header font-bold red" />
+                            </f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                <h:outputText value="#{index+1}" />
+                            </p:column>
+                            <p:column headerText="#{language.actionName}" styleClass="center-position">
+                                <h:outputText value="#{assignactn.action_descr}"  />
+                            </p:column>
+                            <p:column headerText="#{language.actionDescr}" styleClass="center-position">
+                                <h:outputText value="#{assignactn.action_name}"  />
+                            </p:column>
+                            <p:column headerText="#{language.actionAssignDate}" styleClass="center-position">
+                                <h:outputText value="#{assignactn.entered_on}"  />
+                            </p:column>
+                        </p:dataTable>
+                    </p:dialog>
+                </div>
+            </div>
+
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-6">
+                    <p:outputPanel id="blockdialog">
+                        <p:dialog  width="1100" widgetVar="blockUSerDetails" modal="true">
+                            <p:dataTable rowIndexVar="index" styleClass="top-space"
+                                         paginator="true" paginatorPosition="bottom"
+                                         rows="5" value="#{userinformationbean.blockUserList}" var="blckuser" 
+                                         >
+                                <f:facet name="header">#{language.blockUserList}</f:facet>
+                                <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="#{language.officeName}" styleClass="center-position">
+                                    <h:outputText value="#{blckuser.officeName}"  />
+                                </p:column>
+                                <p:column headerText="#{language.user_username}" styleClass="center-position">
+                                    <h:outputText value="#{blckuser.user_name}"  />
+                                </p:column>
+                                <p:column headerText="#{language.blockedBy}" styleClass="center-position">
+                                    <h:outputText value="#{blckuser.blocked_by}"  />
+                                </p:column>
+                                <p:column headerText="#{language.blockUserCategory}" styleClass="center-position">
+                                    <h:outputText value="#{blckuser.bloked_user_catg}"  />
+                                </p:column>
+                                <p:column headerText="#{language.reason}" styleClass="center-position">
+                                    <h:outputText value="#{blckuser.reason}"  />
+                                </p:column>
+                            </p:dataTable>
+                        </p:dialog>
+                    </p:outputPanel>
+                </div>
+            </div>
+
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-6">
+                    <p:outputPanel id="ipdetailsdialog">
+                        <p:dialog header="#{language.user_IPList}" id="ipdlts" width="600" widgetVar="officeIpDetails" modal="true">
+                            <p:dataTable rowIndexVar="index" styleClass="top-space"
+                                         paginator="true" paginatorPosition="bottom"
+                                         rows="7" value="#{userinformationbean.ipDetailList}" var="ipdtls" 
+                                         >
+                                <f:facet name="header"> 
+                                    <h:outputText value="#{language.officeName}: " class="report-header font-bold" />
+                                    <h:outputText value="#{userinformationbean.userOfficeName}" class="report-header font-bold red" />
+                                </f:facet>
+                                <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="#{language.user_IPAddress}" styleClass="center-position">
+                                    <h:outputText value="#{ipdtls.ip_address}"  />
+                                </p:column>
+                            </p:dataTable>
+                        </p:dialog>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

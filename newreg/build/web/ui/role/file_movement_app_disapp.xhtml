@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <div class="ui-grid ui-grid-responsive">
+        <f:subview id="file_movement_app_disapp_form">
+            <p:panel id="panelMoveCancel" styleClass="top-space bottom-space">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="reasonList" value="Show Disapprove Reasons" type="button" rendered="#{app_disapp.disappPrint}" style="margin-right: 10px;" />
+                        <p:commandButton value="Print Disapproval Notice" action="#{app_disapp.disapprovalPrint}" rendered="#{app_disapp.disappPrint}" style="margin-right: 12px;"/>
+                        <p:menuButton value="Save-Options" disabled="#{app_disapp.disableSaveButton}">
+                            <p:menuitem id="fileMove" value="File Movement" onclick="PF('panelAppDisapp').show();"
+                                        icon="ui-icon-transferthick-e-w" immediate="true">
+                            </p:menuitem>
+                            <p:menuitem>
+                                <p:commandLink styleClass="ui-menuitem-link"  action="#{app_disapp.save()}" ajax="false"
+                                               onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();">
+                                    <h:outputText styleClass="ui-menuitem-icon ui-icon ui-icon-disk"/>
+                                    <h:outputText styleClass="ui-menuitem-text" value="Save" />
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandLink>
+                            </p:menuitem>
+                            <p:separator />
+                            <p:menuitem value="Homepage" url="/vahan/home.xhtml" icon="ui-icon-home" />
+                        </p:menuButton>
+                        <p:button value="Back" outcome="seatwork" onclick="PF('block_panel').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:blockUI block="panelMoveCancel" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+
+
+            <p:dialog header="File Movement" widgetVar="panelAppDisapp" modal="true" dynamic="true" closeOnEscape="true">
+
+                <p:panel id="panelAppDisapp">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-6">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Office Remarks" for="off_remark"/>
+                                    </label>
+                                    <p:inputTextarea id="off_remark" value="#{app_disapp.app_disapp_dobj.office_remark}" maxlength="100"
+                                                     cols="40" rows="1" placeholder="Office Remark ?" style="text-transform: uppercase" converter="toUpperCaseConverter"/>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:selectOneRadio id="bt_status"  value="#{app_disapp.app_disapp_dobj.new_status}" columns="1" layout="grid"
+                                              required="false" requiredMessage="You have to select atleast one option while Save">
+
+                                <f:selectItem itemLabel=" Proceed to Next Seat" itemValue="#{constant.STATUS_COMPLETE}"/>   <!-- Constant values comes from properties file -->
+                                <f:selectItem itemLabel=" Hold Due to Incomplete Application" itemValue="#{constant.STATUS_DISPATCH_PENDING}" 
+                                              itemDisabled="#{!app_disapp.app_disapp_dobj.renderHold}"/>
+                                <f:selectItem itemLabel=" Revert Back for Rectification" itemValue="#{constant.STATUS_REVERT}"
+                                              value="#{app_disapp.app_disapp_dobj.revertBack}"
+                                              itemDisabled="#{!app_disapp.app_disapp_dobj.renderRevert}"/>
+                                <f:selectItem itemLabel=" Not Recommend" itemValue="#{constant.STATUS_NOT_RECOMMEND}"
+                                              value="#{app_disapp.app_disapp_dobj.notRecommend}"
+                                              itemDisabled="#{!app_disapp.app_disapp_dobj.renderNotRecommend}"/>
+                                <p:ajax event="change" listener="#{app_disapp.reverBackListener}" update="panel_prevAction,panelAppDisapp"/>
+                            </p:selectOneRadio>
+
+                            <h:outputText/>
+                            <p:outputPanel id="panel_prevAction">
+                                <p:selectOneMenu id="prevAction" value="#{app_disapp.app_disapp_dobj.pre_action_code}"
+                                                 rendered="#{app_disapp.app_disapp_dobj.renderRevertList}">
+                                    <f:selectItems value="#{app_disapp.app_disapp_dobj.prevRoleLabelValue}" />
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                            <p:spacer height="20"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:separator style="color: green" />
+                            <p:spacer height="30"/>
+                            <p:outputPanel id="saveAndMoveFilePanel">
+                                <p:commandLink value="Save" action="#{app_disapp.saveAndMoveFile()}" 
+                                               style="padding: .3em 1em;" 
+                                               styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-text ui-c"
+                                               onclick="PF('bui').show();" oncomplete="PF('panelAppDisapp').hide();PF('bui').hide();">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandLink>
+                                <p:blockUI block="panelAppDisapp" widgetVar="bui">
+                                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                </p:blockUI>
+                                <p:spacer width="20"/>
+                                <!--                                <p:commandButton value="Compare Changes"
+                                                                                 oncomplete="PF('compChangesDlg').show();"
+                                                                                 update="compChangesDlgId" ajax="true"
+                                                                                 immediate="false" icon="ui-icon-newwin"
+                                                                                 action="#{app_disapp.compareChanges()}" >
+                                                                </p:commandButton>-->
+                            </p:outputPanel>
+                        </div>
+                    </div>
+
+                </p:panel>
+            </p:dialog>
+
+            <p:dialog id="reasonDialog" header="Add Reasons" widgetVar="reasonDlg" modal="true" dynamic="true">
+                <p:selectManyMenu id="reasons" value="#{app_disapp.app_disapp_dobj.selectedReasonList}" style="height: 150px;"
+                                  showCheckbox="true">
+                    <f:selectItems value="#{app_disapp.app_disapp_dobj.reasonList}" />
+                </p:selectManyMenu>
+                <p:commandButton  value="Save" action="#{app_disapp.saveWithReason()}" icon="ui-icon-disk">
+                </p:commandButton>
+            </p:dialog>
+
+            <p:overlayPanel id="reasonPanel" for="reasonList"  hideEffect="fade" dismissable="true" style="width:600px">
+                <p:dataList id="listofreason" value="#{app_disapp.app_disapp_dobj.assignedReasons}" var="reason" styleClass="bottom-space">
+                    <f:facet name="header">
+                        List Of Reasons
+                    </f:facet>
+                    #{reason}
+                </p:dataList>
+            </p:overlayPanel>
+
+
+            <p:dialog  id="compChangesDlgId" header="File Movement" widgetVar="compChangesDlg" modal="true" dynamic="true" closeOnEscape="true">
+                <p:dataTable var="comp" value="#{app_disapp.getCompBeanList()}"  paginator="true" rows="10" emptyMessage="No Changes Made by you">
+                    <p:column headerText="Field Name(s)">
+                        <h:outputText value="#{comp.fields}" />
+                    </p:column>
+
+                    <p:column headerText="Old Value(s)">
+                        <h:outputText value="#{comp.old_value}"/>
+                    </p:column>
+
+                    <p:column headerText="New Value(s)">
+                        <h:outputText value="#{comp.new_value}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+        </f:subview>
+    </div>
+</html>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content22">
+        <h:form id="formCloseCashCounter" prependId="false">     
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Close Cash Counter</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:panel id="CloseCashCounterPanel">
+                    <div class="ui-grid-row main_news_w">
+                        <div class="ui-grid-col-12 news_w">
+                            <c:choose id ="info">
+                                <c:when test="#{dayBeginBean.dobjObject.cashCounterClose eq true}">
+                                    Close Cash Counter at : <b>#{dayBeginBean.dobjObject.cashCounterCloseDateTime}</b>
+                                </c:when>
+                                <c:otherwise>
+                                    Open Cash Counter at : <b> #{dayBeginBean.dobjObject.cashCounterOpenDateTime}</b>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:button  value="Home" outcome="home" icon="ui-icon-home"/>  
+                            <c:choose id ="cash">
+                                <c:when test="#{dayBeginBean.dobjObject.cashCounterClose eq true}">
+                                    <p:commandButton value="Open Cash Counter for user : #{session.getAttribute('emp_name')}"  action="#{dayBeginBean.confirmCashOpenMsgIndi()}" icon="ui-icon-unlocked" styleClass="close-counter" />
+                                </c:when>
+                                <c:otherwise>
+                                    <p:commandButton value="Close Cash Counter for user : #{session.getAttribute('emp_name')}"  action="#{dayBeginBean.confirmCashOpenMsgIndi()}" icon="ui-icon-locked" styleClass="open-counter" />
+                                </c:otherwise>
+                            </c:choose>
+                        </div>                
+                    </div>     
+                    <p:dialog  id="isCashCaunterclose"  styleClass="center-position" widgetVar="CashCounterClose"
+                               modal="true" draggable="false" closable="false" hideEffect="explode" header="Cash Counter" >  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{dayBeginBean.cashCounterMassage}"/>
+                                </label>
+                                <p:commandButton  value="Yes" onclick="PF('CashCounterClose').hide();
+                                        PF('block_panel').show();"                                   
+                                                  actionListener="#{dayBeginBean.updateCashCounterIndividual()}" update="CloseCashCounterPanel" 
+                                                  icon="ui-icon-check" oncomplete="PF('block_panel').hide();"/>
+                                <p:commandButton value="No" onsuccess="PF('CashCounterClose').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable id="previousOpenClose"  value="#{dayBeginBean.list}" var="previousOpenClose" rows="10"  
+                                         widgetVar="seatWorkList" paginator="true" rowIndexVar="rowkey" rendered="#{dayBeginBean.list.size()>0}">
+                                <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                    <h:outputText value="#{rowkey+1}" />                                
+                                </p:column>
+                                <p:column headerText="Cash Counter Open Date Time">#{previousOpenClose.previousCashCounterOpenDt}</p:column>                        
+                                <p:column headerText="Cash Counter Close Date Time">#{previousOpenClose.previousCashCounterCloseDt}</p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:panel>
+            </div>
+            <p:blockUI block="CloseCashCounterPanel" widgetVar="block_panel">
+                <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>    
+    </ui:define>
+</ui:composition>

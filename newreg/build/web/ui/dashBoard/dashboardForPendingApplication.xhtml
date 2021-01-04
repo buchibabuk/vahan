@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="content22">
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+
+        <script type="text/javascript">
+            function counterUpdate() {
+                window.setTimeout(function() {
+                    $('.count').each(function() {
+                        $(this).prop('Counter', 0).animate({
+                            Counter: $(this).text()
+                        }, {
+                            duration: 3000,
+                            easing: 'swing',
+                            step: function(now) {
+                                $(this).text(Math.ceil(now));
+                            }
+                        });
+                    });
+                }, 1000)
+
+            }
+            counterUpdate();
+        </script>
+
+        <style type="text/css">
+            .ui-treetable table {
+                table-layout: fixed
+            }
+            .ui-treetable .ui-treetable-data>tr>td .ui-treetable-toggler.ui-icon-triangle-1-e,
+            .ui-treetable .ui-treetable-data>tr>td .ui-treetable-toggler.ui-icon-triangle-1-s{
+                font-family: 'primeicons';
+                speak: none;
+                font-style: normal;
+                font-weight: bold;
+                font-variant: normal;
+                text-transform: none;
+                line-height: 1;
+                display: inline-block;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-indent: 0 !important;
+                text-align: center;
+                background: 0;
+                display: inline-block;
+                font-size: 1.5em;
+                margin-right: 2px;
+            }
+            .ui-treetable .ui-treetable-data>tr>td .ui-treetable-toggler.ui-icon-triangle-1-s:before{
+                content:"\e082";
+                font-family: 'Glyphicons Halflings';
+                font-size: .75em;
+                color: #db9d3b;
+            }
+            .ui-treetable .ui-treetable-data>tr>td .ui-treetable-toggler.ui-icon-triangle-1-e:before {
+                content:"\e081";
+                font-family: 'Glyphicons Halflings';
+                font-size: .75em;
+                color: green;
+            }
+            .value {
+                font-weight: bold
+            }
+            #actionWiseAppl1 table, #actionWiseAppl1 table th{
+                background: #fdf4c8;
+                border: none !important; 
+
+            }
+            #actionWiseAppl1 h2{
+                width: 96%;
+                text-align: center;
+                font-size: 14px;
+                font-weight: bold;
+
+                padding: 3px;
+                border-bottom: 2px solid #000;
+            }
+            .blueish
+            {
+                color: #5fb4ef !important;  
+            } 
+            .greenish
+            {
+                color: #93cd6b !important;  
+            } 
+            .yellowish
+            {
+                color: #db9d3b !important;  
+            } 
+            .panelBox
+            {
+                width: 96%;
+                height: 100px;
+                border-top-right-radius: 20px;
+                border-bottom-left-radius: 20px;
+                margin: 10px;
+                padding: 20px;
+                font-size: 20px;
+                color: #FFFFFF;
+            }
+            .panelBox h2
+            {
+                color: #fff;
+                font-size: 20px;
+            }
+            .blueBox
+            {
+                color: #fff;
+                background: #5fb4ef!important;
+                border: 1px solid #56a2d8!important;
+                box-shadow: 12px 7px 10px #333;
+                text-align: center;
+            }
+            .greenBox
+            {
+                color: #fff;
+                background: #a1c436!important;
+                border: 1px solid #91b131!important;
+                box-shadow: 12px 7px 10px #333;
+                text-align: center;
+            }
+            .yellowBox
+            {
+                color: #fff!important;
+                background: #db9d3b!important;
+                border: 1px solid #db9d3b!important;
+                box-shadow: 12px 7px 10px #333;
+                text-align: center;
+            }
+
+        </style>
+    </ui:define>
+    <ui:define name="content"> 
+        <p:growl id="msgs" showDetail="true" escape="false"/>
+        <div class="ui-grid-row center-position top-space">
+            <div class="ui-grid-col-12">
+                <h2 class="header-subheader text-capitalize underline-text">
+                    DashBoard for Pending work                               
+                </h2>
+            </div>
+        </div>
+        <div class="ui-grid ui-grid-responsive">
+            <p:outputPanel id="officeSelection"  >
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4 top-space">
+                        <label class="field-label resp-label-section" >
+                            <p:outputLabel value="Select  Office:"/>
+
+                        </label>
+                        <p:selectOneMenu id="officeList" value="#{applDash.office_cd}"  styleClass="bottom-space" filter="true" filterMatchMode="contains" disabled="#{applDash.disableOfficeSelection}">
+                            <f:selectItem itemLabel="Select  Office" itemValue="-1"/>
+                            <f:selectItems value="#{applDash.officeList}" />
+                            <p:ajax event="change" update="officeSelection1 officeList " listener="#{applDash.updateOffWiseDasBoard()}" />
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel id="officeSelection1"  >
+                <p:outputPanel id="officeSelection2" rendered="#{applDash.renderTreePannel}" >
+                    <div class="ui-grid-row top-space">
+                        <div class="ui-grid-col-4 panelBox blueBox">
+                            <p:outputPanel id="card1"  >
+                                <h2>
+                                    <div id="1" ><span class="count">#{applDash.actionWiseTotal}</span></div>
+                                </h2>
+                            </p:outputPanel>
+                            <div class="font-bold">
+                                <h:outputText value="Transaction Wise"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-4 panelBox greenBox">
+                            <p:outputPanel id="card2" >
+                                <h2>
+                                    <div id="2" ><span class="count">#{applDash.vhClassWiseTotal}</span></div>
+                                </h2>
+                            </p:outputPanel>
+
+                            <div class="font-bold">
+                                <h:outputText value="Registration Type/Norms Wise"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-col-4 panelBox yellowBox">
+                            <p:outputPanel id="card3" >
+                                <h2>
+                                    <div id="3" ><span class="count" >#{applDash.permitWiseTotal}</span></div>
+                                </h2>
+                            </p:outputPanel>
+                            <div class="font-bold">
+                                <h:outputText value="Permit Wise "/>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="ui-grid-row top-space" id="actionWiseAppl1" >
+                        <p:blockUI block="actionWiseAppl" widgetVar="statusDialog1">
+                            <p:graphicImage name="preloader.gif" library="images" width="80" height="80px"/>
+                        </p:blockUI>
+                        <p:remoteCommand async="true" name="rc1" onstart="PF('statusDialog1').show()" onsuccess="PF('statusDialog1').hide()" update="actionWiseAppl card1 " autoRun="true" action="#{applDash.actionWiseLoadData()}" />
+
+                        <div class="ui-grid-col-4" style="margin: 0px 10px !important;">
+                            <p:outputPanel id="actionWiseAppl">
+                                <h2 class="blueish"> Action Wise Application</h2>
+                                <p:treeTable value="#{applDash.treeNodeActionWise}" var="document"  styleClass="datatable-panel"   >
+                                    <p:column headerText="Description">
+                                        <p:outputLabel escape="false" value="#{document.nodeName}" styleClass="inline-section" />   
+                                    </p:column>
+                                    <p:column headerText="Total" style="width: 30% !important;" styleClass="center-position"  >
+                                        <h:outputText value="#{document.total}" />
+                                    </p:column>
+                                    <p:column headerText="Show" style="width: 12%">
+                                        <p:commandLink   title="View Detail"  action="#{applDash.displaySelectedSingle(document)}" onclick="PF('dialog').show();" oncomplete="PF('dialog').hide();">
+                                            <p> <span class="glyphicon glyphicon-search"></span></p>
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:treeTable>
+                            </p:outputPanel>
+                        </div>
+                        <p:blockUI block="vhclassWiseAppl" widgetVar="vhclassWiseDialog1">
+                            <p:graphicImage name="preloader.gif" library="images" width="80px" height="80px"/>
+                        </p:blockUI>
+                        <p:remoteCommand async="true" name="rc11" onstart="PF('vhclassWiseDialog1').show()"  onsuccess="PF('vhclassWiseDialog1').hide()" update="vhclassWiseAppl card2" autoRun="true" action="#{applDash.vhclassWiseLoadData()}" />
+                        <div class="ui-grid-col-4" style="margin: 0px 10px !important;">
+                            <p:outputPanel id="vhclassWiseAppl">
+                                <h2 class="greenish"> Registration Type/Norms Wise Application</h2>
+                                <p:treeTable value="#{applDash.treeNodeVhClassWise}" var="document"   >
+                                    <p:column headerText="Description">
+                                        <p:outputLabel   escape="false" value="#{document.nodeName}" styleClass="inline-section" title="#{document.nodeName}"/>   
+                                    </p:column>
+                                    <p:column headerText="Total" style="width: 33% !important;" styleClass="center-position">
+                                        <h:outputText value="#{document.total}"  />
+                                    </p:column>
+                                    <p:column headerText="Show" style="width: 12%">
+                                        <p:commandLink   title="View Detail"  action="#{applDash.displaySelectedSingle(document)}" rendered="#{(document.regnType !='')}" onclick="PF('dialog').show();" oncomplete="PF('dialog').hide();">
+                                            <p> <span class="glyphicon glyphicon-search"></span></p>
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:treeTable>
+                            </p:outputPanel>
+                        </div>
+                        <p:blockUI block="permitWiseAppl" widgetVar="permitWiseDialog1" >
+                            <p:graphicImage name="preloader.gif" library="images" width="80px" height="80px"/>
+                        </p:blockUI>
+                        <p:remoteCommand async="true" name="rc12" onstart="PF('permitWiseDialog1').show()" onsuccess="PF('permitWiseDialog1').hide()" update="permitWiseAppl card3" autoRun="true" action="#{applDash.permitWiseLoadData()}" />
+                        <div class="ui-grid-col-4" style="margin: 0px 10px !important;">
+                            <p:outputPanel id="permitWiseAppl">
+                                <h2 class="yellowish">Permit Wise  Application</h2>
+                                <p:treeTable value="#{applDash.treeNodePermitWise}" var="document" styleClass="datatable-panel"   >
+                                    <p:column headerText="Description">
+                                        <p:outputLabel   escape="false" value="#{document.nodeName}"  styleClass="inline-section" title="" />   
+                                    </p:column>
+                                    <p:column headerText="Total" styleClass="center-position">
+                                        <h:outputText value="#{document.total}" />
+                                    </p:column>
+                                    <p:column headerText="Show" style="width: 12%">
+                                        <p:commandLink   title="View Detail"  action="#{applDash.displaySelectedSingle(document)}" rendered="#{(document.pmtType > 0)}" onclick="PF('dialog').show();" oncomplete="PF('dialog').hide();">
+                                            <p> <span class="glyphicon glyphicon-search"></span></p>
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:treeTable>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+
+                    <p:outputPanel id="pendingAppl" >
+                        <ui:include src="/ui/dashBoard/allPendingAppl.xhtml">
+                            <ui:param name="dashBoard" value="#{applDash}"/> 
+                        </ui:include>
+                    </p:outputPanel>
+
+                </p:outputPanel>
+            </p:outputPanel>
+            <p:blockUI block=":masterLayout" widgetVar="dialog">
+                <p:graphicImage name="preloader.gif" library="images" width="80px" height="80px"/>
+            </p:blockUI>
+        </div>  
+    </ui:define>
+</ui:composition>

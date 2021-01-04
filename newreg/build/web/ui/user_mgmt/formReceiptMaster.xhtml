@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="script">
+    </ui:define>
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Receipt Number Master</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4" />
+                <div class="ui-grid-col-5">
+                    <p:outputPanel id="selectionPanel" styleClass="bottom-space">
+                        <p:selectOneRadio id="selectBook" value="#{receiptMasterBean.selectBook}">
+                            <f:selectItem itemLabel="Running Books" itemValue="R" />
+                            <f:selectItem itemLabel="Expired/Used Books" itemValue="E" />
+                            <f:selectItem itemLabel="Issue New Book" itemValue="N" />
+                            <p:ajax listener="#{receiptMasterBean.receiptBookListener}" update="panel1,panel2,panel3,savePanel" />
+                        </p:selectOneRadio>
+                    </p:outputPanel>
+                </div>
+                <div class="ui-grid-col-3" />
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2">
+                </div>
+                <div class="ui-grid-col-8">
+                    <p:outputPanel id="panel1">
+                        <p:panel id="runningBook" rendered="#{receiptMasterBean.panel1}" header="Running Book" styleClass="bottom-space">
+                            <p:dataTable id="runningDt" value="#{receiptMasterBean.issuedList.toArray()}" editable="true" var="exp" rowIndexVar="index" >
+                                <p:ajax event="rowEdit" listener="#{receiptMasterBean.onRowEdit(exp)}" update="runningDt" />
+                                <p:column headerText="SI No">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="Book">
+                                    <h:outputText value="#{exp.rcptPrefix}" />
+                                </p:column>
+                                <p:column headerText="Start Number">
+                                    <h:outputText value="#{exp.rcptStart}" />
+                                </p:column>
+                                <p:column headerText="End Number">
+                                    <h:outputText value="#{exp.rcptEnd}" />
+                                </p:column>
+                                <p:column headerText="Current Number">
+                                    <h:outputText value="#{exp.rcptCurrent}" />
+                                </p:column>
+                                <p:column headerText="Issued To">
+                                    <h:outputText value="#{exp.userName}" />
+                                </p:column>
+                                <p:column headerText="Expired">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{exp.expiredFlag}" /></f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu value="#{receiptMasterBean.receiptDobj.expiredFlag}">
+                                                <f:selectItems value="#{receiptMasterBean.expireList}" />
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Edit" style="width:32px">
+                                    <p:rowEditor />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="panel2">
+                        <p:panel id="expiredBook"  rendered="#{receiptMasterBean.panel2}" header="Expired/Used Book" styleClass="bottom-space">
+                            <p:dataTable value="#{receiptMasterBean.expiredList.toArray()}" var="exp" rowIndexVar="index" >
+                                <p:column headerText="SI No">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column headerText="Book">
+                                    <h:outputText value="#{exp.rcptPrefix}" />
+                                </p:column>
+                                <p:column headerText="Start Number">
+                                    <h:outputText value="#{exp.rcptStart}" />
+                                </p:column>
+                                <p:column headerText="End Number">
+                                    <h:outputText value="#{exp.rcptEnd}" />
+                                </p:column>
+                                <p:column headerText="Current Number">
+                                    <h:outputText value="#{exp.rcptCurrent}" />
+                                </p:column>
+                                <p:column headerText="Issued To">
+                                    <h:outputText value="#{exp.userName}" />
+                                </p:column>
+                                <p:column headerText="Expired">
+                                    <h:outputText value="#{exp.expiredFlag}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="panel3">
+                        <p:panel id="issueNewBook" rendered="#{receiptMasterBean.panel3}" header="Issue New Book" styleClass="bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="user" value="User/Cashier"/>
+                                    </label>
+                                    <p:selectOneMenu id="user" value="#{receiptMasterBean.receiptDobj.rcptUserCode}" required="true"
+                                                     filter="true" requiredMessage="Blank : User">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                        <f:selectItems value="#{receiptMasterBean.userList}" />
+                                        <f:validator validatorId="selectOneValidator" for="user" />
+                                        <p:ajax listener="#{receiptMasterBean.verifyUser}" update="issueNewBook" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="bookName" value="Receipt Prefix" />
+                                    </label>
+                                    <p:inputText id="bookName" value="#{receiptMasterBean.receiptDobj.rcptPrefix}" required="true" requiredMessage="Blank : Book Name"
+                                                 disabled="#{receiptMasterBean.disabled}"  converter="toUpperCaseConverter" style="text-transform: uppercase;" maxlength="2">
+                                        <p:ajax event="blur" listener="#{receiptMasterBean.validateBookName}" update="issueNewBook" />
+                                    </p:inputText>
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="startAt" value="Start Number"/>
+                                    </label>
+                                    <p:inputText id="startAt" value="#{receiptMasterBean.receiptDobj.rcptStart}" required="true" requiredMessage="Blank : Start At"
+                                                 disabled="#{receiptMasterBean.disabled}" converter="toUpperCaseConverter" style="text-transform: uppercase;" maxlength="9">
+                                        <p:ajax listener="#{receiptMasterBean.startAtListener}" update="issueNewBook" />
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="endNo" value="End Number"/>
+                                    </label>
+                                    <p:inputText id="endNo" value="#{receiptMasterBean.receiptDobj.rcptEnd}" converter="toUpperCaseConverter"
+                                                 disabled="#{receiptMasterBean.disabled}" required="true" requiredMessage="Blank : End Number" style="text-transform: uppercase;" maxlength="9">
+                                        <p:ajax event="blur" listener="#{receiptMasterBean.checkSeries}" update="issueNewBook"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="currentNo" value="Current Number"/>
+                                    </label>
+                                    <p:inputText id="currentNo" value="#{receiptMasterBean.receiptDobj.rcptCurrent}" required="true" style="text-transform: uppercase;" disabled="true"
+                                                 converter="toUpperCaseConverter" requiredMessage="Blank : Current Number" maxlength="9">
+                                        <f:ajax event="blur" render="@this" execute="@this" />
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <p:keyFilter for="startAt" mask="num" />
+                            <p:keyFilter for="endNo" mask="num" />
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:outputPanel id="savePanel">
+                        <p:panel styleClass="bottom-space" rendered="#{receiptMasterBean.savePanelRender}">
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton id="submitBtn" value="Save" icon="ui-icon-disk" action="#{receiptMasterBean.issueNewBook()}"
+                                                     ajax="true" title="Save/Update Dealer" update="issueNewBook">
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                    <p:commandButton id="resetBtn" value="Reset" action="#{receiptMasterBean.reset()}"
+                                                     immediate="true" icon="ui-icon-refresh"  update="issueNewBook">
+                                        <p:resetInput target="panel3" />
+                                    </p:commandButton>
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                    </p:confirmDialog>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                </div>
+                <div class="ui-grid-col-2">
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

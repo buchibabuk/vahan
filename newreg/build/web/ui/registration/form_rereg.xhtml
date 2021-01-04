@@ -1,0 +1,425 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{reReg.appl_details}"/>            
+            </ui:include>  
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form_rereg" prependId="false">
+            <p:messages closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <p:outputPanel id="ins_dtls" styleClass="bottom-space">
+                <ui:include src="/ui/form_ins_dtls.xhtml"/>
+            </p:outputPanel>
+
+
+            <p:panel header="Re Assignment Of Number">
+                <p:outputPanel id="adv_ret_panel">
+                    <div class="ui-grid-row bottom-space center-position">                        
+                        <div class="ui-grid-col-12">
+                            <div class="inline-section right-space">
+                                <p:selectBooleanCheckbox id="adv_regn"  value="#{reReg.advRegnCheck}" styleClass="inline-section" disabled="#{reReg.disableAdvRegnCheck}"  >
+                                    <p:ajax update="pd_choice_no" listener="#{reReg.advanceCheckListener}"/>
+                                </p:selectBooleanCheckbox>
+                                <h:outputText value="Please Check Only If Advance Registration No Allotted." styleClass="inline-section font-bold left-space red"/>                                    
+                            </div>
+                            <div class="inline-section">
+                                <p:outputPanel rendered="#{reReg.retAllowed}">
+                                    <p:selectBooleanCheckbox id="adv_ret"  value="#{reReg.retCheck}" styleClass="inline-section" disabled="#{reReg.disableRetCheck}"  >
+                                        <p:ajax update="ret_panel" listener="#{reReg.retCheckListener}"/>
+                                    </p:selectBooleanCheckbox>  
+                                    <h:outputText value="Please Check Only If Retention No to be Allotted" styleClass="inline-section font-bold left-space red"/>
+                                </p:outputPanel>
+                            </div>
+                            <div class="inline-section">
+                                <p:outputPanel rendered="#{reReg.oddEvenRender}">
+                                    <p:selectBooleanCheckbox id="randomOddEven"  value="#{reReg.oddEvenOpted}" styleClass="inline-section" disabled="#{reReg.disableOddEvenChk}"  >                                        
+                                    </p:selectBooleanCheckbox>  
+                                    <h:outputText value="Please Check Only If Random Odd Even No to be Allotted" styleClass="inline-section font-bold left-space red"/>
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="ReAssignment">
+                    <p:outputPanel id="permitDetails">
+                        <p:outputPanel rendered="#{reReg.permitPanel}">     
+                            <div class="ui-grid-row">  
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="permit_type" value="Permit Type"/>
+                                    </label>
+                                    <p:selectOneMenu id="permit_type" value="#{reReg.pmt_type}" filter="true" filterMatchMode="contains" validator="#{reReg.validatePermitType}">                
+                                        <f:selectItem itemLabel="--SELECT PERMIT TYPE--" itemValue="-1"/>
+                                        <f:selectItems value="#{reReg.permitTypeList}"/>
+                                        <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                                        <f:ajax event="change" listener="#{reReg.permitTypeChangeListener}" execute="@this" render="permit_catg"/>
+                                    </p:selectOneMenu> 
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="permit_catg" value="Permit Category"/>
+                                    </label>
+                                    <p:selectOneMenu id="permit_catg" value="#{reReg.pmt_catg}" filter="true" filterMatchMode="contains" validator="#{reReg.validatePermitCatg}">                
+                                        <f:selectItem itemLabel="--SELECT PERMIT CATEGORY--" itemValue="-1"/>
+                                        <f:selectItems value="#{reReg.permitCategoryList}" />
+                                        <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                                    </p:selectOneMenu>                 
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_New_regnno" value="New Regn No:"/>
+                            </label>
+                            <p:inputText id="tf_New_regnno"  value="#{reReg.new_regn_no}" size="25"
+                                         requiredMessage="Blank : New Registration No" converter="toUpperCaseConverter"
+                                         disabled="true" maxlength="10" required="true" autocomplete="off">
+                                <f:validateLength maximum="10"/>
+                                <f:validateRequired/> 
+                                <f:validateRegex pattern="([a-zA-Z0-9]*)"/>
+                            </p:inputText>
+
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="cm_va_reason" value="Reason"/>
+                            </label>
+                            <p:selectOneMenu id="cm_va_reason" value="#{reReg.reasonSelect}" 
+                                             valueChangeListener="#{reReg.reasonChangeListener}" >
+                                <f:selectItems value="#{reReg.listReason}" />   
+                                <p:ajax event="change" update="tf_reason"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="cm_va_reason" value="&#160;"/>
+                            </label>
+                            <p:inputText id="tf_reason"  value="#{reReg.reason}" size="25" converter="toUpperCaseConverter" requiredMessage="Blank : Re-Reg Reason"
+                                         maxlength="25" required="true" autocomplete="off" disabled="#{reReg.disable}">
+                                <f:validateLength maximum="25"/>
+                                <f:validateRequired/>                                  
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </p:panel>
+            <p:dialog id="pd_choice_no" widgetVar="wd_choiceno" modal="true" visible="#{reReg.advRegnCheckDialogue}"
+                      draggable="false" closable="false" header="Choice Number Details" dynamic="true">
+                <p:panel id="pn_adv_app_dtl" header="Advance Regn details" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages id="choiceMsg" closable="true"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_recp_no" value="Receipt No"/>
+                            </label>
+                            <p:inputText  id="tf_recp_no" value="#{reReg.advRegnNoDobj.recp_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase">
+                                <p:ajax listener="#{reReg.advanceRcptListener}" update="pn_adv_app_dtl pn_adv_cur_add"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_regn_no" value="Advance Regn No"/>
+                            </label>
+                            <p:inputText  id="tf_adv_regn_no" value="#{reReg.advRegnNoDobj.regn_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_owner_name" value="#{label.owner_name}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_owner_name" value="#{reReg.advRegnNoDobj.owner_name}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_mob_no" value="#{label.mob_no}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_mob_no" value="#{reReg.advRegnNoDobj.mobile_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel id="pn_adv_cur_add" header="Current Address" styleClass="top-space bottom-space">
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add1" value="#{label.address1}"/>
+                            </label>
+                            <p:inputText  id="add1" value="#{reReg.advRegnNoDobj.c_add1}"
+                                          maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add2" value="#{label.address2}"/>
+                            </label>
+                            <p:inputText id="add2" value="#{reReg.advRegnNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                         maxlength="35"   autocomplete="off" style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add3" value="#{label.address3}"/>
+                            </label>
+                            <p:inputText  id="add3" value="#{reReg.advRegnNoDobj.c_add3}"
+                                          maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="state" value="#{label.state}"/>
+                            </label>
+                            <p:selectOneMenu id="state" value="#{reReg.advRegnNoDobj.c_state}" filter="true"
+                                             disabled="true">
+                                <f:selectItems value="#{reReg.list_c_state}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="district" value="#{label.district}"/>
+                            </label>
+                            <p:selectOneMenu id="district"  value="#{reReg.advRegnNoDobj.c_district}"  filter="true" disabled="true">
+                                <f:selectItems value="#{reReg.list_adv_district}"/>
+                                <f:ajax/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="pincode" value="Pin"/>
+                            </label>
+                            <p:inputText id="pincode" value="#{reReg.advRegnNoDobj.c_pincode}" size="10"
+                                         requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="tf_button_save" value="Save" immediate="true"  oncomplete="PF('wd_choiceno').hide();">
+                            <p:ajax listener="#{reReg.advanceSaveListener}" update="tf_New_regnno adv_regn adv_ret_panel"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="Exit" immediate="true" oncomplete="PF('wd_choiceno').hide();">
+                            <p:ajax listener="#{reReg.advanceExitListener}" update="tf_New_regnno adv_regn"/>
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:dialog id="ret_panel" widgetVar="ret_no" modal="true" visible="#{reReg.advRetCheckDialogue}"
+                      draggable="false" closable="false" header="Retention Number Details" dynamic="true">                
+                <p:panel id="pn_adv_ret_app_dtl" header="Retention details" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages id="choiceMsgRet" closable="true"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_recp_no_ret" value="Receipt No"/>
+                            </label>
+                            <p:inputText  id="tf_recp_no_ret" value="#{reReg.retenRegNoDobj.recp_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase">
+                                <p:ajax event="blur" listener="#{reReg.advanceRcptListener}" update="pn_adv_ret_app_dtl pn_adv_ret_cur_add"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_regn_no_ret" value="Retention No"/>
+                            </label>
+                            <p:inputText  id="tf_adv_regn_no_ret" value="#{reReg.retenRegNoDobj.regn_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_owner_name_ret" value="#{label.owner_name}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_owner_name_ret" value="#{reReg.retenRegNoDobj.owner_name}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_mob_no_ret" value="#{label.mob_no}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_mob_no_ret" value="#{reReg.retenRegNoDobj.mobile_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:panel id="pn_adv_ret_cur_add" header="Current Address(Retention)" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add1_ret" value="#{label.address1}"/>
+                            </label>
+                            <p:inputText  id="add1_ret" value="#{reReg.retenRegNoDobj.c_add1}"
+                                          maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add2_ret" value="#{label.address2}"/>
+                            </label>
+                            <p:inputText id="add2_ret" value="#{reReg.retenRegNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                         maxlength="35" autocomplete="off" style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add3_ret" value="#{label.address3}"/>
+                            </label>
+                            <p:inputText  id="add3_ret" value="#{reReg.retenRegNoDobj.c_add3}"
+                                          maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="state_ret" value="#{label.state}"/>
+                            </label>
+                            <p:selectOneMenu id="state_ret" value="#{reReg.retenRegNoDobj.c_state}" filter="true"
+                                             disabled="true">
+                                <f:selectItems value="#{reReg.list_c_state}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="district_ret" value="#{label.district}"/>
+                            </label>
+                            <p:selectOneMenu id="district_ret"  value="#{reReg.retenRegNoDobj.c_district}"  filter="true" disabled="true">
+                                <f:selectItems value="#{reReg.list_adv_district}"/>
+                                <f:ajax/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="pincode_ret" value="Pin"/>
+                            </label>
+                            <p:inputText id="pincode_ret" value="#{reReg.retenRegNoDobj.c_pincode}" size="10"
+                                         requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="tf_button_ret_save" value="Save" immediate="true" oncomplete="PF('ret_no').hide();">
+                            <p:ajax listener="#{reReg.advanceSaveListener}" update="tf_New_regnno adv_ret adv_ret_panel"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="Exit" immediate="true" oncomplete="PF('ret_no').hide();">
+                            <p:ajax listener="#{reReg.advanceExitListener}" update="tf_New_regnno adv_ret"/>
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:panel id="changedByPrevUser" rendered="#{reReg.prevChangedDataList.size()>0}" >
+                <p:dataTable value="#{reReg.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                    <p:column headerText="Changed by Employee" width="15%">
+                        <h:outputText value="#{data.userName}" />
+                    </p:column>
+
+                    <p:column headerText="Changed Data by Previous Employee" width="70%">
+                        <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                    </p:column>
+
+                    <p:column headerText="Changed on" width="15%">
+                        <h:outputText value="#{data.op_dt}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+            <div class="ui-grid-row bottom-space center-position top-space">                        
+                <div class="ui-grid-col-12">
+                    <h:outputText value="#{reReg.seriesAvailMessage}" styleClass="report-header font-bold red bootom-space"/>
+                </div>
+                <p:outputPanel rendered="#{reReg.renderConfirmationCheck}">
+                    <div class="ui-grid-col-12">
+                        <div class="inline-section right-space top-space">
+                            <p:selectBooleanCheckbox id="cnfrm"  value="#{reReg.approvalDialog}" styleClass="inline-section">
+                                <p:ajax update="app_disapp_pnl"/>
+                            </p:selectBooleanCheckbox>    
+                            <h:outputText value="Are You Sure? Check if you are sure to assign." styleClass="inline-section report-header font-bold left-space"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </div>
+
+            <p:outputPanel id="app_disapp_pnl">
+                <p:outputPanel rendered="#{reReg.approvalDialog}">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml">
+                        <ui:param name="app_disapp" value="#{reReg}"/>
+                    </ui:include>
+                </p:outputPanel>
+            </p:outputPanel>
+
+            <vahan:vahanMessages messages="#{reReg.vahanMessages}"  rendered="#{reReg.vahanMessages ne null}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

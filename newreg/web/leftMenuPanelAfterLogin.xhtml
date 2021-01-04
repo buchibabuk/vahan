@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+
+    <script type="text/javascript">
+        /*FOR DISABLE MOUSEWHEEL CLICK OF THE BROWSER
+         TESTED UNDER MOZILLA FIREFOX*/
+        $(document).on("mousedown", "a", function(ev) {
+            if (ev.which === 2) {
+                ev.preventDefault();
+                alert("Invalid Try");
+                return false;
+            }
+        });
+        /*FOR DISABLE CONTROL KEY OF THE BROWSER
+         TESTED UNDER CHROME AND MOZILLA FIREFOX*/
+        $(function() {
+            $('a').click(function(e) {
+                if (e.ctrlKey) {
+                    return false;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .language-link {
+            font-weight: normal !important; 
+            color: #000000 !important; 
+            padding: 3px 20px !important; 
+            line-height: 1.42857143; 
+            display: block;
+            text-decoration: none !important;
+        }
+        .language-link:hover, .language-link:focus {
+            color: #FFFFFF !important; 
+            background: #00648C!important;
+        }
+    </style>
+    <f:view locale="#{languageBean.locale}">
+        <nav class="navbar navbar-default navigation-background" role="navigation">
+
+            <h:inputHidden value="#{headerAfterLoginBean}"/>
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a>
+                    <h:link id="homeId1" outcome="home" >
+                        <p:graphicImage library="images" name="logo_e-vahan.png" alt="Parivahan Sewa" style="width: auto; height: 40px;"/>
+                    </h:link>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <h:link id="homeId2" value="" outcome="/home.xhtml"> <span class="glyphicon glyphicon-home"></span> #{language.home}</h:link>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" title="Report"><span class="glyphicon glyphicon-record"></span> #{language.home_report} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <f:event listener="#{loginBean.displayStatusReport}" type="preRenderView" />
+                                <h:link id="statusId" value="" rendered="#{loginBean.dispalyStatusReport}" outcome="/ui/appl_status/form_appl_regn_status.xhtml"><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_appl_status}</h:link>
+                            </li>
+                            <li>
+                                <h:link id="vchDtlsId"  rendered="#{loginBean.renderRegisteredVehReport}" value="" outcome="/ui/report/form_vehicleDetails.xhtml"><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_regn_veh_dtls}</h:link>
+                            </li>
+                            <!--                        <li>
+                                                                                <h:link id="pmtDtlsId" value="" outcome="/ui/permit/formPermitDtlsByOwName.xhtml" rendered="#{loginBean.pmtOwnerByName}"><span class="glyphicon glyphicon-arrow-right"></span> Permit Owner Detail</h:link>
+                                                                            </li>-->
+                            <li>
+                                <h:link id="collectionSummaryDtlsId" value="" outcome="/ui/report/form_collectionSummary.xhtml" rendered="#{loginBean.collSummaryDisplay}"><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_collection_smummary}</h:link>
+                            </li>
+                            <li>
+                                <h:link id="dealerRCPenDtlsId"  value="" outcome="/ui/reports/formDealerRCPendencyDetails.xhtml" rendered="#{loginBean.dealerRegnPendencyDisplay}"><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_dealr_regn_pendcy}</h:link>
+                            </li>
+                            <li>
+                                <h:link id="userInformationDtlsId" value="" outcome="/ui/user_mgmt/form_UserInformation.xhtml" rendered="#{loginBean.renderUserInformationPanel}"><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_all_urs_inforn}</h:link>
+                            </li>
+                            <li>
+                                <h:link id="HSRP_reports" value="" outcome="/ui/dealer/formDealerHsrpPendencyReports.xhtml" rendered="#{loginBean.renderDealerHSRPReport}" ><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_hsrp_pendcy_rports}</h:link>
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" title="Update Profile"><span class="glyphicon glyphicon-user"></span> #{language.home_profile} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <h:link id="updatePofileId" value="" outcome="/ui/user_mgmt/form_updateProfile.xhtml?faces-redirect=true"><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_change_profile}</h:link>
+                            </li>
+                            <li>
+                                <h:link id="chgPswdId" value="" outcome="/ui/user_mgmt/form_change_password.xhtml?faces-redirect=true"><span class="glyphicon glyphicon-arrow-right"></span> #{language.home_change_pwd}</h:link>
+                            </li>
+                        </ul>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-globe"></span> #{language.home_language} <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <ui:repeat value="#{languageBean.languageList.entrySet().toArray()}" var="list">
+                                    <li>
+                                        <h:commandLink value="" action="#{languageBean.changeLanguage(list.value)}" styleClass="language-link"> <span class="glyphicon glyphicon-arrow-right"></span> #{list.key}</h:commandLink>
+                                    </li>
+                                </ui:repeat>
+                            </ul>
+
+<!--                            <p:selectOneMenu  value="# {languageBean.langName}" onchange="submit()" valueChangeListener="#{languageBean.changeLanguage}" styleClass="bottom-space inline-section" style="width:25%!important;">
+                                <f:selectItems value="#{languageBean.languageList}"/>
+                            </p:selectOneMenu>-->
+                        </li>
+                    </li>
+
+
+                </ul>
+
+
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <h:link id="welcomeUserId" > 
+                            <h:outputText  value="#{language.home_welcome} #{session.getAttribute('emp_name')}
+                                           , #{session.getAttribute('desig_name')}, 
+                                           #{session.getAttribute('state_name')}"
+                                           style="font-size:10px; font-weight: bold;"/>
+                        </h:link>
+                    </li>
+                    <li>
+                        <p:commandLink  id="logout" action="#{loginBean.logout}" value="#{language.home_logout}"  
+                                        immediate="true" styleClass="glyphicon glyphicon-log-out">
+                            <!--onclick="PF('bui').show();"-->
+                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>
+                        </p:commandLink> 
+                        <!--                    <p:blockUI transient="true"  widgetVar="bui">
+                                                                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                                </p:blockUI>-->
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </f:view>
+</html>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12 center-position">
+                <h1 class="header-main">Trade Certificate Audit Trail</h1>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:messages showDetail="true" showSummary="false" closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                    <p:autoUpdate/>
+                </p:growl>
+            </div>
+        </div>
+
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4 resp-blank-height"></div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel value="Application No." />
+                </label>
+                <p:inputText id="appl_no" value="#{tradecertaudittrial.applNo}"  required="true" requiredMessage="Please enter application no" maxlength="16"   size="25" style="text-transform: uppercase"/>
+
+
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12 center-position">
+                <p:commandButton value="Get Details" action="#{tradecertaudittrial.applicationInfo}"   update="table_audit_list pnl_audit_table"/>
+
+
+            </div>
+        </div>
+        <p:outputPanel id="pnl_audit_table">
+            <p:outputPanel rendered="#{tradecertaudittrial.renderAuditTable}">
+                <p:dataList id="table_audit_list" var="auditvar" value="#{tradecertaudittrial.auditList}" rows="1" paginator="true" paginatorPosition="top" 
+                            paginatorTemplate="Number of times the application is editted and submitted by an applicant: {CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+                    <f:facet name="header">
+                        <div class="left-position text-uppercase font-bold top-space bottom-space">   Application No :     #{tradecertaudittrial.applNo}</div>
+                    </f:facet>
+                    <p:panelGrid columns="2" styleClass="table-width-oneforth datatable-panel-100">
+                        <h:outputText value="Name of Applicant" styleClass="red  dialogTitle-text"/>
+                        <h:outputText value="#{auditvar.applicant}"/>
+                        <h:outputText value="  a. Forward Remarks "  />
+                        <h:outputText value="#{auditvar.applicantForwardRemarks}"/>
+                        <h:outputText value="Name of Receiver" styleClass="red  dialogTitle-text"/>
+                        <h:outputText value="#{auditvar.receiver}"/>
+                        <h:outputText value="  a. Hard Copy Received on "   />
+                        <h:outputText value="#{auditvar.receiverHardCopyReceivedOn}"/>
+                        <h:outputText value="  b. Forward Remarks "  />
+                        <h:outputText value="#{auditvar.receiverForwardRemarks}"/>
+                        <h:outputText value="  c. Backward Remarks "   />
+                        <h:outputText value="#{auditvar.receiverBackwardRemarks}"/>
+                        <h:outputText value="  d. Content of Deficiency mail " />
+                        <h:outputText value="#{auditvar.receiverDeficiencyMailContent}"/>
+                        <h:outputText value="Name of Verifier" styleClass="red dialogTitle-text" />
+                        <h:outputText value="#{auditvar.verifier}"/>
+                        <h:outputText value="a. Hard Copy Received on"/>
+                        <h:outputText value="#{auditvar.verifierHardCopyReceivedOn}"/>
+                        <h:outputText value="b. Forward Remarks " />
+                        <h:outputText value="#{auditvar.verifierForwardRemarks}"/>
+                        <h:outputText value="c. Backward Remarks" />
+                        <h:outputText value="#{auditvar.verifierBackwardRemarks}"/>
+                        <h:outputText value="d. Content of Deficiency mail" />
+                        <h:outputText value="#{auditvar.verifierDeficiencyMailContent}" />
+                        <h:outputText value="Name of Approver" styleClass="red dialogTitle-text" />
+                        <h:outputText value="#{auditvar.approver}"/>
+                        <h:outputText value="a. Hard Copy Received  on" />
+                        <h:outputText value="#{auditvar.approverHardCopyReceivedOn}"/>
+                        <h:outputText value="b. Forward Remarks" />
+                        <h:outputText value="#{auditvar.approverForwardRemarks}"/>
+                        <h:outputText value="c. Backward Remarks"/>
+                        <h:outputText value="#{auditvar.approverBackwardRemarks}" />
+                        <h:outputText value="d. Content of Deficiency mail" />
+                        <h:outputText value="#{auditvar.approverDeficiencyMailContent}"/>
+                        <h:outputText value="Status of Application" styleClass="green font-bold" />
+                        <h:outputText value="#{auditvar.currentStatus}"/>
+
+                    </p:panelGrid>
+                    <f:facet name="footer">
+                        <div class="left-position dialogTitle-text bottom-space">   
+                            <span style="color:red">Current Status : </span> #{tradecertaudittrial.currentStatus} 
+                        </div> 
+                    </f:facet>
+                </p:dataList>
+            </p:outputPanel>
+        </p:outputPanel>
+
+    </ui:define>
+</ui:composition>

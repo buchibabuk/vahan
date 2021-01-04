@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="formVP" prependId="false">
+            <div class="center-position">
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                <p:button id="back_to_home_from_veh_parti_rpt" value="Back" outcome="#{vehicleParticularBean.returnURL}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+            </div>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{vehicleParticularBean.dobj.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{vehicleParticularBean.dobj.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{vehicleParticularBean.dobj.image_logo}" style="width: 100px;" rendered="#{vehicleParticularBean.dobj.show_image_logo}" />
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position">
+                            <h:outputText value="#{vehicleParticularBean.dobj.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position">
+                            <h:outputText value="#{vehicleParticularBean.dobj.subHeader}" styleClass="font-bold report-subheader" escape="false"/>
+                        </div>
+                        <div class="center-position">
+                            <span class="font-bold report-subheader">[ <h:outputText value="#{vehicleParticularBean.dobj.off_name}"/> ]</span>
+                        </div>
+                        <div class="center-position">
+                            <h:outputText value="'B'-Register Extract (Rules48 of KMV1989)" rendered="#{vehicleParticularBean.isKAState}" styleClass="font-bold report-subheader"/>
+                        </div>
+                        <div class="center-position top-space">
+                            <span class="font-bold report-header bottom-line text-uppercase">Vehicle Particulars <h:outputText value="#{vehicleParticularBean.dobj.purpose}"/></span>
+                        </div>
+                        <div class="center-position">
+                            <h:outputText value="THIS EXTRACT IS NOT A SUBSTITUTE FOR THE ORIGINAL REGISTRATION CERTIFICATE" rendered="#{vehicleParticularBean.isKAState}" styleClass="font-bold report-subheader"/>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <div class="inline-section qrcode-position-absolute">
+                            <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                <ui:param name="qrcodevalue" value="#{vehicleParticularBean.text}"/>   
+                                <ui:param name="renderqrCode" value="#{vehicleParticularBean.renderqrCode}"/>   
+                            </ui:include>
+                        </div>
+
+                    </td>
+                </tr>
+            </table>            
+            <br/>
+            <div class="table-width-four datatable-panel position-relative" style="font-size: 11px ; margin: 0 auto;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Application No: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{vehicleParticularBean.dobj.appl_no}"  />
+                    <h:outputLabel value="Registration No: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{vehicleParticularBean.dobj.regn_no}"  />
+                    <h:outputLabel value="Owner Name: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.owner_name}"  />
+                    <h:outputLabel value="#{label.f_name}: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.father_name}"  />
+                    <h:outputLabel value="Vehicle Class: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.vhclass_descr}"  />
+                    <h:outputLabel value="Vehicle Maker: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.vehicle_maker}"  />
+                    <h:outputText value="Month/Year of Manuf.: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.manu_year}"  />
+                    <h:outputLabel rendered="#{vehicleParticularBean.dobj.pr_regn_no ne null}" value="Previous Registration No"  styleClass="right-space bottom-space"/>
+                    <h:outputText rendered="#{vehicleParticularBean.dobj.pr_regn_no ne null}" value=":#{vehicleParticularBean.dobj.pr_regn_no}"  />
+                    <h:outputLabel rendered="#{vehicleParticularBean.dobj.linkVehNumber ne null}" value="Link Vehicle Number" styleClass="right-space bottom-space"/>
+                    <h:outputText rendered="#{vehicleParticularBean.dobj.linkVehNumber ne null}" value=":#{vehicleParticularBean.dobj.linkVehNumber}" />
+                </h:panelGrid>
+            </div>
+
+
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.isspeed_governor}" styleClass="position-relative">
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="Speed Governor No: "  styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{vehicleParticularBean.dobj.speed_governor_no}"  />
+                        <h:outputLabel value="Speed Governor Fitted On:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.sg_fittedDate}" />
+
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <div class="table-width-oneforth datatable-panel position-relative" style="font-size: 11px ; margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 ">
+                    <h:outputLabel rendered="#{vehicleParticularBean.dobj.sg_manuName ne null}" value="Speed Governor Manuf.:" styleClass="right-space bottom-space" />
+                    <h:outputText rendered="#{vehicleParticularBean.dobj.sg_manuName ne null}" value="#{vehicleParticularBean.dobj.sg_manuName}" />
+                    <h:outputText value="Present Address:" styleClass="right-space" />
+                    <h:outputText value="#{vehicleParticularBean.dobj.owner_dtls}" />
+                </h:panelGrid>
+            </div>
+
+
+
+
+            <div class="table-width-four datatable-panel position-relative" style="font-size: 11px ; margin: 0 auto;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Chassis No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.chassis_no}"   />
+                    <h:outputLabel value="Engine No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.engine_no}"  />
+                    <h:outputLabel value="Color: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{vehicleParticularBean.dobj.color}"  />
+
+                    <h:outputLabel value="Vehicle Status"  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.vchStatusDescr}"  />
+
+                </h:panelGrid>
+            </div>
+
+            <div class="table-width-six datatable-panel position-relative" style="font-size: 11px ; margin: 0 auto;">
+                <h:panelGrid columns="6" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Owner Serial No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.owner_serial_no}"  />
+                    <h:outputLabel value="Body Type: " />
+                    <h:outputText value="#{vehicleParticularBean.dobj.body}"  />
+                    <h:outputLabel value="No of Cylinders: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.no_of_cylinder}"  />
+                    <h:outputLabel value="Horse Power: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.h_power}"   />
+                    <h:outputLabel value="Seat(inc. driver): "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.seat}"  />
+                    <h:outputLabel value="Unladen Wt(kg): "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.unladen}"  />
+                    <h:outputLabel value="Laden Wt(kg): "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.laden_wt}"  />
+                    <h:outputLabel value="Tax Amount: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{vehicleParticularBean.dobj.tax_amt}"  />
+                    <h:outputLabel value="Cubic Capacity: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.cubic_capacity}"  />
+                    <h:outputLabel value="Vehicle Model"  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.vehicle_model}"  />
+                    <h:outputLabel value="Wheel Base"  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.wheelBase}"  />
+                    <h:outputLabel value="Floor Area"  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.floorArea}"  />
+                    <h:outputLabel value="Registration Date: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.regn_dt}"  />
+                    <h:outputLabel value="Regn Valid upto: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.val_upto}"  />
+                    <h:outputLabel value="Tax Paid upto: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{vehicleParticularBean.dobj.tax_upto}"  />    
+                    <h:outputLabel value="Fuel: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.fuel}"   />
+                    <h:outputLabel value="Fitness upto: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.fit_upto}"   />
+                    <h:outputLabel value="Vehicle Norms"  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.vchNorms}"  />
+
+                </h:panelGrid>
+            </div>
+            <div class="table-width-four left-space position-relative" style="font-size: 11px ;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel rendered="#{vehicleParticularBean.dobj.last_ca_on ne null}" value="Last Change of Address on: "  styleClass="right-space  bottom-space"/>
+                    <h:outputText rendered="#{vehicleParticularBean.dobj.last_ca_on ne null}" value="#{vehicleParticularBean.dobj.last_ca_on}"   />
+                    <h:outputLabel rendered="#{vehicleParticularBean.dobj.last_alt_on ne null}" value="Last Alteration of Vehicle on "  styleClass="right-space bottom-space"/>
+                    <h:outputText rendered="#{vehicleParticularBean.dobj.last_alt_on ne null}" value="#{vehicleParticularBean.dobj.last_alt_on}"   />
+                </h:panelGrid>
+            </div>            
+            <div class=" bottom-space left-space position-relative" style="font-size: 11px ;">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputText value="#{vehicleParticularBean.dobj.ins_type_desc} Insurance From #{vehicleParticularBean.dobj.ins_company} vide policy certificate/covernote no #{vehicleParticularBean.dobj.policy_no} is valid from #{vehicleParticularBean.dobj.ins_from} to #{vehicleParticularBean.dobj.ins_upto}." rendered="#{vehicleParticularBean.dobj.isInsDtls}"/>
+                    <h:outputText value="NOC Dtls: #{vehicleParticularBean.dobj.nocNo} #{vehicleParticularBean.dobj.nocDt} #{vehicleParticularBean.dobj.offtoname}#{vehicleParticularBean.dobj.statetoname}" rendered="#{vehicleParticularBean.dobj.isNOCDtls}" />
+                    <h:outputText value="Black List Dtls: #{vehicleParticularBean.dobj.comp_type} #{vehicleParticularBean.dobj.fir_no} #{vehicleParticularBean.dobj.fir_dt} #{vehicleParticularBean.dobj.complain} #{vehicleParticularBean.dobj.comp_dt}" rendered="#{vehicleParticularBean.dobj.isBlkDtls}" />
+                    <h:outputText value="HPT Details: #{vehicleParticularBean.dobj.hpt_dtls}" rendered="#{vehicleParticularBean.dobj.isHPTDtls}"/>
+                    <h:outputText value="RC Surrender Dtls: #{vehicleParticularBean.dobj.rc_surr_dtls}" rendered="#{vehicleParticularBean.dobj.isRCSurrDtls}"/>
+                    <h:outputText value="RC Cancel Dtls: #{vehicleParticularBean.dobj.rc_cancel_dtls}" rendered="#{vehicleParticularBean.dobj.isRCCancelDtls}"/>
+
+                </h:panelGrid>
+            </div>
+            <div class=" bottom-space left-space position-relative" style="font-size: 11px ;">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;" rendered="#{vehicleParticularBean.dobj.isHPDtls}">
+                    <h:outputLabel rendered="#{vehicleParticularBean.dobj.hptSubList.size()>0}" value="HP Dtls:"  />
+                    <ui:repeat var="HPDtlsList" rendered="#{vehicleParticularBean.dobj.hptSubList.size()>0}" value="#{vehicleParticularBean.dobj.hptSubList}" varStatus="status" >                        
+                        <h:outputText value="#{HPDtlsList.fncr_dtls}" /><br/> 
+                    </ui:repeat>
+                </h:panelGrid>
+            </div>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.passPmtDobj ne null}" styleClass="position-relative">
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="Permit Number :" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.passPmtDobj.pmt_no}" />
+                        <h:outputLabel value="Permit Type :" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.passPmtDobj.pmt_type}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.passPmtDobj ne null}" styleClass="position-relative">
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Permit Category :" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.passPmtDobj.pmtCatg}" />                      
+                        <h:outputText value="RTO  Office Name :" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.passPmtDobj.permitOfficeName}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.passPmtDobj ne null}" styleClass="position-relative">
+                <div class="table-width-oneforth datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Service Type :" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.passPmtDobj.services_TYPE}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.vehicleType}" styleClass="position-relative">
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="Stand Capacity: "  styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{vehicleParticularBean.dobj.stand_cap}"  />
+                        <h:outputLabel value="Sleep Capacity: "  styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{vehicleParticularBean.dobj.sleep_cap}"  />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.passPmtDobj ne null}" styleClass="position-relative">
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">                        
+                        <h:outputLabel value="Permit Valid From  :" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.passPmtDobj.validFromInString}" />
+                        <h:outputLabel value="Permit Valid Upto :" styleClass="right-space" />
+                        <h:outputText value="#{vehicleParticularBean.dobj.passPmtDobj.validUptoInString}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.authdobj ne null}" styleClass="position-relative">
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="Authorization Number:" styleClass="right-space " />
+                        <h:outputText value="#{vehicleParticularBean.dobj.authdobj.authNo}" />
+                        <h:outputLabel value="Authorization From:" styleClass="right-space " />
+                        <h:outputText value="#{vehicleParticularBean.dobj.authdobj.authFromInString}" />
+                        <h:outputLabel value="Authorization Upto:" styleClass="right-space " />
+                        <h:outputText value="#{vehicleParticularBean.dobj.authdobj.authUptoInString}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.pucc_from ne null}" styleClass="position-relative">
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="PUCC From:" styleClass="right-space " />
+                        <h:outputText value="#{vehicleParticularBean.dobj.pucc_from}" />
+                        <h:outputLabel value="PUCC Upto:" styleClass="right-space " />
+                        <h:outputText value="#{vehicleParticularBean.dobj.pucc_upto}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.routedata ne null}" styleClass="position-relative">
+                <div class="center-position" style="font-size: 11px ;">
+                    <h:outputText value="Permit Route Detail" styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <p:dataTable var="routeDtls" value="#{vehicleParticularBean.routedata}" styleClass="datatable-panel-100">
+                        <p:column headerText="Route Code" style="width: 80px">
+                            <h:outputText value="#{routeDtls.rout_code}" />
+                        </p:column>
+                        <p:column headerText="From">
+                            <h:outputText value="#{routeDtls.floc}" />
+                        </p:column>
+                        <p:column headerText="To">
+                            <h:outputText value="#{routeDtls.tloc}" />
+                        </p:column>
+                        <p:column headerText="Via">
+                            <h:outputText value="#{routeDtls.start_POINT}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.areaActionSource ne null}" styleClass="position-relative">
+                <div class="center-position" style="font-size: 11px ;">
+                    <h:outputText value="Permit Area Detail" styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <p:dataTable var="areaDtls" value="#{vehicleParticularBean.dobj.areaActionSource}" styleClass="datatable-panel-100">
+                        <p:column headerText="Region Code" style="width: 80px">
+                            <h:outputText value="#{areaDtls.key}" />
+                        </p:column>
+                        <p:column headerText="Region">
+                            <h:outputText value="#{areaDtls.value}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </p:outputPanel>
+            <div class="table-width-oneforth datatable-panel position-relative" style="font-size: 11px ; margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Admin Remark: "  styleClass="right-space bottom-space" rendered="#{vehicleParticularBean.dobj.isAdminRemark}"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.vhaChangedDataAdminRemark}"  rendered="#{vehicleParticularBean.dobj.isAdminRemark}"/>
+                </h:panelGrid>
+            </div>
+            <div class="table-width-four left-space position-relative" style="font-size: 11px ;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="Mobile No: "  styleClass="right-space"/>
+                    <h:outputText value="#{vehicleParticularBean.dobj.mobile}"   />
+                    <h:outputText value="Email Id: "   styleClass="right-space" />
+                    <h:outputText value="#{vehicleParticularBean.dobj.email}"   />
+                </h:panelGrid>
+            </div>
+            <div class="left-space position-relative" style="font-size: 11px ;">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputText rendered="#{vehicleParticularBean.dobj.rcpt_no ne null}" value="Particular Fee Rs. #{vehicleParticularBean.dobj.fee}/- paid vide cash receipt no #{vehicleParticularBean.dobj.rcpt_no} dated #{vehicleParticularBean.dobj.rcpt_dt}."   />
+                </h:panelGrid>
+            </div>
+            <div class="left-space position-relative" style="font-size: 11px ;">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputText rendered="#{vehicleParticularBean.dobj.rcpt_no ne null}" value="#{vehicleParticularBean.dobj.permitFeeDtls}."   />
+                </h:panelGrid>
+            </div>
+            <p:outputPanel styleClass="position-relative">
+                <div class="datatable-panel " style="font-size: 11px ; margin: 0 auto;">
+                    <div>
+                        Other State/Transfer/Conversion Details
+                    </div>
+                </div>
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                        <h:outputText value="Previous Owner" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.preOwner} "/> 
+                        <h:outputText value="Previous RegNo" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.preRegno} "/> 
+                        <h:outputText value="Old State" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.oldState} "/>                             
+                        <h:outputText value="Entry Date" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.entryDate} "/> 
+                        <h:outputText value="Transfer Date" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.transfer_on} "/> 
+                        <h:outputText value="Conversion Date" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.conversionDate} "/> 
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.isLPGDtls}" styleClass="position-relative">
+                <div class="datatable-panel left-position" style="font-size: 11px ; margin: 0 auto;">
+                    LPG Details
+                </div>
+                <div class="table-width-four datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                        <h:outputText value="Kit Manufacture Date" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.kitManufactureDt} "/> 
+                        <h:outputText value="Kit Manufacture Name" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.kitManufactureName} "/> 
+                        <h:outputText value="Kit Hydro Test Dt" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.kitHydroDt} "/>                             
+                        <h:outputText value="Kit Description" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.kitDesc} "/> 
+                        <h:outputText value="Kit Workshop Name" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.kitWorkName} "/> 
+                        <h:outputText value="Tc Letter Number" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.tclNo} "/> 
+                        <h:outputText value="Kit Number" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.kitNo} "/> 
+                        <h:outputText value="Tc Letter Date" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.tclDt} "/> 
+                        <h:outputText value="Cylinder Number" styleClass="right-space" />
+                        <h:outputText value=": #{vehicleParticularBean.dobj.cylNo} "/> 
+
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{vehicleParticularBean.dobj.isTransport}" styleClass="position-relative">
+                <table class="datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                    <tr>
+                        <td class="top-align">
+                            <div  class="datatable-panel" style="font-size: 11px ; margin: 0 auto;">
+                                <span class="bottom-line left-space">Additional Particulars</span>
+                            </div>
+                            <div class="table-width-three datatable-panel" style="font-size: 11px ; margin: 0px auto;">
+                                <h:panelGrid columns="3" styleClass="left-position datatable-panel-100">
+                                    <h:outputLabel value=" " styleClass="right-space" />
+                                    <h:outputLabel value="Number,Desc &amp; size of" />
+                                    <h:outputLabel value="Regd. Axle Weight(in kgs)" />
+                                    <h:outputLabel value="a) Front: "  styleClass="right-space"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.fdesc}"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.fweight}"/>
+                                    <h:outputLabel value="b) Rear: "  styleClass="right-space"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.rdesc}"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.rweight}"/>
+                                    <h:outputLabel value="c) Other: "  styleClass="right-space"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.odesc}"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.oweight}"/>
+                                    <h:outputLabel value="d) Tandem: "  styleClass="right-space"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.tdesc}"/>
+                                    <h:outputText value="#{vehicleParticularBean.dobj.tweight}"/>
+                                </h:panelGrid>
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+            </p:outputPanel>
+            <div class="bottom-space right-position right-space position-relative">
+                <div class="center-position" style="display: inline-block;">                  
+                    <br />
+                    <br />
+                    Signature of Registering Authority<br />
+                    <h:outputText value="#{vehicleParticularBean.dobj.off_name}" />
+                    [ <h:outputText value="#{vehicleParticularBean.dobj.state_name}" /> ]
+                </div>
+            </div>
+            <div class="bottom-space center-position position-relative">
+                <div class="center-position" style="display: inline-block;">
+                    <br />
+                    Printed On:
+                    <h:outputText value="#{vehicleParticularBean.dobj.printed_on}" />
+                </div>
+            </div>
+            <p:blockUI block="formVP" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{vehicleParticularBean.dobj.showRoadSafetySlogan}">
+                <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                    <div class="center-position" style="display: inline-block;">
+                        <br />
+                        <h:outputText value="#{vehicleParticularBean.dobj.roadSafetySloganDobj.english_lang}" /><br/>
+                        <h:outputText value="#{vehicleParticularBean.dobj.roadSafetySloganDobj.state_lang}" />
+
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

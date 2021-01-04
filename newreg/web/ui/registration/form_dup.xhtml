@@ -1,0 +1,130 @@
+
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    template="/masterLayoutPage_new.xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"> 
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{dupCert.appl_details}"/>            
+            </ui:include>  
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_dup" prependId="false">
+
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:panel header="Duplicate Certificate" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="cm_va_reason" value="Reason"/>
+                            </label>
+                            <p:selectOneMenu id="cm_va_reason" value="#{dupCert.reasonSelect}" filter="true">
+                                <f:selectItems value="#{dupCert.reasonList}"/>   
+                                <f:validator validatorId="selectOneValidator" for="cm_va_reason"/>
+                                <p:ajax event="change"  listener="#{dupCert.vehReasonChangeListener}" update="tf_Reason dupPanel"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_Reason" value="Reason:"/>
+                            </label>
+                            <p:inputText id="tf_Reason" value="#{dupCert.dup_dobj.reason}"  
+                                         converter="toUpperCaseConverter" disabled="#{dupCert.boolReason}"
+                                         requiredMessage="Blank : Reason" required="true" 
+                                         maxlength="25" autocomplete="off" styleClass="input">
+                                <f:validateLength maximum="25"/>
+                                <f:validateRequired/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <p:outputPanel id="dupPanel">
+                        <p:panel rendered="#{dupCert.boolDupPanel}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_Fir_no" value="FIR No:"/> 
+                                    </label>
+                                    <p:inputText id="tf_Fir_no"  value="#{dupCert.dup_dobj.fir_no}" 
+                                                 converter="toUpperCaseConverter" size="30" 
+                                                 required="true" requiredMessage="Blank : Fir No" maxlength="25"  
+                                                 autocomplete="off" styleClass="input">
+                                        <f:validateLength maximum="25"/>
+                                        <f:validateRequired/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dc_FirDt" value="FIR Date:"/>
+                                    </label>
+                                    <p:calendar  id="dc_FirDt" value="#{dupCert.dup_dobj.fir_dt}" navigator="true" pattern="dd-MM-yyyy" requiredMessage="Blank : Fir Date" 
+                                                 mindate="#{dupCert.regnDate}" maxdate="#{dupCert.currDate}" required="true" autocomplete="off">
+                                        <f:validateRequired/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_PoliceStation" value="Police Station:"/>
+                                    </label>
+                                    <p:inputText id="tf_PoliceStation"  value="#{dupCert.dup_dobj.police_station}" converter="toUpperCaseConverter" size="30" maxlength="35" 
+                                                 required="true" requiredMessage="Blank : Police Station" autocomplete="off" styleClass="input">
+                                        <f:validateLength maximum="35"/>
+                                        <f:validateRequired/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel> 
+                    </p:outputPanel>
+                </p:panel>
+
+                <p:outputPanel id="ins_dtls" styleClass="bottom-space">
+                    <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                </p:outputPanel> 
+
+                <p:panel id="changedByPrevUser" styleClass="top-space bottom-space" 
+                         rendered="#{dupCert.prevChangedDataList.size()>0}" >
+                    <p:dataTable value="#{dupCert.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="Changed by Employee" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+
+                        <p:column headerText="Changed Data by Previous Employee" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="Changed on" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <p:outputPanel id="outputpanel_appdisapp" rendered="#{!dupCert.render}">  
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{dupCert}"/>
+                    </ui:include>
+                </p:outputPanel>
+
+                <vahan:vahanMessages messages="#{dupCert.vahanMessages}"  rendered="#{dupCert.vahanMessages ne null}"/>
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

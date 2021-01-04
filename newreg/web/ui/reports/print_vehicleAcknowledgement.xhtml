@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">  
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <p:outputPanel id="selectionPanel" rendered="#{regnPrintBean.render}">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Print Vehicle Acknowledgement </h1>
+                    </div>
+                </div>  
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-5 resp-blank-height"></div>
+                    <div class="ui-grid-col-7">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Search by :" />
+                        </label>
+                        <p:selectOneRadio  value="#{regnPrintBean.searchByValue}">
+                            <f:selectItem itemLabel="Registration No" itemValue="regnNo" />
+                        </p:selectOneRadio> 
+                    </div>
+                </div>
+                <p:outputPanel id="vehDtlsPanel" >
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-3"> 
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="Vehicle Registration No."/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{regnPrintBean.regn_no}" 
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="Please Enter Registration No."
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"/></div>
+                    </div>
+                    <div class="ui-grid-row center-position top-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details" action="#{regnPrintBean.showAllRegnNosForm()}"
+                                             update="@form" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                            <p:commandButton value="Back" action="home" ></p:commandButton>
+                        </div>
+                    </div>
+                    <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                </p:outputPanel>
+            </p:outputPanel>
+
+            <p:outputPanel id="abd">
+                <p:outputPanel  id="owndb" styleClass="top-space bottom-space" rendered="#{regnPrintBean.gaRender}"> 
+                    <ui:include src="/ui/reports/formVehicleRegReport.xhtml">
+                        <ui:param name="regnPrint" value="#{regnPrintBean}"/>
+                    </ui:include>
+
+                </p:outputPanel>
+            </p:outputPanel>
+            <p:blockUI block="@form" widgetVar="ajax_status">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </div>
+    </ui:define>
+</ui:composition>

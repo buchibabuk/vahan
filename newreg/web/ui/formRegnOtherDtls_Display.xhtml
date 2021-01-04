@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"     
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:panel header="Temporary Registration Details" id="tmp_veh_info" style="margin-top: 10px;" rendered="#{vehicleDetails.renderTmpRegnDtls}">
+                    <p:focus context="tmp_veh_info"/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_regn" value="#{label.temp_regn_no}"/>
+                            </label>
+                            <p:inputText id="tmp_regn" 
+                                         value="#{vehicleDetails.tempReg.tmp_regn_no}" 
+                                         size="20" maxlength="20" autocomplete="off" styleClass="input" 
+                                         converter="toUpperCaseConverter" required="true" disabled="true">
+                                <f:validateLength maximum="20" for="tmp_regn"/>
+                                <p:ajax partialSubmit="true"/>
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tempRegnDt" value="Date of Temp Registration"/>
+                            </label>
+                            <p:calendar id="tempRegnDt"  value="#{vehicleDetails.tempReg.tmp_regn_dt}" 
+                                        required="true" 
+                                        requiredMessage="Blank Temp Regn Date" pattern="dd-MMM-yyyy" navigator="true" 
+                                        readonlyInput="true" disabled="true">
+                                <f:convertDateTime pattern="dd-MMM-yyyy" for="tempRegnDt"/> 
+                                <f:validateRequired for="tempRegnDt"/>
+                            </p:calendar>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tempRegnUptoDt" value="Temporary Registration Upto"/>
+                            </label>
+                            <p:calendar id="tempRegnUptoDt"  value="#{vehicleDetails.tempReg.tmp_valid_upto}" 
+                                        required="true" disabled="true" readonlyInput="true"
+                                        requiredMessage="Blank Temporary Registration Upto" pattern="dd-MMM-yyyy" navigator="true" 
+                                        >
+                                <f:convertDateTime pattern="dd-MMM-yyyy" for="tempRegnUptoDt"/> 
+                                <f:validateRequired for="tempRegnUptoDt"/>
+                            </p:calendar>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_state_cd" value="Temporary Registered State"/>
+                            </label>
+                            <p:selectOneMenu id="tmp_state_cd" value="#{vehicleDetails.tempReg.tmp_state_cd}" 
+                                             filter="true" required="true" disabled="true">
+                                <f:selectItem itemLabel="Select" itemValue="0"/>
+                                <f:selectItems value="#{vehicleDetails.list_c_state}"/> 
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_off_cd" value="Temporary Registered Office "/>
+                            </label>
+                            <p:selectOneMenu id="tmp_off_cd" value="#{vehicleDetails.tempReg.tmp_off_cd}"  
+                                             filter="true" required="true" disabled="true">
+                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                <f:selectItems value="#{vehicleDetails.list_office_to}"/>
+                                <f:validateRequired for="tmp_off_cd"/>
+                                <f:validator validatorId="selectOneValidator_0" for="dealer_cd"/> 
+                            </p:selectOneMenu>
+                        </div>
+
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_dealer" value="#{label.dealer_cd}"/>
+                            </label>
+                            <p:selectOneMenu id="tmp_dealer" value="#{vehicleDetails.tempReg.dealer_cd}"  
+                                             filter="true" disabled="true">
+                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                <f:selectItems value="#{vehicleDetails.list_dealer_cd}"/>     
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+
+                    <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                    <!--                    <p:keyFilter mask="pint" for=" tmp_no_cyl tmp_stand_cap tmp_sleep_cap tmp_manu_mon tmp_manu_yr 
+                                                      tmp_ul_weight tmp_l_weight tmp_tf_rlw 
+                                                      tmp_wheelbase tmp_length tmp_width tmp_height tmp_manu_mon tmp_sale_amt"/>   -->
+                    <!--                    <p:keyFilter regEx="/[a-zA-Z0-9]/" for="tmp_chasi_no tmp_eng_no tmp_laser_code "/>
+                                        <p:keyFilter mask="pnum" for="tmp_hp tmp_f_area tmp_cubic_cap"/>
+                                        <p:keyFilter regEx="/[a-zA-Z0-9 ]/" for="tmp_color"/>  -->
+                    <!--#############################################################################################-->
+                </p:panel>
+
+
+                <p:panel styleClass="top-space bottom-space" rendered="#{vehicleDetails.renderOtherStateRegnDtls}"> 
+                    <p:panel header="Registration Details" styleClass="top-space bottom-space" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="oldRegNo" value="Old Registration No"/> 
+                                </label>
+                                <p:inputText id="oldRegNo" value="#{vehicleDetails.otherStateVehDobj.oldRegnNo}" disabled="true"
+                                             converter="toUpperCaseConverter" required="true" requiredMessage="Blank Old Registration No"
+                                             maxlength="10" autocomplete="off" styleClass="input"/>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="entryDate" value="Entry Date"/>
+                                </label>
+                                <p:calendar id="entryDate" value="#{vehicleDetails.otherStateVehDobj.stateEntryDate}" navigator="true" disabled="true"
+                                            required="true" requiredMessage="Blank Entry Date" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                            autocomplete="off">                       
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                                    <p:ajax partialSubmit="true"/>
+                                </p:calendar>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="oldRegDt" value="First Registration Date"/>
+                                </label>
+                                <p:calendar id="oldRegDt" value="#{vehicleDetails.regnDate}" navigator="true" disabled="true"
+                                            required="true" requiredMessage="Blank First Registration Date" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                            autocomplete="off">                       
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/>
+
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="oldRegUpto" value="Registration Valid Upto"/>
+                                </label>
+                                <p:calendar id="oldRegUpto" value="#{vehicleDetails.regnUpto}" navigator="true" disabled="true"
+                                            required="true" requiredMessage="Blank Registration Valid Upto" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                            autocomplete="off">                       
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/>
+
+                                </p:calendar>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="oldFitUpto" value="Fitness Valid Upto"/>
+                                </label>
+                                <p:calendar id="oldFitUpto" value="#{vehicleDetails.fitupto}" navigator="true" disabled="true"
+                                            required="true" requiredMessage="Blank Fitness Valid Upto" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                            autocomplete="off">                       
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                                    <p:ajax event="dateSelect" update="@this" process="@this" partialSubmit="true"/>
+                                </p:calendar>
+                            </div>
+                        </div>
+                    </p:panel>
+
+
+                    <p:panel header="NOC Details" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="nocNo" value="NOC No"/>
+                                </label>
+                                <p:inputText id="nocNo" value="#{vehicleDetails.otherStateVehDobj.nocNo}" required="true" 
+                                             converter="toUpperCaseConverter" disabled="true"
+                                             requiredMessage="Blank NOC No" maxlength="30" autocomplete="off" styleClass="input">
+                                    <p:ajax partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="nocDate" value="NOC Issue Date:"/>
+                                </label>
+                                <p:calendar  id="nocDate" value="#{vehicleDetails.otherStateVehDobj.nocDate}"
+                                             navigator="true" disabled="true"
+                                             required="true" requiredMessage="Blank NOC Issue Date" pattern="dd-MMM-yyyy" 
+                                             readonlyInput="true" autocomplete="off">                       
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                                </p:calendar> 
+                            </div>
+
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="oldState" value="Old State"/>
+                                </label>
+                                <p:selectOneMenu id="oldState" value="#{vehicleDetails.otherStateVehDobj.oldStateCD}" 
+                                                 disabled="true"
+                                                 filter="true" filterMatchMode="contains">
+                                    <f:selectItem itemLabel=" " itemValue=""/>
+                                    <f:selectItems value="#{vehicleDetails.stateList}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="oldOffice" value="Old Office"/>
+                                </label>
+                                <p:selectOneMenu id="oldOffice" value="#{vehicleDetails.otherStateVehDobj.oldOffCD}" 
+                                                 filter="true" filterMatchMode="contains" required="true" disabled="true">
+                                    <f:selectItem itemLabel=" " itemValue="0"/>
+                                    <f:selectItems value="#{vehicleDetails.officeList}"/>
+                                </p:selectOneMenu> 
+                            </div>
+
+                        </div>
+                    </p:panel>
+
+                    <p:panel header="NCRB Details" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ncrbRef" value="Referernce No"/> 
+                                </label>
+                                <p:inputText id="ncrbRef" value="#{vehicleDetails.otherStateVehDobj.ncrbRef}"
+                                             converter="toUpperCaseConverter" disabled="true"
+                                             maxlength="20" autocomplete="off" styleClass="text-uppercase">
+                                    <p:ajax partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="confirmRef" value="Confirm No"/> 
+                                </label>
+                                <p:inputText id="confirmRef" value="#{vehicleDetails.otherStateVehDobj.confirmRef}" converter="toUpperCaseConverter"
+                                             autocomplete="off"  styleClass="text-uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:panel>
+                
+                <p:outputPanel id="importedVehicle">
+                    <p:outputPanel rendered="#{vehicleDetails.importedVehicleVisibilitytab}">
+                        <ui:include src="/ui/form_ImportedVehicle_Display.xhtml">
+                            <ui:param name="importedVehicleBean" value="#{vehicleDetails.importedVehicle_Bean}"/>
+                        </ui:include>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+        </div>
+    </div>
+</html>
+

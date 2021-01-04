@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form id="home_state_auth" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1><p:outputLabel value="#{permitHomeAuthBean.header}" styleClass="header-main"/></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:dialog id="npauthid"  header="MORTH FEES INFORMATION" widgetVar="npfees" modal="true" resizable="false" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel escape="false" value="Are you sure , MORTH FEES has been paid From NP Portal " />
+                            <f:facet name="footer" class="center-position" >
+                                <p:commandButton value="Proceed" action="#{permitHomeAuthBean.closeNpauthDialog()}" update="npauthid"/>
+                                <p:commandButton value="Cancel" action="seatwork"/>
+                            </f:facet>
+                        </div>
+                    </div>
+                </p:dialog>
+                <p:panel rendered="#{permitHomeAuthBean.renderFlage}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no" value="#{label.appl_no}"/>
+                            </label>
+                            <p:inputText id="appl_no" readonly="true" value="#{permitHomeAuthBean.applNo}" size="30"/>
+                        </div>
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                    </div>
+                </p:panel>
+                <p:panel rendered="#{!permitHomeAuthBean.renderFlage}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="regn_no" value="#{label.regn_no}"/>
+                            </label>
+                            <p:inputText id="regn_no" styleClass="text-uppercase" value="#{permitHomeAuthBean.regnNo}" autocomplete="off"  maxlength="10"/>
+                        </div>
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Details" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" 
+                                             update="pmt_Details OthVehInfo auth_details oldAuthDetails prvFeeMsg" action="#{permitHomeAuthBean.get_Details()}"/>
+                            <p:commandButton value="Reset" action="ui/permit/form_home_state_auth.xhtml?faces-redirect=true"/>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:outputPanel id="block_panel">
+                    <p:panel id="pmt_Details" styleClass="top-space" header="Permit Details" >
+                        <ui:include src="/ui/permit/form_permit_dtls.xhtml" />
+                    </p:panel>
+                    <p:outputPanel id="pmtPaidFeeDtls">
+                        <ui:include src="/ui/permit/formPermitPaidFeeDtls.xhtml"/>
+                    </p:outputPanel>
+                    <p:panel id="OthVehInfo" toggleable="true"  toggleSpeed="500" closeSpeed="500" styleClass="top-space" header="Other Vehicle Information" collapsed="true">
+                        <ui:include src="/ui/permit/form_permit_check_Details.xhtml">
+                            <ui:param name="Other_Veh_Info" value="#{permitHomeAuthBean}"/>
+                        </ui:include>
+                    </p:panel>
+
+                    <p:panel id="oldAuthDetails" header="Previous Authrization Details" rendered="#{permitHomeAuthBean.previousAuthDtlsRender}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable value="#{permitHomeAuthBean.oldAuthDetails}" var="existingAuth" styleClass="panelRowHeight">
+                                    <p:column headerText="Permit No." width="16.66%">
+                                        <h:outputText value="#{existingAuth.pmtNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Registration No." width="16.66%">
+                                        <h:outputText value="#{existingAuth.regnNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Authrization/Order No. " width="16.66%">
+                                        <h:outputText value="#{existingAuth.authNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Authrization From" width="16.66%">
+                                        <h:outputText value="#{existingAuth.authFromInString}"/>
+                                    </p:column>
+                                    <p:column headerText="Authrization Upto" width="16.66%">
+                                        <h:outputText value="#{existingAuth.authUptoInString}"/> 
+                                    </p:column>
+                                    <p:column headerText="Issusing Date" width="16.66%">
+                                        <h:outputText value="#{existingAuth.opDateInString}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:panel id="auth_details" styleClass="top-space" header="Authorisation Details">
+                        <div class="ui-grid-row">
+                            <p:outputPanel  id="np_details_auth" rendered="#{permitHomeAuthBean.disableNpDetails}">
+                                <ui:include src="/ui/permit/formNationalPermitDetails.xhtml">
+                                </ui:include>
+                            </p:outputPanel>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="periodmode" value="Period Mode" rendered="#{permitHomeAuthBean.renderPeriod}" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="periodmode" filter="true" value="#{permitHomeAuthBean.auth_periodMode}" rendered="#{permitHomeAuthBean.renderPeriod}" disabled="#{permitHomeAuthBean.disablePeriod}">
+                                    <f:selectItem itemLabel="Select Period Mode" itemValue="-1"/>
+                                    <f:selectItem itemLabel="Days" itemValue="D"/>
+                                    <f:selectItem itemLabel="Months" itemValue="M"/>
+                                    <f:selectItem itemLabel="Year" itemValue="Y"/>
+                                    <p:ajax listener="#{permitHomeAuthBean.check_Time_Period()}" partialSubmit="true" update="period"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="period" value="Period " rendered="#{permitHomeAuthBean.renderPeriod}" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="period" filter="true" value="#{permitHomeAuthBean.auth_period}" rendered="#{permitHomeAuthBean.renderPeriod}"  disabled="#{permitHomeAuthBean.disablePeriod}">
+                                    <f:selectItem itemLabel="Select Period" itemValue="-1"/>
+                                    <f:selectItems value="#{permitHomeAuthBean.period}"/>
+                                    <p:ajax listener="#{permitHomeAuthBean.checkAuthDetails()}" partialSubmit="true" update="period auth_upto"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Authorisation No."/>
+                                </label>
+                                <p:inputText value="#{permitHomeAuthBean.authNo}" disabled="true"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="auth_from" value="Authorisation From"/>
+                                </label>
+                                <p:calendar id="auth_from" value="#{permitHomeAuthBean.authFrom}"  pattern="dd-MMM-yyyy" readonlyInput="true" disabled="#{permitHomeAuthBean.authFromDisable}">
+                                    <p:ajax event="dateSelect" listener="#{permitHomeAuthBean.dateSelectEvent()}" update="auth_upto"/>
+                                </p:calendar>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="auth_upto" value="Authorisation Upto"/>
+                                </label>
+                                <p:calendar id="auth_upto" value="#{permitHomeAuthBean.authUpto}"  pattern="dd-MMM-yyyy" readonlyInput="true"  disabled="#{permitHomeAuthBean.authUptoDisable}"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tax_From" value="Tax From"/>
+                                </label>
+                                <p:calendar id="tax_From" value="#{permitHomeAuthBean.taxFrom}"  pattern="dd-MMM-yyyy" readonlyInput="true" disabled="true"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tax_upto" value="Tax Upto"/>
+                                </label>
+                                <p:calendar id="tax_upto" value="#{permitHomeAuthBean.taxUpto}" pattern="dd-MMM-yyyy" readonlyInput="true" disabled="true"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="all_state" value="State"/>
+                                </label>
+                                <p:inputText id="all_state" value="AI - All INDIA" readonly="true"/>
+                            </div>
+                        </div>
+                        <p:outputPanel  id="state_covered" rendered="#{permitHomeAuthBean.pmtType eq '103'}">
+                            <div class="ui-grid-row">
+                                <ui:include src="/ui/permit/formAITPStateCoveredHomeAuth.xhtml"/>
+                            </div>
+                        </p:outputPanel>
+                        <marquee onMouseOver="this.stop();" onMouseOut="this.start()"  behavior="scroll" direction="left" scrollamount="4" >
+                            <p:outputLabel id="prvFeeMsg" value="#{permitHomeAuthBean.prvFeeDtls}" styleClass="content-note"/>
+                        </marquee>
+                    </p:panel>
+
+                </p:outputPanel>
+
+                <p:panel style="margin-top: 10px" rendered="#{permitHomeAuthBean.app_disapp_panel}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Save" action="#{permitHomeAuthBean.checkValidityBeforeSave()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:button value="Reset" outcome="/ui/permit/form_home_state_auth.xhtml?faces-redirect=true"/>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:outputPanel rendered="#{!permitHomeAuthBean.app_disapp_panel}">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{permitHomeAuthBean}"/>
+                    </ui:include>
+                </p:outputPanel>
+            </div>
+            <p:blockUI block="block_panel" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <h:outputLabel escape="false" value="#{permitHomeAuthBean.appNoMsg}" />
+                        <f:facet name="footer">
+                            <p:commandButton value="Exit for Another Application" action="/ui/permit/form_home_state_auth.xhtml?faces-redirect=true"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+
+            <p:dialog id="pmtValidityBeforeAuthId" header="Permit validity before authorisation validity" widgetVar="pmtValidityBeforeAuth" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:selectBooleanCheckbox value="#{permitHomeAuthBean.setValidityAndProceed}" />
+                        <h:outputText escape="false" value=" Your main permit will expire before authorization validity, so authorization validity will be same as permit validity . Do you want to continue for Autorization ?"/>
+                        <f:facet name="footer">
+                            <p:commandButton value="Yes" action="#{permitHomeAuthBean.setValidityAndProceed()}" icon="ui-icon-check">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="No" onclick="PF('pmtValidityBeforeAuth').hide();" icon="ui-icon-arrowreturnthick-1-s"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+
+
+            <p:dialog id="expireSoonId" header="Main permit soon to expire" widgetVar="expireSoon" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:selectBooleanCheckbox value="#{permitHomeAuthBean.agreeToProceed}" />
+                        <h:outputText escape="false" value=" Your main permit will expire on #{permitHomeAuthBean.mainPermitValidUpto}, you should go for 'Renewal of (Main)Permit'. Do you want to continue for Autorization "/>
+                        <f:facet name="footer">
+                            <p:commandButton value="Yes" action="#{permitHomeAuthBean.agreeToProceed()}" icon="ui-icon-check">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:button value="No" onclick="PF('expireSoon').hide();" icon="ui-icon-arrowreturnthick-1-s"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      >    
+
+    <h:body>
+        <ui:composition>
+            <f:subview id="sub_view_tax_diff">
+                <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <p:outputPanel  rendered="#{not empty containerBean}" id="pn_tax_diff">
+                    <p:dataTable id="tableTaxDiff"  
+                                 rowIndexVar="index" var="taxEntity" value="#{containerBean.list_tax_diff}" >
+                        <f:facet name="header">
+                            <div class="left-position">
+                                Difference Of  Tax Details 
+                            </div>
+                        </f:facet>
+                        <p:column headerText="Tax Head">
+                            <p:selectOneMenu  value="#{taxEntity.pur_cd}" >
+                                <f:selectItems value="#{containerBean.tax_diff_pur_cd}"/>
+                                <p:ajax event="change" listener="#{containerBean.selectTaxListner(taxEntity.pur_cd)}"  update="tableTaxDiff #{parentTotalPayableAmount}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Tax From">
+                            <p:calendar id="cal_tax_from"  navigator="true" pattern="dd-MMM-yyyy" readonlyInput="true"  value="#{taxEntity.finalEditableTaxFrom}" mindate="#{taxEntity.minFromDate}" maxdate="#{taxEntity.maxFromDate}">
+                                <p:ajax event="dateSelect" listener="#{containerBean.listnerUpdateUpto(taxEntity)}" update="cal_tax_upto"/>
+                            </p:calendar>
+                        </p:column>
+
+                        <p:column headerText="Tax Upto">
+                            <p:calendar id="cal_tax_upto"  readonlyInput="true" navigator="true" pattern="dd-MMM-yyyy" value="#{taxEntity.finalEditableTaxUpto}" mindate="#{taxEntity.minUptoDate}" maxdate="#{taxEntity.maxUptoDate}"/>
+                        </p:column>
+
+                        <p:column headerText="Tax Amount" style="text-align: right">
+                            <p:inputText id="diffTaxAmt" value="#{taxEntity.totalPaybaleTax}" disabled="#{taxEntity.disableTaxAmt}"  maxlength="8">
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+                        <p:column headerText="#{taxFieldLabel.taxFieldDobj.tax1Label}" style="text-align: right">
+                            <p:inputText id="diffTaxLbl1" value="#{taxEntity.totalTax1}" maxlength="8">
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+                        <p:column headerText="#{taxFieldLabel.taxFieldDobj.tax2Label}" style="text-align: right">
+                            <p:inputText  id="diffTaxLbl2" value="#{taxEntity.totalTax2}" maxlength="8">
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+                        <p:column headerText="Penalty" style="text-align: right">
+                            <p:inputText id="diffTaxPenalty" value="#{taxEntity.totalPaybalePenalty}" maxlength="8" >
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Surcharge" style="text-align: right">
+                            <p:inputText  id="diffTaxSur" value="#{taxEntity.totalPaybaleSurcharge}" maxlength="8">
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Rebate" style="text-align: right">
+                            <p:inputText id="diffTaxRebate"  value="#{taxEntity.totalPaybaleRebate}" maxlength="8">
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Interest" style="text-align: right">
+                            <p:inputText id="diffTaxIntrest" value="#{taxEntity.totalPaybaleInterest}" maxlength="8" >
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+                        <p:column headerText="Prev Adj" style="text-align: right">
+                            <p:inputText id="diffTaxPreAdj" value="#{taxEntity.totalPayablePrvAdj}"  maxlength="8">
+                                <p:ajax event="blur" process="@this" listener="#{containerBean.calculateTotalTaxDifference(taxEntity)}" update="olTotalPayAmt #{parentTotalPayableAmount}"></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+
+                        <p:column  headerText="Total" style="text-align: right">
+                            <p:outputLabel id="olTotalPayAmt"  value="#{taxEntity.finalTaxAmount}"/>
+                        </p:column>
+
+                        <p:column id="commandButtonTaxDiff" rendered="#{containerBean.renderAddTaxBtn}" >
+                            <p:commandButton id="addTaxDiff"  action="#{containerBean.addNewRowTaxDiff(taxEntity.pur_cd)}" update="#{parentTotalPayableAmount}"  icon="ui-icon-plusthick"  >
+                                <f:param name="actionmode" value="addTaxDiff"/>
+                            </p:commandButton>
+                            <p:tooltip id="toolTipGrow1TaxDiff" for="addTaxDiff" value="Add new Fee details"
+                                       showEffect="clip" hideEffect="clip"  />
+                            <p:commandButton id="minusTaxDiff" action="#{containerBean.addNewRowTaxDiff(taxEntity.pur_cd)}" update="#{parentTotalPayableAmount}"  icon="ui-icon-minusthick" >
+                                <f:param name="actionmode" value="minusTaxDiff"/>
+                            </p:commandButton>
+                            <p:tooltip id="toolTipGrow2TaxDiff" for="minusTaxDiff" value="Remove Fee details"
+                                       showEffect="clip" hideEffect="clip" />
+                        </p:column>
+
+                        <p:keyFilter mask="num"  for="diffTaxAmt"/>
+                        <p:keyFilter mask="num"  for=" diffTaxLbl1"/>
+                        <p:keyFilter mask="num"  for="diffTaxLbl2"/>
+                        <p:keyFilter mask="num"  for="diffTaxPenalty"/>
+                        <p:keyFilter mask="num"  for="diffTaxSur"/>
+                        <p:keyFilter mask="num"  for="diffTaxRebate"/>
+                        <p:keyFilter mask="num"  for="diffTaxIntrest"/>
+                        <p:keyFilter mask="num"  for="diffTaxPreAdj"/>
+                    </p:dataTable> 
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <!--<h:outputText value="# {balanceCollection.onlineUserCredentialmsg}" class="red font-bold bottom-space right-position"/>-->
+                            <!--<br/>-->
+                            <h:outputText value="Note:" class="font-bold top-space right-position"/>
+                            <h:outputText value=" For collecting the Balance MV Tax amount upto date should be either last Tax Paid/Clear date or the Date On which VAHAN 4.0 has been started (whichever is later) in this office. For regular MV Tax payment after this date please use the option 'MV Tax Collection' option in home page." class="red font-bold top-space right-position"/>
+                        </div>
+                    </div>
+                    <!--<p:remoteCommand autoRun="#{taxContainerBean.autoRunTaxListener}" onstart="PF('ajax_status').show()" onsuccess="PF('ajax_status').hide()" actionListener="#{taxContainerBean.isViewIsRendered}" update="tableTax #{parentTotalPayableAmount} " ignoreAutoUpdate="true"/>-->
+                </p:outputPanel> 
+            </f:subview>
+        </ui:composition>
+    </h:body>
+</html>

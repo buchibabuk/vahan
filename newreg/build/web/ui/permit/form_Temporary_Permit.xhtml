@@ -1,0 +1,476 @@
+<ui:composition
+    template="#{tmp_pmt.masterLayout}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22" >
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="temp_Pmt" prependId="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1><h:outputText value="#{tmp_pmt.header}" styleClass="header-main" /></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:outputPanel id="abc1"  styleClass="bottom-space">
+                    <p:panel rendered="#{tmp_pmt.render_vehicle}" header="#{language.veh_details}" styleClass="top-space bottom-space">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                </label>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.regn_no}:" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:inputText id="regn_no" value="#{tmp_pmt.regn_no}" autocomplete="off" maxlength="10" required="true" requiredMessage="Enter Vehicle Number !"
+                                             style="text-transform:uppercase">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="#{language.get_details}" action="#{tmp_pmt.get_Details_On_Blur()}"
+                                                 update="abc1 dataTablePrvPmt tempTabView route_details area_details temp_Pmt_type tmp_Pmt appl_save_panal PreviousPmtDtls statePanel tmp_Length" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+                <p:panel rendered="#{!tmp_pmt.render_vehicle}" header="Application No" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                            </label>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="#{language.home_rightpanelApplno}:" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:inputText id="gen_appl_no" value="#{tmp_pmt.appl_no}" autocomplete="off" maxlength="10" style="text-transform:uppercase" disabled="true"/>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:outputPanel id="dataTablePrvPmt" styleClass="top-space bottom-space">
+                    <p:outputPanel  rendered="#{tmp_pmt.priviousTempDataShow}">
+                        <p:dataTable id="PreviousPmtDtls" var="PreRecorde" value="#{tmp_pmt.priviousTempDataTable}">
+                            <f:facet name="header">
+                                <h:outputText value="Previous #{tmp_pmt.purCode == 36 ? 'Special' : 'Temporary'} Permit Data"/>
+                            </f:facet>
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column headerText="Route From" />
+                                    <p:column headerText="Route To" />
+                                    <p:column headerText="Valid From" />
+                                    <p:column headerText="Valid Upto" />                               
+                                    <p:column headerText="Diffrence Days" />
+                                    <p:column headerText="Issue Date" />
+                                </p:row>
+                            </p:columnGroup>
+
+                            <p:subTable var="tempDtls" value="#{PreRecorde.dtlsList}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{PreRecorde.headerName}" />
+                                </f:facet>
+                                <p:column>
+                                    <h:outputText value="#{tempDtls.route_fr}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{tempDtls.route_to}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{tempDtls.valid_from}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{tempDtls.valid_upto}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{tempDtls.days}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{tempDtls.issue_dt}" />
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column colspan="4" footerText="Totals Days" style="text-align:right"/>
+                                        <p:column colspan="2" footerText="#{PreRecorde.totaldays} Days" />
+                                    </p:row>
+                                </p:columnGroup>
+                            </p:subTable>
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:outputPanel id="tempTabView" styleClass="top-space bottom-space">
+                    <p:tabView rendered="#{tmp_pmt.render_Temp_Permit_Fee}" >
+                        <p:tab title="#{language.own_pmt_dtls}">
+                            <ui:include src="../commonUI/form_owner_dtls_common.xhtml">
+                                <ui:param name="containerBean" value="#{tmp_pmt}" />
+                            </ui:include>
+                            <p:panel header="Permit Details" rendered="#{tmp_pmt.pmt_dobj ne null}" styleClass="top-space bottom-space">
+                                <ui:include src="form_permit_dtls.xhtml" />
+                            </p:panel>
+                        </p:tab>
+                        <p:tab title="#{language.oth_veh_info}">
+                            <ui:include src="/ui/permit/form_permit_check_Details.xhtml">
+                                <ui:param name="Other_Veh_Info" value="#{tmp_pmt}"/>
+                            </ui:include>
+                        </p:tab>
+                        <p:tab id="Upload" title="View/Upload Documents" rendered="#{tmp_pmt.renderDocUploadTab}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 top-space-25">
+                                    <p:commandButton value="View/Upload Documents"
+                                                     icon="ui-icon-check" action="#{tmp_pmt.openModifyUploadedDocumentService}"
+                                                     style="margin-top: 0px !important;" update="test_opnFrame"  />
+                                </div>    
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+                </p:outputPanel>
+                <p:panel id="temp_Pmt_type" header="Permit Type Details" visible="#{tmp_pmt.render_Temp_Permit_type}" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="pmt_type" value="#{pmtLabel.pmt_type}" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:selectOneMenu id="pmt_type"  value="#{tmp_pmt.pmt_type}" filter="true" disabled="#{tmp_pmt.disable_pmt_type}">
+                                <f:selectItem itemValue="-1" itemLabel="Select Permit Type"/>
+                                <f:selectItems value="#{tmp_pmt.pmt_type_list}"/>
+                                <p:ajax event="change" listener="#{tmp_pmt.onSelectPermitType()}" partialSubmit="true"
+                                        onstart="PF('bur').show();" onsuccess="PF('bur').hide()"
+                                        update="permit_cate tmp_Length"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="permit_cate" value="#{pmtLabel.pmt_catg}" />
+                            </label>
+                            <p:selectOneMenu id="permit_cate" value="#{tmp_pmt.pmt_catg}" filter="true" effect="fold" disabled="#{tmp_pmt.disable_pmt_type}">
+                                <f:selectItem itemValue="-1" itemLabel="Select Premit Category"/>
+                                <f:selectItems value="#{tmp_pmt.pmtCategory_list}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel id="tmp_Pmt" header="#{language.pmt_period_dtls}" visible="#{tmp_pmt.renderPeriodAtVerify}" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.valid_from_dt}:"/>
+                            </label>
+                            <p:calendar tabindex="2" id="validfrom" value="#{tmp_pmt.valid_from}" readonlyInput="true" pattern="dd-MMM-yyyy" mindate="#{tmp_pmt.minDate}" 
+                                        maxdate="#{tmp_pmt.maxDate}" placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999" > 
+                                <p:ajax event="dateSelect" listener="#{tmp_pmt.changeDateFieldToResetValue()}" partialSubmit="true" update="period_mode period appl_save_panal route_select validfrom tmp_Length"/>
+                            </p:calendar>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="period_mode" value="#{language.period_mode}:" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:selectOneMenu id="period_mode"  value="#{tmp_pmt.temp_dobj.period_mode}" filter="true">
+                                <f:selectItem itemValue="-1" itemLabel="Select Period"/>
+                                <f:selectItems value="#{tmp_pmt.period_bean}"/>
+                                <p:ajax listener="#{tmp_pmt.check_Time_Period()}" partialSubmit="true" update="appl_save_panal period route_select tmp_Length"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.period}:" styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="period" 
+                                         disabled="#{tmp_pmt.period_disable}"
+                                         value="#{tmp_pmt.temp_dobj.period_in_no}" maxlength="3">
+                                <p:keyFilter regEx="/[\d\-]/" for="period"/>
+                                <p:ajax event="blur" listener="#{tmp_pmt.validFrom_And_ValidUpto()}" partialSubmit="true" process="tmp_Pmt" update="appl_save_panal SpecialRouteView route_select tmp_Length" />
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:outputPanel id="SpecialRouteView" styleClass="top-space bottom-space">
+                    <p:panel rendered="#{tmp_pmt.render_spl_route}">
+                        <ui:include src="/ui/permit/formSpecialRouteDtl.xhtml">
+                        </ui:include>
+                    </p:panel>
+                    <p:panel rendered="false">
+                        <ui:include src="/ui/permit/formSplPassengerDetail.xhtml">
+                        </ui:include>
+                    </p:panel>
+                    <p:panel rendered="#{tmp_pmt.render_spl_route_desc}">
+                        <ui:include src="/ui/permit/SpecialRouteDtlsDesc.xhtml">
+                        </ui:include>
+                    </p:panel>
+                </p:outputPanel>
+                <p:panel id="area_details" header="Area-Details" styleClass="top-space bottom-space"  visible="#{tmp_pmt.visible_area}">
+                    <p:pickList id="Area_pickList" 
+                                value="#{tmp_pmt.areaManage}" showSourceFilter="true" showTargetFilter="true"
+                                effect="bounce" var="area_mast" itemLabel="#{area_mast.value}" itemValue="#{area_mast.key}" disabled="#{tmp_pmt.disable_region}" />
+                </p:panel>
+                <p:panel id="route_details" header="Route-Details" styleClass="top-space bottom-space" visible="#{tmp_pmt.visible_Route}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <p:pickList id="pickList"
+                                        value="#{tmp_pmt.routeManage}" showSourceFilter="true" showTargetFilter="true" 
+                                        effect="bounce" var="route_mast" itemLabel="#{route_mast.value}" itemValue="#{route_mast.key}" disabled="#{tmp_pmt.disable_region}">
+                                <p:ajax event="transfer" listener="#{tmp_pmt.onTransfer}" partialSubmit="true" update="via "/>
+                            </p:pickList>
+                        </div>
+
+                        <div class="ui-grid-col-8">
+                            <p:outputPanel id="via">
+                                <div class="route-details-header">Selected Route Direction</div>
+                                <div class="left-position">
+                                    <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                        <p:outputLabel escape="false" id="route_via" value="#{tmp_pmt.via_route}" />
+                                    </p:scrollPanel>
+                                </div>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:outputPanel id="statePanel">
+                    <c:if test="#{tmp_pmt.temp_state_as_region}">
+                        <ui:include src="../permit/formPermitStateTaken.xhtml" >
+                            <ui:param name="containerBean" value="#{tmp_pmt}" />
+                        </ui:include>
+                    </c:if>
+                </p:outputPanel>
+                <!--               madhurendra on 27-2-2019-->
+                <p:panel id="tmp_Length" header="Permit Length details"  visible="#{tmp_pmt.renderRlengthServicePanal}" styleClass="top-space bottom-space">             
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Route Length:" styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="route_length" value="#{tmp_pmt.temp_dobj.route_length}" styleClass="text-uppercase" maxlength="3" autocomplete="off"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="serType" value="#{pmtLabel.ser_type}"/>
+                            </label>
+                            <p:selectOneMenu id="serType" value="#{tmp_pmt.temp_dobj.service_type}"  filter="true"
+                                             effect="fold" >
+                                <f:selectItem itemValue="-1" itemLabel="Select Services Type"/>
+                                <f:selectItems value="#{tmp_pmt.ser_type}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                </p:panel>
+                <!--                 end-->
+                <p:panel id="route_select" header="#{language.permit_route_dtls}" visible="#{tmp_pmt.renderedTempPmtDlls}"  styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="#{language.valid_from}"/>
+                            </label>
+                            <p:inputText id="valid_from_prv" value="#{tmp_pmt.temp_dobj.prv_valid_fr}" styleClass="text-uppercase" autocomplete="off" readonly="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.valid_upto}" />
+                            </label>
+                            <p:inputText id="valid_upto_prv" value="#{tmp_pmt.temp_dobj.prv_valid_to}" styleClass="text-uppercase" autocomplete="off" readonly="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.travel_from}" styleClass="field-label-mandate" />
+                            </label>
+                            <p:inputText id="route_fr" value="#{tmp_pmt.temp_dobj.route_fr}" styleClass="text-uppercase" maxlength="295" autocomplete="off"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.travel_upto}" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:inputText id="route_to" value="#{tmp_pmt.temp_dobj.route_to}" styleClass="text-uppercase" maxlength="295" autocomplete="off"/>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.route_descr}"/>
+                            </label>
+                            <p:inputText id="temVia" value="#{tmp_pmt.temp_dobj.via}" styleClass="text-uppercase" maxlength="250" autocomplete="off"/>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section:">
+                                <p:outputLabel value="#{language.no_of_goods_carried}"/>
+                            </label>
+                            <p:inputText  id="temGoodsToCarry" value="#{tmp_pmt.temp_dobj.goods_to_carry}" styleClass="text-uppercase" maxlength="35" autocomplete="off"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.purpose_of_journey}" styleClass="field-label-mandate"/>
+                            </label>
+                            <p:inputTextarea  counter="display" maxlength="100"  counterTemplate="{0} characters remaining." 
+                                              value="#{tmp_pmt.temp_dobj.purpose}" cols="50" styleClass="text-uppercase" />
+                            <h:inputHidden/>
+                            <label class="field-label resp-label-section">
+                                <h:outputText id="display"/>
+                            </label>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:blockUI block="abc1" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <p:blockUI block="temp_Pmt_type" widgetVar="bur">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+                <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" closable="false" resizable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel value="#{tmp_pmt.app_no_msg}" />
+                            <f:facet name="footer">
+                                <p:commandButton value="Exit for Another Application" action="#{tmp_pmt.redirect()}"/>
+                            </f:facet> 
+                        </div>
+                    </div>
+                </p:dialog>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:panel id="changedByPrevUser" rendered="#{tmp_pmt.prevChangedDataList.size()>0}"
+                                 toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                            <p:dataTable value="#{tmp_pmt.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="Changed by Employee" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="Changed on" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel> 
+                    </div>
+                </div>
+
+                <p:outputPanel rendered="#{tmp_pmt.render_app_disapp}" styleClass="bottom-space top-space">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{tmp_pmt}"/>
+                    </ui:include>
+                </p:outputPanel> 
+
+                <p:outputPanel id="outputpanel_eAppSave" rendered="#{tmp_pmt.render}">  
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <vahan:vahanCaptcha labelName="Enter Verification Code:"/>
+                        </div>
+                    </div>
+                    <p:panel id="panelMoveCancel" styleClass="bottom-space center-position top-space"> 
+                        <p:commandButton  value="Save" action="#{tmp_pmt.saveEApplication()}" 
+                                          ajax="true" update="outputpanel_eAppSave" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" icon="ui-icon-disk" style="width: 100px">
+                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            <p:blockUI block="outputpanel_eAppSave" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:commandButton>  
+                        <p:button id="btTempBack" value="Back" outcome="/masterHome.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" />
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog> 
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="test_opnFrame">
+                    <p:dialog widgetVar="ifrmDlg" modal="true" header="Upload Document">
+                        <p:ajax event="close" />
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <iframe id="iframeCenter" src="#{tmp_pmt.dmsUrl}"
+                                        height="600" width="1200" frameborder="0" scrolling="auto"
+                                        marginheight="1" marginwidth="1"> </iframe>
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:panel id="appl_save_panal" visible="#{tmp_pmt.renderedTempPmtDlls}" rendered="#{tmp_pmt.render_save_Details}" styleClass="bottom-space top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Submit" action="#{tmp_pmt.saveDetailinVa_Temp_Permit()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="app_num_id" >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Reset" action="/ui/permit/form_Temporary_Permit.xhtml?faces-redirect=true"/>
+                            <p:commandButton value="Back" action ="/home.xhtml?faces-redirect=true"/>    
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog> 
+                <p:keyFilter regEx="/[\sa-z0-9_]/i" for="route_to"/>
+                <p:keyFilter regEx="/[\sa-z0-9_]/i" for="route_fr"/>
+                <p:keyFilter regEx="/[\sa-z0-9_]/i" for="regn_no"/>
+
+
+
+                <!--                Nitin Kumar 21-01-2016 Begin-->
+
+                <p:dialog id="dialogDupRegNo" header="Application Can't be Inward!" widgetVar="varDupRegNo" 
+                          closable="true" modal="true" dynamic="true" height="200" width="800">
+                    <h:form id="dupRegNo">       
+
+                        <p:dataTable id="duplicateRegn" value="#{tmp_pmt.dupRegnList}" var="dupRegn"
+                                     rowIndexVar="index" rendered="#{tmp_pmt.dupRegnList.size()>1}">
+
+                            <f:facet name="header">
+                                <h:outputText value="Duplicate Record Found for Registration No"/>
+                            </f:facet>
+
+                            <p:column headerText="Sr.No" width="5%">#{index +1}.</p:column>
+
+                            <p:column headerText="#{label.regn_no}">#{dupRegn.regn_no}</p:column>
+
+                            <p:column headerText="#{label.owner_name}">#{dupRegn.owner_name}</p:column>
+
+                            <p:column headerText="#{label.f_name}">#{dupRegn.f_name}</p:column>
+
+                            <p:column headerText="#{label.state}">#{dupRegn.state_name}</p:column>                                   
+
+                            <p:column headerText="#{label.office}">#{dupRegn.off_name}</p:column>
+
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+
+                <!--Nitin Kumar 21-01-2016 End--> 
+
+
+
+
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

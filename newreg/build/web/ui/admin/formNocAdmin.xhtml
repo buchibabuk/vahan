@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_noc" prependId="false">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:blockUI block="form_noc" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main"> NOC/CC Modification</h1>
+                    </div>
+                </div>
+
+
+                <p:panel id="mainPanel" styleClass="top-space bottom-space" rendered="#{!nocAdminBean.render}">
+                    <p:focus context="mainPanel"/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="Registration No"/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{nocAdminBean.regnNo}" 
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="Please Enter Registration No."
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details"
+                                             action="#{nocAdminBean.showDetails()}"
+                                             update="form_noc"
+                                             onclick="PF('ajax_status').show()"
+                                             oncomplete="PF('ajax_status').hide()"/>
+                            <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                    <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                </p:panel>
+
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:outputPanel rendered="#{nocAdminBean.render}" id ="nocDetailsPanel" styleClass="top-space bottom-space">
+                        <p:tabView styleClass="top-space bottom-space" >
+                            <p:tab id="nocDetailsForModification" title="#{nocAdminBean.header}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="state_to" value="State To:"/>
+                                        </label>
+                                        <p:selectOneMenu id="state_to" value="#{nocAdminBean.nocDobj.state_to}" 
+                                                         filter="true" filterMatchMode="contains" disabled="#{!nocAdminBean.sameState}">
+                                            <f:selectItems value="#{nocAdminBean.stateList}"/>    
+                                            <p:ajax event="change" listener="#{nocAdminBean.stateToListener()}" update="nocDetailsPanel"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="auth_to" value="Authority To:"/>
+                                        </label>
+                                        <p:selectOneMenu id="auth_to" value="#{nocAdminBean.nocDobj.off_to}"
+                                                         filter="true" filterMatchMode="contains" required="true"  
+                                                         requiredMessage="Authority To Can not Be Empty">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                            <f:selectItems value="#{nocAdminBean.officeList}"/>
+                                            <f:validator for="auth_to" validatorId="selectOneValidator_0"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="rto_disp_no" value="RTO Dispatch No:"/>
+                                        </label>
+                                        <p:inputText id="rto_disp_no" value="#{nocAdminBean.nocDobj.dispatch_no}"
+                                                     converter="toUpperCaseConverter" required="true"
+                                                     requiredMessage="Blank: RTO Dispatch No"
+                                                     maxlength="15" autocomplete="off"
+                                                     styleClass="input" disabled="true">
+                                            <f:validateRequired for="rto_disp_no"/>
+                                            <f:validateLength maximum="15" for="rto_disp_no"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="ncrb_clear_no" value="N.C.R.B. Clearance No:"/>
+                                        </label>
+                                        <p:inputText id="ncrb_clear_no" value="#{nocAdminBean.nocDobj.ncrb_ref}"
+                                                     required="true" converter="toUpperCaseConverter"
+                                                     requiredMessage="Blank N.C.R.B. Clearance No"
+                                                     maxlength="20" autocomplete="off"
+                                                     styleClass="input" disabled="true">
+                                            <f:validateRequired for="ncrb_clear_no"/>
+                                            <f:validateLength maximum="20" for="ncrb_clear_no"/>
+                                            <f:validateRegex pattern="([a-zA-Z0-9-/]+)" for="ncrb_clear_no"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="noc_date" value="Issue Date:"/>
+                                        </label>
+                                        <p:calendar id="noc_date" value="#{nocAdminBean.nocDobj.noc_dt}" navigator="true"
+                                                    required="true" requiredMessage="Blank NOC Issue Date"
+                                                    pattern="dd-MMM-yyyy" readonlyInput="true" disabled="true"
+                                                    mindate="#{nocAdminBean.nocDobj.noc_dt}" 
+                                                    maxdate="#{nocAdminBean.nocDobj.noc_dt}" autocomplete="off">
+                                            <f:validateRequired for="noc_date"/>
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" for="noc_date"/>
+                                        </p:calendar>    
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row center-position">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton value="Save"
+                                                         onclick="PF('ajax_status').show()"
+                                                         oncomplete="PF('ajax_status').hide()"
+                                                         action="#{nocAdminBean.saveNocModification()}"
+                                                         update=":form_noc">
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                                        </p:commandButton>
+                                        <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                                    </div>
+                                </div>
+
+                            </p:tab>
+
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{nocAdminBean.ownerDetailsDobj}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{nocAdminBean.ownerDetailsDobj}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+                        </p:tabView>
+                    </p:outputPanel> 
+                </p:outputPanel>   
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

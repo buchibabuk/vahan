@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid-row bottom-space">
+        <div class="ui-grid-col-12">
+            <label class="field-label resp-label-section">
+                <p:outputLabel for="adminRemark" value="Remarks:" styleClass="right-space"/>
+            </label>
+            <p:inputTextarea id="adminRemark" value="#{ownerAdmin.admin_Remarks}" required="true" cols="50" rows="8" placeholder="Enter your remarks for user guidance..."
+                             maxlength="1000" requiredMessage="Please enter your reason of changing data in remarks box." >                            
+            </p:inputTextarea>
+        </div> 
+    </div>
+</html>

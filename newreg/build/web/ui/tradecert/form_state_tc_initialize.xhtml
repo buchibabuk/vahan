@@ -1,0 +1,200 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+    <ui:define name="content"> 
+        <div class="ui-grid ui-grid-responsive">
+            <!-- ################################## Dialogs start-->
+            <p:dialog id="confirmationPopup"
+                      style="text-align:center" widgetVar="confirmationPopup"
+                      modal="true" draggable="false" closable="false" hideEffect="explode"
+                      header="#{language.home_confirm}"> 
+
+                <h:outputText value="#{language.confirmTradeCertSeriesMsg} - "/>
+                <h:outputText value="(#{initializeTC.prefixSeriesPart1}#{initializeTC.initializeTradeCertDobj.modulePrefix}#{initializeTC.nextSeriesSeqPattern})" styleClass="underline-text red font-bold"/>
+                <br/>
+                <br/>
+                <br/>
+                <h:outputText value="#{language.updateConfirm}" />
+
+                <hr/>
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-6" >
+                        <p:commandButton value="#{language.yes}" update="panelTCInitialize tcSeriesMaster applicantCategory" oncomplete="PF('confirmationPopup').hide();" action="#{initializeTC.addTCSeries()}"  icon="ui-icon-check"  />
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <p:commandButton value="#{language.no}"  oncomplete="PF('confirmationPopup').hide()" icon="ui-icon-close" />
+                    </div>                    
+                </div>
+
+            </p:dialog>
+            <!-- ################################## Dialogs end -->
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">#{language.tradeCertSeriesMaster}</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <p:outputPanel id="tcSeriesMaster">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section"> 
+                            <h:outputText value="#{language.applicantCategory}" styleClass="font-bold"  />
+                        </label>
+                        <p:selectOneMenu id="applicantCategory" value="#{initializeTC.initializeTradeCertDobj.applicantType}" 
+                                         filter="true">
+                            <f:selectItem itemLabel="-SELECT-" itemValue="-SELECT-"/>
+                            <f:selectItems value="#{initializeTC.applicantTypeList}" />
+                            <p:ajax event="change" listener="#{initializeTC.selectionOfApplicantType}"
+                                    update="panelTCInitialize"/> 
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                </div>
+                <p:spacer height="10"/>
+            </p:outputPanel>
+
+            <p:outputPanel id="panelTCInitialize">
+                <p:panel styleClass="bottom-space" rendered="#{initializeTC.renderTCSeriesEntryPanel}">
+                    <f:facet name="header">
+                        <div class="center-position inline-section datatable-panel-100">
+                            #{language.tradeCertSeriesEntry}
+                        </div>  
+                    </f:facet>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="dialog_txtprefix_series_part1" value="#{language.prefixSeries} (e.g " id="dialog_lblprefix_series" styleClass="inline-section">
+                                    <h:outputText value=" #{initialzeTC.initializeTradeCertDobj.stateCd}" styleClass="underline-text red" />
+                                    <h:outputText value="#{initializeTC.initializeTradeCertDobj.offCd}" styleClass="underline-text red">
+                                        <f:convertNumber pattern="#00"/>
+                                    </h:outputText>
+                                    <h:outputText value="XX)" styleClass="underline-text"/>
+                                    <h:outputText value="#{language.part}-1"/>
+                                </p:outputLabel>
+                            </label>
+
+                            <p:inputText id="dialog_txtprefix_series_part1" value="#{initializeTC.prefixSeriesPart1}" maxlength="4" 
+                                         requiredMessage="#{language.blankprefixSeries} #{language.part}-1" validatorMessage="#{language.requiredPrefixMsg}"
+                                         converter="toUpperCaseConverter" autocomplete="off" required="true" styleClass="text-uppercase" disabled="true">
+                                <f:validateLength maximum="4" minimum="4" for="dialog_txtprefix_series_part1"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="dialog_txtprefix_series_part2" value="#{language.prefixSeries} (e.g " styleClass="inline-section">
+                                    <h:outputText value=" #{initializeTC.initializeTradeCertDobj.stateCd}" styleClass="underline-text" />
+                                    <h:outputText value="#{initializeTC.initializeTradeCertDobj.offCd}" styleClass="underline-text">
+                                        <f:convertNumber pattern="#00"/>
+                                    </h:outputText>
+                                    <h:outputText value="XX)" styleClass="underline-text red"/> 
+                                    <h:outputText value=" #{language.part}-2"/>
+                                </p:outputLabel>
+                            </label>
+                            <p:inputText id="dialog_txtprefix_series_part2" value="#{initializeTC.initializeTradeCertDobj.modulePrefix}" maxlength="2" 
+                                         requiredMessage="#{language.blankprefixSeries} #{language.part}-2" required="true"
+                                         converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase">
+
+                                <p:ajax event="blur"  update="bt_sv confirmationPopup " />
+                            </p:inputText>
+                        </div>
+
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="dialog_running_no" value="#{language.runningNo}" id="dialog_lblrunning_range"/> 
+                            </label>
+                            <p:inputText value="#{initializeTC.initializeTradeCertDobj.sequenceNo}" autocomplete="off" 
+                                         id="dialog_running_no" label="#{language.runningNo}" requiredMessage="#{language.blank} #{language.runningNo}"
+                                         maxlength="3" required="true" >
+
+                                <f:validateLength maximum="3"/>
+                                <f:validateLongRange minimum="0" maximum="998" />
+                                <p:keyFilter for="dialog_running_no" regEx="/[0-9]/i" />
+                                <p:ajax event="blur" listener="#{initializeTC.nextSeriesAddRunningNo}" update="bt_sv confirmationPopup "/>
+                            </p:inputText>
+                        </div>
+
+                    </div>
+
+                    <div class="center-position" >
+                        <p:commandButton id="bt_sv" value="#{language.save}" action="#{initializeTC.validateAndShowConfirmBox()}" 
+
+                                         />
+                    </div>
+                </p:panel>
+
+                <p:panel styleClass="bottom-space" rendered="#{initializeTC.renderTCSeriesUpdatePanel}">
+
+                    <f:facet name="header">
+                        <div class="center-position inline-section datatable-panel-100">
+                            #{language.currentRunningSeries}
+                        </div>  
+                    </f:facet>
+                    <div class="ui-grid-row">
+                        <div class="header-info">
+                            <h:outputText value="#{language.tradeCertSeriesExists}" styleClass="red font-bold"/>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="dialog_txtprefix_update_series_part1" value="#{language.prefixSeries} (e.g " id="dialog_lblprefix_update_series" styleClass="inline-section">
+                                    <h:outputText value=" #{initializeTC.initializeTradeCertDobj.stateCd}" styleClass="underline-text red" />
+                                    <h:outputText value="#{initializeTC.initializeTradeCertDobj.offCd}" styleClass="underline-text red">
+                                        <f:convertNumber pattern="#00"/>
+                                    </h:outputText>
+                                    <h:outputText value="XX)" styleClass="underline-text"/>
+                                    <h:outputText value="#{language.part}-1"/>
+                                </p:outputLabel>
+                            </label>
+                            <p:inputText id="dialog_txtprefix_update_series_part1" value="#{initializeTC.prefixSeriesPart1}"  disabled="true">
+
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="dialog_txtprefix_update_series_part2" value="#{language.prefixSeries} (e.g " styleClass="inline-section">
+                                    <h:outputText value=" #{initializeTC.initializeTradeCertDobj.stateCd}" styleClass="underline-text" />
+                                    <h:outputText value="#{initializeTC.initializeTradeCertDobj.offCd}" styleClass="underline-text">
+                                        <f:convertNumber pattern="#00"/>
+                                    </h:outputText>
+                                    <h:outputText value="XX)" styleClass="underline-text red"/> 
+                                    <h:outputText value=" #{language.part}-2"/>
+                                </p:outputLabel>
+                            </label>
+                            <p:inputText id="dialog_txtprefix_update_series_part2" value="#{initializeTC.initializeTradeCertDobj.modulePrefix}" maxlength="2" 
+                                         disabled="true">                               
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="dialog_update_running_no" value="#{language.runningNo}" id="dialog_update_lblrunning_range"/> 
+                            </label>
+                            <p:inputText id="dialog_update_running_no" value="#{initializeTC.initializeTradeCertDobj.sequenceNo}"  disabled="true">                        
+
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+        </div>
+    </ui:define>
+</ui:composition>

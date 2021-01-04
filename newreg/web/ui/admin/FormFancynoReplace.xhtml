@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+        <p:outputPanel>
+            <p:autoUpdate/>
+            <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+
+                <div class="center-position">
+                    <p:commandButton value="Close" immediate="true" >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+                </div>
+                <p:messages>
+                    <p:autoUpdate/>
+                </p:messages>
+            </p:dialog>
+        </p:outputPanel>
+        <div class="ui-grid ui-grid-responsive">
+            <!--            <h:form id="form_to" prependId="false">    -->
+            <p:panel id="regn_no_details" header="#{language.replace}">
+                <p:keyFilter regEx="/[a-zA-Z0-9/-]/i" for="regnNo"/>
+                <div class="ui-grid-col-4 resp-blank-height"></div>
+                <div class="ui-grid-col-4">              
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel id="regVehTypeLabel" for="regnNo" value=" #{language.assignveh}"/>
+                    </label>
+                    <p:inputText id="regnNo" value="#{fancyNoReplaceBean.regnNo}" autocomplete="off"
+                                 styleClass="input" 
+                                 converter="toUpperCaseConverter"  maxlength="10" 
+                                 requiredMessage="#{language.regn_noblank}" 
+                                 disabled="#{fancyNoReplaceBean.disableRegnNo}" >
+                        <p:ajax event="blur"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="#{language.showDetails}" 
+                                         onclick="PF('ajax_status').show()" 
+                                         oncomplete="PF('ajax_status').hide()" 
+                                         update="regn_no_details tabviewRender "
+                                         action="#{fancyNoReplaceBean.getDetails}" 
+                                         rendered="#{fancyNoReplaceBean.render_vehicle_type}"  />
+                        <p:button value="#{language.login_back}" id="BackButton_id" outcome="home" onclick="PF('ajax_status').show()"  icon="ui-icon-arrowreturnthick-1-w" rendered="#{fancyNoReplaceBean.renderBackButton}"/>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 right-position right-space">
+                        <h:panelGroup rendered="#{fancyNoReplaceBean.fancyRetention}">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="fancyRetention" value="#{language.Fancy_No_Retention} ?" styleClass="font-bold red" />
+                            </label>
+                            <p:selectOneMenu id="fancyRetention" value="#{fancyNoReplaceBean.selectedFancyRetnetion}" required="true" requiredMessage="">
+                                <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                <f:selectItem itemLabel="#{language.yes}" itemValue="YES"/>
+                                <f:selectItem itemLabel="#{language.no}" itemValue="NO"/>
+                                <f:validator validatorId="selectOneValidator" for="fancyDetention"/>  
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <!--                <p:outputPanel rendered="# {fancyNoReplaceBean.retAllowed}">    -->
+                        <p:outputPanel rendered="#{fancyNoReplaceBean.advanceFancyNorender}">   
+                            <p:selectBooleanCheckbox id="adv_regn" value="#{fancyNoReplaceBean.advRegnCheck}" styleClass="inline-section" disabled="#{fancyNoReplaceBean.disableAdvRegnCheck}"  >
+                                <p:ajax update="pd_choice_no" listener="#{fancyNoReplaceBean.advanceCheckListener}" partialSubmit="true"/>
+                            </p:selectBooleanCheckbox>
+                            <h:outputText value="#{language.advance_no_check}" styleClass="inline-section font-bold red"/>                                    
+                        </p:outputPanel>
+                    </div>
+                    <div class="ui-grid-col-4 left-position">
+                        <p:outputPanel rendered="#{fancyNoReplaceBean.retAllowed}">
+
+                            <p:selectBooleanCheckbox id="adv_ret"  value="#{fancyNoReplaceBean.retCheck}" 
+                                                     styleClass="inline-section" disabled="#{fancyNoReplaceBean.disableRetCheck}">
+                                <p:ajax update="ret_panel" listener="#{fancyNoReplaceBean.retCheckListener}" partialSubmit="true"/>
+                            </p:selectBooleanCheckbox>  
+                            <h:outputText value="#{language.retention_no_check}" styleClass="inline-section font-bold red"/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+
+            </p:panel>
+            <p:outputPanel id="tabviewRender">
+
+                <p:tabView id="workbench_tabview" styleClass="top-space bottom-space" rendered="#{fancyNoReplaceBean.renderTab}">
+
+                    <!--################################# Owner Details ########################################## -->
+                    <p:tab  id="owner_details_tab" title="#{language.ownerDetails}">
+                        <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                            <ui:param name="ownerDetail" value="#{fancyNoReplaceBean.ownerDetail}"/>
+                        </ui:include>
+                    </p:tab>
+                    <!--########################################################################################## -->
+
+                </p:tabView>
+                <p:panel rendered="#{fancyNoReplaceBean.renderTab}" id="rmk_id">
+                    <p:outputPanel id="reason_id" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="adminRemarks" value="#{language.remark}" />
+                                </label>
+                                <p:inputTextarea id="adminRemarks" value="#{fancyNoReplaceBean.remark}" styleClass="input"
+                                                 required="true" cols="50" rows="1" placeholder="#{language.enter_reason}..."
+                                                 maxlength="100" requiredMessage="#{language.rmk_empty}"
+                                                 converter="toUpperCaseConverter" >                            
+                                </p:inputTextarea>
+                            </div>
+                            <div class="ui-grid-col-6 center-position">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  style="visibility: hidden" />
+                                </label>
+                                <label class="field-label resp-label-section">
+                                    <h:outputText id="message_id" value="#{fancyNoReplaceBean.messageFancyNo}" styleClass="red font-bold"/>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="#{language.save}" action="#{fancyNoReplaceBean.setVehicleNotoFancyNo}" 
+                                                 onclick="PF('ajax_status').show()" 
+                                                 oncomplete="PF('ajax_status').hide()" 
+                                                 icon="ui-icon-disk" update="tabviewRender regn_no_details" 
+                                                 >
+                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()"  icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                </p:panel>
+            </p:outputPanel>
+            <p:dialog id="pd_choice_no" widgetVar="wd_choiceno" modal="true" visible="#{fancyNoReplaceBean.advRegnCheckDialogue}"
+                      draggable="false" closable="false" header="#{language.choice_no_details}" dynamic="true">
+                <p:panel id="pn_adv_app_dtl" header="#{language.advance_no_details}" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages id="choiceMsg" closable="true"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_recp_no" value="#{language.rcpt_no}"/>
+                            </label>
+                            <p:inputText  id="tf_recp_no" value="#{fancyNoReplaceBean.advRegnNoDobj.recp_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase">
+                                <p:ajax listener="#{fancyNoReplaceBean.advanceRcptListener}" update="pn_adv_app_dtl pn_adv_cur_add"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_regn_no" value="#{language.advance_no}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_regn_no" value="#{fancyNoReplaceBean.advRegnNoDobj.regn_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_owner_name" value="#{label.owner_name}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_owner_name" value="#{fancyNoReplaceBean.advRegnNoDobj.owner_name}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_mob_no" value="#{label.mob_no}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_mob_no" value="#{fancyNoReplaceBean.advRegnNoDobj.mobile_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel id="pn_adv_cur_add" header="#{language.current_add}" styleClass="top-space bottom-space">
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add1" value="#{label.address1}"/>
+                            </label>
+                            <p:inputText  id="add1" value="#{fancyNoReplaceBean.advRegnNoDobj.c_add1}"
+                                          maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add2" value="#{label.address2}"/>
+                            </label>
+                            <p:inputText id="add2" value="#{fancyNoReplaceBean.advRegnNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                         maxlength="35"   autocomplete="off" style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add3" value="#{label.address3}"/>
+                            </label>
+                            <p:inputText  id="add3" value="#{fancyNoReplaceBean.advRegnNoDobj.c_add3}"
+                                          maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="state" value="#{label.state}"/>
+                            </label>
+                            <p:selectOneMenu id="state" value="#{fancyNoReplaceBean.advRegnNoDobj.c_state}" filter="true"
+                                             disabled="true">
+                                <f:selectItems value="#{fancyNoReplaceBean.list_c_state}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="district" value="#{label.district}"/>
+                            </label>
+                            <p:selectOneMenu id="district"  value="#{fancyNoReplaceBean.advRegnNoDobj.c_district}"  filter="true" disabled="true">
+                                <f:selectItems value="#{fancyNoReplaceBean.list_adv_district}"/>
+                                <f:ajax/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="pincode" value="#{language.pin}"/>
+                            </label>
+                            <p:inputText id="pincode" value="#{fancyNoReplaceBean.advRegnNoDobj.c_pincode}" size="10"
+                                         requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="tf_button_save" value="#{language.save}" immediate="true"  oncomplete="PF('wd_choiceno').hide();">
+                            <p:ajax listener="#{fancyNoReplaceBean.advanceSaveListener}" update="adv_regn regn_no_details rmk_id"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="#{language.exit}" immediate="true" oncomplete="PF('wd_choiceno').hide();">
+                            <p:ajax listener="#{fancyNoReplaceBean.advanceExitListener}" update="adv_regn regn_no_details rmk_id"/>
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:dialog id="ret_panel" widgetVar="ret_no" modal="true" visible="#{fancyNoReplaceBean.advRetCheckDialogue}"
+                      draggable="false" closable="false" header="#{language.retention_no_details}" dynamic="true">                
+                <p:panel id="pn_adv_ret_app_dtl" header="#{language.retention_details}" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages id="choiceMsgRet" closable="true"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_recp_no_ret" value="#{language.rcpt_no}"/>
+                            </label>
+                            <p:inputText  id="tf_recp_no_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.recp_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase">
+                                <p:ajax  listener="#{fancyNoReplaceBean.advanceRcptListener}" update="pn_adv_ret_app_dtl pn_adv_ret_cur_add"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_regn_no_ret" value="#{language.retention_no}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_regn_no_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.regn_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_owner_name_ret" value="#{label.owner_name}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_owner_name_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.owner_name}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_adv_mob_no_ret" value="#{label.mob_no}"/>
+                            </label>
+                            <p:inputText  id="tf_adv_mob_no_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.mobile_no}"
+                                          maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:panel id="pn_adv_ret_cur_add" header="#{language.current_add_retention}" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add1_ret" value="#{label.address1}"/>
+                            </label>
+                            <p:inputText  id="add1_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.c_add1}"
+                                          maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add2_ret" value="#{label.address2}"/>
+                            </label>
+                            <p:inputText id="add2_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                         maxlength="35" autocomplete="off" style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="add3_ret" value="#{label.address3}"/>
+                            </label>
+                            <p:inputText  id="add3_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.c_add3}"
+                                          maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                          style="text-transform: uppercase" disabled="true">
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="state_ret" value="#{label.state}"/>
+                            </label>
+                            <p:selectOneMenu id="state_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.c_state}" filter="true"
+                                             disabled="true">
+                                <f:selectItems value="#{fancyNoReplaceBean.list_c_state}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="district_ret" value="#{label.district}"/>
+                            </label>
+                            <p:selectOneMenu id="district_ret"  value="#{fancyNoReplaceBean.retenRegNoDobj.c_district}"  filter="true" disabled="true">
+                                <f:selectItems value="#{fancyNoReplaceBean.list_adv_district}"/>
+                                <f:ajax/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="pincode_ret" value="Pin"/>
+                            </label>
+                            <p:inputText id="pincode_ret" value="#{fancyNoReplaceBean.retenRegNoDobj.c_pincode}" size="10"
+                                         requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="tf_button_ret_save" value="#{language.save}" immediate="true" oncomplete="PF('ret_no').hide();">
+                            <p:ajax listener="#{fancyNoReplaceBean.advanceSaveListener}" update="adv_ret regn_no_details rmk_id"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="#{language.exit}" immediate="true" oncomplete="PF('ret_no').hide();">
+                            <p:ajax listener="#{fancyNoReplaceBean.advanceExitListener}" update="adv_ret regn_no_details rmk_id"/>
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:dialog>
+
+        </div>
+
+
+
+
+    </ui:define>
+</ui:composition>

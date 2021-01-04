@@ -1,0 +1,433 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="script">
+        <script type="text/javascript">
+            $(function () {
+                $('.marquee').marquee();
+                $('.marquee-with-options').marquee({
+                    speed: 50000,
+                    gap: 2,
+                    delayBeforeStart: 0,
+                    duration: 10,
+                    direction: 'left',
+                    duplicated: false,
+                    pauseOnHover: true
+                });
+            });
+        </script>
+        <style>
+            .dashboardBtn
+            {
+                font-size: 18px !important;
+                border-radius: 6px;
+                color: #fff !important;
+                box-shadow: 1px 5px 1px #000;
+                margin-right: 10px;
+                background: #0379c0;
+                background: -webkit-gradient(linear, 0 0, 0 100%, from(#00446d), to(#0379c0));
+                background: -webkit-linear-gradient(top, #0b9bf1, #1c6786);
+                background: -moz-linear-gradient(top, #0379c0, #00446d);
+                background: -ms-linear-gradient(top, #0379c0, #00446d);
+                background: -o-linear-gradient(top, #0379c0, #00446d);
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content"> 
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+        <div class="ui-grid ui-grid-responsive">
+
+
+            <p:outputPanel rendered="#{home_bean.dealerBlockPanel}" styleClass="ui-panel-titlebar center-position">
+                <h:outputText id="dealerBlockMsg" value="#{home_bean.dealerBlockMsg}" styleClass="report-subheader red font-bold text-uppercase"/>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{!home_bean.dealerBlockPanel}">
+                <div class="ui-grid-row top-space news_w-border">
+                    <div class="ui-grid-col-2">
+                        <div class="main_news_w main_news_w-left-border" style="width: 260px;">
+                            <div class="news_w">
+                                <div class="font-bold font-white left-space">#{language.home_current_running}</div> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-grid-col-10">
+                        <div data-direction="left" class="marquee-with-options" style="line-height:30px;">
+                            <p:outputLabel id ="availableRegnListID" value="#{home_bean.availableRegnNoList}" escape="false" />
+                        </div>                     
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{home_bean.tradeCertPanel}">
+                <div class="ui-grid-row top-space news_w-border">
+                    <div class="ui-grid-col-2">
+                        <div class="main_news_w main_news_w-left-border" style="width: 260px;">
+                            <div class="news_w">
+                                <div class="font-bold font-white left-space"><h:outputText value="Trade Certificate Details:"/></div> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-grid-col-10">
+                        <div data-direction="left" class="marquee-with-options" style="line-height:30px;">
+                            <p:outputLabel id ="tradeCertList" value="#{home_bean.tradeCertificateList}" escape="false"/>
+                        </div>                     
+                    </div>      
+                </div>
+            </p:outputPanel>
+
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-12">
+                    <p:messages> 
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:graphicImage rendered="#{home_bean.noOfUnreadUserCatgMessages gt 0 and home_bean.userCatgMessages == true}" name="new.gif" library="images" width="50px" height="50px"/>
+                    <p:outputLabel rendered="#{home_bean.noOfUnreadUserCatgMessages gt 0 and home_bean.userCatgMessages == true}"  styleClass="inline-section right-space">
+                        <h3 class="close-counter counter-button inline-section center-position">
+                            <span class="glyphicon right-space"></span> 
+                            <a href="/vahan/vahan/ui/admin/formUserMsgByCatg.xhtml?userMsgType=by_catg" style="color:#FFFFFF">
+                                #{home_bean.userCatgMessagesNotif}
+                            </a>
+                        </h3>                        
+                    </p:outputLabel>
+
+                    <p:outputLabel rendered="#{home_bean.noOfUnreadUserCatgMessages eq 0 and home_bean.noOfUserCatgMessages gt 0 and home_bean.userCatgMessages == true}"  styleClass="inline-section right-space">
+                        <h3 class="open-counter counter-button inline-section center-position">
+                            <span class="glyphicon right-space"></span> 
+                            <a href="/vahan/vahan/ui/admin/formUserMsgByCatg.xhtml?userMsgType=by_catg" style="color:#FFFFFF">
+                                #{home_bean.userCatgMessagesNotif}
+                            </a>
+                        </h3>                        
+                    </p:outputLabel>
+                </div>
+            </div>
+
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:outputLabel rendered="#{home_bean.unreadMessages}"  styleClass="inline-section right-space">
+                        <h3 class="close-counter counter-button inline-section center-position">
+                            <span class="glyphicon right-space"></span> 
+                            <a href="/vahan/vahan/ui/admin/formUserMsg.xhtml?faces-redirect=true" style="color:#FFFFFF">
+                                #{home_bean.unReadMessagesNotif}
+                            </a>
+                        </h3>                        
+                    </p:outputLabel>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-6 top-align">
+                    <p:outputPanel rendered="#{msgBean.modificationMessage.size()>0}">
+                        <ui:include src="/ui/message/user_latest_transactions.xhtml" />
+                    </p:outputPanel>
+                </div>
+
+                <div class="ui-grid-col-6 right-position">
+                    <p:graphicImage rendered="#{home_bean.renderedDashBoardBtn}" name="new.gif" library="images" width="50px" height="50px"/>
+                    <p:commandLink  rendered="#{home_bean.renderedDashBoardBtn}" action="#{home_bean.showDashBoard()}"
+                                    styleClass="right-space" >
+                        <h3 class="dashboardBtn counter-button inline-section center-position" title="Dashboard">
+                            <span class="glyphicon glyphicon-dashboard right-space"></span> Dashboard
+                        </h3> 
+                    </p:commandLink>
+                    <p:outputLabel rendered="#{home_bean.hsrp == 'YES'}"  styleClass="inline-section right-space">
+                        <h3 class="open-counter counter-button inline-section center-position" title="HSRP: YES">
+                            <span class="glyphicon glyphicon-ok right-space"></span> #{language.home_hsrp}
+                        </h3>                        
+                    </p:outputLabel>
+                    <p:outputLabel rendered="#{home_bean.hsrp == 'NO'}"  styleClass="inline-section right-space">
+                        <h3 class="close-counter counter-button inline-section center-position" title="HSRP: NO">
+                            <span class="glyphicon glyphicon-remove right-space"></span>  #{language.home_hsrp}
+                        </h3>                        
+                    </p:outputLabel>
+
+                    <p:outputLabel rendered="#{home_bean.smartCard == 'YES'}"  styleClass="inline-section right-space">
+                        <h3 class="open-counter counter-button inline-section center-position" title="Smart Card: YES">
+                            <span class="glyphicon glyphicon-ok right-space"></span>#{language.home_smart_card}
+                        </h3>                        
+                    </p:outputLabel>
+                    <p:outputLabel rendered="#{home_bean.smartCard == 'NO'}"  styleClass="inline-section right-space">
+                        <h3 class="close-counter counter-button inline-section center-position" title="Smart Card: NO">
+                            <span class="glyphicon glyphicon-remove right-space"></span> #{language.home_smart_card}
+                        </h3>                        
+                    </p:outputLabel>
+
+                    <p:outputLabel rendered="#{home_bean.cashCounterClose}" styleClass="inline-section right-space" title="Cash Counter: CLOSE">
+                        <h3 class="close-counter counter-button inline-section center-position" >
+                            <span class="glyphicon glyphicon-eye-close right-space"></span> #{language.home_cash_counter}
+                        </h3>                        
+                    </p:outputLabel>
+                    <p:outputLabel rendered="#{home_bean.cashCounterOpen}"  styleClass="inline-section right-space" title="Cash Counter: OPEN">
+                        <h3 class="open-counter counter-button inline-section center-position" >
+                            <span class="glyphicon glyphicon-eye-open right-space"></span>   #{language.home_cash_counter}
+                        </h3>                        
+                    </p:outputLabel>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div  data-direction="left" class='marquee-with-options'>
+                    <p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="red h4">#{home_bean.message}</div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-6">
+                    <p:panel header="#{language.home_leftpanel}" styleClass="datatable-panel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-8">
+                                <label class="field-label resp-label-section">
+                                    #{language.home_leftpaneloffice}
+
+                                </label>
+                                <p:selectOneMenu id="officeList" value="#{home_bean.allotedOffCode}" styleClass="bottom-space" filter="true" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Select Assigned Office" itemValue="-1"/>
+                                    <f:selectItems value="#{home_bean.allotedOffCodeList}"/> 
+                                    <p:ajax event="change" listener="#{home_bean.updateAssignedOffWise}" update="officeList actionList"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-8">
+                                <label class="field-label resp-label-section">
+                                    #{language.home_leftpanelaction}
+                                </label>
+                                <p:selectOneMenu  id ="actionList" value="#{home_bean.allotedActionCode}" filter="true" styleClass="bottom-space" label="#{home_bean.allotedActionCodeList}" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Select Action" itemValue="-1"/>
+                                    <f:selectItems value="#{home_bean.allotedActionCodeList}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-8 center-position">
+                                <p:commandButton id="pending_action" value="#{language.home_left_show_form}"  action="#{home_bean.seatWork()}" ajax="false" onclick="PF('bui').show()"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+
+                </div>
+                <div class="ui-grid-col-6">
+                    <p:panel id="pendingInputs" header="#{language.home_rightpanel}" rendered="#{home_bean.pendingWorkPanel}" styleClass="datatable-panel" style="margin: 0px auto;">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-10 top-space left-position">
+                                <p:selectOneRadio  value="#{home_bean.searchByValue}"  layout="responsive" columns="2">
+                                    <f:selectItem itemLabel="#{language.home_rightpanelApplno}" itemValue="applNo" />
+                                    <f:selectItem itemLabel="#{language.home_rightpanelOldApplno}" itemValue="oldApplNo" />
+                                    <f:selectItem itemLabel="#{language.home_rightpanelregno}" itemValue="regnNo" />
+                                    <f:selectItem itemLabel="#{language.home_rightpanelpending}" itemValue="all" />
+                                    <c:if test="#{home_bean.renderFaceApplRadioButton}">
+                                        <f:selectItem itemLabel="Faceless Appl No" itemValue="faceApplNo" />
+                                    </c:if>
+                                    <f:ajax render="pendingInputs pendingWorkFromId"/>
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-8">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel   value="#{language.home_rightpanelApplno}:" rendered="#{home_bean.searchByValue eq 'applNo'}"/>
+                                    <p:outputLabel   value="#{language.home_rightpanel_part1}" rendered="#{home_bean.searchByValue eq 'applNo'}" styleClass="inline-section" style="width: 49% !important; color: #FF0000 !important;" />
+                                    <p:outputLabel   value="#{language.home_rightpanel_part2}" rendered="#{home_bean.searchByValue eq 'applNo'}" styleClass="inline-section" style="width: 50% !important; color: #FF0000 !important;" />
+                                </label>
+                                <label class="field-label resp-label-section"> 
+                                    <p:outputLabel value="#{language.home_rightpanelregno}:" rendered="#{home_bean.searchByValue == 'regnNo'}"/>  
+                                    <p:outputLabel value="#{language.home_rightpanelApplno}:" rendered="#{home_bean.searchByValue == 'oldApplNo'}"/>  
+                                </label>
+
+                                <p:inputText id="firstPartAppNo" styleClass="text-uppercase" maxlength="6" required="true" 
+                                             requiredMessage="Please Enter Application No" 
+                                             converter="toUpperCaseConverter"  title="Application Number Part 1 (First Six Chars)"
+                                             autocomplete="off" value="#{home_bean.firstPartApplNo}" 
+                                             style="width: 42% !important; margin-right: 4.5%;" 
+                                             rendered="#{home_bean.searchByValue == 'applNo'}">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9/-]/i" for="firstPartAppNo"/>
+                                    <f:validateLength minimum="6" maximum="6"/>  
+                                </p:inputText>  
+                                <p:inputText  id="secondPartAppNo" value="#{home_bean.secondPartApplNo}" maxlength="10"
+                                              converter="toUpperCaseConverter"  title="Application Number Part 2 (Next Ten Chars)"
+                                              autocomplete="off" styleClass="text-uppercase"
+                                              style="width: 42% !important;" rendered="#{home_bean.searchByValue eq 'applNo'}">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9/-]/i" for="secondPartAppNo"/>
+                                </p:inputText> 
+                                <p:inputText id="regNo"  maxlength="10" styleClass="text-uppercase"                                          
+                                             converter="toUpperCaseConverter" 
+                                             autocomplete="off" value="#{home_bean.regnNo}" rendered="#{home_bean.searchByValue == 'regnNo'}"  validator="#{validateFunction.validateRegNo}"
+                                             >   
+                                    <p:keyFilter regEx="/[a-zA-Z0-9/-]/i" for="regNo"/>
+                                </p:inputText>
+                                <p:inputText id="oldApplNo"  maxlength="16" styleClass="text-uppercase"                                          
+                                             converter="toUpperCaseConverter" 
+                                             autocomplete="off" value="#{home_bean.oldApplNo}" rendered="#{home_bean.searchByValue == 'oldApplNo'}" validator="#{validateFunction.validateApplNo}">                               
+                                    <p:keyFilter regEx="/[a-zA-Z0-9/-]/i" for="oldApplNo"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton action="#{home_bean.getPendingWorkAndActionList()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="#{language.home_rightpanelgetpending}"/>
+                                <p:commandButton action="#{home_bean.validatePullBackAppl()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="#{language.home_rightpanelpull_back}" 
+                                                 update="pullBackdlg" rendered="#{home_bean.searchByValue eq 'applNo' || home_bean.searchByValue eq 'oldApplNo'}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </div>
+            </div>
+
+            <h:panelGroup id="actionMsg" styleClass="top-space">
+                <p:outputPanel id="dateBetweenPanel" rendered="#{home_bean.fromDate != null &amp;&amp; home_bean.uptoDate != null}"  styleClass="top-space"> 
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position top-space">
+                            <h2 class="header-subheader text-capitalize underline-text">
+                                Pending work(s) for the selected office <span class="red"> [ #{home_bean.offDescr} ] </span>                                
+                            </h2>                        
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-2">
+                            <p:commandButton action="#{home_bean.getPendingWorkDateWisePrev}"
+                                             value="Previous 2 Days Pending Appls" icon="ui-icon-seek-prev" iconPos="left" rendered="#{home_bean.prevDateButton}"
+                                             onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="actionMsg"/>
+                        </div>
+                        <div class="ui-grid-col-8 top-space">
+                            <table style="margin: 0 auto;">
+                                <tr>
+                                    <td>
+                                        <h:outputLabel value="From:" rendered="#{home_bean.calPanel}" styleClass="font-bold red inline-section right-space" />
+                                    </td>
+                                    <td class="cell-width-section">
+                                        <p:calendar id="pendingWorkFromId" readonlyInput="true" navigator="true" pattern="dd-MMM-yyyy" 
+                                                    value="#{home_bean.fromDate}" mindate="#{home_bean.vow4Date}" maxdate="#{home_bean.currentDate}" 
+                                                    size="5" disabled="#{home_bean.searchByValue ne 'all'}" rendered="#{home_bean.calPanel}">                                          
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" type="date"/>
+                                            <p:ajax event="dateSelect" process="@this"  update="actionMsg" listener="#{home_bean.getPendingWorkDateSelectionWise}" partialSubmit="true" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                                        </p:calendar>
+                                    </td>
+                                    <td>
+                                        <h:outputLabel value="To:" rendered="#{home_bean.calPanel}" styleClass="font-bold red inline-section right-space" />
+                                    </td>
+                                    <td class="cell-width-section">
+                                        <p:calendar id="pendingWorkUptoId" pattern="dd-MMM-yyyy" value="#{home_bean.uptoDate}" disabled="true" size="5" rendered="#{home_bean.calPanel}">                                           
+                                            <f:convertDateTime for="pendingWorkUptoId" pattern="dd-MMM-yyyy" type="date" /> 
+                                        </p:calendar>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="ui-grid-col-2">
+                            <p:commandButton action="#{home_bean.getPendingWorkDateWiseNext}"
+                                             value="Next 2 Days Pending Appls" icon="ui-icon-seek-next" iconPos="right"  rendered="#{home_bean.nextDateButton}"
+                                             onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="actionMsg"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="pendingWorkId" rendered="#{home_bean.allseatWork.size() > 0}"  styleClass="top-space">                                       
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable id="workDetails"  value="#{home_bean.allseatWork}" var="virtual" rows="10"
+                                         paginator="#{home_bean.allseatWork.size()>10}" widgetVar="seatWorkList" filteredValue="#{home_bean.filteredSeat}" rowIndexVar="index" reflow="true">
+                                <p:column headerText="Sr.No" width="5%"  styleClass="font-bold"> <h:outputText value="#{index +1}."/></p:column>
+
+                                <p:column headerText="Application No" filterBy="#{virtual.appl_no}" filterMatchMode="contains" sortBy="#{virtual.appl_no}" styleClass="font-bold">#{virtual.appl_no}</p:column>
+
+                                <p:column styleClass="font-bold">
+                                    <f:facet name="header"><h:outputText value="Application &lt;br /&gt; Date" escape="false" /></f:facet>
+                                        #{virtual.appl_dt}
+                                </p:column>
+
+                                <p:column headerText="Vehicle No" filterBy="#{virtual.regn_no}" filterMatchMode="contains"  styleClass="font-bold">#{virtual.regn_no}</p:column>
+
+                                <p:column headerText="Last Remark"  styleClass="font-bold">#{virtual.office_remark} #{virtual.remark_for_public}</p:column>
+
+                                <p:column width="8%" styleClass="font-bold">
+                                    <f:facet name="header"><h:outputText value="Movement &lt;br /&gt; Sr.No" escape="false" /></f:facet>
+                                    #{virtual.file_movement_slno}</p:column>
+
+                                <p:column headerText="Purpose" filterBy="#{virtual.purpose_descr}" filterMatchMode="contains" styleClass="font-bold">#{virtual.purpose_descr}</p:column>
+
+                                <p:column headerText="Status" filterBy="#{virtual.applStatusDescr}" filterMatchMode="contains" style="background: #{virtual.colour};" styleClass="font-bold">#{virtual.applStatusDescr}</p:column>
+
+                                <p:column headerText="Action" width="20%" styleClass="font-bold">
+                                    <p:commandButton value="#{virtual.action_descr}" action="#{home_bean.seatWorkArea()}" ajax="false" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"> 
+                                        <f:param name="appl_no" value="#{virtual.appl_no}"/>
+                                        <f:param name="pur_code" value="#{virtual.pur_cd}"/>
+                                        <f:param name="actionCode" value="#{virtual.action_cd}"/>
+                                        <f:param name="Purpose" value="#{virtual.purpose_descr}"/>
+                                        <f:param name="office_remark" value="#{virtual.office_remark}"/>
+                                        <f:param name="public_remark" value="#{virtual.remark_for_public}"/>
+                                        <f:param name="regn_no" value="#{virtual.regn_no}"/>
+                                        <f:param name="appl_dt" value="#{virtual.appl_dt}"/>
+                                        <f:param name="cur_status" value="#{virtual.status}"/>
+                                        <f:param name="redirect_url" value="#{virtual.redirect_url}"/>
+                                        <f:setPropertyActionListener target="#{home_bean.selectedSeat}" value="#{virtual}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </h:panelGroup> 
+            <p:dialog id="pullBackdlg" header="Confirmation!" closeOnEscape="true" closable="true"  
+                      draggable="false" height="20%" width="30%" modal="true" widgetVar="pullBack">
+                <p:panel id="pullBackPanel">
+                    <div class="top-space">
+                        <div class="font-bold report-header">    
+                            <span class="red font-bold"> Please Select Checkbox for Pull Back</span>
+                        </div>                                    
+                    </div>
+                    <div class="font-bold bottom-space">
+                        <p:selectManyMenu id="requestForRevertBack"                                                      
+                                          value="#{home_bean.selectedPurCdForPullBack}"
+                                          showCheckbox="true">
+                            <f:selectItems value="#{home_bean.purCodeList}"/> 
+                        </p:selectManyMenu>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Reason to Pull Back Application"/>
+                            </label>
+                            <p:inputText value="#{home_bean.pullBackReason}"
+                                         maxlength="100"  autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter"/>
+                        </div>                        
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Pull Back" action="#{home_bean.pullBackAppl}" onclick="PF('pbui').show();" oncomplete="PF('pbui').hide();">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:blockUI block="pullBackPanel" widgetVar="pbui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </p:dialog>            
+            <p:blockUI block=":masterLayout" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </div>
+    </ui:define>
+
+</ui:composition>

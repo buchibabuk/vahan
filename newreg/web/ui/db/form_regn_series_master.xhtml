@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c ="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="content22">       
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">#{language.registrationSeriesMaster}</h1>
+                </div>
+            </div> 
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="false" showSummary="true" id="errormsg" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <h:form id="RegnMasterListForm">
+                <!--Approve List data table-->
+                <p:outputPanel id="approve_regn_series_list">
+                    <p:dataTable id="table_regn_series_approve_details" value="#{RegnSeries.listApproveSeries}" var="rslist" editable="true" emptyMessage="#{language.noRecordFound}"
+                                 rendered="#{RegnSeries.listApproveSeries.size() > 0}" styleClass="bottom-space">
+                        <f:facet name="header">
+                            #{language.registrationSeriesForApproval}
+                        </f:facet>
+                        <p:column headerText="#{language.seriesID}" width="10%" styleClass="center-position">                      
+                            <h:outputText value="#{rslist.series_id}" />                                         
+                        </p:column>
+                        <p:column headerText="#{language.criteria}">                      
+                            <h:outputText value="#{rslist.criteria_formula_descr}" />                                
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{language.prefixSeries} - &lt;br /&gt; #{language.runningNo}" escape="false" /></f:facet>
+                            <h:outputText value="#{rslist.regn_series_format}"/>                                     
+                        </p:column>
+                        <p:column headerText="#{language.nextSeries}">                      
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{rslist.next_prefix_series }"/>  </f:facet>
+                                <f:facet name="input"><p:inputText id="edit_next_prefix_series" value="#{rslist.next_prefix_series}" type="String" maxlength="6"/></f:facet>
+                            </p:cellEditor>                             
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{language.lowerUpper}&lt;br /&gt;#{language.range}" escape="false" /></f:facet>
+                            <h:outputText value="#{rslist.lower_range_no} - #{rslist.upper_range_no}" />                                     
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">
+                                <h:outputText value="#{language.seriesallocation}&lt;br /&gt;#{language.type}" escape="false" /></f:facet>
+                            <h:outputText value="#{rslist.no_gen_type}"/>                   
+                        </p:column>
+                        <p:column headerText="#{language.approveRecord}" styleClass="center-position">  
+                            <p:commandButton action="#{RegnSeries.editRegnSeries(rslist)}" update="RegnMasterListForm:ent_series_dlg_panel_id RegnMasterListForm:approve_output_panel_id "
+                                             onclick="PF('bui').show();" oncomplete="PF('bui').hide();" icon="ui-icon-check"  disabled="#{RegnSeries.editDisable}" title="#{language.approveSeries}"/> 
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+                <!--End of Approve List data table-->
+
+                <!--Entry data table list-->
+                <p:outputPanel  id="table_regn_series_details_panel" >
+                    <p:dataTable id="table_regn_series_details" 
+                                 value="#{RegnSeries.allRegnSeries}"
+                                 var="rslist"
+                                 editable="true" 
+                                 emptyMessage="#{language.noRecordFound}">
+                        <f:facet name="header">
+                            Registration Number Series Details
+                        </f:facet>
+                        <p:column headerText="#{language.seriesID}" width="10%" styleClass="center-position">                      
+                            <h:outputText value="#{rslist.series_id}" />                                     
+                        </p:column>
+                        <p:column headerText="#{language.criteria}">                      
+                            <h:outputText value="#{rslist.criteria_formula_descr}" />                                     
+                        </p:column>
+                        <p:column> 
+                            <f:facet name="header">
+                                <h:outputText value="#{language.currentRunningSeries} &lt;br /&gt; #{language.prefixrunningNo}" escape="false" /></f:facet>
+                            <h:outputText value="#{rslist.regn_series_format}"/>                                     
+                        </p:column>
+                        <p:column headerText="#{language.nextSeriesAlloted}">                      
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{rslist.next_prefix_series }"/>  </f:facet>
+                                <f:facet name="input"><p:inputText id="edit_next_prefix_series" value="#{rslist.next_prefix_series}" type="String" maxlength="6"/></f:facet>
+                            </p:cellEditor>                               
+                        </p:column>
+                        <p:column>  
+                            <f:facet name="header">
+                                <h:outputText value="#{language.lowerUpper}  &lt;br /&gt; #{language.range}" escape="false" /></f:facet>
+                            <h:outputText value="#{rslist.lower_range_no} - #{rslist.upper_range_no}" />                                     
+                        </p:column>
+                        <p:column headerText="#{language.action}" styleClass="collumn-width center-position">  
+                            <p:commandButton icon="ui-icon-pencil" 
+                                             onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{RegnSeries.editRegnSeries(rslist)}" update="@this RegnMasterListForm:table_regn_series_details_panel" title="#{language.saveUpdateSeries}" />
+                        </p:column>
+                        <p:column style="width: 70px;" styleClass="center-position" rendered="#{RegnSeries.viewAvailRegn}">    
+                            <f:facet name="header">
+                                <h:outputText value="#{language.available} &lt;br /&gt; #{language.regnNO}" escape="false" /></f:facet>     
+                            <p:commandButton icon="ui-icon-mail-open" action="#{RegnSeries.viewAvailRegnNo(rslist)}" disabled="#{RegnSeries.editDisable}"  title="#{language.viewAvailableSeries}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+                <!--Entry data table list-->
+
+                <!--Entry dialog-->
+                <p:outputPanel id="ent_series_dlg_panel_id" >
+                    <p:dialog id="entry_series_dialog" header="#{language.entrySeries}" closable="false"
+                              widgetVar="entryDialog" modal="true" dynamic="true">
+                        <div class="ui-grid-row bottom-space ui-datatable-red box-shadow line-height-gap-2">
+                            <div class="ui-grid-col-1 left-position left-space  top-space">
+                                <h:outputText value="#{language.seriesID}: " styleClass="font-bold" />
+                                <h:outputText value=" #{RegnSeries.regnSeries_entry.series_id}" styleClass="red font-bold text-uppercase" />
+                            </div>
+                            <div class="ui-grid-col-6 center-position top-space">
+                                <h:outputText value="#{language.criteriaFormulaDesc}: " styleClass="font-bold text-uppercase" />
+                                <h:outputText value=" #{RegnSeries.regnSeries_entry.criteria_formula_descr}" styleClass="red font-bold text-uppercase" />
+
+                            </div>
+                            <div class="ui-grid-col-5 right-position right-space top-space">
+                                <h:outputText value="#{language.numberAllocationType}: " styleClass="font-bold text-uppercase" />
+                                <h:outputText value=" #{RegnSeries.regnSeries_entry.no_gen_type_descr}" styleClass="red font-bold text-uppercase" />
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <p:panel styleClass="bottom-space">
+                                    <f:facet name="header">
+                                        <div class="center-position inline-section datatable-panel-100">
+                                            #{language.currentRunningSeries}
+                                        </div>  
+                                    </f:facet>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="entry_txtprefix_series_part1" value=" #{language.prefixSeries} (e.g " id="entry_lblprefix_series" styleClass="inline-section">
+                                                    <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text red" />
+                                                    <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text red">
+                                                        <f:convertNumber pattern="#00"/>
+                                                    </h:outputText>
+                                                    <h:outputText value="XX)" styleClass="underline-text"/>
+                                                    <h:outputText value="#{language.part}-1"/>
+                                                </p:outputLabel>
+                                            </label>
+
+                                            <p:inputText id="entry_txtprefix_series_part1" value="#{RegnSeries.prefixPart1}" maxlength="4" 
+                                                         requiredMessage="#{language.blankprefixSeries} #{language.part}-1" validatorMessage="#{language.requiredPrefixMsg}"
+                                                         converter="toUpperCaseConverter" autocomplete="off" required="true" styleClass="text-uppercase" disabled="#{RegnSeries.constPreFix}">
+                                                <f:validateLength maximum="4" minimum="4" for="txtprefix_series_part1"/>
+                                                <f:ajax event="blur" listener="#{RegnSeries.prefixSeriesCheckListener()}" />
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="entry_txtprefix_series_part2" value="#{language.prefixSeries} (e.g " styleClass="inline-section">
+                                                    <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text" />
+                                                    <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text">
+                                                        <f:convertNumber pattern="#00"/>
+                                                    </h:outputText>
+                                                    <h:outputText value="XX)" styleClass="underline-text red"/> 
+                                                    <h:outputText value="#{language.part}-2"/>
+                                                </p:outputLabel>
+                                            </label>
+                                            <p:inputText id="entry_txtprefix_series_part2" value="#{RegnSeries.prefixPart2}" maxlength="2" 
+                                                         required="#{RegnSeries.prefixPart2Req}" requiredMessage="#{language.blankprefixSeries} #{language.part}-2" 
+                                                         converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase" disabled="#{RegnSeries.constPreFix2}">
+                                                <f:ajax event="blur"  render="@this"/>
+                                            </p:inputText>
+                                        </div>
+
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="entry_running_no" value="#{language.runningNo}" id="entry_lblrunning_range"/> 
+                                            </label>
+                                            <p:inputText value="#{RegnSeries.regnSeries_entry.running_no}" autocomplete="off" 
+                                                         id="entry_running_no" label="#{language.runningNo}" requiredMessage="#{language.blank} #{language.runningNo}"
+                                                         maxlength="4" required="true"  disabled="#{RegnSeries.constRunnNum}">
+                                                <f:validateRequired />
+                                                <f:validateLength maximum="4" for="lblrunning_range"/>
+                                                <f:validateLongRange minimum="1" maximum="9999" />
+                                                <f:ajax/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section"> 
+                                                <p:outputLabel for="entry_lower_range_no" value="#{language.lowerRange}" id="entry_lbllower_range"/>
+                                            </label>
+                                            <p:inputText value="#{RegnSeries.regnSeries_entry.lower_range_no}" id="entry_lower_range_no" 
+                                                         disabled="true"
+                                                         maxlength="4" label="#{language.lowerRange} #{language.number}" requiredMessage="#{language.blank} #{language.lowerRange}" autocomplete="off" required="true">
+                                                <f:validateRequired />
+                                                <f:validateLength maximum="4" for="lbllower_range"/>
+                                                <f:validateLongRange minimum="1" maximum="9999" />
+                                                <f:ajax event="blur" listener="#{RegnSeries.runningNoUpdateListener}" execute="@this" render="entry_running_no"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="entry_upper_range_no" value="#{language.upperRange}" id="entry_lblupper_range"/> 
+                                            </label>
+                                            <p:inputText value="#{RegnSeries.regnSeries_entry.upper_range_no}"  id="entry_upper_range_no" autocomplete="off"
+                                                         label="#{language.upperRange} #{language.number}" maxlength="4" requiredMessage="#{language.blank} #{language.upperRange}" required="true" disabled="#{RegnSeries.constUpperRange}">
+                                                <f:validateRequired />
+                                                <f:validateLength maximum="4" for="lblupper_range"/>
+                                                <f:validateLongRange minimum="1" maximum="9999"/>
+                                                <f:ajax/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                </p:panel>
+                            </div>
+                            <div class="ui-grid-col-6 left-space">
+                                <p:panel styleClass="bottom-space">
+                                    <f:facet name="header">
+                                        <div class="center-position inline-section datatable-panel-100">
+                                            #{language.nextAvailableSeries}
+                                        </div>  
+                                    </f:facet>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="entry_next_prefix_series_part1" value="#{language.nextPrefixSeries} (e.g " id="entry_lblNext_prefix_series" styleClass="inline-section">
+                                                    <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text red" />
+                                                    <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text red">
+                                                        <f:convertNumber pattern="#00"/>
+                                                    </h:outputText>
+                                                    <h:outputText value="XX)" styleClass="underline-text"/>
+                                                    <h:outputText value=" #{language.part}-1"/>
+                                                </p:outputLabel>
+                                            </label>
+
+                                            <p:inputText id="entry_next_prefix_series_part1" value="#{RegnSeries.nextPrefixPart1}" maxlength="4"
+                                                         converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase" disabled="#{RegnSeries.constNextPreFix}">
+                                                <f:ajax render="@this"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="entry_next_prefix_series_part2" value="#{language.nextPrefixSeries} (e.g " styleClass="inline-section">
+                                                    <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text" />
+                                                    <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text">
+                                                        <f:convertNumber pattern="#00"/>
+                                                    </h:outputText>
+                                                    <h:outputText value="XX)" styleClass="underline-text red"/> 
+                                                    <h:outputText value=" #{language.part}-2"/>
+                                                </p:outputLabel>
+                                            </label>
+                                            <p:inputText id="entry_next_prefix_series_part2" value="#{RegnSeries.nextPrefixPart2}" maxlength="2" 
+                                                         converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase" disabled="#{RegnSeries.constNextPreFix2}">
+                                                <f:ajax event="blur" listener="#{RegnSeries.nextprefixSeriesCheckListener()}" render="@this"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <br /><br /><br />
+                                </p:panel>
+                            </div>
+                        </div>
+
+                        <div class="center-position">
+                            <p:commandButton binding="#{RegnSeries.save}" value="#{language.save}" action="#{RegnSeries.addRegnSeries()}" 
+                                             update="RegnMasterListForm:table_regn_series_details_panel RegnMasterListForm:approve_regn_series_list"
+                                             onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>                     
+                            </p:commandButton>
+
+                            <p:commandButton binding="#{RegnSeries.edit}" value="#{language.update}" action="#{RegnSeries.updateRegnSeries()}"
+                                             update="RegnMasterListForm:table_regn_series_details_panel RegnMasterListForm:approve_regn_series_list"
+                                             onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>                                    
+                            </p:commandButton>
+
+                            <p:commandButton binding="#{RegnSeries.delete}" value="#{language.delete}" action="#{RegnSeries.deleteRegnSeries()}"
+                                             update="RegnMasterListForm:table_regn_series_details_panel RegnMasterListForm:approve_regn_series_list"
+                                             onclick="PF('bui').show();
+                                                     PF('entryDialog').hide();" oncomplete="PF('bui').hide();">
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>  
+                            </p:commandButton>
+                            <p:button value="#{language.login_back}" onclick="PF('entryDialog').hide();"   />
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <!--End of Entry dialog-->
+
+                <!--Approve Series data dialog-->
+                <p:outputPanel id="approve_output_panel_id">
+                    <p:dialog id="approve_series_dialog" header="Approve Series"
+                              widgetVar="approveDialog" modal="true" dynamic="true">
+                        <p:panel styleClass="bottom-space">
+                            <f:facet name="header">
+                                <div class="center-position inline-section datatable-panel-100">
+                                    #{language.currentRunningSeries}
+                                </div>  
+                            </f:facet>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dialog_txtprefix_series_part1" value="#{language.prefixSeries} (e.g " id="dialog_lblprefix_series" styleClass="inline-section">
+                                            <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text red" />
+                                            <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text red">
+                                                <f:convertNumber pattern="#00"/>
+                                            </h:outputText>
+                                            <h:outputText value="XX)" styleClass="underline-text"/>
+                                            <h:outputText value="#{language.part}-1"/>
+                                        </p:outputLabel>
+                                    </label>
+
+                                    <p:inputText id="dialog_txtprefix_series_part1" value="#{RegnSeries.prefixPart1}" maxlength="4" 
+                                                 requiredMessage="#{language.blankprefixSeries} #{language.part}-1" validatorMessage="#{language.requiredPrefixMsg}"
+                                                 converter="toUpperCaseConverter" autocomplete="off" required="true" styleClass="text-uppercase" disabled="true">
+                                        <f:validateLength maximum="4" minimum="4" for="txtprefix_series_part1"/>
+                                        <f:ajax event="blur" listener="#{RegnSeries.prefixSeriesCheckListener()}" render="@this"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dialog_txtprefix_series_part2" value="#{language.prefixSeries} (e.g " styleClass="inline-section">
+                                            <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text" />
+                                            <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text">
+                                                <f:convertNumber pattern="#00"/>
+                                            </h:outputText>
+                                            <h:outputText value="XX)" styleClass="underline-text red"/> 
+                                            <h:outputText value=" #{language.part}-2"/>
+                                        </p:outputLabel>
+                                    </label>
+                                    <p:inputText id="dialog_txtprefix_series_part2" value="#{RegnSeries.prefixPart2}" maxlength="2" 
+                                                 required="#{RegnSeries.prefixPart2Req}" requiredMessage="#{language.blankprefixSeries} #{language.part}-2" 
+                                                 converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase" disabled="true">
+                                        <f:ajax event="blur"  render="@this"/>
+                                    </p:inputText>
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dialog_running_no" value="#{language.runningNo}" id="dialog_lblrunning_range"/> 
+                                    </label>
+                                    <p:inputText value="#{RegnSeries.regnSeries_entry.running_no}" autocomplete="off" 
+                                                 id="dialog_running_no" label="#{language.runningNo}" requiredMessage="#{language.blank} #{language.runningNo}"
+                                                 maxlength="4" required="true"  disabled="true">
+                                        <f:validateRequired />
+                                        <f:validateLength maximum="4" for="lblrunning_range"/>
+                                        <f:validateLongRange minimum="1" maximum="9999" />
+                                        <f:ajax/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <p:outputLabel for="dialog_lower_range_no" value="#{language.lowerRange}" id="dialog_lbllower_range"/>
+                                    </label>
+                                    <p:inputText value="#{RegnSeries.regnSeries_entry.lower_range_no}" id="dialog_lower_range_no" 
+                                                 disabled="true"
+                                                 maxlength="4" label="#{language.lowerRange} #{language.number}" requiredMessage="#{language.blank} #{language.lowerRange}" autocomplete="off" required="true">
+                                        <f:validateRequired />
+                                        <f:validateLength maximum="4" for="lbllower_range"/>
+                                        <f:validateLongRange minimum="1" maximum="9999" />
+                                        <f:ajax event="blur" listener="#{RegnSeries.runningNoUpdateListener}" execute="@this" render="dialog_running_no"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dialog_upper_range_no" value="#{language.upperRange}" id="dialog_lblupper_range"/> 
+                                    </label>
+                                    <p:inputText value="#{RegnSeries.regnSeries_entry.upper_range_no}"  id="dialog_upper_range_no" autocomplete="off"
+                                                 label="#{language.upperRange} #{language.number}" maxlength="4" requiredMessage="#{language.blank} #{language.upperRange}" required="true" disabled="true">
+                                        <f:validateRequired />
+                                        <f:validateLength maximum="4" for="lblupper_range"/>
+                                        <f:validateLongRange minimum="1" maximum="9999"/>
+                                        <f:ajax/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:panel styleClass="bottom-space">
+                            <f:facet name="header">
+                                <div class="center-position inline-section datatable-panel-100">
+                                    #{language.nextAvailableSeries}
+                                </div>  
+                            </f:facet>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dialog_next_prefix_series_part1" value="#{language.nextPrefixSeries} (e.g " id="dialog_lblNext_prefix_series" styleClass="inline-section">
+                                            <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text red" />
+                                            <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text red">
+                                                <f:convertNumber pattern="#00"/>
+                                            </h:outputText>
+                                            <h:outputText value="XX)" styleClass="underline-text"/>
+                                            <h:outputText value="#{language.part}-1"/>
+                                        </p:outputLabel>
+                                    </label>
+
+                                    <p:inputText id="dialog_next_prefix_series_part1" value="#{RegnSeries.nextPrefixPart1}" maxlength="4"
+                                                 converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase" disabled="true">
+                                        <f:ajax  render="@this"/>
+
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dialog_next_prefix_series_part2" value="#{language.nextPrefixSeries} (e.g " styleClass="inline-section">
+                                            <h:outputText value=" #{sessionScope.state_cd}" styleClass="underline-text" />
+                                            <h:outputText value="#{sessionScope.off_cd}" styleClass="underline-text">
+                                                <f:convertNumber pattern="#00"/>
+                                            </h:outputText>
+                                            <h:outputText value="XX)" styleClass="underline-text red"/> 
+                                            <h:outputText value="#{language.part}-2"/>
+                                        </p:outputLabel>
+                                    </label>
+                                    <p:inputText id="dialog_next_prefix_series_part2" value="#{RegnSeries.nextPrefixPart2}" maxlength="2" 
+                                                 converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase" disabled="true">
+                                        <f:ajax event="blur" listener="#{RegnSeries.nextprefixSeriesCheckListener()}" render="@this"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel>
+                        <div class="center-position">
+                            <p:commandButton  binding="#{RegnSeries.approve}" value="#{language.approveRecord}" styleClass="open-counter" action="#{RegnSeries.addRegnSeries()}" 
+                                              update="RegnMasterListForm:table_regn_series_details_panel RegnMasterListForm:approve_regn_series_list"
+                                              onclick="PF('bui').show();
+                                                      PF('approveDialog').hide();" oncomplete="PF('bui').hide();">
+
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode" styleClass="font-bold report-header center-position dialog-section-text-color line-height-gap-2" width="520">
+                                    <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                                </p:confirmDialog>
+                                <p:confirm   header="#{language.home_confirm}"
+                                             message="#{language.prefixSeries}  - (#{RegnSeries.prefixPart1}#{RegnSeries.prefixPart2})   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;
+                                             &#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;
+                                             &#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;  
+                                             #{language.nextPrefixSeries}  - (#{RegnSeries.nextPrefixPart1}#{RegnSeries.nextPrefixPart2})
+                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;
+                                             &#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; 
+                                             &#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; Are You Sure to Approve Series?" class="red font-bold">
+
+                                </p:confirm>  
+                            </p:commandButton>
+
+                            <p:commandButton binding="#{RegnSeries.approveUpdate}" value="#{language.approveUpdatedSeries}" styleClass="open-counter" action="#{RegnSeries.approveNewExistingSeries()}" 
+                                             update="RegnMasterListForm:table_regn_series_details_panel RegnMasterListForm:approve_regn_series_list"
+                                             onclick="PF('bui').show();
+                                                     PF('approveDialog').hide();" oncomplete="PF('bui').hide();">
+
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode" styleClass="font-bold report-header center-position dialog-section-text-color line-height-gap-2" width="520">
+                                    <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                                    <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                                </p:confirmDialog>
+                                <p:confirm header="#{language.home_confirm}" message="#{language.prefixSeries}  - (#{RegnSeries.prefixPart1}#{RegnSeries.prefixPart2})   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;
+                                           &#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;
+                                           &#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;  
+                                           #{language.nextPrefixSeries}  - (#{RegnSeries.nextPrefixPart1}#{RegnSeries.nextPrefixPart2})
+                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;
+                                           &#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; 
+                                           &#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160; #{language.updateConfirm}" class="red font-bold">
+                                </p:confirm> 
+                            </p:commandButton>
+                            <p:commandButton  value="#{language.rejectEntry}" action="#{RegnSeries.deleteVaRegnSeries()}"
+                                              update="RegnMasterListForm:table_regn_series_details_panel RegnMasterListForm:approve_regn_series_list"
+                                              onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>  
+                            </p:commandButton>
+                            <p:button value="#{language.login_back}" onclick="PF('approveDialog').hide();"   />     
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <!--End of Approve series data dialog-->
+
+                <p:outputPanel id="dialogAvailRegNo" >
+                    <p:dialog header="#{language.alert}" widgetVar="varAvailableRegNo" 
+                              closable="true" modal="true" dynamic="true" height="400" width="800">
+                        <p:dataTable id="avialbleRegDT" 
+                                     value="#{RegnSeries.vmAvailableRegistration}"
+                                     var="list"                             
+                                     paginator="true"
+                                     rowIndexVar="index"
+                                     rows="10"
+                                     emptyMessage="#{language.noRecordFound}">
+                            <f:facet name="header">
+                                Available Registration Number Series Details
+                            </f:facet>
+
+                            <p:column headerText="#{language.user_srno}">                      
+                                <h:outputText value="#{index+1}." />                                     
+                            </p:column>
+
+                            <p:column headerText="#{language.home_rightpanelregno}" sortBy="#{list.regn_no}">                      
+                                <h:outputText value="#{list.regn_no}" />                                     
+                            </p:column>
+
+                            <p:column headerText="#{language.status}" sortBy="#{list.status}">                      
+                                <h:outputText value="#{list.status}" />                                     
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode" >
+                    <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                </p:confirmDialog>
+
+                <p:blockUI block="RegnMasterListForm" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+
+

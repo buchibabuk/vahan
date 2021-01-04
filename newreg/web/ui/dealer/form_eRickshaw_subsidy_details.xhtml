@@ -1,0 +1,201 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content">       
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="bank_details_view">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{pendencyBankDetailBean.headerText}</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <p:selectOneRadio id="radio_id" value="#{pendencyBankDetailBean.docsType}" rendered="#{pendencyBankDetailBean.renderRadioButton}" columns="2" layout="responsive">
+                            <f:selectItem itemLabel="Print Recommended Records" itemValue="recommended" />
+                            <f:selectItem itemLabel="Subsidy Grant Records" itemValue="grant" />
+                            <p:ajax event="change" onstart="PF('bui').show()" oncomplete="PF('bui').hide()" listener="#{pendencyBankDetailBean.changeRadioButtonEvent()}" update="output_panel" />
+                        </p:selectOneRadio>
+                    </div>
+                </div>
+                <p:outputPanel id="output_panel">
+                    <p:dataTable reflow="true"  value="#{pendencyBankDetailBean.bankDobjList}" filteredValue="#{pendencyBankDetailBean.filteredBankDobjList}"  var="bankVar" editable="true" emptyMessage="Owner's details not found."
+                                 paginator="true" rows="10" rowHover="true" id="bankDataUpdate" resizableColumns="true" rowIndexVar="index" scrollable="true" resizeMode="true">
+                        <f:facet name="header" > 
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6 left-position"><h:outputText value="Owner's Bank Details" styleClass="top-space font-bold" /></div>
+                                <div class="ui-grid-col-6 right-position">
+                                    <!--                                    <h:commandLink rendered="# {!pendencyBankDetailBean.renderEditDownloadFileButton and pendencyBankDetailBean.bankDobjList.size() > 0}">
+                                                                            Export to PDF<p:graphicImage name="pdf.png" width="24" library="images"/>
+                                                                            <p:dataExporter type="pdf" fileName="subsidyBankDetails" target="bankDataUpdate" preProcessor="# {pendencyBankDetailBean.updateStatusBeforeDownloadRecords}"/>
+                                                                        </h:commandLink>-->
+                                    <h:commandLink rendered="#{!pendencyBankDetailBean.renderEditDownloadFileButton and pendencyBankDetailBean.bankDobjList.size() > 0}" >
+                                        Export to Excel<p:graphicImage name="excel.png" width="24" library="images"></p:graphicImage>
+                                        <p:dataExporter type="xls" preProcessor="#{pendencyBankDetailBean.updateStatusBeforeDownloadRecords}" target="bankDataUpdate" fileName="BankSubsidy" />
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <p:ajax event="rowEdit" onstart="PF('bui').show()" oncomplete="PF('bui').hide()" listener="#{pendencyBankDetailBean.recordSaveAfterEdit}" /> 
+                        <p:column headerText="Sr. No." styleClass="center-position collumn-width">
+                            <h:outputText value="#{index+1}" />  
+                        </p:column>
+                        <p:column filterBy="#{bankVar.regnNo}" filterMatchMode="contains" styleClass="center-position" >
+                            <f:facet name="header">  
+                                <h:outputText value="Regn. No." />  
+                            </f:facet>
+                            <h:outputText value="#{bankVar.regnNo}" />  
+                        </p:column>
+                        <p:column styleClass="center-position">
+                            <f:facet name="header">  
+                                <h:outputText value="Regn. Date" />  
+                            </f:facet>
+                            <h:outputText value="#{bankVar.regnDtStr}" />  
+                        </p:column>
+                        <p:column filterBy="#{bankVar.ownerName}" filterMatchMode="contains">
+                            <f:facet name="header">  
+                                <h:outputText value="Owner Name" />  
+                            </f:facet>
+                            <h:outputText value="#{bankVar.ownerName}"  />  
+                        </p:column> 
+                        <p:column>
+                            <f:facet name="header">  
+                                <h:outputText value="#{label.f_name}" />  
+                            </f:facet>
+                            <h:outputText value="#{bankVar.fatherName}" />  
+                        </p:column>
+                        <p:column width="15%">
+                            <f:facet name="header">  
+                                <h:outputText value="#{label.address}" />  
+                            </f:facet>
+                            <h:outputText value="#{bankVar.curAddress}" />  
+                        </p:column>
+                        <p:column styleClass="center-position">
+                            <f:facet name="header">  
+                                <h:outputText value="Subsidy Amt." />  
+                            </f:facet>
+                            <h:outputText value="#{bankVar.subsidyAmount}" />  
+                        </p:column>
+                        <p:column styleClass="center-position">
+                            <f:facet name="header">  
+                                <h:outputText value="IFSC Code"  />  
+                            </f:facet>
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{bankVar.ifscCode}" styleClass="text-uppercase"  />  
+                                </f:facet>  
+                                <f:facet name="input" id="ifscCode">  
+                                    <p:inputText value="#{bankVar.ifscCode}" required="true" requiredMessage="IFSC code should not be blank." disabled="#{pendencyBankDetailBean.disableBankDetails}"
+                                                 maxlength="11" styleClass="text-uppercase" > 
+                                        <f:validator validatorId="ifscValidator" />
+                                    </p:inputText>
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column> 
+                        <p:column>
+                            <f:facet name="header">  
+                                <h:outputText value="Bank Name" />  
+                            </f:facet>
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{bankVar.bankName}" /></f:facet>
+                                <f:facet name="input" >
+                                    <p:selectOneMenu  filter="true" filterMatchMode="contains" value="#{bankVar.bankCd}" required="true" disabled="#{pendencyBankDetailBean.disableBankDetails}" requiredMessage="Please select bank name." >
+                                        <f:selectItem itemLabel="--SELECT BANK--" itemValue="-1"  />
+                                        <f:selectItems value="#{pendencyBankDetailBean.bankNameList}"/>
+                                        <f:validator validatorId="selectOneValidator" for="bank_name" />
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column> 
+                        <p:column>
+                            <f:facet name="header">  
+                                <h:outputText value="Account No" />  
+                            </f:facet>
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{bankVar.accountNo}" styleClass="text-uppercase"  />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputText value="#{bankVar.accountNo}" id="accountID" required="true" requiredMessage="Account no. should not be blank." maxlength="20"
+                                                 disabled="#{pendencyBankDetailBean.disableBankDetails}" styleClass="text-uppercase"  validatorMessage="Account no should not be less then 10 digits." > 
+                                        <p:keyFilter for="accountID" regEx="/[0-9]/i" />
+                                        <f:validateLength maximum="20" minimum="10" />
+                                    </p:inputText>
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">  
+                                <h:outputText value="#{label.aadhar}" />  
+                            </f:facet>
+                            <p:cellEditor>  
+                                <f:facet name="output">  
+                                    <h:outputText value="#{bankVar.aadharNo}" />  
+                                </f:facet>  
+                                <f:facet name="input">  
+                                    <p:inputText value="#{bankVar.aadharNo}" maxlength="12" id="aadhar_id" validatorMessage="Aadhar no should not be less then 12 digits." disabled="#{pendencyBankDetailBean.disableBankDetails}"  > 
+                                        <p:keyFilter for="aadhar_id " regEx="/[0-9]/i"/>
+                                        <f:validateLength maximum="12" minimum="12" />
+                                    </p:inputText>
+                                </f:facet>  
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column filterBy="#{bankVar.statusDescr}" filterMatchMode="contains" styleClass="center-position">
+                            <f:facet name="header" >  
+                                <h:outputText value="#{pendencyBankDetailBean.statusHeader}"/>  
+                            </f:facet>
+                            <p:cellEditor>  
+                                <f:facet name="output"><h:outputText value="#{bankVar.statusDescr}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{bankVar.statusCode}" required="true" requiredMessage="Please select application status."  >
+                                        <f:selectItem itemLabel="--SELECT STATUS--" itemValue="0" noSelectionOption="true" />
+                                        <f:selectItems value="#{pendencyBankDetailBean.statusList}" />
+                                        <f:validator validatorId="selectOneValidator_0" for="bank_name" />
+                                    </p:selectOneMenu>
+                                </f:facet> 
+                            </p:cellEditor>
+                        </p:column> 
+                        <p:column exportable="false" rendered="#{pendencyBankDetailBean.renderEditDownloadFileButton}" styleClass="center-position" width="5%">  
+                            <f:facet name="header">  
+                                <h:outputText value="Action" />  
+                            </f:facet>
+                            <p:rowEditor editTitle="Edit Record Here"  saveTitle="Save Edited Data" rendered="#{pendencyBankDetailBean.renderEditDownloadFileButton}" /> 
+                        </p:column> 
+                    </p:dataTable>
+                </p:outputPanel>
+                <p:outputPanel id="onSuccess_panel">
+                    <p:dialog widgetVar="onsuccessful_data_save" resizable="false" dynamic="true" closable="false" modal="true" header="Confirmation" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:outputLabel value="Record updated successfuly." />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="OK" update="output_panel" onclick="PF('onsuccessful_data_save').hide()" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block=":masterLayout"  widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%">
+                        <p:outputLabel value="Please wait......."/>
+                    </p:graphicImage>
+                </p:blockUI> 
+            </f:subview>
+        </div>         
+    </ui:define>
+</ui:composition>

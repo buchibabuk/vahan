@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/ui/session/errorPageLayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:define name="content">
+        <h:form id="formOutsideError" prependId="false">
+            <div class="message-content-panel form-legend">
+                <div class=" header-section error-message-header">
+                    <h:outputLabel id="lblHeader" value="Sorry, Something Went Wrong.Please Try Again!!!" class="red"   />
+                </div>   
+                <div>
+                    <p:button value="Back to Home-Page" outcome="login_home"/>
+                </div>
+            </div>
+            <p:blockUI block="formOutsideError" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>    
+    </ui:define>
+</ui:composition>

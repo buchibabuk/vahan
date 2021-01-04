@@ -1,0 +1,175 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"  
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">      
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="office_correction_view">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.office_correction}</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true"  showDetail="true" showSummary="false">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">                        
+                        <p:outputPanel id="office_correction_output" >
+                            <p:panel header="#{language.appl_details_header}" id="officeCorrection" rendered="#{officeCorrection.showApplPanelvisible}" styleClass="bottom-space">
+                                <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="appl_no"/>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="appl_no" value="#{language.home_rightpanelApplno}"/>
+                                        </label>
+                                        <p:inputText id="appl_no" value="#{officeCorrection.applNo}"  
+                                                     maxlength="16" required="true" requiredMessage="#{language.appl_blank_msg}"
+                                                     autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter"/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="#{language.home_left_show_form}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                         update="office_correction_output office_correction_panel ownerDetails_dtls" action="#{officeCorrection.validateApplicationNo}">
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:button value="#{language.home}" outcome="home"/>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:outputPanel styleClass="bottom-space left-position" id="ownerDetails_dtls" >
+                                    <p:panel id="ownerDetails_dtls_panel" header="#{language.ownerDetails}" rendered="#{officeCorrection.showOfficeChangeVisible}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText value="#{language.owner_name}: " class="report-header font-bold" /> <h:outputText value=" #{officeCorrection.ownerDetailsDobj.owner_name}" class="report-header font-bold red" />
+                                            </div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText value="#{language.f_name}:  " class="report-header font-bold" /> <h:outputText value=" #{officeCorrection.ownerDetailsDobj.f_name}" class="report-header font-bold red"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText value="#{language.chasi_no}: " class="report-header font-bold" /> <h:outputText value=" #{officeCorrection.ownerDetailsDobj.chasi_no}" class="report-header font-bold red"/>
+                                            </div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText value="#{language.engineNo}: " class="report-header font-bold" /> <h:outputText value=" #{officeCorrection.ownerDetailsDobj.eng_no}" class="report-header font-bold red" />
+                                                <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{officeCorrection.ownerDetailsDobj.regn_type_descr} " class="report-header font-bold red"/><h:outputText value=" ) " class="report-header font-bold"/>  
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText value="#{language.vehicleType}: ( " class="report-header font-bold"/><h:outputText value="#{officeCorrection.ownerDetailsDobj.vch_type}" class="report-header font-bold green"/><h:outputText value=" ) " class="report-header font-bold"/>
+                                                <h:outputText value="#{officeCorrection.ownerDetailsDobj.vh_class_desc}" class="report-header font-bold red" />
+                                                <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{officeCorrection.ownerDetailsDobj.vch_catg} " class="report-header font-bold red" /> <h:outputText value=" ) " class="report-header font-bold" />
+                                                <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{officeCorrection.ownerDetailsDobj.fuel_descr} " class="report-header font-bold red"/>  <h:outputText value=" ) " class="report-header font-bold" />
+
+                                            </div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText value="#{language.saleAmt}: " class="report-header font-bold" /><h:outputText value="#{language.rs}. #{officeCorrection.ownerDetailsDobj.sale_amt}/-" class="report-header font-bold red"/>
+                                            </div>
+                                            <div>
+
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText class="report-header font-bold" value="#{language.registered_office} : "/>
+                                                <h:outputText value=" #{officeCorrection.ownerDetailsDobj.off_name}" class="report-header font-bold red" />
+                                            </div>
+                                            <div class="ui-grid-col-5">
+                                                <h:outputText value="#{language.purchase_date}: " class="report-header font-bold" /><h:outputText value=" #{officeCorrection.ownerDetailsDobj.purchaseDateDescr} " class="report-header font-bold red"/>
+                                            </div>
+
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>                                  
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:outputPanel id="office_correction_panel" >
+                                    <p:panel header="#{language.office_correction}" id="office_panel" rendered="#{officeCorrection.showOfficeChangeVisible}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                                            <div class="ui-grid-col-3">
+                                                <p:outputLabel value="#{language.user_selectoffice} :"/>
+                                                <p:selectOneMenu id="officeId" value="#{officeCorrection.newOffCd}" filter="true" label="#{officeCorrection.officeList}" filterMatchMode="contains" required="true" requiredMessage="#{language.user_officeselectmsg}.">
+                                                    <f:selectItem itemLabel="----#{language.user_selectoffice}----" itemValue="0" itemDisabled="true"/>
+                                                    <f:selectItems value="#{officeCorrection.allotedOfficeList}"/>                                                    
+                                                    <f:validator for="officeId" validatorId="selectOneValidator_0" />
+                                                    <p:ajax event="change" listener="#{officeCorrection.selectedOfficeValidate}" update="officeId"/>
+                                                </p:selectOneMenu>                                                
+                                            </div>
+                                            <div class="ui-grid-col-3">
+                                                <p:outputLabel value="#{language.reason} :"/>
+                                                <p:inputText value="#{officeCorrection.changeReason}" id="reasonId" required="true" styleClass="text-uppercase"
+                                                             converter="toUpperCaseConverter" requiredMessage="#{language.blank_reason_msg}." maxlength="80">
+                                                    <p:keyFilter for="reasonId" regEx="/[A-Z_\u0020]/i"/>
+                                                </p:inputText>                                                
+                                            </div>
+                                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                                        </div>
+                                        <div class="ui-grid-row top-space bottom-space">
+                                            <div class="ui-grid-col-12 center-position">
+                                                <p:commandButton value="#{language.change_office}" onclick="PF('bui').show();"
+                                                                 oncomplete="PF('bui').hide();"
+                                                                 action="#{officeCorrection.changeOfficeAction()}">
+                                                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>
+                                                </p:commandButton>
+                                                <p:button value="#{language.exit}" outcome="home" />
+                                            </div>
+                                        </div>
+                                    </p:panel>                                    
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                        <p:blockUI block=":masterLayout" widgetVar="bui">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+                    </div>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                        <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                        <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>      
+                    </p:confirmDialog>
+                </div>
+                <p:dialog id="officeDialog"  widgetVar="officeCorrection_dlg" draggable="false" closable="false" showEffect="blind" header="#{language.home_confirm} !!!"
+                          resizable="false" dynamic="true" modal="true">
+                    <p:outputPanel id="onlineDetailsDialogPanel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:outputLabel value="#{laanguage.off_change_msg} !!!"/>
+                                <h:outputText value=" #{language.new_off_msg} : ( " class="font-bold" />                                
+                                <h:outputText class="report-header font-bold red"  value="#{officeCorrection.officeName}" />
+                                <h:outputText value=" ) " class="font-bold" />                                
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">                            
+                                <p:commandButton  value="#{language.ok}" oncomplete="PF('officeCorrection_dlg').hide();"
+                                                  action ="/ui/dealer/form_dealer_office_correction.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                            </div>
+                        </div>                        
+                    </p:outputPanel>
+                </p:dialog>
+            </f:subview>
+        </div>        
+    </ui:define>
+</ui:composition>

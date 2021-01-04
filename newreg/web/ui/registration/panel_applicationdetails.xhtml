@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" >
+
+    <div class="ui-grid ui-grid-responsive">
+        <p:panel id="app_details" header="#{language.appl_details_header}">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 top-space bottom-space">
+                    <ui:include src="/ApplicationStatusPanel.xhtml">
+                    </ui:include>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <h:inputHidden id="PUR_CD" value="#{appl_details.pur_cd}"/>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="application_no" value="#{language.home_rightpanelApplno}" />
+                    </label>
+                    <p:inputText id="application_no" value="#{appl_details.appl_no}" size="20" readonly="true" styleClass="text-uppercase"/>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="application_dt" value="#{language.appl_date}"/>
+                    </label>
+                    <p:inputText id="application_dt" value="#{appl_details.appl_dt}" size="20" readonly="true" styleClass="text-uppercase"/>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="registration" value="#{language.home_rightpanelregno}" />
+                    </label>
+                    <p:inputText id="registration" value="#{appl_details.regn_no}" size="20" readonly="true" styleClass="text-uppercase"/>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="owner_name" value="#{language.owner_name}"/>
+                    </label>
+                    <p:inputText id="owner_name" value="#{appl_details.own_name}" size="35" readonly="true" styleClass="text-uppercase"/>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="chasi_no" value="#{language.chasi_no}"/>
+                    </label>
+                    <p:inputText id="chasi_no" value="#{appl_details.chasi_no}" size="35" readonly="true" styleClass="text-uppercase"/>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="purpose_description" value="#{language.purpose}"/>
+                    </label>
+                    <p:inputText id="purpose_description" value="#{appl_details.pur_desc}" size="35" readonly="true" styleClass="text-uppercase" style="background-color: #5bc0de !important; color: yellow !important;"/>
+                </div>
+            </div>
+        </p:panel>
+        <div class="ui-grid-row">   
+            <div class="ui-grid-col-12 left-position font-bold">
+                <h:outputText escape="false" value="#{appl_details.hyptoDtls}" rendered="#{appl_details.renderHypo}"/>
+            </div>
+        </div>
+
+        <p:dialog visible="#{appl_details.taxValidityExpired}" widgetVar="dlgTaxValidityMsg"  style="background-color: #ac2925"
+                  modal="true" draggable="false" dynamic="false" 
+                  resizable="false" closable="false" hideEffect="explode">  
+            <p:outputPanel id="msgDialogPanelForTaxValidity">
+                <f:facet name="header">
+                    <h3 style="color: #000000">Alert!</h3>
+                </f:facet>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">                                   
+                        <p:separator/>
+                        <h2 style="color: red">#{language.appl_details_taxValidityMsz}</h2>
+                        <p:separator/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">                            
+                        <p:button id="backToHomePage" value="NO" onclick="PF('blockCurrentInterface').show();" 
+                                  outcome="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                    </div>
+
+                    <div class="ui-grid-col-12 center-position bottom-space">                            
+                        <p:commandButton id="continueToCurrentPage" ajax="true" value="YES" onclick="PF('blockCurrentInterface').show();" oncomplete="PF('dlgTaxValidityMsg').hide();" icon="ui-icon-check"/>
+                    </div>
+
+                </div>   
+            </p:outputPanel>   
+            <p:blockUI block="msgDialogPanelForTaxValidity" widgetVar="blockCurrentInterface">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </p:dialog>
+
+    </div>
+</html>

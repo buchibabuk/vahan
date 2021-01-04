@@ -1,0 +1,134 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content22"> 
+        <h:form id="formBlockVehNo" prependId="false">     
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div> 
+                <p:panel id="blockveh" styleClass="bottom-space border-none">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">Block Vehicle Number</h1>
+                        </div>
+                    </div>                    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="veh_series" value="#{label.veh_seri}"/>
+                            </label>
+                            <p:selectOneMenu id="veh_series" 
+                                             filter="true" filterMatchMode="contains" styleClass="bottom-space" value ="#{blockVehicleNoBean.dobjBlockVehNo.vehSeries}">
+                                <f:selectItem itemLabel="--Select--" itemValue="0"/>
+                                <f:selectItems value="#{blockVehicleNoBean.listForVehSeries}"/>
+                                <f:validator validatorId="selectOneValidator_0" for="veh_series"/>
+                                <p:ajax event="change" process="@this" update="@this" listener="#{blockVehicleNoBean.setVehicleSeriesForlistner}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-2">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel id="fromNo" value="#{label.from_no}"/>
+                            </label>
+                            <p:inputText id="fromNoinput" value="#{blockVehicleNoBean.dobjBlockVehNo.fromNumber}" 
+                                         size="5" maxlength="4" autocomplete="off"
+                                         required="true" requiredMessage="Blank From Number">
+                                <f:validateLength maximum="4" for="fromNoinput"/>
+                                <p:ajax event="blur" process="@this" update="@this"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-2">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel id="toNo" value="#{label.to_no}"/>
+                            </label>
+                            <p:inputText id="toNoinput" value="#{blockVehicleNoBean.dobjBlockVehNo.toNumber}" 
+                                         size="5" maxlength="4" autocomplete="off"
+                                         required="true" requiredMessage="Blank To Number">
+                                <f:validateLength maximum="4" for="toNoinput"/>
+                                <p:ajax event="blur" process="@this" update="@this"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Block Vehicle Number"  action="#{blockVehicleNoBean.confirmSave()}" icon="ui-icon-cancel" />
+                            <p:button  value="Home" outcome="home" icon="ui-icon-home"/>  
+                        </div>                
+                    </div> 
+                </p:panel>
+                <p:dialog  id="confirmMsg"  styleClass="center-position" widgetVar="save"
+                           modal="true" draggable="false" closable="false" hideEffect="explode" header="Block Vehicle Number" >  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Are you sure to block entered vehicle number?"/>
+                            </label>
+                            <p:commandButton  value="Yes" onclick="PF('save').hide();
+                                    PF('block_panel').show();"
+                                              actionListener="#{blockVehicleNoBean.saveBlockedVehicleNo()}" update="regPanel blockveh"
+                                              icon="ui-icon-check" oncomplete="PF('block_panel').hide();" />
+                            <p:commandButton value="No" onsuccess="PF('save').hide();" icon="ui-icon-close" />
+                        </div>
+                    </div>
+                </p:dialog>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="regPanel">
+                            <p:panel rendered="#{blockVehicleNoBean.blockvehlist.size()>0}">
+                                <p:dataTable id="blockedvehnos"  value="#{blockVehicleNoBean.blockvehlist}" filteredValue="#{blockVehicleNoBean.filteredBlockvehlist}" var="blockedvehnos" rows="10"  
+                                             widgetVar="seatWorkList" paginator="true" paginatorPosition="bottom" rowIndexVar="rowkey" rendered="#{blockVehicleNoBean.blockvehlist.size()>0}">
+                                    <f:facet name="header">
+                                        <div class="left-position">
+                                            Release Vehicle Number
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                        <h:outputText value="#{rowkey+1}" />
+                                    </p:column>
+                                    <p:column headerText="Blocked Vehicle Numbers" filterBy="#{blockedvehnos.blockedRegnNo}" filterMatchMode="contains" sortBy="#{blockedvehnos.blockedRegnNo}">#{blockedvehnos.blockedRegnNo}</p:column>
+                                    <p:column headerText="Action" styleClass="center-position"> 
+                                        <p:commandButton id ="bt_isrelease" value="Release Vehicle Number "  action="#{blockVehicleNoBean.confirmRelaseVehNo()}"  immediate="true" update=":formBlockVehNo:regPanel"> 
+                                            <f:param name="regnno" value="#{blockedvehnos.blockedRegnNo}"/>
+                                            <f:param name="indexValue" value="#{rowkey}"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </p:outputPanel>
+                    </div>
+                </div>
+                <p:dialog  id="releaseConfirmationPopup" styleClass="center-position" widgetVar="releaseVehicle" modal="true" draggable="false" 
+                           closable="false" hideEffect="explode" header="Release Confirmation Panel">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Do you want to release the vehicle(s)?"/>
+                            </label>
+                            <p:commandButton  value="Confirm Release" onsuccess="PF('releaseVehicle').hide();"  immediate="true"                                  
+                                              action="#{blockVehicleNoBean.saveReleaseVehNo()}" update="blockedvehnos regPanel"
+                                              icon="ui-icon-check"  />
+                            <p:commandButton value="Cancel" onsuccess="PF('releaseVehicle').hide();" icon="ui-icon-close" />
+                        </div>
+                    </div>
+                </p:dialog>
+
+            </div>
+            <p:blockUI block="blockveh" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

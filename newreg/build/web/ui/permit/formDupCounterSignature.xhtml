@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content22">
+        <h:form prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1><p:outputLabel value="#{dupConSign.header}" styleClass="header-main"/></h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages  showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                </div>
+            </div>
+            <p:outputPanel id="mainPanel" rendered="#{dupConSign.panelHideShow}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <p:selectOneRadio id="select_task" value="#{dupConSign.selectOneRadio}" >
+                            <f:selectItem itemLabel="By Registration No." itemValue="1"/>
+                            <f:selectItem itemLabel="By Counter Signature No." itemValue="2"/>
+                            <f:ajax event="click" render="mainPanel counterSign"/>
+                        </p:selectOneRadio>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <p:outputPanel styleClass="ui-grid-col-4" rendered="#{dupConSign.selectOneRadio eq '1'}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="lb_regnNo" value="#{label.regn_no}"/>
+                        </label>
+                        <p:inputText id="regno" required="true" styleClass="text-uppercase" disabled="#{dupConSign.regnNoDisable}"
+                                     value="#{dupConSign.countDobj.regn_no}" autocomplete="off"
+                                     maxlength="10" size="28" >
+                            <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>                                                             
+                        </p:inputText>
+                    </p:outputPanel>
+                    <p:outputPanel styleClass="ui-grid-col-4" rendered="#{dupConSign.selectOneRadio eq '2'}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="lb_pmtNo" value="Counter Signature No."/>
+                        </label>
+                        <p:inputText id="countSignNo" required="true" styleClass="text-uppercase" disabled="#{dupConSign.regnNoDisable}"
+                                     value="#{dupConSign.countDobj.countSignNo}" autocomplete="off"
+                                     maxlength="25" size="28">
+                            <p:keyFilter regEx="/[/a-zA-Z0-9_]/i"/>                                                             
+                        </p:inputText>
+                    </p:outputPanel>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Get Details" action="#{dupConSign.get_details()}" onclick="PF('bui').show();"
+                                         oncomplete="PF('bui').hide();" update=" mainPanel makerDtlsout pmtOwnerDtls pmtDtls counterSign dup_cert route_details"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:panel rendered="#{!dupConSign.panelHideShow}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{label.appl_no}"/>
+                        </label>
+                        <p:inputText id="appl_no" required="true" styleClass="text-uppercase" disabled="true" value="#{dupConSign.countDobj.appl_no}" />                                                             
+                    </div>
+                </div>
+            </p:panel>
+            <p:outputPanel id="dup_cert" >
+                <p:panel header="Reason Apply for Duplicale Counter Signature" styleClass="top-space bottom-space" rendered="#{dupConSign.dup_cert_visible}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="cm_va_reason" value="Reason"/>
+                            </label>
+                            <p:selectOneMenu id="cm_va_reason" value="#{dupConSign.countDobj.reasonSelect}" filter="true">
+                                <f:selectItems value="#{dupConSign.reasonList}"/>   
+                                <p:ajax event="change"  listener="#{dupConSign.vehReasonChangeListener}" update="tf_Reason dupPanel"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tf_Reason" value="Reason:"/>
+                            </label>
+                            <p:inputText id="tf_Reason" value="#{dupConSign.countDobj.reason}"  disabled="#{dupConSign.reasonDisable}"
+                                         converter="toUpperCaseConverter" 
+                                         requiredMessage="Blank : Reason" required="true" 
+                                         maxlength="25" autocomplete="off" styleClass="input">
+                                <f:validateLength maximum="25"/>
+                                <f:validateRequired/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Required Document:"/>
+                            </label>
+                            <p:selectCheckboxMenu id="listDocument"  value="#{dupConSign.countDobj.pmtDoc}" label="Permit Document" filter="true" filterMatchMode="contains" >
+                                <f:selectItems value="#{dupConSign.pmtDocList}"/>
+                            </p:selectCheckboxMenu>
+                        </div>
+                    </div>
+                    <p:outputPanel id="dupPanel">
+                        <p:panel  rendered="#{dupConSign.dupPanel}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_Fir_no" value="FIR No:"/> 
+                                    </label>
+                                    <p:inputText id="tf_Fir_no"  value="#{dupConSign.countDobj.fir_no}" 
+                                                 converter="toUpperCaseConverter" size="30" 
+                                                 required="true" requiredMessage="Blank : Fir No" maxlength="25"  
+                                                 autocomplete="off" styleClass="input">
+                                        <f:validateLength maximum="25"/>
+                                        <f:validateRequired/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="dc_FirDt" value="FIR Date:"/>
+                                    </label>
+                                    <p:calendar  id="dc_FirDt" value="#{dupConSign.countDobj.fir_dt}" navigator="true" pattern="dd-MM-yyyy" requiredMessage="Blank : Fir Date" 
+                                                 maxdate="#{dupConSign.currDate}" required="true" autocomplete="off">
+                                        <f:validateRequired/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_PoliceStation" value="Police Station:"/>
+                                    </label>
+                                    <p:inputText id="tf_PoliceStation"  value="#{dupConSign.countDobj.police_station}" converter="toUpperCaseConverter" size="30" maxlength="35" 
+                                                 required="true" requiredMessage="Blank : Police Station" autocomplete="off" styleClass="input">
+                                        <f:validateLength maximum="35"/>
+                                        <f:validateRequired/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel> 
+                    </p:outputPanel>
+                </p:panel>
+            </p:outputPanel>
+
+            <p:outputPanel id="pmtOwnerDtls"  styleClass="top-space bottom-space">
+                <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                    <ui:param name="Owner_permit_detail" value="#{dupConSign}"/>
+                </ui:include>
+            </p:outputPanel>
+
+            <p:outputPanel id="makerDtlsout">
+                <p:panel header="Maker and Model Details" rendered="#{dupConSign.countDobj.maker_name ne null}"  styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="maker" value="#{label.maker}"/> 
+                            </label>
+                            <p:inputText id="maker" value="#{dupConSign.countDobj.maker_name}" disabled="#{dupConSign.countDobj.maker_name ne null}" label="Maker"  readonly="true">
+                            </p:inputText>
+                        </div>  
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <h:outputLabel for="model_name"  value="#{label.maker_model}"/>
+                            </label> 
+                            <p:inputText id="model_name" value="#{dupConSign.countDobj.model_name}" disabled="#{dupConSign.countDobj.model_name ne null}" readonly="true">
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+
+            <p:panel id="pmtDtls"  header="Permit Details" styleClass="top-space bottom-space">
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmt_type" value="Permit Type" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:selectOneMenu id="pmt_type"  value="#{dupConSign.countDobj.pmt_type}" filter="true" disabled="#{dupConSign.counterSignatureDtls}">
+                            <f:selectItem itemValue="-1" itemLabel="Select Any Permit"/>
+                            <f:selectItems value="#{dupConSign.pmtTypeList}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtDtlsPmtNo" value="Permit No." styleClass="field-label-mandate" rendered="#{dupConSign.selectOneRadio eq '1'}"/>
+                        </label>
+                        <p:inputText id="pmtDtlsPmtNo" styleClass="text-uppercase" 
+                                     value="#{dupConSign.countDobj.pmt_no}" maxlength="24" autocomplete="off" disabled="#{dupConSign.counterSignatureDtls}" rendered="#{dupConSign.selectOneRadio eq '1'}"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtValidForm" value="Permit Valid From" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="pmtValidForm"  navigator="true"  pattern="dd-MMM-yyyy" value="#{dupConSign.countDobj.valid_from}" disabled="#{dupConSign.counterSignatureDtls}" readonlyInput="true"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtValidUpto" value="Permit Valid UpTo" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="pmtValidUpto" navigator="true"  pattern="dd-MMM-yyyy" value="#{dupConSign.countDobj.valid_upto}"  disabled="#{dupConSign.counterSignatureDtls}" readonlyInput="true"/>
+                    </div>
+
+
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="pmtArea" value="Area Details" rendered="#{dupConSign.renderArea}"/>
+                        </label>
+                        <p:selectOneMenu id="pmtArea" filter="true" value="#{dupConSign.countDobj.region}" rendered="#{dupConSign.renderArea}" disabled="#{dupConSign.counterSignatureDtls}" required="true" requiredMessage="Please Select any Area !">
+                            <f:selectItems value="#{dupConSign.areaTypeList}" rendered="#{dupConSign.renderArea}"/>
+                        </p:selectOneMenu>
+                    </div>
+
+
+
+                </div>
+            </p:panel>
+            <p:panel id="route_details" header="Route-Details" styleClass="top-space bottom-space" rendered="#{dupConSign.visibleRouteDtls}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:pickList id="pickList" styleClass="text-uppercase" filterMatchMode="contains"
+                                    value="#{dupConSign.routeManage}" showSourceFilter="true" showTargetFilter="true" disabled="#{dupConSign.counterSignatureDtls}"
+                                    effect="none" var="route_mast" itemLabel="#{route_mast.value}" itemValue="#{route_mast.key}" >
+                            <p:ajax event="transfer" listener="#{dupConSign.onTransfer}" partialSubmit="true" update="via Length trips"/>
+                        </p:pickList>
+                    </div>
+
+                    <div class="ui-grid-col-8">
+                        <p:outputPanel id="via">
+                            <div class="route-details-header">Selected Route Direction</div>
+                            <div class="left-position">
+                                <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                    <p:outputLabel escape="false" id="route_via" value="#{dupConSign.via_route}" />
+                                </p:scrollPanel>
+                            </div>
+                        </p:outputPanel>
+                    </div>
+
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <p:outputPanel id="Length">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="routeLength" value="Route Length" rendered="#{dupConSign.noOfTripsrendered}"/>
+                            </label>
+                            <p:inputText id="routeLength" maxlength="5" autocomplete="off" value="#{dupConSign.routeLength}" size="3" rendered="#{dupConSign.noOfTripsrendered}" disabled="#{dupConSign.noOfTripsrendered}">
+                                <p:keyFilter regEx="/[\d\-]/"/>
+                            </p:inputText>
+                        </p:outputPanel>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <p:outputPanel id="trips">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="no_trips" value="#{pmtLabel.no_of_trips}" rendered="#{dupConSign.noOfTripsrendered}"/>
+                            </label>
+                            <p:inputText id="no_trips" maxlength="3" autocomplete="off" value="#{dupConSign.no_of_trip}" size="3" rendered="#{dupConSign.noOfTripsrendered}" disabled="#{dupConSign.noOfTripsrendered}">
+                                <p:keyFilter regEx="/[\d\-]/"/>
+                            </p:inputText>
+                        </p:outputPanel>
+                    </div>
+                </div>
+            </p:panel>
+            <p:panel id="counterSign"  header="Counter Signature Details" styleClass="top-space bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="state_from" value="State From" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:selectOneMenu id="state_from"  value="#{dupConSign.countDobj.state_cd_from}" filter="true" disabled="#{dupConSign.counterSignatureDtls}">
+                            <f:selectItem itemValue="-1" itemLabel="Select Any State"/>
+                            <f:selectItems value="#{dupConSign.stateList}"/>
+                            <p:ajax event="change" listener="#{dupConSign.onSelectState()}" update="off_from" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="off_from" value="Office From" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:selectOneMenu id="off_from"  value="#{dupConSign.countDobj.off_cd_from}" filter="true" disabled="#{dupConSign.counterSignatureDtls}">
+                            <f:selectItem itemValue="-1" itemLabel="Select Any Office"/>
+                            <f:selectItems value="#{dupConSign.offList}"/>
+                        </p:selectOneMenu>
+                    </div>
+
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="countValidFrom" value="Valid From" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="countValidFrom"  navigator="true"  pattern="dd-MMM-yyyy" value="#{dupConSign.countDobj.count_valid_from}" mindate="#{dupConSign.minDate}" maxdate="#{dupConSign.maxDate}" readonlyInput="true" disabled="#{dupConSign.counterSignatureDtls}"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="countValidUpto" value="Maximum Valid Upto" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="countValidUpto"  navigator="true"  pattern="dd-MMM-yyyy" value="#{dupConSign.countDobj.count_valid_upto}" mindate="#{dupConSign.minDate}" maxdate="#{dupConSign.maxDate}" readonlyInput="true" disabled="#{dupConSign.counterSignatureDtls}"/>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="counterSignNo" value="Counter Signature No." styleClass="field-label-mandate" />
+                        </label>
+                        <p:inputText id="counterSignNo" styleClass="text-uppercase" 
+                                     value="#{dupConSign.countDobj.countSignNo}" maxlength="24" autocomplete="off" disabled="#{dupConSign.counterSignatureDtls}" />
+                    </div>                            
+                </div>
+
+            </p:panel>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:panel id="changedByPrevUser" rendered="#{dupConSign.prevChangedDataList.size()>0}"
+                             toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                        <p:dataTable value="#{dupConSign.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                            <p:column headerText="Changed by Employee" width="15%">
+                                <h:outputText value="#{data.userName}" />
+                            </p:column>
+
+                            <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                            </p:column>
+
+                            <p:column headerText="Changed on" width="15%">
+                                <h:outputText value="#{data.op_dt}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel> 
+                </div>
+            </div>
+
+
+            <p:outputPanel id="bt_function" rendered="#{dupConSign.panelHideShow}" styleClass="top-space bottom-space center-position">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton value="Save" action="#{dupConSign.save_details()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" update="app_num_id" >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:button value="Reset" outcome="/ui/permit/formDupCounterSignature.xhtml?faces-redirect=true"  onclick="PF('bui').show();" icon="ui-icon-arrowrefresh-1-w"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{!dupConSign.panelHideShow}" styleClass="top-space bottom-space">
+                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                    <ui:param name="app_disapp" value="#{dupConSign}"/>
+                </ui:include>
+            </p:outputPanel>
+
+            <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <h:outputLabel  escape="false"  value="#{dupConSign.app_no_msg}"/>
+                        <f:facet name="footer">
+                            <p:button value="Exit for Another Application" outcome="/ui/permit/formDupCounterSignature.xhtml?faces-redirect=true" icon="ui-icon-arrowrefresh-1-w"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

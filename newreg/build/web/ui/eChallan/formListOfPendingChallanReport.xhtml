@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/masterLayoutPage.xhtml">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">
+        <h:body>
+            <h:form id="pendingchallan" prependId="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msgId"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row center-position">
+                    <span class=" header-main"> Challan Clearance Report</span>
+                </div>
+                <p:tabView id="challanCancellationtab">
+                    <p:tab title="Challan Clearance Report " id="challanclearancetab">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no" value=" Registration No." />
+                                </label>
+                                <p:inputText id="regn_no" value="#{listOfPendingChallanBean.regn_no}" maxlength="10"   styleClass="text-uppercase" autocomplete="off"
+                                             required="true" requiredMessage="Please Enter Registration Number."
+                                             >
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="btn_save" value="Print"  icon="ui-icon-print"  
+                                                 action="#{listOfPendingChallanBean.printChallanPendingReport()}"
+                                                 update= "regn_no :pendingchallan:msgId" onclick="PF('ajax_status').show()"
+                                                 process="challanclearancetab"
+                                                 onsuccess="PF('ajax_status').hide()">                                    
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                </p:commandButton>    
+                                <p:commandButton value="Back"  process="@this"  action="home"
+                                                 immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:tab>
+                    <p:tab title="Challan History Report " id="challanhistorytab">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no1" value=" Registration No." />
+                                </label>
+                                <p:inputText id="regn_no1" value="#{listOfPendingChallanBean.regn_no}" maxlength="10"   styleClass="text-uppercase" autocomplete="off"
+                                             required="true" requiredMessage="Please Enter Registration Number."
+                                             >
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="btn_print_history" value="Print"  icon="ui-icon-print"  
+                                                 action="#{listOfPendingChallanBean.printChallanHistoryReport()}"
+                                                 update= "regn_no1 :pendingchallan:msgId" onclick="PF('ajax_status').show()"
+                                                 process="challanhistorytab"
+                                                 onsuccess="PF('ajax_status').hide()">  
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                </p:commandButton>    
+                                <p:commandButton value="Back"  process="@this"  action="home"
+                                                 immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:tab>
+                    <p:tab title="HLC Report " id="challanAuthtab">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="chal_no" value=" Challan No." />
+                                </label>
+                                <p:inputText id="chal_no" value="#{listOfPendingChallanBean.regn_no}" maxlength="10"   styleClass="text-uppercase" autocomplete="off"
+                                             required="true" requiredMessage="Please Enter Challan Number."
+                                             >
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="btn_print_auth" value="Print"  icon="ui-icon-print"  
+                                                 action="#{listOfPendingChallanBean.printChallaHLCReport()}"
+                                                 update= "chal_no,:pendingchallan:msgId " onclick="PF('ajax_status').show()"
+                                                 process="challanAuthtab"
+                                                 onsuccess="PF('ajax_status').hide()">  
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                </p:commandButton>    
+                                <p:commandButton value="Back"  process="@this"  action="home"
+                                                 immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:tab>
+                </p:tabView>
+
+                <p:blockUI block="pendingchallan" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>    
+        </h:body>
+    </ui:define>
+
+
+</ui:composition>

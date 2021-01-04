@@ -1,0 +1,350 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"> 
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formTechDataVerify" prependId="false">
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:messages  closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.techDataEntry} </h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row center-position top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="techData" styleClass="top-space bottom-space" rendered="#{techdataBean.tech_dataListPanel}">
+                            <p:dataTable id="techDataList" value="#{techdataBean.techDataList}" var="data" rowIndexVar="rowkey" rows="10">
+                                <p:column styleClass="center-position" headerText="#{language.regnNO}"  >
+                                    <h:outputText value="#{data.regn_no}" />
+                                </p:column>
+                                <p:column styleClass="center-position" headerText="#{language.reqdate}">
+                                    <h:outputText value="#{data.request_dt}"/>
+                                </p:column>
+                                <p:column styleClass="center-position" >
+                                    <p:commandButton  value="#{language.getDetails}"  update=":formTechDataVerify:tf_reg_no :formTechDataVerify:techDetails :formTechDataVerify:saveButton " action="#{techdataBean.getRegnNoFromList(data)}">
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </div>
+                </div>                
+                <div class="ui-grid-row bottom-space">                    
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_reg_no" value="#{language.regnNO}"/>
+                        </label>
+                        <p:inputText id="tf_reg_no" value="#{techdataBean.regn_no}"  styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                     maxlength="10" disabled="#{techdataBean.enable_disable}">
+                            <p:keyFilter regEx="/[0-9A-Z]/i"/>   
+                            <p:ajax event="blur" listener="#{techdataBean.vehicleDetails()}" update="techDetails saveButton @this permitDtlsPanel" />
+                        </p:inputText>
+                    </div>
+                </div>                
+                <p:outputPanel id="techDetails">
+                    <p:panel rendered="#{techdataBean.tech_detailPanel}">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="maker1" value="#{language.user_maker}"/>
+                                </label>                              
+                                <p:selectOneMenu id="maker1"  value="#{techdataBean.techDobj.maker}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Please Select Maker" >
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1" noSelectionOption="true"/>
+                                    <f:validator validatorId="selectOneValidator" for="maker1"/>
+                                    <f:selectItems value="#{techdataBean.list_maker}"/>
+                                    <f:validateRequired for="maker1"/>  
+                                    <p:ajax event="change" listener="#{techdataBean.vehMakerListener}" update="opn_model" />                                   
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label inline-section right-space">
+                                    <p:outputLabel for="maker_model" value="#{language.makerModel}" styleClass="inline-section"/>
+                                </label>
+                                <p:outputPanel id="op_model_editable"  rendered="#{techdataBean.renderModelEditable}" styleClass="inline-section left-space">
+                                    <h:outputLabel value="Model Not Available: " for="bn_model" styleClass="inline-section right-space red"/>
+                                    <p:selectBooleanCheckbox id="bn_model" value="#{techdataBean.modelEditable}" styleClass="inline-section" >
+                                        <p:ajax  event="change" listener="#{techdataBean.renderSelectMenuModelListener}" update="opn_model" />
+                                    </p:selectBooleanCheckbox>
+                                </p:outputPanel>
+                                <p:outputPanel id="opn_model">
+                                    <p:inputText id="tf_maker_model" value="#{techdataBean.techDobj.maker_model}" required="true" style="text-transform: uppercase" maxlength="20"
+                                                 converter="toUpperCaseConverter" validatorMessage="Model Length less than 5"
+                                                 rendered="#{!techdataBean.renderModelSelectMenu}" requiredMessage="Blank - Maker Model" >
+                                        <f:validateLength minimum="5" for="tf_maker_model" ></f:validateLength>
+                                    </p:inputText>
+                                    <p:selectOneMenu  id="maker_model" value="#{techdataBean.techDobj.maker_model}" 
+                                                      filter="true" filterMatchMode="contains" required="true" requiredMessage="Please Select Maker Model" rendered="#{techdataBean.renderModelSelectMenu}" >
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                        <f:selectItems value="#{techdataBean.list_maker_model}"/>
+                                        <f:validateRequired for="maker_model"/>
+                                        <f:validator validatorId="selectOneValidator_0" for="maker_model"/>    
+                                        <!--                                    <p:ajax event="change" listener="# {techdataBean.vehModelListener}"/>-->
+                                    </p:selectOneMenu>
+                                </p:outputPanel>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="fuel" value="#{language.fuel}"/>
+                                </label>
+                                <p:selectOneMenu id="fuel"  value="#{techdataBean.techDobj.fuel}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Please Select Fuel" >
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:validator validatorId="selectOneValidator" for="fuel"/>
+                                    <f:selectItems value="#{techdataBean.list_fuel}"/>
+                                    <f:validateRequired for="fuel"/>                    
+                                    <!--<p:ajax event="change" listener="# {owner_bean.fuel_TypeSelectEvent}" process="@this" update="cngDetails uiTaxModes @this"/>-->
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="seat_cap" value="#{language.seatCap}"/>
+                                </label>
+                                <p:inputText id="seat_cap" value="#{techdataBean.techDobj.seat_cap}" required="true" 
+                                             requiredMessage="Blank: Seating Capacity" maxlength="3" size="20" autocomplete="off">
+                                    <p:keyFilter regEx="/[0-9]/i"/>
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="stand_cap" value="#{language.standCap}"/>
+                                </label>
+                                <p:inputText id="stand_cap" value="#{techdataBean.techDobj.stand_cap}" 
+                                             maxlength="3" size="20" autocomplete="off">
+                                    <p:keyFilter regEx="/[0-9]/i"/>
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ul_weight" value="#{language.ulWeight}"/>
+                                </label>
+                                <p:inputText id="ul_weight"  value="#{techdataBean.techDobj.unld_wt}" size="20" maxlength="6"
+                                             required="true" requiredMessage="Blank: Unladen Weight" autocomplete="off">
+                                    <p:keyFilter regEx="/[0-9]/i"/>   
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="l_weight" value="#{language.lWeight}"/>
+                                </label>
+                                <p:inputText id="l_weight"  value="#{techdataBean.techDobj.ld_wt}" size="20" maxlength="6"
+                                             required="true" requiredMessage="Blank: laden Weight" autocomplete="off"
+                                             validator="#{techdataBean.validateLadenWeight}" validatorMessage="Un-Laden Weight Must Less Than Laden Weight" >
+                                    <f:validateRequired for="l_weight"/>
+                                    <p:keyFilter regEx="/[0-9]/i"/>     
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="cubic_cap" value="#{language.cubicCap}"/>
+                                </label>
+                                <p:inputText id="cubic_cap"  value="#{techdataBean.techDobj.cubic_cap}" size="20" maxlength="9"
+                                             required="true" requiredMessage="Blank: Cubic Capicity" autocomplete="off"
+                                             validatorMessage="Invalid Cubic Capacity.Maximum Value is 999999.99">                                    
+                                    <p:keyFilter regEx="/[0-9.]/i"/>   
+                                    <f:validateDoubleRange maximum="999999.99" minimum="0"/>
+                                    <f:validateRequired for="cubic_cap"/>
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="horsePowerLabel" for="hp" value="#{language.hp}"/>
+                                </label>
+                                <p:inputText id="hp"  value="#{techdataBean.techDobj.hp}" size="20" maxlength="9" autocomplete="off" validatorMessage="Invalid Horse Power.The Maximum Value is 999999.99">
+                                    <p:keyFilter regEx="/[0-9.]/i"/>   
+                                    <f:validateDoubleRange maximum="999999.99" minimum="0"/>
+                                    <f:validateRequired for="hp"/>
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="no_cyl" value="#{language.noCyl}"/>
+                                </label>
+                                <p:inputText id="no_cyl" value="#{techdataBean.techDobj.no_cyl}" size="20" required="true"
+                                             requiredMessage="Blank: No of Cylinders" maxlength="2" autocomplete="off">
+                                    <p:keyFilter regEx="/[0-9]/i"/>
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="sale_amt" value="#{language.saleAmt}" style="color: #FF0000 !important;"/>
+                                </label>
+                                <p:inputText id="sale_amt"  value="#{techdataBean.techDobj.sale_amt}"
+                                             maxlength="9" size="20"                                         
+                                             required="true" requiredMessage="Blank Sale Amount" validatorMessage="Sale Amount is Less than 5 Digit">
+                                    <f:validateLength minimum="5"/>
+                                    <f:validateRequired for="sale_amt"/>
+                                    <p:keyFilter regEx="/[0-9]/i"/>   
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ac_fitted" value="#{language.acFitted}"/>
+                                </label>
+                                <p:selectOneMenu id="ac_fitted"  value="#{techdataBean.techDobj.ac_fitted}" maxlength="1" required="true" >
+                                    <f:validateLength maximum="1" for="ac_fitted"/>
+                                    <f:selectItems value="#{techdataBean.list_ac_audio_video_fitted}" />                                   
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="audio_fitted" value="#{language.audioFitted}"/>
+                                </label>
+                                <p:selectOneMenu id="audio_fitted"  value="#{techdataBean.techDobj.audio_fitted}" maxlength="1" required="true">
+                                    <f:validateLength maximum="1" for="audio_fitted"/>
+                                    <f:selectItems value="#{techdataBean.list_ac_audio_video_fitted}" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="video_fitted" value="#{language.videoFitted}"/>
+                                </label>
+                                <p:selectOneMenu id="video_fitted"  value="#{techdataBean.techDobj.video_fitted}" maxlength="1" required="true">
+                                    <f:validateLength maximum="1"  for="video_fitted"/>
+                                    <f:selectItems value="#{techdataBean.list_ac_audio_video_fitted}" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="norms" value="#{language.norms}"/>
+                                </label>
+                                <p:selectOneMenu id="norms" value="#{techdataBean.techDobj.norms}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Please Select Norms">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:validator validatorId="selectOneValidator" for="norms"/>
+                                    <f:selectItems value="#{techdataBean.list_norms}"/>
+                                    <f:validateRequired for="norms"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.user_mobileNo}" />
+                                </label>
+                                <p:inputText id="tf_mobNo" value="#{techdataBean.techDobj.mobile_no}" autocomplete="off" maxlength="10" required="true" disabled="#{techdataBean.enable_disable}">
+                                    <p:keyFilter regEx="/[0-9]/i"/> 
+                                    <f:validator validatorId="mobileNoValidator"/>                                   
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.reason}" />
+                                </label>
+                                <p:inputText id ="reason" value="#{techdataBean.techDobj.reason}" styleClass="text-uppercase" converter="toUpperCaseConverter"
+                                             maxlength="100" size="20" required="true" requiredMessage="Blank: Reason">
+                                    <f:validateLength maximum="100" for="reason"/>
+                                    <f:validateRequired for="reason"/>
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="permitDtlsPanel" styleClass="top-space bottom-space">
+                    <p:autoUpdate/>
+                    <p:panel  header="Permit Entry" rendered="#{techdataBean.techDobj ne null and techdataBean.techDobj.pmtPanelRendered}" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pmt_type" value="#{language.pmtType}"/>
+                                </label> 
+                                <p:selectOneMenu id="pmt_type" label="#{techdataBean.techDobj.permitTypeDesc}"  value="#{techdataBean.techDobj.permitType}" maxlength="1" required="true" requiredMessage="Please Select Permit type">                   
+                                    <f:selectItem itemLabel="Select Type" noSelectionOption="true"/>
+                                    <f:selectItems value="#{techdataBean.techDobj.permitTypeList}" />
+                                    <p:ajax listener="#{techdataBean.fillListPmtCatg()}" update="pmt_catg"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pmt_catg" value="#{language.pmtCatg}" rendered="#{techdataBean.techDobj.permitCatgList ne null and techdataBean.techDobj.permitCatgList.size() > 0}"/>
+                                </label> 
+                                <p:selectOneMenu id="pmt_catg" label="#{techdataBean.techDobj.permitCatgDesc}" value="#{techdataBean.techDobj.permitCatg}"
+                                                 rendered="#{techdataBean.techDobj.permitCatgList ne null and techdataBean.techDobj.permitCatgList.size() > 0}" maxlength="1" required="true">
+                                    <f:selectItem itemValue="0" itemLabel="Select Category"/>
+                                    <f:selectItems value="#{techdataBean.techDobj.permitCatgList}" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:panel id="changedByPrevUser" rendered="#{techdataBean.prevChangedDataList.size()>0}"
+                         toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                    <p:dataTable value="#{techdataBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="#{language.change_by_employee}" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+                        <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+                        <p:column headerText="#{language.changed_on}" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+
+                <p:outputPanel id="saveButton">
+                    <p:panel styleClass="top-space bottom-space" rendered="#{(techdataBean.appl_details.ownerDobj eq null) and (techdataBean.tech_detailPanel)}">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">                                    
+                                <p:commandButton value="#{language.save}" action="#{techdataBean.saveTechEntry()}" update="techDetails">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                </p:commandButton>                            
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="outputpanel_appdisapp" rendered="#{techdataBean.appl_details.ownerDobj ne null}">    
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{techdataBean}"/>
+                    </ui:include>
+                </p:outputPanel>
+                <p:dialog id="db_reopened"  dynamic="true" widgetVar="dlgdb_reopened"
+                          modal="true" draggable="false" closable="false" hideEffect="explode" header="Info">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Application Number is Generted Successfully.Application Number is : #{techdataBean.appl_no}"/>
+                            </label>                            
+                        </div>
+                    </div>
+                    <p:button value="Ok" outcome="home" />
+
+                </p:dialog>  
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+                <vahan:vahanMessages messages="#{techdataBean.vahanMessages}"  rendered="#{techdataBean.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define> 
+</ui:composition>

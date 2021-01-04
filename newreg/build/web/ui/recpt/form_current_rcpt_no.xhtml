@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div style="top:55px; right:20px; position: absolute; background: #c7dff7; z-index: 9999;">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:dialog id="rcpt_popup" styleClass="center-position"
+                              widgetVar="rcpt_dlg1"
+                              modal="true" draggable="false" closable="false" header="Current Issued Book">  
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_book_no" value="Book No:" />   
+                                </label>
+                                <p:inputText id="tf_book_no" value="#{rcpt_bean.book_no}" size="20" readonly="true" styleClass="text-uppercase"/>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_start_at" value="Start At:" />   
+                                </label>
+                                <p:inputText id="tf_start_at" value="#{rcpt_bean.rcpt_start}" size="20" readonly="true" styleClass="text-uppercase"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_end_at" value="End No:" />   
+                                </label>
+                                <p:inputText id="tf_end_at" value="#{rcpt_bean.rcpt_end}" size="20" readonly="true" styleClass="text-uppercase"/>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_running_rcpt_no" value="Running Receipt No" /> 
+                                </label>
+                                <p:inputText id="tf_running_rcpt_no" value="#{rcpt_bean.current_rcpt_no}" size="20" readonly="true" styleClass="text-uppercase"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="tf_button_skip_pop" value="Skip One in Running Receipt No" actionListener="#{rcpt_bean.skipRecptNo()}" 
+                                                 update="tf_new_running_rcpt_no tf_running_rcpt_no " >
+                                </p:commandButton>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_new_running_rcpt_no" value="New Running Receipt No" />
+                                </label>
+                                <p:inputText id="tf_new_running_rcpt_no" value="#{rcpt_bean.new_rcpt_no}" size="20" readonly="true" styleClass="text-uppercase"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="tf_button_save" value="Save"  
+                                                 actionListener="#{rcpt_bean.saveNewRcptNo()}" update="tf_new_running_rcpt_no tf_running_rcpt_no tf_current_rcptno"/>
+                                <p:commandButton id="tf_button_reset" value="Reset" actionListener="#{rcpt_bean.reset()}" update="tf_new_running_rcpt_no tf_current_rcptno"/>
+                                <p:commandButton value="Exit" oncomplete="PF('rcpt_dlg1').hide();" actionListener="#{rcpt_bean.reset()}" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                </div>
+            </div>
+        </div>
+        <div class="ui-grid-row center-position">
+            <div class="ui-grid-col-12">
+                <!--<h2 class="left-space right-space top-space">Current Receipt No</h2>--> 
+                <div>
+                    <!--<p:outputLabel id="tf_current_rcptno" value="#{rcpt_bean.book_rcpt_no}" styleClass="font-bold red" style="font-size: 250%;"/>-->
+                    <p:outputLabel id="tf_current_rcptno" />
+                </div>
+                <!--                <div>
+                                    <p:commandButton id="tf_button_skip" value="Skip" oncomplete="PF('rcpt_dlg1').show();" actionListener="# {rcpt_bean.reset()}" />
+                                </div>-->
+
+            </div>
+        </div>
+
+
+    </div>
+</html>

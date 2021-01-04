@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <p:panel id="StateContainer" rendered="#{StateCovered.render_payment_table_aitp}">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <p:panel header="Create Travelling State Zone" style="margin-bottom:20px">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputLabel value="State Name :" for="txtStateName"/>
+                        <p:selectOneMenu id="txtStateName"  value="#{StateCovered.statecoveredBeanObj.stateCd}" filter="true">
+                            <f:selectItems value="#{StateCovered.stateMasterData}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton id="btn_add" value="Add"  action="#{StateCovered.createNew()}" update="stateListDataTable payment_panel"
+                                         onclick="PF('StateContainerBui').show();" oncomplete="PF('StateContainerBui').hide();"/>
+                    </h:panelGrid>
+                </p:panel>
+            </div>
+            <div class="ui-grid-col-8">
+                <p:outputPanel>
+                    <p:dataTable id="stateListDataTable" value="#{StateCovered.stateList}" rowIndexVar="index" var="List">
+                        <p:column headerText="Sr.No" width="2%">#{index + 1}</p:column>
+                        <p:column headerText="State Cd">
+                            <h:outputText value="#{List.stateCd}" />
+                        </p:column>
+                        <p:column headerText="State Name">
+                            <h:outputText value="#{List.stateName}" />
+                        </p:column>
+                        <p:column headerText="Remove">
+                            <p:commandButton id="btn_add" value="Remove"  action="#{StateCovered.remove(List.stateCd, List.stateName)}" update="stateListDataTable pay_table"
+                                             onclick="PF('StateContainerBui').show();" oncomplete="PF('StateContainerBui').hide();"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </div>
+
+            <p:blockUI block="StateContainer" widgetVar="StateContainerBui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:outputPanel id="payment_panel" styleClass="top-space bottom-space">                    
+                    <p:dataTable id="pay_table" value="#{StateCovered.paymentList}" 
+                                 rendered="#{StateCovered.render_payment_table_aitp}" editable="true" var="payment" rowIndexVar="index">
+                        <f:facet name="header">
+                            <div class="left-position">
+                                <p:outputLabel value="#{StateCovered.header_name}"/>                        
+                            </div>
+                        </f:facet>
+                        <p:column headerText="S.No." styleClass="collumn-width center-position">
+                            <p:outputLabel value="#{index +1}."/>
+                        </p:column>
+                        <p:column headerText="Name of state" >
+                            <p:inputText id="paystate" value="#{payment.pay_state_descr}"
+                                         autocomplete="off"
+                                         styleClass="right-position" >                                                                                       
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Amount" >
+                            <p:inputText id="Amount" value="#{payment.instrument_amt}"
+                                         autocomplete="off"
+                                         styleClass="right-position" maxlength="8" >                               
+                                <p:keyFilter mask="num"></p:keyFilter>    
+                                <p:ajax/>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Instrument">
+                            <p:selectOneMenu id="payment_type" value="#{payment.instrument_type}" >  
+                                <f:selectItems value="#{StateCovered.instrumentList}"/>  
+                                 <p:ajax/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Bank Name">
+                            <p:selectOneMenu value="#{payment.bank_code}" filter="true" filterMatchMode="contains">
+                                <f:selectItems value="#{StateCovered.bank_list}"/>
+                                <p:ajax/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="Bank Branch">
+                            <p:inputText id="branchName" value="#{payment.branch_name}"
+                                         autocomplete="off"
+                                         styleClass="right-position" style="text-transform: uppercase" converter="toUpperCaseConverter" maxlength="30">   
+                                <p:ajax/>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Number">
+                            <p:inputText value="#{payment.instrument_no}" 
+                                         maxlength="10" 
+                                         style="text-transform: uppercase" size="10"
+                                         autocomplete="off"
+                                         validatorMessage="Minimum Length of Instrument No should be 5"
+                                         converter="toUpperCaseConverter">
+                                <p:keyFilter regEx="/[0-9]/"></p:keyFilter>
+                                <f:validateLength minimum="5"/>     
+                                <p:ajax event="change" listener="#{StateCovered.validateInstrumentNumber}" update="pay_table"/>
+                                <f:attribute name="paymentDobj" value="#{payment}"/>
+                            </p:inputText>                        
+                        </p:column>
+                        <p:column headerText="Dated">                       
+                            <p:calendar value="#{payment.instrument_dt}" pattern="dd-MMM-yyyy" navigator="true" maxdate="#{payment.max_draft_date}" mindate="#{payment.min_draft_date}">
+                                <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                  <p:ajax/>
+                            </p:calendar>                            
+                        </p:column>
+                        <p:column headerText="Recieved Date">                       
+                            <p:calendar value="#{payment.recieved_dt}" pattern="dd-MMM-yyyy" navigator="true">
+                                <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                  <p:ajax/>
+                            </p:calendar>                            
+                        </p:column>
+                        <p:column headerText="Payable To">
+                            <p:inputText id="payableTo" value="#{payment.payable_to}"
+                                         autocomplete="off"
+                                         styleClass="right-position">   
+                                <p:ajax/>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Registration Mark">
+                            <p:inputText id="regnNo" value="#{permitHomeAuthBean.regnNo}"
+                                         autocomplete="off"
+                                         styleClass="right-position" style="text-transform: uppercase" converter="toUpperCaseConverter" disabled="true"> 
+                                 <p:ajax/>
+                            </p:inputText>                            
+                        </p:column>
+
+                    </p:dataTable>                        
+                </p:outputPanel>
+            </div>
+        </div>
+    </p:panel>
+</html>

@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="non_use_form">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages>
+                                    <p:autoUpdate/>
+                                </p:messages>
+                            </div>
+                        </div>                     
+                    </p:dialog>
+                </p:outputPanel>                   
+                <div class="ui-grid-row center-position">
+                    <span class=" header-main">
+                        #{nonUse.pageHeader}
+                    </span>
+                </div>
+                <p:dataTable  value="#{nonUse.previousNonUseList}" var="non" rendered="#{nonUse.previousNonUseList ne null}" >
+                    <f:facet name="header"> 
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6 left-position"><h:outputText value="Previous NonUse Details" styleClass="inline-section top-space font-bold" /></div>
+
+                        </div>
+                    </f:facet>
+                    <p:column headerText="Appl No:" >
+                        <h:outputText value="#{non.appl_no}"/>
+                    </p:column>
+                    <p:column headerText="Regn No:" >
+                        <h:outputText value="#{non.regn_no}"/>
+                    </p:column>
+                    <p:column headerText="Exemption From">
+                        <p:calendar  value="#{non.exemp_from}"   disabled="true"
+                                     navigator="true" 
+                                     autocomplete="off"  readonlyInput="true"  pattern="dd-MMM-yyyy">  
+                            <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                        </p:calendar>
+                    </p:column>
+                    <p:column headerText="Exemption Upto" >
+                        <p:calendar  value="#{non.exemp_to}"   disabled="true"
+                                     navigator="true" 
+                                     autocomplete="off"  readonlyInput="true"  pattern="dd-MMM-yyyy">  
+                            <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                        </p:calendar>
+                    </p:column>                                    
+                    <p:column headerText=" Garage Name ">
+                        <h:outputText value="#{non.location_of_garage}"/>
+                    </p:column>
+
+
+                </p:dataTable>
+
+
+
+                <p:panel rendered="#{nonUse.appl_details.regn_no  ne null}">
+                    <ui:include src="/ui/registration/panel_applicationdetails.xhtml">
+                        <ui:param name="appl_details" value="#{nonUse.appl_details}"/>            
+                    </ui:include> 
+                </p:panel>
+                <p:outputPanel id="nonUseTabView">
+                    <p:tabView id="nonUseTab" >
+                        <p:tab  title="Non-Use Information">
+                            <p:outputPanel rendered="#{nonUse.renderRemovalOrRestore}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="idForNonReCe" value="Select Action"/>
+                                        </label>
+                                        <p:selectOneRadio id="idForNonReCe" value="#{nonUse.dobj.valueOfRadioEvent}" required="true" requiredMessage="Please Select Action Restore /Remove" disabled="#{nonUse.disableRadioButton}">
+                                            <f:selectItem itemLabel="Restore/Release" itemValue="R" ></f:selectItem>  
+                                            <f:selectItem itemLabel="Removal/Shifting" itemValue="C"></f:selectItem> 
+                                            <!--<f:selectItem itemLabel="NonUse Continuation" itemValue="NC"></f:selectItem>--> 
+                                            <p:ajax event="change" listener="#{nonUse.selectListener()}" update=":non_use_form:nonUseTab:restorePanel :non_use_form:nonUseTab:inspectionPanel to_dt fromDate remarksPanel ga_address_panel"></p:ajax>
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>
+                            </p:outputPanel>   
+                            <p:panel header="Non-Use Information" id="nonUsePanel"  >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  value="Non-Use Purpose :"  />
+                                            </label>
+                                            <p:selectOneMenu  value="#{nonUse.dobj.non_use_purpose}" filter="true" disabled="#{nonUse.disableNonuUseInfPanel}" required="true"  requiredMessage="Select Non Use Purpose.">
+                                                <f:selectItem itemLabel="Select Non Use Purpose" itemValue="0"/>
+                                                <f:selectItems value="#{nonUse.purposeList}"/>  
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="fromDate" value="From Date :"  />
+                                            </label>
+                                            <p:calendar id="fromDate" value="#{nonUse.dobj.exemp_from}"  required="true" mindate="#{nonUse.allowDate}"  disabled="#{nonUse.disableNonuUsefrom}"
+                                                        requiredMessage="Select From Date."  navigator="true" 
+                                                        autocomplete="off"  readonlyInput="true"  pattern="dd-MMM-yyyy">  
+                                                <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                                            </p:calendar>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="to_dt" value="To Date :"  />
+                                            </label>
+                                            <p:calendar id="to_dt" value="#{nonUse.dobj.exemp_to}" disabled="#{nonUse.disableNonuUseUpto}"  required="true" navigator="true" mindate="#{nonUse.minDate}"
+                                                        autocomplete="off"  readonlyInput="true"
+                                                        requiredMessage="Select To Date." pattern="dd-MMM-yyyy">  
+                                                <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                                                <p:ajax event="dateSelect" listener="#{nonUse.checkNonUseMonth()}" update="non_use_form:nonUseTab:to_dt" />
+                                            </p:calendar>
+                                        </div>
+                                    </div>
+                                </div>            
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  value="Authorised By/Applied By"  />
+                                        </label>
+                                        <p:inputText value="#{nonUse.dobj.authorised_by}" disabled="#{nonUse.disableNonuUseInfPanel}"  converter="toUpperCaseConverter" styleClass="text-uppercase" required="true" maxlength="25" requiredMessage="Enter Permission By."/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  value="Permission /Application Date"  />
+                                        </label> 
+                                        <p:calendar value="#{nonUse.dobj.permission_dt}" disabled="#{nonUse.disableNonuUseInfPanel}" navigator="true" maxdate="#{nonUse.maxDate}"
+                                                    autocomplete="off"  readonlyInput="true"
+                                                    requiredMessage="Select Permission Date." required="true" pattern="dd-MMM-yyyy">  
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                                        </p:calendar>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel   value="Permission/Application No :"  />
+                                        </label> 
+                                        <p:inputText   value="#{nonUse.dobj.permission_no}"  disabled="#{nonUse.disableNonuUseInfPanel}" converter="toUpperCaseConverter" styleClass="text-uppercase" maxlength="10" required="true" requiredMessage="Enter Permission Number." ></p:inputText>
+                                    </div>
+
+
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel   value="Garage Name :"  />
+                                            </label> 
+                                            <p:inputText    value="#{nonUse.dobj.location_of_garage}" disabled="#{nonUse.disableNonuUseInfPanel}" converter="toUpperCaseConverter" styleClass="text-uppercase" maxlength="50" required="true" requiredMessage="Enter Location Of Garage." ></p:inputText>
+                                        </div>
+
+                                        <div class="ui-grid-col-4" >
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel   value="Fill Inspection Details:"  rendered="#{nonUse.renderInspDetailsCb}"/>
+                                            </label> 
+                                            <p:selectBooleanCheckbox id="blnInsp_details" value="#{nonUse.inspDetailsCb}" rendered="#{nonUse.renderInspDetailsCb}">
+                                                <p:ajax event="change" listener="#{nonUse.listnerInspectDetails()}" update="inspectionPanel"></p:ajax>
+                                            </p:selectBooleanCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p:panel> 
+
+                            <p:panel id="ga_address_panel" header="Garage Address" >
+                                <p:outputPanel id="gaddress">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_ga_add1" value="#{label.address1}"/>
+                                            </label>
+                                            <p:inputText  id="tf_ga_add1" value="#{nonUse.dobj.garage_add1}" disabled="#{nonUse.disableGarageAddress}"  required="true" 
+                                                          requiredMessage="Blank Garage Address" maxlength="35" autocomplete="off"
+                                                          style="text-transform: uppercase" converter="toUpperCaseConverter">
+                                                <f:validateRequired for="tf_ga_add1"/>
+                                                <f:validateLength maximum="35" for="tf_ga_add1"/>                              
+
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_ga_add2" value="#{label.address2}"/>
+                                            </label>
+                                            <p:inputText id="tf_ga_add2" value="#{nonUse.dobj.garage_add2}" disabled="#{nonUse.disableGarageAddress}"
+                                                         required="true" requiredMessage="Blank #{label.address2}"
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase"
+                                                         converter="toUpperCaseConverter">
+                                                <f:validateLength maximum="35" for="tf_ga_add2"/>
+
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_ga_add3" value="#{label.address3}"/>
+                                            </label>
+                                            <p:inputText id="tf_ga_add3" value="#{nonUse.dobj.garage_add3}" disabled="#{nonUse.disableGarageAddress}"
+                                                         maxlength="35" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter">
+                                                <f:validateLength maximum="35" for="tf_ga_add3"/>
+
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_ga_state" value="#{label.state}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_ga_state"  disabled="#{nonUse.disableGarageAddress}"
+                                                             filter="true" value="#{nonUse.dobj.garage_state}" filterMatchMode="contains" required="true" 
+                                                             >                                  
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                <f:selectItems value="#{nonUse.list_c_state}"  />  
+                                                <p:ajax event="change" listener="#{nonUse.vehC_StateListener()}" update="tf_ga_district" partialSubmit="true"/>
+                                                <f:validator validatorId="selectOneValidator" for="tf_ga_state"/>  
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_ga_district" value="#{label.district}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_ga_district" value="#{nonUse.dobj.garage_district}"  disabled="#{nonUse.disableGarageAddress}"  filter="true" filterMatchMode="contains" required="true">                                  
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                <f:selectItems value="#{nonUse.list_c_district}" />  
+                                                <!--<p:ajax event="change" listener="{owner_bean.vehDistListener}" />-->
+                                                <f:validator validatorId="selectOneValidator" for="tf_ga_district"/>  
+                                                <p:ajax partialSubmit="true"/>
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_ga_pincode" value="#{label.pin_cd}"/>
+                                            </label>
+                                            <p:inputText id="tf_ga_pincode"  value="#{nonUse.dobj.garage_pincode}" disabled="#{nonUse.disableGarageAddress}"
+                                                         size="10" maxlength="6" autocomplete="off"
+                                                         required="true" requiredMessage="Blank:Current Address PIN Code">
+                                                <f:validateLength maximum="6" for="tf_ga_pincode"/>
+                                                <f:validator validatorId="pinCodeValidator" for="tf_ga_pincode"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                                <p:keyFilter mask="pint"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                </p:outputPanel>
+                            </p:panel>
+
+                            <p:outputPanel id="vehicleUseFrmPanel">
+                                <p:panel  header="Non-Use Withdrawl Information" rendered="#{nonUse.withdrawlInfoPanel}" >
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="Vehicle will be use from :" />
+                                                </label>
+                                                <p:calendar value="#{nonUse.dobj.vehicle_use_frm}" required="true" navigator="true"
+                                                            autocomplete="off"  readonlyInput="true"
+                                                            requiredMessage="Select Vehicle will be use from Date." pattern="dd-MMM-yyyy" mindate="#{nonUse.inspMinDate}" maxdate="#{nonUse.withdrawlMaxDate}">  
+                                                    <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                                                </p:calendar>
+
+                                            </div>
+                                            <!--<div class="ui-grid-col-4">-->
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="Non-Use declared date" style="visibility: hidden" />
+                                            </label>
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="#{nonUse.dobj.nonUseDeclareDtls}" styleClass="font-bold red" />
+                                            </label>                                
+                                            <!--</div>-->
+                                        </div>
+                                    </div>
+                                </p:panel> 
+                            </p:outputPanel>
+
+
+
+                            <p:outputPanel id="inspectionPanel">
+                                <p:panel  header="Inspection Details" rendered="#{nonUse.inspectPanel}" >
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="Inspected By. :"  />
+                                                </label>
+                                                <p:selectOneMenu  value="#{nonUse.dobj.inspectedBy}" filter="true" required="true"  requiredMessage="Select Inspected By.">
+                                                    <f:selectItem itemLabel="Select Inspected By." itemValue="0"/>
+                                                    <f:selectItems value="#{nonUse.inspector_List}"/>  
+                                                </p:selectOneMenu>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="Inspection Date :" />
+                                                </label>
+                                                <p:calendar value="#{nonUse.dobj.inspectionDate}" required="true" navigator="true"
+                                                            autocomplete="off"  readonlyInput="true"
+                                                            requiredMessage="Select Inspection Date." pattern="dd-MMM-yyyy" mindate="#{nonUse.inspMinDate}" maxdate="#{nonUse.inspDate}" >  
+                                                    <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                                                </p:calendar>
+
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="Inspection Remark:"  />
+                                                </label>
+                                                <p:inputText value="#{nonUse.dobj.inspectionReportNo}" styleClass="text-uppercase" required="true"  requiredMessage="Enter Inspection Remark" maxlength="25"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12"> 
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel   value="Vehicle Found In Specified Location ? :"/>
+                                                </label>
+                                                <p:selectOneRadio id="console" value="#{nonUse.dobj.insFlag}" required="true"  requiredMessage="Select Vehicle Found In Specified Location ?">
+                                                    <f:selectItem itemLabel="Yes" itemValue="Y" />
+                                                    <f:selectItem itemLabel="No" itemValue="N" />                            
+                                                </p:selectOneRadio>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="#{nonUse.dobj.doc_Details}"  />
+                                                </label>                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </p:panel> 
+                                <p:outputPanel id="restorePanel">
+                                    <p:panel rendered="#{nonUse.showRestorePanel}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel  value="Name Of The Registering Authority :"  />
+                                                    </label>
+                                                    <p:selectOneMenu  filter="true" required="true" value="#{nonUse.dobj.regisAuthority}"  requiredMessage="Select Regiestring Authority.">
+                                                        <f:selectItems value="#{nonUse.registringAuthority}" />  
+                                                    </p:selectOneMenu>
+                                                </div>  
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_towed_veh_no"  value="Towed Vehicle No :"  />
+                                                    </label>
+                                                    <p:inputText id="tf_towed_veh_no" value="#{nonUse.dobj.towedVehicleNo}"  converter="toUpperCaseConverter" maxlength="10" styleClass="text-uppercase" required="true"  requiredMessage="Enter Towed Vehicle No:"/>
+
+                                                </div>  
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_new_place" value="Address Of New Garage:"  />
+                                                    </label>
+                                                    <p:inputText id="tf_new_place" converter="toUpperCaseConverter" value="#{nonUse.dobj.newGarageLocation}" maxlength="30" styleClass="text-uppercase" required="true"  requiredMessage="Enter Address Of New Garage:"/>
+
+                                                </div>  
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                            <p:panel id="taxExem" header="Tax Exemption Certification" rendered="#{nonUse.certificationPanel}" >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+
+
+
+                                            <p:outputLabel  value="Adjustment Amount:" rendered="#{(nonUse.dobj.insFlag eq 'Y') or (nonUse.dobj.insFlag eq '')}"  />
+                                            <p:outputLabel  value="Penalty"  rendered="#{nonUse.dobj.insFlag eq 'N'}" />
+                                        </label>
+                                        <p:inputText value="#{nonUse.dobj.nonUsePenalty}" rendered="#{nonUse.dobj.insFlag eq 'N'}"  disabled="#{nonUse.disableNonuseAdjustmentAmount}" maxlength="8" styleClass="text-uppercase" required="true"  requiredMessage="Enter Inspection Report Number"/>
+                                        <p:inputText value="#{nonUse.dobj.adjustmentAmount}" rendered="#{(nonUse.dobj.insFlag eq 'Y') or (nonUse.dobj.insFlag eq '')}" disabled="#{nonUse.disableNonuseAdjustmentAmount}" maxlength="8" styleClass="text-uppercase" required="true"  requiredMessage="Enter Inspection Report Number"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel   value="Permission Date :" />
+                                        </label>
+                                        <p:calendar value="#{nonUse.dobj.certiPermissionDt}" required="true"  navigator="true" mindate="#{nonUse.minDate}"
+                                                    autocomplete="off"  readonlyInput="true"
+                                                    requiredMessage="Select Permision Date." pattern="dd-MMM-yyyy" >  
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  value="Certified By :"  />
+                                        </label>
+                                        <p:inputText value="#{nonUse.dobj.certifiedBy}" converter="toUpperCaseConverter"  styleClass="text-uppercase" required="true" maxlength="15" requiredMessage="Enter Certified By"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel   value="Certification Date:"/>
+                                        </label>
+                                        <p:calendar value="#{nonUse.dobj.certificationDt}" required="true"  navigator="true" mindate="#{nonUse.minDate}"
+                                                    autocomplete="off"  readonlyInput="true"
+                                                    requiredMessage="Select Certification Date." pattern="dd-MMM-yyyy" >  
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"  />
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                            </p:panel> 
+
+
+                            <p:outputPanel id="remarksPanel">
+                                <p:panel rendered="#{nonUse.showRemarksPanel}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-1 resp-blank-height"></div>
+                                        <div class="ui-grid-col-10">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel   value="Remarks"/>
+                                            </label>
+                                            <p:inputTextarea id="remarks" value="#{nonUse.dobj.remarks}" converter="toUpperCaseConverter"  styleClass="text-uppercase"></p:inputTextarea>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel>
+                        </p:tab>
+                        <p:tab title="Owner Details">
+                            <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                <ui:param name="ownerDetail" value="#{nonUse.ownerDetail}"/>
+                            </ui:include>
+                        </p:tab>
+                        <p:tab title="Vehicle Details">
+                            <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                <ui:param name="ownerDetail" value="#{nonUse.ownerDetail}"/>
+                            </ui:include>
+                        </p:tab>
+                    </p:tabView>
+
+                </p:outputPanel>
+                <p:panel id="changedByPrevUser" rendered="#{nonUse.prevChangedDataList.size()>0}" 
+                         styleClass="top-space bottom-space" >
+                    <p:dataTable value="#{nonUse.prevChangedDataList}" var="PrevUserdata" styleClass="panelRowHeight">
+                        <p:column headerText="Changed by Employee" width="15%">
+                            <h:outputText value="#{PrevUserdata.userName}" />
+                        </p:column>
+
+                        <p:column headerText="Changed Data by Previous Employee" width="70%">
+                            <h:outputText value="#{PrevUserdata.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="Changed on" width="15%">
+                            <h:outputText value="#{PrevUserdata.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:outputPanel id="appSavePanel">
+                    <p:panel      styleClass="top-space bottom-space">
+                        <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                            <ui:param name="app_disapp" value="#{nonUse}"/>
+                        </ui:include>
+                    </p:panel>
+                </p:outputPanel>
+                <p:blockUI block="@form" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

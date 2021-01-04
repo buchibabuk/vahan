@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">       
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <span class="header-main">Fee Master Management</span>
+                </div>
+            </div>   
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:growl id="msgs" showDetail="true"/>      
+                </div>
+            </div> 
+            <div class="ui-grid-row bottom-space">
+                <div class="ui-grid-col-4 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel value="Select Fee Type:" />
+                    </label>
+                    <p:selectOneMenu id="fee_type"
+                                     value="#{feeMaster_bean.fee_type}">
+                        <f:selectItem itemLabel="Select Fee Type" itemValue=""/>
+                        <f:selectItem itemLabel="Registration Fee" itemValue="RF"/>
+                        <f:selectItem itemLabel="Permit Fee" itemValue="PF"/>
+                        <f:selectItem itemLabel="Trade Certificate Fee" itemValue="TF"/>
+                        <p:ajax listener="#{feeMaster_bean.feeTypeCodeChanged}" update="tm_pur_master table_fee"/>
+                    </p:selectOneMenu>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-6 top-space bottom-space">
+                    <div id="purpose" class="datatable-panel scroll-panel-overflow scroll-panel-height">
+                        <p:dataTable id="tm_pur_master"
+                                     value="#{feeMaster_bean.purpose_mast_list}"
+                                     var="result">
+                            <f:facet name="header">Purpose Master Table</f:facet>
+
+                            <p:column headerText="Code" width="20%">
+                                #{result.pur_cd}
+                            </p:column>
+                            <p:column headerText="Description" width="60%">
+                                #{result.descr}
+                            </p:column>
+                            <p:column headerText="Action" width="20%">
+                                <p:commandButton value="Fee Details"
+                                                 actionListener="#{feeMaster_bean.onRowSelect}"
+                                                 update="@form" onclick="PF('bui').show();"
+                                                 oncomplete="PF('bui').hide();">
+                                    <f:attribute name="pur_cd" value="#{result.pur_cd}"/>
+                                    <f:attribute name="descr" value="#{result.descr}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+                <div class="ui-grid-col-6 top-space bottom-space">
+                    <div id="fee_details" class="scroll-panel-height scroll-panel-overflow">
+                        <p:dataTable id="table_fee" value="#{feeMaster_bean.fee_list}" var="flist" editable="true">
+                            <f:facet name="header"> #{feeMaster_bean.fee_header} </f:facet>
+                            <p:ajax event="rowEdit" listener="#{feeMaster_bean.onRowEdit}">
+                            </p:ajax>
+
+                            <p:column headerText="Category Code">                      
+                                <h:outputText value="#{flist.catg}" />                                     
+                            </p:column>
+
+                            <p:column headerText="Category Description" width="40%">                  
+                                <h:outputText value="#{flist.catg_desc}"/>                   
+                            </p:column>
+
+                            <p:column headerText="Fees" width="10%">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{flist.fees}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="edit_fees" value="#{flist.fees}" type="int" maxlength="6"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Imported Fee" width="10%">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{flist.imported_fees}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="edit_imp_fees" value="#{flist.imported_fees}"  type="int" maxlength="6"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <!--                            <p:column headerText="Service Charge" width="20%">
+                                                            <p:cellEditor>
+                                                                <f:facet name="output"><h:outputText value="#{flist.service_charge}" /></f:facet>
+                                                                <f:facet name="input"><p:inputText id="edit_scharge" value="#{flist.service_charge}" type="int" maxlength="6"/></f:facet>
+                                                            </p:cellEditor>
+                                                        </p:column>-->
+
+                            <p:column headerText="Edit" width="8%">
+                                <p:rowEditor />
+                            </p:column>
+
+                        </p:dataTable>  
+
+                        <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                        <!--<p:keyFilter mask="pint" for=":mf_mngmnt:edit_fees :mf_mngmnt:edit_scharge"/>-->
+                        <!--##################### KeyFlter for Allowing Particular value in Textbox End##################-->
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog> 
+                    </div>
+                </div>
+            </div>
+            <p:blockUI block="tm_pur_master" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </div>
+    </ui:define>
+
+
+</ui:composition>

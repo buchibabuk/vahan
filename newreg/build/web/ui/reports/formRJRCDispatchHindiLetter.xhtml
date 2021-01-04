@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/reports/formDownloadDispatch.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="tax" value="#{disReportBean.dispatchInfoReportDobjList}" >
+                <div class="center-position">
+                    <h:outputText value="परिवहन विभाग , राजस्थान सरकार"  styleClass="font-bold report-header"/>
+                </div>                
+                <div class="center-position">
+                    <h:outputText value="#{tax.offName}" styleClass="font-bold report-sub-header"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{tax.offAddress}" styleClass="font-bold report-sub-header"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value=" फोन नंबर: #{tax.off_landline}" styleClass="font-bold report-sub-header"/>
+                </div>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <div class="left-space">
+                        <h:outputText value="*#{tax.dispatch_ref_no_for_display}*" styleClass="dispatch-barcode"/>
+                    </div>
+                    <div class="left-position" >
+                        <p:outputLabel value="#{tax.regnNo} - #{tax.dispatch_ref_no_for_display}" styleClass="font-bold" style="margin-top: -12px !important" />
+                        <h:outputText value="Sh. #{tax.ownerName}"/><br />
+                        <h:outputText value=" C/o #{tax.fname}" /> <br />
+                        <h:outputText value="#{tax.add1} #{tax.add2} #{tax.add3}" />  <br />
+                        <h:outputText value="#{tax.city}, #{tax.stateName}-#{tax.pincode}," /> 
+                        <h:outputText value="(M):91- #{tax.mobile_no}"/>                   
+                    </div><br/><br/> <br/><br/> 
+                    <div class="top-space" style="font-size: 16px ; margin: 0 auto;"><br/>
+                        <h:outputText value="जारी दिनांक : #{tax.rcIssueDt}"/>
+                    </div>
+                    <div class="top-space" style="font-size: 16px ; margin: 0 auto;"><br/>
+                        <h:outputText value="प्रिय आवेदक,"/><br/><br/>
+                        <h:outputText value="वाहन पंजीयन प्रमाण पत्र  (स्मार्ट कार्ड ) प्राप्त करने पर आप को बधाई ." /><br/><br/>
+                    </div>
+                    <p class="top-space"  style="line-height: 2.0 ;font-size: 16px ; margin: 0 auto;">                        
+                        परिवहन विभाग द्वारा वाहन पंजीयन के कार्य हेतु सूचना प्रौद्योगिकी का इस्तेमाल करते हुए , प्रक्रिया को सुगम , सरल एवं पारदर्शी बनाने का कार्य किया गया है ।इसी क्रम में आप का स्मार्ट कार्ड इंडिया पोस्ट के माध्यम से आप के घर पर ही भिजवाया जा रहा है । स्मार्ट कार्ड भिजवाने का समस्त व्यय परिवहन विभाग के अधीन टोहास द्वारा किया जा रहा है , इस हेतु आप से कोई अतिरिक्त फीस नहीं ली गयी है।
+                    </p>
+                    <p class="top-space" style="line-height: 2.0 ;font-size: 16px ; margin: 0 auto;">  
+                        विभाग द्वारा पूरा प्रयास यह है कि  सम्पूर्ण प्रकिया में किसी दलाल  / बिचौलिए कि आवश्यकता नहीं रहे ,  अतः आप द्वारा आवेदित वाहन पंजीयन प्रमाण पत्र संख्या (<h:outputText value="#{tax.regnNo}" styleClass="font-bold"/>)  पत्र के साथ संलग्न कर भिजवाया जा रहा है । इस व्यवस्था के सम्बन्ध में यदि आप कोई सुझाव रखते हैं तो कृपया  transport@rajasthan.gov.in पर सूचित करें । 
+                    </p>
+                    <div class="left-position text-uppercase top-space">
+                        <br /><br />
+                        <div class="rotate-box" style="width: 300px !important; height: 150px !important; padding: 20px;">
+                            Smart card to be pasted here
+                        </div>
+                    </div>
+                    <div class="right-position" style="font-size: 18px ; margin: 0 auto;">
+                        <h:outputText value="परिवहन आयुक्त"/>
+                    </div>
+                </div>
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

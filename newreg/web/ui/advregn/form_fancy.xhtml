@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <f:subview id="frm_fancey">
+                        <ui:include src="/ui/recpt/form_current_rcpt_no.xhtml" />
+                        <p:poll interval="10" listener="#{fancy.reservListener}" update="dtb_reserved_numbers" />
+                        <p:dialog id="popup" visible="#{not empty facesContext.messageList}"
+                                  styleClass="center-position"
+                                  widgetVar="dlg1"
+                                  modal="true" draggable="false" closable="false">  
+                            <p:messages/>
+                            <p:commandButton value="Ok" oncomplete="PF('dlg1').hide();"  >
+                                <p:ajax event="click"    update="pg_booking"
+                                        listener="#{fancy.reset()}" ></p:ajax>
+                            </p:commandButton>
+
+                        </p:dialog> 
+                        <p:dialog id="popup_success" visible="#{fancy.saved_success}"
+                                  styleClass="center-position"
+                                  widgetVar="dlg2"
+                                  modal="true" draggable="false" closable="false" header="successfully saved">  
+
+                            <p:commandButton value="Ok" oncomplete="PF('dlg2').hide();"  >
+                                <p:ajax event="click"    update="pg_booking"
+                                        listener="#{fancy.setSuucessMessageFalse()}" ></p:ajax>
+                            </p:commandButton>
+
+                        </p:dialog> 
+                        <p:dialog id="fr_ch" widgetVar="choice" showEffect="fade" hideEffect="explode" 
+                                  header=" Number is already reserved  " 
+                                  modal="true" draggable="false" closable="false" >
+                            <h:outputText value="Do you want to continue"/>
+                            <p:commandButton value="Yes" oncomplete="PF('choice').hide();"  
+                                             icon="ui-icon-check" >
+                                <p:ajax event="click"  update="tf_booking_amt" 
+                                        listener="#{fancy.setFlagTrueListerner(true)}" ></p:ajax>
+                            </p:commandButton>
+                            <p:spacer width="20"/>
+                            <p:commandButton  value="No"  oncomplete="PF('choice').hide();" icon="ui-icon-close" >
+                                <p:ajax event="click"    update="pg_booking"
+                                        listener="#{fancy.reset()}" ></p:ajax>
+                            </p:commandButton>
+                        </p:dialog>
+
+                        <p:blockUI block="pg_booking" widgetVar="bui_fancy">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI> 
+
+                        <div class="ui-grid-col-6"> 
+                            <div class="ui-grid-row">
+                                <p:panel header="Reservation Of Registration Number" styleClass="datatable-panel bottom-space">
+                                    <div title="Reservation Of Registration Number">
+                                        <p:selectOneRadio id="rb_fancy" value="#{fancy.rb_select_one}" columns="1" layout="grid" >
+                                            <f:selectItem itemLabel="#{fancy.SELECT_LABEL1} " itemValue="#{fancy.SELECT_VALUE1}"  />
+                                            <f:selectItem itemLabel="#{fancy.SELECT_LABEL2}" itemValue="#{fancy.SELECT_VALUE2}" />
+                                            <f:selectItem itemLabel="#{fancy.SELECT_LABEL3}" itemValue="#{fancy.SELECT_VALUE3}" />
+                                            <p:ajax listener="#{fancy.selectOneradioListener}" 
+                                                    update ="rb_fancy pn_bal_rcpt_no pn_bal_rcpt_no pg_booking pn_rcpt_no" />
+                                        </p:selectOneRadio>
+                                    </div>
+                                </p:panel>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <p:panel header="Details" styleClass="datatable-panel bottom-space top-space">
+                                    <p:panel id="pn_bal_rcpt_no" visible="#{fancy.bal_rcpt_view}" styleClass="datatable-panel-100">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <p:outputLabel id="lb_bal_fancy_rcpt" value="Balance Fancy Receipt No:" />
+                                                <p:inputText  id="tf_bal_fancy_rcpt" value="#{fancy.bal_rcptno}" size="20" maxlength="16" 
+                                                              autocomplete="off" onblur="PF('bui_fancy').show();"  >
+                                                    <p:ajax event="blur" listener="#{fancy.rcptNo_focusLost}" update="pg_booking popup pn_bal_rcpt_no " 
+                                                            oncomplete="PF('bui_fancy').hide()" />
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+
+                                    <p:outputPanel id="pg_booking">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_applNo1" value=" Application Number :"/>
+                                                </label>
+                                                <p:inputText  id="tf_applNo1" value="#{fancy.regn_appl_no}" size="20" maxlength="16" 
+                                                              autocomplete="off" onblur="PF('bui_fancy').show();"  >
+                                                    <p:ajax event="blur" listener="#{fancy.applno_focusLost}" update="pg_booking popup" 
+                                                            oncomplete="PF('bui_fancy').hide()" />
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">                                                
+                                                    <p:outputLabel for="tf_chasi_no" value="#{label.chasi_no}:"/>
+                                                </label>
+                                                <p:inputText  id="tf_chasi_no" value="#{fancy.chasi_no}"  readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_Regn_no" value="Registration Number:"/>                  
+                                                </label>
+                                                <p:inputText  id="tf_Regn_no" value="#{fancy.regn_no}"  size="20" maxlength="10" 
+                                                              autocomplete="off" onblur="PF('bui_fancy').show();">                                                      
+                                                    <p:ajax event="blur"  update="tf_booking_amt fr_ch popup" 
+                                                            listener="#{fancy.regno_focusLost}"
+                                                            oncomplete="PF('bui_fancy').hide()"/>
+                                                </p:inputText>
+
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel value="Amount:"/>
+                                                </label>
+                                                <p:inputText  id="tf_booking_amt" value="#{fancy.reserve_amt}" 
+                                                              size="20" readonly="true" />
+                                            </div>                                            
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_o_name" value="Owner Name"/>
+                                                </label>
+                                                <p:inputText  id="tf_o_name" value="#{fancy.owner_name}"  size="20" readonly="true" />
+                                            </div>
+                                            <div class="ui-grid-col-6 resp-blank-height">
+                                                <label class="field-label ">
+
+                                                </label>
+
+                                            </div>                                            
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_add1" value="Address:"/>
+                                                </label> 
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">                                                   
+                                                <p:inputText  id="tf_add1" value="#{fancy.c_add1}"  size="20" readonly="true" />
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_add2" value=""/>
+                                                </label>
+                                                <p:inputText  id="tf_add2" value="#{fancy.c_add2}"  size="20" readonly="true" />
+                                            </div>                                            
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="cm_va_c_dist" value="Dist:"/>
+                                                </label>
+                                                <p:selectOneMenu id="cm_va_c_dist"  value="#{fancy.c_district}" 
+                                                                 valueChangeListener="#{fancy.vehDistListener}"
+                                                                 filter="true" immediate="true" disabled="true">
+                                                    <f:selectItems value="#{fancy.listC_dist}"  />   
+                                                    <p:ajax event="change" update="cm_va_c_taluk" />
+                                                </p:selectOneMenu>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="cm_va_c_taluk" value="Taluk:"/>
+                                                </label>
+                                                <p:selectOneMenu id="cm_va_c_taluk"  value="#{fancy.c_taluk}" immediate="true" 
+                                                                 valueChangeListener="#{fancy.vehTalukListener}" filter="true" disabled="true">
+
+                                                    <f:selectItems value="#{fancy.listC_taluk}"  />   
+                                                    <p:ajax event="change" update="cm_va_c_village"/>
+                                                </p:selectOneMenu>
+                                            </div>                                            
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="cm_va_c_village" value="Village:"/>
+                                                </label>
+                                                <p:selectOneMenu id="cm_va_c_village"  value="#{fancy.c_village}" 
+                                                                 filter="true" immediate="true" disabled="true">
+                                                    <f:selectItems value="#{fancy.listC_village}"  />   
+                                                </p:selectOneMenu>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tf_c_pincode" value="Pin:"/>
+                                                </label>
+                                                <p:inputText id="tf_c_pincode" value="#{fancy.c_pincode}" readonly="true" />
+                                            </div>                                            
+                                        </div>
+                                    </p:outputPanel>
+                                </p:panel>
+                            </div>                                                       
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <p:panel header="Reserved Numbers" styleClass="scroll-panel-overflow scroll-panel-height">
+                                <p:dataTable  id="dtb_reserved_numbers"  value="#{fancy.listReservedNumbers}" var="list"  styleClass="panelTableHeight">
+                                    <p:column headerText="Registration Number">#{list.key}</p:column>
+                                    <p:column headerText="Number Of Applications">#{list.value}</p:column>
+                                </p:dataTable> 
+                            </p:panel>
+                        </div>
+
+                        <p:panel id="pn_rcpt_no" visible="#{fancy.rcpt_view}">
+                            <p:outputLabel for="tf_fancy_rcpt" value="Receipt No:"/>
+                            <p:inputText  id="tf_fancy_rcpt" value="#{fancy.recp_no}" size="20" readonly="true"/>  
+                            <p:commandButton  value="Print" styleClass="button"/>
+                        </p:panel>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:outputPanel id="pg_save">
+                                    <p:commandButton  value="Save" actionListener="#{fancy.saveFancyNo()}" 
+                                                      styleClass="button" onclick="PF('bui_fancy').show();" 
+                                                      oncomplete="PF('bui_fancy').hide()" 
+                                                      update="popup tf_fancy_rcpt  popup_success pn_rcpt_no
+                                                      frm_fancey:tf_current_rcptno 
+                                                      frm_fancey:tf_running_rcpt_no"  />
+                                    <p:commandButton  value="Reset" actionListener="#{fancy.reset()}" styleClass="button" update="pg_booking tf_fancy_rcpt pn_rcpt_no"/>
+                                    <p:commandButton  value="Back" styleClass="button" action ="/home.xhtml?faces-redirect=true"/>
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </f:subview>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+
+</ui:composition>

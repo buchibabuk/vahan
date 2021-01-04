@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();"> 
+        <h:form prependId="false" id="inspectionCertId">
+            <div class="center-position bottom-space">
+                <p:button value="Back" outcome="/ui/dealer/form_printDealerReports.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show()"/>
+                <p:commandButton action="#{inspCertBean.printReports('form20')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Form20" styleClass="display-none" rendered="#{inspCertBean.printType != 'FORM20AfterApproval' or inspCertBean.printType != 'FORM21AfterApproval'}"  />
+                <p:commandButton action="#{inspCertBean.printReports('disclaimer')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Owner Disclaimer" styleClass="display-none" rendered="#{renderOwnerDisclBtn and (inspCertBean.printType != 'FORM20AfterApproval' or inspCertBean.printType != 'FORM21AfterApproval')}" >
+                    <f:param name="APPL_NO" value="#{inspCertBean.applNo}"/>
+                    <f:param name="PUR_CD" value="#{inspCertBean.purCd}"/>
+                    <f:param name="REGN_NO" value="#{inspCertBean.regnNo}"/>
+                </p:commandButton>
+                <p:commandButton action="#{inspCertBean.printReports('form21')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Form21" styleClass="display-none" rendered="#{inspCertBean.printType != 'FORM20AfterApproval' or inspCertBean.printType != 'FORM21AfterApproval'}"  />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+
+            <div class="center-position bottom-space">
+                <span class="font-bold report-header bottom-line text-uppercase">Certificate of Inspection to be issued by Approved Dealer </span>
+            </div>
+            <table class="table-width-oneforth datatable-panel-100 bottom-space">
+                <tr>
+                    <td class="top-align"><h:outputLabel value="Dealer No " /></td>
+                    <td class="top-align"><h:outputText value=": #{inspCertBean.dobj.dealerTradeCertCode}"/></td>
+                </tr>
+                <tr>
+                    <td class="top-align"><h:outputLabel value="Dealer Name " /></td>
+                    <td class="top-align"> <h:outputText value=": #{inspCertBean.dobj.dealerName}"/></td>
+                </tr>
+                <tr>
+                    <td class="top-align"> <h:outputLabel value="Dealer Address "  /></td>
+                    <td class="top-align"> <h:outputText value=": #{inspCertBean.dobj.dealerAddress1}"/></td>
+                </tr>
+            </table>
+
+            <table class="datatable-panel-100 bottom-space">
+                <tr>
+                    <td class="top-align">
+                        <table class="datatable-panel-100">
+                            <tr>
+                                <td colspan="5">
+                                    <div class="center-position bottom-space">
+                                        <span class="font-bold report-header">Certified that the following vehicle sold and delivered by us to </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="top-align">
+                                    <div class="right-position bottom-space">
+                                        <span class="font-bold report-header">Verified</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">1. </td>
+                                <td class="top-align" style="width:42%"><h:outputLabel value="Vehicle Owner Name" /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align" style="width:42%"><h:outputText value="#{inspCertBean.dobj.oName}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">2. </td>
+                                <td class="top-align"><h:outputLabel value="Address " /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.tempAddress1}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">3. </td>
+                                <td class="top-align"><h:outputLabel value="Dated "  /> </td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.purchaseDate}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="top-align"></td>
+                                <td colspan="4" class="font-bold report-subheader top-align">
+                                    Complies with the provisions of the Motor Vehicles Act, 1988 and the rules made there under: 
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">4. </td>
+                                <td class="top-align"><h:outputLabel value="Type of Vehicle "/></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.vehClass} (#{inspCertBean.dobj.vehCatg})"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">5. </td>
+                                <td class="top-align"><h:outputLabel value="Brand Name of Vehicle " /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.makersName}/#{inspCertBean.dobj.modelName}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">6. </td>
+                                <td class="top-align"><h:outputLabel value="Chassis Number "  /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.chasiNo}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">7. </td>
+                                <td class="top-align"><h:outputLabel value="Engine number(motor number,In case of battery operated vehicle) " /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.engineNo}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="collumn-width center-position top-align">8. </td>
+                                <td class="top-align"><h:outputLabel value="Sale Invoice No." /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value=" ................................"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">9. </td>
+                                <td class="top-align"><h:outputLabel value="Sale Certificate No.(Form No. 21)" /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value=" ................................"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">10. </td>
+                                <td class="top-align"><h:outputLabel value="Sale Certificate Date " /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value=" ................................"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">11. </td>
+                                <td class="top-align"><h:outputLabel value="Emission Norms" /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.norms}" /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+
+                            <tr>
+                                <td class="collumn-width center-position top-align">12. </td>
+                                <td class="top-align"><h:outputLabel value="Fuel Type  " /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.fuel}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">13. </td>
+                                <td class="top-align"> <h:outputLabel value="No. of Cylinders "  /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"> <h:outputText value="#{inspCertBean.dobj.noOfCyl}"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align">14. </td>
+                                <td class="top-align" colspan="4"><h:outputLabel value="In case of CNG/LPG Operated vehicle "  /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align"></td>
+                                <td class="top-align"><h:outputLabel value="(a) Tank/Cylinder No."  /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value="#{inspCertBean.dobj.noOfCyl}"/></td>                              
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                            <tr>
+                                <td class="collumn-width center-position top-align"></td>
+                                <td class="top-align"><h:outputLabel value="(b) Vaporizer No. "  /></td>
+                                <td class="top-align">:</td>
+                                <td class="top-align"><h:outputText value=" ................................"  /></td>
+                                <td class="collumn-width center-position top-align"><img class="check-box" /></td>
+                            </tr>
+                        </table>
+                    </td> 
+                    <td class="rotate-box-section">
+                        <img class="rotate-box" />
+                        <div class="rotate-content">Pencil Print of Chassis No.:- Taken by Authorized Dealer OR it's Authorized Person</div></td>  
+                </tr>
+            </table>
+
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <ul class="roman-list">
+                    <li>I here by declare that this vehicle is originally delivered from the manufacturer to us.</li>
+                    <li>I hereby declare that this vehicle has been sold to the person as new vehicle whose name and address is mentioned above.</li>
+                    <li>What is stated hereinabove are true to the best of my knowledge and I believe the same to be true.</li>
+                </ul>
+                <div class="right-position">
+                    <br /><br /><br /><br />
+                    Signature  Seal of the Authorized Dealer
+                </div>
+
+                <div class="left-position">
+                    Instructions:
+                </div>
+
+                <ul class="roman-list">
+                    <li>Pencil print of the chassis number must be obtained and signed below that number by the Approved Dealer.
+                        or Its authorized person.</li>
+                    <li>To be checked and filled after physical inspection only by the authorized dealer or Its authorized person.</li>
+                </ul>
+            </div>
+            <p:blockUI block="inspectionCertId" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+
+        </h:form>
+    </h:body>
+</html>

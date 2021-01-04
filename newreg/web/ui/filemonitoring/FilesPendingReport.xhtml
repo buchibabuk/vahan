@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Pending File(s)</h1>
+                </div>
+            </div>
+            <p:dialog id="popup" visible="#{not empty facesContext.messageList}"
+                      styleClass="center-position"
+                      widgetVar="dlg1"
+                      modal="true" draggable="false" closable="false">  
+                <p:messages/>
+                <p:commandButton value="OK" onclick="PF('dlg1').hide();"/>
+            </p:dialog> 
+            <p:outputPanel>
+                <p:autoUpdate/>
+                <p:outputPanel id="pnlfilepending">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel value="From Date:" />
+                            <p:calendar id="fromDate" pattern="dd/MM/yyyy" value="#{filespendingreportbean.fromdate}" maxdate="#{filespendingreportbean.today}" 
+                                        navigator="true" readonlyInput="true"  effect="fold" >
+                            </p:calendar>
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel value="To Date:" />
+                            <p:calendar id="toDate" pattern="dd/MM/yyyy" value="#{filespendingreportbean.toDate}"  maxdate="#{filespendingreportbean.today}" 
+                                        navigator="true" readonlyInput="true"  effect="fold" >
+                            </p:calendar>
+                        </div>
+                    </div>
+                    <p:outputLabel id="buttonpanel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position top-space bottom-space">  
+                                <p:outputPanel id="BUTTONU">
+                                    <p:commandButton value="Get Pending File(s)"  id="btndetailsu"  action="#{filespendingreportbean.getPendingFiles()}" update="tblpendingfile bt_register popup" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </p:outputLabel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel id="datatablepanel">
+                                <p:dataTable  var="pendingfiles" scrollable="true" scrollHeight="240" style="border-left: 2px solid #1682ba; border-right: 2px solid #1682ba; border-top: 2px solid #1682ba; border-top-left-radius: 6px; border-top-right-radius: 6px;" id="tblpendingfile"  value="#{filespendingreportbean.filelist}" >
+                                    <f:facet name="header">
+                                        <div class="right-position right-space">
+                                            <p:commandButton value="All" onclick="$('.ui-chkbox-box').click()" styleClass="right-position" />
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="Srl.No." styleClass="collumn-width center-position" >
+                                        <h:outputText value="#{pendingfiles.srNo}"/>
+                                    </p:column>
+                                    <p:column headerText="File Number">
+                                        <h:outputText value="#{pendingfiles.fileNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Payment Date">
+                                        <h:outputText value="#{pendingfiles.registrationDate}"/>
+                                    </p:column>
+                                    <p:column headerText="Status" >
+                                        <h:outputText value="#{pendingfiles.status}"/>
+                                    </p:column>
+                                    <p:column headerText="Pending Days" styleClass="center-position" style="width: 100px;">
+                                        <h:outputText value="#{pendingfiles.pendingDays}"/>
+                                    </p:column>
+                                    <p:column headerText="Send to RTO" styleClass="center-position" style="width: 100px;">
+                                        <p:selectBooleanCheckbox  value="#{pendingfiles.enter}" style="margin-top: 5px;"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton  id="bt_register" value="Send File(s) And Get Receipt"  rendered="#{filespendingreportbean.filelist.size()>0}"  icon="ui-icon-disk" update="popup" action="#{filespendingreportbean.save()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" />
+                        </div>
+                    </div>
+                </p:outputPanel> 
+            </p:outputPanel>
+            <p:blockUI block="pnlfilepending" widgetVar="bui">
+                <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/ui/session/errorPageLayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"   
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:define name="content">
+        <h:form id="formForcedSesExp">
+            <div class="message-content-panel form-legend">
+                <div class=" header-section error-message-header">
+                    <h:outputLabel id="lblHeader" value="Session has been Expired" class="red"   />
+                    <h:outputLabel id="lblHeader1" value="You are logged in from #{forcedLoginBean.ipAddress} using forced login!!!" class="red"   />
+                </div>                
+            </div>            
+        </h:form>    
+    </ui:define>
+</ui:composition>

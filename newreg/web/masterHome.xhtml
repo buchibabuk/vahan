@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title>
+            <ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert>
+        </title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+    </h:head>
+
+    <h:body id="mymain">
+
+        <h:form id="login_home_id" prependId="false"> 
+            <div id="bodyPanel">              
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <ui:insert name="heading">
+                                <ui:include src="/leftMenuPanel.xhtml"/>
+                            </ui:insert>  
+                        </div>
+                    </div>
+                    <div class="ui-grid-row content-section">
+                        <div class="ui-grid-col-12">
+                            <ui:insert name="content">
+                                <p:outputPanel>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position top-space bottom-space">
+                                            <div class="red h1 bottom-space">#{masterHome.alertMessage}</div>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                                <p:outputPanel  rendered="#{!masterHome.allowConn}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position top-space bottom-space">
+                                            <div class="red h1 bottom-space">VAHAN Service Portal is down for Maintenance.</div>
+                                            <div class=" red h3">Please try after some time.</div>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-10 content-welcome content-Space">
+                                        <a href="https://vahan.nic.in/nrservices/" target="_blank"><p:graphicImage name="vahan_logo-tri-color.png" library="images" alt="Vahan" styleClass="left-space right-space float-left" /></a>
+                                        <h1 class="header-main top-space"> The Integrated Solution for Vehicle Registration </h1>
+                                        <p> VAHAN is the flagship e-Governance application under National Transport Project, a Mission Mode Project initiated in year 2006. The purpose of the application was to automate the RTO operations related to Vehicle Registration, Permit, Taxation, Enforcement in the whole country. The project has achieved a many successes and crossed significant milestones in the past years. </p>
+                                        <p> In 2009, another major initiative was undertaken to consolidate the RTO data to State and Central levels in the form of State Registry (SR) and National Registry (NR) databases through periodic replication mechanism. A number of National and State level online applications are running on these consolidated databases. These include citizen-centric applications.. </p>
+                                        <div class="float-right"> 
+                                            <p:graphicImage library="images" name="readmore.png" onclick="PF('dlg2').show();" styleClass="content-link"/>
+                                        </div>
+                                    </div>        
+                                    <div class="ui-grid-col-2">
+                                        <p:panel header="Images">
+                                            <div class="center-position">
+
+                                                <ul class="flexiselDemo4" >
+                                                    <li>
+                                                        <p:graphicImage library="images" name="pho2.jpg" alt="Vahan" />
+                                                    </li>
+                                                    <li>
+                                                        <h:commandLink value=""  action="#{masterHome.showEApplication()}" immediate="true">
+                                                            <span>
+                                                                <p:graphicImage library="images/eapplication" name="#{imageName.mvtax}" alt="Parivahan Sewa" />
+                                                            </span>
+                                                            <f:param name="pur_cd" value="0"/>
+                                                            <f:ajax/>
+                                                        </h:commandLink>
+                                                    </li>
+                                                    <li>
+                                                        <p:graphicImage library="images" name="pho3.jpg" alt="Vahan" />
+                                                    </li>
+
+                                                </ul>
+                                                <div class="clearout" ></div> 
+                                            </div>
+                                        </p:panel>
+
+                                    </div>
+                                </div>
+
+                            </ui:insert>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <div id="footer_view">
+                                <ui:insert name="footer">
+                                    <ui:include src="/footer.xhtml"/>
+                                </ui:insert>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p:dialog header="Integrated Solution" widgetVar="dlg2" modal="true" width="50%" height="550" style="z-index: 999999 !important;">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main top-space"> The Integrated Solution for Vehicle Registration </h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 content-welcome content-Space">
+                        <a href="https://vahan.nic.in/nrservices/" target="_blank">
+                            <p:graphicImage name="vahan_logo-tri-color.png" library="images" alt="Vahan" styleClass="left-space right-space float-left" /></a>
+                        <p> VAHAN is the flagship e-Governance application under National Transport Project, a Mission Mode Project initiated in year 2006. The purpose of the application was to automate the RTO operations related to Vehicle Registration, Permit, Taxation, Enforcement in the whole country. The project has achieved a many successes and crossed significant milestones in the past years. </p>
+                        <p>In 2009, another major initiative was undertaken to consolidate the RTO data to State and Central levels in the form of State Registry (SR) and National Registry (NR) databases through periodic replication mechanism. A number of National and State level online applications are running on these consolidated databases. These include citizen-centric applications, trade-facilitation, payment services and information services apart from enabling data exchange with a number of external 3rd party applications.</p>
+                        <p>In 2014 a new initiative has been undertaken to consolidate the whole distributed system into a single entity with the twin objective of achieving proper control, security and manageability of the currently distributed systems and also extending the scope and quality of G-to-C, G-to-B and G-to-G services. This will also enable real time access of full set of data without need of any partial and periodic replication. This application is planned to be rolled out by 1st half of 2015.</p>
+                        <p>The proposed architecture will consolidate the database and applications for all RTOs across all states into a common, centralized platform and deliver the core services of Vahan to all the RTOs across the country. The system will be built on the backbone of a robust data network with adequate bandwidth and built-in redundancy to facilitate highest acceptable standard of speed, information security and fault tolerance. The data and application for the whole country will be maintained in a national level data center backed up by a Disaster Recovery Center – both of which will have the latest hardware, software and control infrastructure to achieve optimum operational performance, safety and security. There will be emphasis on modern ICT tools like cloud infrastructure, Centralized Authentication System (CAS) and Single Sign On (SSO), Multi-device capability, Multi-lingual support, Digital Signature, Open API, Mobile Apps and so on.</p>
+                    </div>
+                </div>
+
+
+            </p:dialog> 
+        </h:form>
+    </h:body>
+</html>
+

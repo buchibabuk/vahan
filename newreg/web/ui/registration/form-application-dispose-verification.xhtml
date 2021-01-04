@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formApplDisposeVerification" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Verification for Disposing Wrongly Inward Application</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="disposePanel" rendered="#{!applicationDisposeVerificationBean.render}">
+                        <p:focus context="disposePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfAppNo" value="Application No"/>
+                                </label>
+                                <p:inputText  id="tfAppNo" value="#{applicationDisposeVerificationBean.verifyByAdminDobj.appl_no}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="Please Enter Application No"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{applicationDisposeVerificationBean.showDetails()}"
+                                                 update="formApplDisposeVerification:applStatusInfo formApplDisposeVerification msg" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfAppNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="applStatusInfo">
+                    <p:panel styleClass="top-space bottom-space" rendered="#{applicationDisposeVerificationBean.render}">                    
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable value="#{applicationDisposeVerificationBean.applStatus}" var="appStatus" rowIndexVar="srlNo">
+                                    <f:facet name="header">
+                                        <h:outputText value="Application Details which are Pending for Approval are Listed below:"/>
+                                    </f:facet>    
+                                    <p:column headerText="Sr.No" width="5%">#{srlNo +1}.</p:column>
+                                    <p:column headerText="Application No">#{appStatus.getAppl_no()}</p:column> 
+                                    <p:column headerText="Registration No">#{appStatus.regn_no} </p:column>
+                                    <p:column headerText="Purpose">#{appStatus.purCdDescr}</p:column>
+                                    <p:column headerText="Office">#{appStatus.offName}</p:column>
+                                    <p:column headerText="State">#{appStatus.stateName}</p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="remark" value="Remarks"/>
+                                </label>
+                                <p:inputTextarea id="remark"  value="#{applicationDisposeVerificationBean.verifyByAdminDobj.remarks}" 
+                                                 required="true" requiredMessage="Remark Field can't be Empty"
+                                                 converter="toUpperCaseConverter" maxlength="100"
+                                                 styleClass="input"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-9 left-position right-space top-space">
+                                <p:selectBooleanCheckbox id="verifyCheckValue"
+                                                         required="true"                                                                 
+                                                         value="#{validateFunction.validateCheckFeeTax}"
+                                                         validator="#{validateFunction.validateCheckBoxIsTrue}"
+                                                         validatorMessage="Please Select CheckBox"
+                                                         requiredMessage="Please Select CheckBox"/>
+                                <h:outputText value=" I verify that Application No #{applicationDisposeVerificationBean.verifyByAdminDobj.appl_no} will be Disposed and Fee/Tax will not be Refunded." styleClass="report-header font-bold red inline-section left-space"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position top-space bottom-space">                                    
+                            <div class="ui-grid-col-12">                                      
+                                <p:commandButton id="btn_save" value="Verify" 
+                                                 action="#{applicationDisposeVerificationBean.applicationDisposeVerification()}"
+                                                 update="panelApplInward msg" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()">                                    
+                                    <p:confirm header="Confirmation" message="Are you sure? Do You Want to Dispose the Transaction(s)?" icon="ui-icon-alert"/>   
+                                </p:commandButton>                            
+                                <p:commandButton value="Back" action="/ui/registration/form-application-dispose-verification.xhtml" 
+                                                 process="@this" update="formApplDisposeVerification" immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>             
+
+
+                <p:blockUI block="formApplDisposeVerification" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

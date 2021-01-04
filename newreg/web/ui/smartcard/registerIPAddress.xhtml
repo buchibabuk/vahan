@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+
+        <h:form id="flateFileForm" prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <p:outputPanel id="opn_current">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position top-space bottom-space">
+                        <p:button  value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-3 resp-blank-height"></div>
+                <div class="ui-grid-col-6">
+                    <p:panel id="pnl_ipaddress" header="Smart Card Web Service White List IP">
+                        <p:outputPanel id="pnl_form" rendered="#{smartcardIP.showform}">
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-2 top-space">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="IP Address"/>
+                                    </label>
+                                </div>
+                                <div class="ui-grid-col-5 top-space">
+                                    <p:inputText id="txtiip1" value="#{smartcardIP.ipAdress1}" requiredMessage="Enter IP 1" required="true"  maxlength="3"  style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <f:validateRegex pattern="^[0-9]*$" />
+                                    </p:inputText>
+                                    <p:inputText id="txtiip2" value="#{smartcardIP.ipAdress2}" requiredMessage="Enter IP 2" required="true"  maxlength="3" style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <f:validateRegex pattern="^[0-9]*$" />
+                                    </p:inputText>
+                                    <p:inputText id="txtiip3" value="#{smartcardIP.ipAdress3}" requiredMessage="Enter IP 3" required="true"  maxlength="3" style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <f:validateRegex pattern="^[0-9]*$" />
+                                    </p:inputText>
+                                    <p:inputText id="txtiip4" value="#{smartcardIP.ipAdress4}" requiredMessage="Enter IP 4" required="true"  maxlength="3" style="width: 11% !important; margin-right: 1.5% !important;">
+                                        <f:validateRegex pattern="^[0-9]*$" />
+                                    </p:inputText>
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Register IP" action="#{smartcardIP.registerIP}" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" 
+                                                     onclick="return true;" update=":flateFileForm:pnl_form"/>
+                                </div>
+                            </div>
+
+                        </p:outputPanel>
+
+
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-8">
+                                <p:dataTable id="tb_filesmart"  value="#{smartcardIP.listIp}"  rendered="#{smartcardIP.showDataTable}"
+                                             var="smart"   selection="#{smartcardIP.selectva_ip}"
+                                             paginator="#{smartcardIP.listShow}" 
+                                             rowIndexVar="index" rowKey="#{smart.ip}" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rows="10">
+                                    <f:facet name="header">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 top-space bottom-space">
+                                                <h:outputText value="White List IP for Web Service" class="h5 text-uppercase font-bold underline-text" />
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 center-position">
+                                                <p:commandButton  value="Delete" action="#{smartcardIP.deleteIp()}"  onclick="return true;" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                                  update=":flateFileForm:pnl_form tb_filesmart" />
+                                                <p:commandButton  value="Add New" action="#{smartcardIP.newFormFillUp()}"  onclick="return true;" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                                  update=":flateFileForm:pnl_form tb_filesmart" />
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                    <p:column selectionMode="single"  styleClass="collumn-width center-position"/>
+                                    <p:column headerText="Sr. No" exportable="false" width="15%">
+                                        <h:outputText value="#{index+1}" />
+                                    </p:column>
+                                    <p:column headerText="White List IP"   styleClass="center-position">
+                                        <h:outputText value="#{smart.ip}"/>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </p:panel>  
+                    <p:keyFilter mask="pint" for="txtiip1"/>
+                    <p:keyFilter mask="pint" for="txtiip2"/>
+                    <p:keyFilter mask="pint" for="txtiip3"/>
+                    <p:keyFilter mask="pint" for="txtiip4"/>
+                    <p:blockUI block=":flateFileForm:pnl_ipaddress" widgetVar="bui">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+
+                </div>
+            </div>
+
+
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>

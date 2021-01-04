@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../masterLayoutPage.xhtml">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">
+        <h:form id="ReferToCourt">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages id="errormsgForCourt"/>
+                </div>
+            </div>
+            <div class="ui-grid-row center-position">
+                <span class=" header-main">Cases Refer To Court/Authorities</span>
+            </div>
+
+
+            <p:panel header="Pending Cases" id="pendingCasePenal">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:dataTable  id="caseRefToCourtTable"    editable="true" var="refertocourt" rowIndexVar="rowIndex"  value="#{refTocourt.listOfPendingCase}" >
+                            <p:column headerText="#" styleClass="collumn-width center-position">  
+                                #{rowIndex+1}  
+                            </p:column>  
+                            <p:column headerText="Select" styleClass="collumn-width center-position">
+                                <p:selectBooleanCheckbox  id="selectPenCase"  value="#{refertocourt.selectRow}" >
+                                    <p:ajax event="change" process="@this" listener="#{refTocourt.getCompFeeRowData(eve)}"   update="@([id$=caseRefToCourtTable])"  ></p:ajax>
+                                </p:selectBooleanCheckbox>
+                            </p:column>
+                            <p:column headerText="Application No">
+                                <h:outputLabel  value="#{refertocourt.applicationno}"/>
+                            </p:column>
+
+                            <p:column headerText="ChallanNo">
+                                <h:outputLabel value="#{refertocourt.challanNo}" />
+                            </p:column>
+                            <p:column headerText="VehicleNo">
+                                <h:outputLabel value="#{refertocourt.vehicleNo}" />
+                            </p:column>
+                            <p:column headerText="ChallanDate">
+                                <h:outputLabel value="#{refertocourt.challanDate}" />
+                            </p:column>
+                            <p:column headerText="OwnerName">
+                                <h:outputLabel value="#{refertocourt.ownername}" />
+                            </p:column>
+                        </p:dataTable>
+
+                    </div>
+                </div>
+
+            </p:panel>
+
+
+            <p:panel header="Court Details">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Court Name:"  />
+                            </label>
+                            <p:selectOneMenu id="sm_court_list" value="#{refTocourt.courtName}">  
+                                <f:selectItems value="#{refTocourt.courtlist}"/>  
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel   value="Hearing Date:"  />
+                            </label>
+                            <p:calendar  
+                                id="cal_hearing_date" 
+                                value="#{refTocourt.hearingDate}"
+                                size="15" 
+                                pattern="dd/MM/yyyy"
+                                navigator="true"
+                                autocomplete="off"
+
+                                >
+                                <f:convertDateTime pattern="dd/MM/yyyy"  />
+                            </p:calendar>
+                        </div>
+                    </div>
+                </div>
+                <p:dialog id="diForPrint" header=" Print Court Certificate" widgetVar="abc"  modal="true" dynamic="true" closeOnEscape="true">
+                    <p:outputPanel  id="printCourtCertificate">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable  id="printCourtCertificateTable" value="#{refTocourt.listOfCourtCases}" paginator="true" rows="5"   editable="true" var="printCertificate" rowIndexVar="rowIndex"   >
+                                    <p:column headerText="#" styleClass="collumn-width center-position">  
+                                        #{rowIndex+1}  
+                                    </p:column>  
+
+                                    <p:column headerText="Application No">
+                                        <h:outputLabel  value="#{printCertificate.appl_no}"/>
+                                    </p:column>
+                                    <p:column headerText="Owner Name">
+                                        <h:outputLabel value="#{printCertificate.owner_name}" />
+                                    </p:column>
+                                    <p:column headerText="Vehicle No">
+                                        <h:outputLabel value="#{printCertificate.regn_no}" />
+                                    </p:column>
+                                    <p:column headerText="Court Name">
+                                        <h:outputLabel value="#{printCertificate.court_name}" />
+                                    </p:column>
+                                    <p:column headerText="Hearing Date">
+                                        <h:outputLabel value="#{printCertificate.hearing_date}" />
+                                    </p:column>
+                                    <p:column headerText="Print Court Certificate">
+                                        <p:commandButton id="print" value="Print"  icon="ui-icon-print" >
+                                            <p:ajax event="click" process="printCourtCertificateTable"  listener="#{refTocourt.getRowDataForPrintCourtCertificate(printCertificate)}" immediate="true"   ></p:ajax>
+
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+
+
+
+
+                </p:dialog>
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="refto_cort_btn" value="REFER TO COURT"  action="#{refTocourt.saveRefferedChallanToCourt()}" update="errormsgForCourt,caseRefToCourtTable" />
+                        <p:commandButton value="CLEAR" action="#{refTocourt.reset()}" update="sm_court_list,cal_hearing_date,errormsgForCourt" />
+                        <p:commandButton value="Print Court Certificate" 
+                                         icon="ui-icon-extlink"
+                                         action="#{refTocourt.getreferToCourtCases()}"
+                                         update="diForPrint"
+                                         >
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:panel>
+        </h:form>           
+    </ui:define>
+
+
+</ui:composition>

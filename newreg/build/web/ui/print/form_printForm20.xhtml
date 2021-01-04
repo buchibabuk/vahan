@@ -1,0 +1,43 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content22">
+        <h:form id="form20">
+            <div class="ui-grid ui-grid-responsive">
+                <p:panel header="Form 20">
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable id="form20DataTable"  value="#{form20_bean.form_20_list}" var="form20"
+                                         rowIndexVar="index">
+                                <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                                    <p:outputLabel value="#{index +1}."/>
+                                </p:column>
+                                <p:column headerText="Application No">#{form20.appl_no}</p:column>
+                                <p:column headerText="Chassis No">#{form20.chasis_no}</p:column>
+                                <p:column headerText="Owner Name">#{form20.owner_name}</p:column>
+                                <p:column headerText="Print">
+                                    <p:commandLink action="#{form20_bean.print()}" value="Print" ajax ="false">
+                                        <f:param name="appl_no" value="#{form20.appl_no}"/>    
+                                    </p:commandLink>
+                                </p:column>                                                            
+                            </p:dataTable>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Back" action="home"/>
+                        </div>
+                    </div>
+                </p:panel>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

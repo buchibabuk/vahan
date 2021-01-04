@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formDayBeginProcess" prependId="false">     
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Start The Day Begin Process</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="daybeginmsg" closable="true" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:panel id="DayBeginPanel">
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section"> 
+                                <p:outputLabel  value="Last working day"/>
+                            </label>
+                            <p:inputText value="#{dayBeginBean.dobjObject.lastWorkDay}" disabled="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section"> 
+                                <p:outputLabel  value="Current date when you are going to start the system"/>
+                            </label>
+                            <p:inputText value="#{dayBeginBean.dobjObject.currentDt}" disabled="true"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section"> 
+                                <p:outputLabel value="No of holidays "/>
+                            </label>
+                            <p:inputText value="#{dayBeginBean.dobjObject.noofHoliday}" disabled="true"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:button  value="Home" outcome="home" icon="ui-icon-home"/>  
+                            <p:commandButton value="Start Day Begin"  action="#{dayBeginBean.confirmDayBegin()}" icon="ui-icon-check"/>
+                        </div>                
+                    </div>     
+                </p:panel>
+
+                <p:dialog  id="isConfirmDayBegin"  styleClass="center-position" widgetVar="isDayBegin"
+                           modal="true" draggable="false" closable="false" hideEffect="explode" header="Day Begin" >  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Are you sure to start day begin process?"/>
+                            </label>
+                            <p:commandButton  value="Yes" onclick="PF('isDayBegin').hide();
+                                    PF('block_panel').show();"                                   
+                                              actionListener="#{dayBeginBean.updateDayBegin()}" 
+                                              icon="ui-icon-check" oncomplete="PF('block_panel').hide();" />
+                            <p:commandButton value="No" onsuccess="PF('isDayBegin').hide();" icon="ui-icon-close" />
+                        </div>
+                    </div>
+                </p:dialog>
+            </div>
+            <p:blockUI block="DayBeginPanel" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>    
+    </ui:define>
+</ui:composition>

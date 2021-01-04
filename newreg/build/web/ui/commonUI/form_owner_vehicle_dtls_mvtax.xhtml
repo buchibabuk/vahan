@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <style>
+        .ui-panel.ui-panel-collapsed-h {
+            width: 150px !important;
+        }
+
+        .ui-panel.ui-panel-collapsed-h .ui-panel-title {
+            display: inline !important;
+        }
+
+    </style>
+    <f:subview id="subview_owner_dtls">
+        <ui:composition>
+            <p:panel id="owner_details1" header="#{language.OwnerAndVehicleInformation}" rendered="#{containerBean.ownerDtlsDobj ne null}" styleClass="top-space bottom-space">
+                <div class="ui-grid ui-grid-responsive">
+                    <p:outputPanel id="reg1">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no1" value="#{language.home_rightpanelregno}"/>
+                                </label>
+                                <p:inputText id= "regn_no1" value="#{containerBean.ownerDtlsDobj.regn_no}" required="true"
+                                             requiredMessage="#{language.blankRegistrationNo}" maxlength="10" autocomplete="off" disabled="true" />
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_dt1" value="#{language.regn_dt}"/>
+                                </label>
+                                <p:calendar  id="regn_dt1" value="#{containerBean.ownerDtlsDobj.regnDateDescr}" required="true" disabled="true"  
+                                             requiredMessage="#{language.blankRegistrationDate}" pattern="dd-MMM-yyyy" navigator="true" readonly="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" for="regn_dt"/> 
+                                </p:calendar>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="purchase_dt1" value="#{language.purchase_dt}"/>
+                                </label>
+                                <p:calendar id="purchase_dt1"  value="#{containerBean.ownerDtlsDobj.purchaseDateDescr}" required="true" disabled="true" 
+                                            requiredMessage="#{language.blankPurchaseDate}" pattern="dd-MMM-yyyy" navigator="true" readonly="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" for="purchase_dt"/> 
+                                </p:calendar>
+                            </div>
+
+                        </div>
+
+
+                        <div class="ui-grid-row">
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_name1" value="#{language.owner_name}" />
+                                </label>
+                                <p:inputText id="tf_owner_name1" value="#{containerBean.ownerDtlsDobj.owner_name}"  required="true" styleClass="text-uppercase" disabled="true"
+                                             requiredMessage="Owner Name can not be empty" maxlength="35" autocomplete="off" readonly="true" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_f_name1" value="#{language.f_name}"/>
+                                </label>
+                                <p:inputText id="tf_f_name1" value="#{containerBean.ownerDtlsDobj.f_name}"  required="true" styleClass="text-uppercase"
+                                             disabled="true" requiredMessage="Father/Husband's Name can not be empty" maxlength="35" autocomplete="off" />
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="chasi_no" value="#{language.chasi_no}"/>
+                                </label>
+                                <p:inputText id="chasi_no" value="#{containerBean.ownerDtlsDobj.chasi_no}" 
+                                             size="20" maxlength="30" disabled="true"
+                                             required="true" requiredMessage="Blank: Chassis No." autocomplete="off">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+
+                        <div class="ui-grid-row">
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="eng_no" value="#{language.engineNo}"/>
+                                </label> 
+                                <p:inputText id="eng_no" value="#{containerBean.ownerDtlsDobj.eng_no}" size="20" required="true"
+                                             requiredMessage="Blank: Engine No." maxlength="30" autocomplete="off" disabled="true">
+                                </p:inputText>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="vh_class" value="#{language.vehicleClass}"/>
+                                </label>
+                                <p:inputText id="vh_class" value="#{containerBean.ownerDtlsDobj.vh_class_desc}" disabled="true" />
+
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="vh_catg" value="#{language.vh_catg}"/>
+                                </label>
+                                <p:inputText id="vh_catg" value="#{containerBean.ownerDtlsDobj.vch_catg}" disabled="true"/>
+
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="ui-grid-row bottom-space" >
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="registrationType" value="#{language.regn_type}"/>
+                                </label>
+                                <p:inputText id="registrationType" value="#{containerBean.ownerDtlsDobj.regn_type_descr}" disabled="true"/>
+
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="purchase_as" value="#{language.purchaseAs}"/>
+                                </label>
+                                <p:inputText id="purchase_as" value="#{containerBean.ownerDtlsDobj.vch_purchase_as}" disabled="true"/>
+
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_owner_cd1" value="#{language.owner_cd}"/>
+                                </label>
+
+                                <p:inputText id="tf_owner_cd1"  value="#{containerBean.ownerDtlsDobj.owner_cd_descr}" disabled="true"/>
+
+                            </div>
+                        </div>
+
+
+                        <p:panel  header="#{language.moreInfo}" toggleable="true" collapsed="true" toggleOrientation="horizontal" styleClass="border-none">
+
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="maker" value="#{language.maker}"/>
+                                    </label>
+                                    <p:inputText id="maker"  value="#{containerBean.ownerDtlsDobj.maker_name}" disabled="true"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="modelNmae" value="#{language.makerModel}"/>
+                                    </label>
+                                    <p:inputText id="modelNmae"  value="#{containerBean.ownerDtlsDobj.model_name}" disabled="true"/>
+
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="fuel" value="#{language.fuel}"/>
+                                    </label>
+                                    <p:inputText id="fuel"  value="#{containerBean.ownerDtlsDobj.fuel_descr}" disabled="true"/>
+
+                                </div>
+
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <!--                            <div class="ui-grid-col-4">
+                                                                <label class="field-label resp-label-section">
+                                                                    <p:outputLabel for="color" value="#{label.color}"/>
+                                                                </label>
+                                                                <p:inputText id="color"  value="#{containerBean.ownerDtlsDobj.color}" size="20" maxlength="11" disabled="true"
+                                                                             required="true" requiredMessage="Blank: Color" autocomplete="off" />
+                                                            </div>-->
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="stand_cap" value="#{language.standCap}"/>
+                                    </label>
+                                    <p:inputText id="stand_cap"  value="#{containerBean.ownerDtlsDobj.stand_cap}" required="true" disabled="true"
+                                                 requiredMessage="Blank: Standing Capacity" maxlength="3" size="20" autocomplete="off" />
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="cubic_cap" value="#{language.cubicCap}"/>
+                                    </label>
+                                    <p:inputText id="cubic_cap"  value="#{containerBean.ownerDtlsDobj.cubic_cap}" size="20" maxlength="11" disabled="true"
+                                                 required="true" requiredMessage="Blank: Cubic Capicity" autocomplete="off" />
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="seat_cap" value="#{language.seatCap}"/>
+                                    </label>
+                                    <p:inputText id="seat_cap"  value="#{containerBean.ownerDtlsDobj.seat_cap}" required="true" disabled="true"
+                                                 requiredMessage="Blank: Seating Capacity" maxlength="3" size="20" autocomplete="off" />
+                                </div>
+
+
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="sleep_cap" value="#{language.sleepCap}"/>
+                                    </label>
+                                    <p:inputText id="sleep_cap"  value="#{containerBean.ownerDtlsDobj.sleeper_cap}" size="20" maxlength="2" autocomplete="off" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ul_weight" value="#{language.ulWeight}"/>
+                                    </label>
+                                    <p:inputText id="ul_weight"  value="#{containerBean.ownerDtlsDobj.unld_wt}" size="20" maxlength="6" disabled="true"
+                                                 required="true" requiredMessage="Blank: Unladen Weight" autocomplete="off" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="l_weight" value="#{language.lWeight}"/>
+                                    </label>
+                                    <p:inputText id="l_weight"  value="#{containerBean.ownerDtlsDobj.ld_wt}" size="20" maxlength="6" disabled="true"
+                                                 required="true" requiredMessage="Blank: laden Weight" autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hp" value="#{language.hp}"/>
+                                    </label>
+                                    <p:inputText id="hp"  value="#{containerBean.ownerDtlsDobj.hp}" size="20" maxlength="11" disabled="true" 
+                                                 required="true" requiredMessage="Blank: Horse Power" autocomplete="off" />
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ac_fitted" value="#{language.acFitted}"/>
+                                    </label>
+                                    <p:inputText id="ac_fitted"  value="#{containerBean.ownerDtlsDobj.ac_fitted}" disabled="true"/>
+
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="imported_veh" value="#{language.importedVeh}"/>
+                                    </label>
+                                    <p:inputText id="imported_veh" value="#{containerBean.ownerDtlsDobj.imported_vch}" disabled="true"/>
+
+                                </div>
+
+                            </div>
+
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="sale_amt" value="#{language.sale_amt}"/>
+                                    </label>
+                                    <p:inputText id="sale_amt"  value="#{containerBean.ownerDtlsDobj.sale_amt}" maxlength="50" size="20" autocomplete="off" disabled="true"/>
+                                </div>
+
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_mobile_no1" value="#{language.user_mobileNo}"/>
+                                    </label>
+                                    <p:inputText id="tf_mobile_no1" value="#{containerBean.ownerDtlsDobj.ownerIdentity.mobile_no}"  maxlength="10" autocomplete="off" disabled="true"/>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_email1" value="#{language.user_email}"/>
+                                    </label>
+                                    <p:inputText id="tf_email1" value="#{containerBean.ownerDtlsDobj.ownerIdentity.email_id}" disabled="true"
+                                                 maxlength="100" autocomplete="off" size="20" />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="floor_area" value="#{language.fArea}"/>
+                                    </label>
+                                    <p:inputText id="floor_area"  value="#{containerBean.ownerDtlsDobj.floor_area}" maxlength="50" size="20" autocomplete="off" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="no_of_axle" value="#{language.noOfAxle}"/>
+                                    </label>
+                                    <p:inputText id="no_of_axle"  value="#{containerBean.ownerDtlsDobj.axleDobj.noOfAxle}" maxlength="50" size="20" autocomplete="off" disabled="true"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row ">
+                                <div class="ui-grid-col-4 center-block">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_gcw" value="#{language.gcw}" rendered="#{containerBean.ownerDtlsDobj.renderedGCW}"/>
+                                    </label>
+                                    <p:inputText id="tf_gcw" value="#{containerBean.ownerDtlsDobj.gcw}" rendered="#{containerBean.ownerDtlsDobj.renderedGCW}" disabled="true"
+                                                 maxlength="100" autocomplete="off" size="20" />
+                                </div>
+                            </div>
+                            <p:outputPanel id="pushbackseatFinal"  styleClass="border-none">
+                                <p:outputPanel rendered="#{containerBean.renderPushBackSeatPanel}" >
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="push_back_seat" value="#{language.push_bkS}"/>
+                                            </label>
+                                            <p:inputText id="push_back_seat" value= "#{containerBean.ownerDtlsDobj.push_bk_seat}"  disabled="true"/>                                
+                                        </div>    
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="ordn_seat" value="#{language.ordn_seat}"/>
+                                            </label>
+                                            <p:inputText id="ordn_seat" value="#{containerBean.ownerDtlsDobj.ordinary_seat}"  disabled="true"/>                                
+                                        </div> 
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>                            
+                        </p:panel>
+                    </p:outputPanel>
+                </div>
+            </p:panel>
+        </ui:composition>
+    </f:subview>
+</html>

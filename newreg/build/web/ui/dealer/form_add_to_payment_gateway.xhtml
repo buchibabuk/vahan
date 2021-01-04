@@ -1,0 +1,124 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"> 
+
+    <ui:define name="content22">
+
+        <h:form id="paymentGateway">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">#{language.cartPayment}</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 right-position">
+                    <p:commandButton id="idFailTrans" value="#{language.failedTransactions}" ajax="false" action="/ui/dealer/form_dealer_reverify_payment.xhtml?faces-redirect=true"/>
+                </div>
+            </div>
+
+
+            <p:dataTable id="cartDataTable" value="#{payment_gateway_bean.cartList}" var="cart" rowIndexVar="index" styleClass="bottom-space">
+                <f:facet name="header">
+                    <div class="left-position">
+                        #{language.selectCart}
+                    </div>
+                </f:facet>
+                <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                    <p:outputLabel value="#{index +1}."/></p:column>
+                <p:column headerText="#{language.transactionNo}">#{cart.paymentId}</p:column>
+                <p:column headerText="#{language.noOfApplInThisCart}">
+                    <p:outputLabel styleClass="right-position right-space" value="#{cart.totalNoOfApplicationsIncart}" />
+                </p:column>
+                <p:column headerText="#{language.getCartDetails}" styleClass="center-position">
+                    <p:commandButton icon="ui-icon-document" ajax="false" update="@form" action="#{payment_gateway_bean.getPaymentGatewayList(cart)}" onclick="PF('bui').show();"/>
+                </p:column>
+            </p:dataTable> 
+
+            <p:outputPanel id="paymentGatewayPanel" rendered="#{payment_gateway_bean.paymentGatewayPanelVisibility}" styleClass="bottom-space">
+                <p:dataTable id="paymentGatewayDetailDataTable"  value="#{payment_gateway_bean.applicationNoAndAmountDetail}" var="paymentGatewayList"
+                             rowIndexVar="index" styleClass="bottom-space">
+                    <f:facet name="header">
+                        <div class="left-position">
+                            #{language.applicationDetails} #{payment_gateway_bean.paymentId}
+                        </div>
+                    </f:facet>
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> <p:outputLabel value="#{index +1}."/></p:column>
+                    <p:column headerText="#{language.home_rightpanelApplno}">#{paymentGatewayList.applNo}</p:column>
+                    <p:column headerText="#{language.home_rightpanelregno}">#{paymentGatewayList.regnNo}</p:column>
+                    <p:column headerText="#{language.chasi_no}">#{paymentGatewayList.chassisNo}</p:column>
+                    <p:column headerText="#{language.totalAmount}">
+                        <p:outputLabel styleClass="right-position right-space" value="Rs.#{paymentGatewayList.ttlAmount}/-" />
+                    </p:column>
+                    <p:column headerText="#{language.getDetails}" styleClass="center-position">
+                        <p:commandButton icon="ui-icon-document" update="@form" oncomplete="PF('paymentGatewayDetails_dlg1').show();" action="#{payment_gateway_bean.getDetail(paymentGatewayList)}" onclick="PF('bui').show();"/>
+                    </p:column>
+                    <p:column headerText="#{language.rollback}" styleClass="center-position">
+                        <p:commandButton icon="ui-icon-arrowreturnthick-1-w" update="@form" action="#{payment_gateway_bean.rollBackToPreviousActionCode(paymentGatewayList)}" rendered="#{payment_gateway_bean.removeRollBack}" onclick="PF('bui').show();">
+                            <p:confirm header="Confirmation" message="Don't rollback if payment has been made and amount is debited.Kindly reverify your payment through Failed Trasansactions button.Do you still want to remove application from Cart?" icon="ui-icon-alert"/>    
+                        </p:commandButton>
+                    </p:column>                                                            
+                </p:dataTable>
+
+                <p:outputPanel id="totalPayableAmountPanel">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 right-position right-space">
+                            <h:outputText value="#{language.totalPayableAmount}: " styleClass="font-bold"/>
+                            <h:outputText value="Rs.#{payment_gateway_bean.totalPayableAmount}/- " styleClass="font-bold"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton id="submitButtonId" value="#{language.makePayment}" action="#{payment_gateway_bean.makePayment()}"  rendered="#{payment_gateway_bean.makePaymentButtonVisibility}" ajax="false"  
+                                         onclick="if (!confirm('Are You Sure You Want To Make Payment?'))
+                                return false;
+                            this.style.display = 'none';
+                            PF('bui').show();">
+                        </p:commandButton>
+
+                        <p:commandButton value="#{language.verify}" action="#{payment_gateway_bean.doubleVerification()}" rendered="#{payment_gateway_bean.verifyButtonVisibility}" ajax="false" onclick="if (!confirm('Payment has been initiated against the Payment Id - #{payment_gateway_bean.paymentId}.Are You sure want to Verify?'))
+                                return false;
+                            this.style.display = 'none';
+                            PF('bui').show();">
+                        </p:commandButton>
+                        <p:commandButton value="#{language.login_back}" action="home"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+
+            <p:dialog id="paymentGatewayDetailsId" widgetVar="paymentGatewayDetails_dlg1" header="#{language.feeAndTaxDetails}" dynamic="true" modal="true">
+                <p:dataTable id="detailTableId" value="#{payment_gateway_bean.payGatewayDetailList}" var="getDetail" rowIndexVar="index">
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}."/></p:column>  
+                    <p:column headerText="#{language.purpose}">#{getDetail.purpose}</p:column>
+                    <p:column headerText="#{language.taxFrom}">#{getDetail.periodFrom}</p:column>
+                    <p:column headerText="#{language.taxUpto}">#{getDetail.periodUpto}</p:column>
+                    <p:column headerText="#{language.amount}">#{getDetail.amount}</p:column>
+                    <p:column headerText="#{language.fine}">#{getDetail.penalty}</p:column>
+                </p:dataTable>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="#{language.close}" oncomplete="PF('paymentGatewayDetails_dlg1').hide();"/>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:blockUI block="paymentGateway" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </ui:define>
+</ui:composition>

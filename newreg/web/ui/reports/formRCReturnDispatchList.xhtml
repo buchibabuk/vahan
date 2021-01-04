@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content22">
+        <h:form id="rcReturnDispatchForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">RC Dispatch Return Entry / Report</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row" styleClass="top-space bottom-space">
+                    <div class="ui-grid-col-6">
+                        <p:panel header="Return Entry" id="radioRCRtnDisppanel" styleClass="top-space bottom-space datatable-panel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6 center-position">
+                                    <p:selectOneRadio id="enrtyrbtn" value="#{rcReturnDispatchBean.radioBtnValue}" layout="grid" columns="2" styleClass="width:100%;">                               
+                                        <f:selectItem itemLabel="By Appl No" itemValue="A" />
+                                        <f:selectItem itemLabel="By Regn No" itemValue="R" />                                       
+                                        <p:ajax event="change" listener="#{rcReturnDispatchBean.rcRadioBtnListener()}" update="srchlabel tf_srchlabel rcReturnDispatchForm"/> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel id="srchlabel" value="#{rcReturnDispatchBean.searchLabel}" styleClass="field-label-mandate" />
+                                    </label>
+                                    <p:inputText  id="tf_srchlabel"  value="#{rcReturnDispatchBean.enteredNo}" maxlength="#{rcReturnDispatchBean.maxlenght}" autocomplete="off" size="30" styleClass="text-uppercase">
+                                        <p:ajax event="blur" listener="#{rcReturnDispatchBean.getDetails()}" update="rcReturnDispatchForm"/>
+                                        <p:keyFilter regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter> 
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Reason:" styleClass="field-label-mandate"/>
+                                    </label>
+                                    <p:selectOneMenu id="reason_type" value="#{rcReturnDispatchBean.reason}">
+                                        <f:selectItems value="#{rcReturnDispatchBean.returnReasonList}" /> 
+                                    </p:selectOneMenu>  
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">
+                                    <p:commandButton value="Save" action="#{rcReturnDispatchBean.saveReturnEntry()}" update="rcReturnDispatchForm">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":rcReturnDispatchForm" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div> 
+                        </p:panel> 
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <p:panel id="retpanal" header="Return Report" styleClass="top-space bottom-space datatable-panel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:selectOneRadio id="printrbtn" value="#{rcReturnDispatchBean.rptRadioBtnValue}" layout="grid" columns="3" styleClass="width:100%;">                               
+                                        <f:selectItem itemLabel="By Appl No" itemValue="APPLNO" />
+                                        <f:selectItem itemLabel="By Regn No" itemValue="REGNNO" />
+                                        <f:selectItem itemLabel="By Return Date" itemValue="RETURNDT" /> 
+                                        <p:ajax event="change" partialSubmit="true" listener="#{rcReturnDispatchBean.rcRPTRadioBtnListener()}" 
+                                                update="retpanal "/> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:outputPanel id="rptSrchLbl" rendered="#{rcReturnDispatchBean.applOrRegnWiseReport}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="rptSrchlabel" value="#{rcReturnDispatchBean.rptSearchLabel}" styleClass="field-label-mandate" />
+                                        </label>
+                                        <p:inputText  id="tf_rptSrchlabel"  value="#{rcReturnDispatchBean.rptEnteredNo}" maxlength="#{rcReturnDispatchBean.rptMaxlenght}"  size="30" styleClass="text-uppercase">
+                                            <p:keyFilter regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter> 
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:outputPanel id="rptfrDateLbl" rendered="#{rcReturnDispatchBean.retDtWiseReport}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  value="From Date"/>
+                                        </label>
+                                        <p:calendar id="frdtcal" value="#{rcReturnDispatchBean.frdt_cal}"  
+                                                    pattern="dd-MMM-yyyy" navigator="true" maxdate="#{rcReturnDispatchBean.today}" readonlyInput="true">
+                                            <p:ajax event="dateSelect" partialSubmit="true" process="frdtcal" listener="#{rcReturnDispatchBean.onDateSelect}" />
+                                        </p:calendar>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:outputPanel id="rpttoDateLbl" rendered="#{rcReturnDispatchBean.retDtWiseReport}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="todtcal" value="Upto Date"/>
+                                        </label>
+                                        <p:calendar id="todtcal" value="#{rcReturnDispatchBean.todt_cal}" 
+                                                    pattern="dd-MMM-yyyy" navigator="true" maxdate="#{rcReturnDispatchBean.today}" readonlyInput="true">
+                                            <p:ajax event="dateSelect" partialSubmit="true" process="todtcal" listener="#{rcReturnDispatchBean.onDateSelect}" />                                        
+                                        </p:calendar>
+                                    </p:outputPanel>
+                                </div>
+                            </div>  
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">
+                                    <p:commandButton id="btnPrint" value="Print" action="#{rcReturnDispatchBean.printReturnEntry()}" >
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":retpanal" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div> 
+                        </p:panel>
+                    </div>
+                </div>
+                <p:dataTable id="tb_details" value="#{rcReturnDispatchBean.dobj.listFileExport}" rendered="#{rcReturnDispatchBean.dobj.listFileExport.size()>0}" var="dwlList" rows="10" rowIndexVar="index" 
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">  
+                    <f:facet name="header">
+                        <div class="left-position"> 
+                            <h:outputText value="Vehicle Details" />  
+                        </div>
+                    </f:facet>
+                    <p:column styleClass="collumn-width center-position">
+                        <f:facet name="header">
+                            <h:outputText value="SR.No." styleClass="font-bold" />
+                        </f:facet>                            
+                        <h:outputText value="#{index +1}"/>
+                    </p:column>
+                    <p:column style="width: 80px;">
+                        <f:facet name="header">
+                            <h:outputText value="Owner Name" styleClass="font-bold" />
+                        </f:facet>
+                        <h:outputText value="#{dwlList.ownerName}" />
+                    </p:column>
+                    <p:column style="width: 200px;">
+                        <f:facet name="header">
+                            <h:outputText value="Current Address" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.currentAddress}" />
+                    </p:column>                    
+                    <p:column style="width: 50px;">
+                        <f:facet name="header">
+                            <h:outputText value="Mobile No" styleClass="font-bold" />
+                        </f:facet>
+                        <h:outputText value="#{dwlList.mobile_no}" />
+                    </p:column>
+                    <p:column style="width: 80px;">
+                        <f:facet name="header">
+                            <h:outputText value="Barcode" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatch_ref_no}" />
+                    </p:column>
+                    <p:column style="width: 70px;">
+                        <f:facet name="header">
+                            <h:outputText value="Dispatch on" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatchdate}" />
+                    </p:column>
+                    <p:column style="width: 90px;">
+                        <f:facet name="header">
+                            <h:outputText value="Dispatch By" styleClass="font-bold"/>
+                        </f:facet>
+                        <h:outputText value="#{dwlList.dispatch_by}" />
+                    </p:column>
+
+                </p:dataTable>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui" 
+    xmlns:pe="http://primefaces.org/ui/extensions" 
+    template="/masterLayoutPage.xhtml"> 
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">      
+        <h:form prependId="false">
+            <p:outputPanel id ="notforPrint">
+                <p:outputPanel styleClass="center-position" rendered="#{!rcToFinPrint.print}">
+                    <h1 class="header-main">Finance To RC Print Application</h1>
+                </p:outputPanel>
+                <p:panel header="Finance To RC Print Application" rendered="#{!rcToFinPrint.print}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Registration Number"/>
+                            </label>
+                            <p:inputText id="regn_no" value="#{rcToFinPrint.tempregn}" 
+                                         autocomplete="off" converter="toUpperCaseConverter"
+                                         required="true" requiredMessage="Please Provide Registration No."
+                                         maxlength="30"
+                                         styleClass="input" >
+                                <p:keyFilter regEx="/[A-Z0-9]/i"/> 
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Application Number"/>
+                            </label>
+                            <p:inputText id="appl_no" value="#{rcToFinPrint.applNo}" 
+                                         autocomplete="off" converter="toUpperCaseConverter" 
+                                         required="true" requiredMessage="Please Provide Application No."
+                                         maxlength="16"
+                                         styleClass="input" >
+                                <p:keyFilter regEx="/[A-Z0-9]/i"/> 
+                            </p:inputText>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Submit" action="#{rcToFinPrint.printDetail()}" update="@form"/>
+                            <p:commandButton id="ba" value="Home" action="home" styleClass="display-none" />
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+            <p:outputPanel id="noforPrint">
+                <p:outputPanel rendered="#{rcToFinPrint.print}">
+
+                    <div class="center-position">
+                        <p:commandButton action="#{rcToFinPrint.printCommand()}" value="Print" styleClass="display-none" />
+                        <p:commandButton id="back" value="Home" action="home" styleClass="display-none" />
+                    </div>
+                    <div class="center-position">
+                        <h1 class="header-main">GOVERNMENT OF <h:outputText value="#{rcToFinPrint.dobj.state_name}"/> REGIONAL TRANSPORT OFFICE<h:outputText value=", #{rcToFinPrint.dobj.off_name}"/></h1>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="FORM 37" styleClass="header-subheader"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="[See Rule 61(3)]" styleClass="header-subheader"/>
+                    </div>
+                     
+                    <div class="datatable-panel" style="margin: 0 auto">
+                        <div class="font-bold top-space">
+                            NOTICE TO THE REGISTERED OWNER OF THE MOTOR VEHICLE TO SURRENDER THE CERTIFICATE OF REGISTRATION 
+                            FOR CANCELLATION AND ISSUE OF FRESH REGISTRATION CERTIFICATE IN THE NAME OF THE FINANCIER
+                        </div>
+                        <p>
+                            (To be made in duplicate and the duplicate copy to be sent to the Financier simultaneously on issue of notice)
+                        </p>
+                        <br/>
+                        <p class="left-space">
+                             Shri/Smt./Kumari<h:outputText value=" #{rcToFinPrint.dobj.owner_name}"/>.(Regd. Owner) is/are hereby informed that  <h:outputText value="#{rcToFinPrint.dobj.f_name}"/>(Financier) has /have reported that he/they have taken possession of the motor vehicle bearing registration number  <h:outputText value="(#{rcToFinPrint.dobj.regn_no})"/> covered by an agreement Hire-Purchase / Lease / Hypothecation, owing to your default under the provisions of the said agreement and that: 
+                        </p>
+                        <br/>
+                        <p>
+                            1. You have refused to deliver the Certificate of Registration to him/her/them. 
+                        </p>
+                        <p>
+                             2. You have absconded. 
+                        </p>
+                        <br/>
+                        <p class="left-space">
+                            He/She/they have requested to cancel the Certificate of Registration and issue a fresh Certificate of Registration in his/her/their name. 
+                        </p>
+                        <br/>
+                        <p class="left-space">
+                            You are ,therefore , directed  to surrender the Certificate of Registration of the said motor vehicle which has been retained by you in spite of your having lost the possession and thereby the ownership of the Motor Vehicle under Section 2(30) and to send your representation in this regard, if any, to this office within seven days from the date of receipt of this notice by you, failing which a fresh Certificate of Registration will be issued in the name of the Financier, cancelling the Certificate of Registration held by you, in accordance with Section 51(5). 
+                        </p>
+                    </div>
+                    <table class="datatable-panel" style="margin: 0 auto;">
+                        <br/>
+                        <tr>
+                            <td class="left-position">
+                                Date<h:outputText value="#{rcToFinPrint.date}" styleClass="left-space font-bold" />  
+                            </td>
+                            <td class="right-position">
+                                <h:outputText value="Registering Authority, #{rcToFinPrint.dobj.p_add2}" styleClass="right-space font-bold" />   
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="datatable-panel" style="margin: 0 auto">
+                        <br/>
+                        <br/>
+                        Strike out whichever is inapplicable
+                        <br/>
+                        <br/>
+                        <br/>
+                        To The Financier 
+                        #{rcToFinPrint.dobj.f_name} , 
+                        #{rcToFinPrint.dobj.p_add2}.
+
+                        <br/>
+                        (To be sent by Registered Post Acknowledgment Due)
+                    </div>
+                </p:outputPanel>
+            </p:outputPanel>
+        </h:form>        
+    </ui:define>
+</ui:composition>

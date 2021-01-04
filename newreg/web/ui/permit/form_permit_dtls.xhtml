@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class=" field-label resp-label-section">
+                    <p:outputLabel for="vech_no22" value="#{language.regn_no}" />
+                </label>
+                <p:inputText id="vech_no22" value="#{Permit_Dtls_bean.regn_no}" readonly="#{Permit_Dtls_bean.readOnlyComponent}"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class=" field-label resp-label-section">
+                    <p:outputLabel for="prv_pmt_type" value="#{language.user_permitType}" />
+                </label>
+                <p:selectOneMenu id="prv_pmt_type" value="#{Permit_Dtls_bean.sel_pmt_type}" disabled="#{Permit_Dtls_bean.readOnlyComponent}">
+                    <f:selectItem itemValue="-1" itemLabel="Select Permit Type"/>
+                    <f:selectItems value="#{Permit_Dtls_bean.pmt_type_array}"/>
+                </p:selectOneMenu>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class=" field-label resp-label-section">
+                    <p:outputLabel for="issue_dt" value="#{language.permit_issue_date}" />
+                </label>
+                <p:inputText id="issue_dt" value="#{Permit_Dtls_bean.issue_dt}" readonly="#{Permit_Dtls_bean.readOnlyComponent}"/>
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="permit_no" value="#{language.permit_no}" />
+                </label>
+                <p:inputText id="permit_no" value="#{Permit_Dtls_bean.pmt_no}" readonly="#{Permit_Dtls_bean.readOnlyComponent}"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="valid_from" value="#{language.valid_from}" />
+                </label>
+                <p:inputText id="valid_from" value="#{Permit_Dtls_bean.valid_from}" readonly="#{Permit_Dtls_bean.readOnlyComponent}"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="valid_upto" value="#{language.valid_upto}" />
+                </label>
+                <p:inputText id="valid_upto" value="#{Permit_Dtls_bean.valid_upto}" readonly="#{Permit_Dtls_bean.readOnlyComponent}"/>
+            </div>
+        </div>        
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="prv_pmt_catg" value="#{language.user_permitCatg}" />
+                </label>
+                <p:selectOneMenu id="prv_pmt_catg" value="#{Permit_Dtls_bean.sel_pmt_catg}" disabled="#{Permit_Dtls_bean.readOnlyComponent}">
+                    <f:selectItem itemValue="-1" itemLabel="Select Permit Category"/>
+                    <f:selectItems value="#{Permit_Dtls_bean.pmt_catg_array}"/>
+                </p:selectOneMenu>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="prv_ser_type" value="#{language.pmt_service_type}" />
+                </label>
+                <p:selectOneMenu id="prv_ser_type" value="#{Permit_Dtls_bean.sel_pmt_ser}" disabled="#{Permit_Dtls_bean.readOnlyComponent}">
+                    <f:selectItem itemValue="-1" itemLabel="Select Services Type"/>
+                    <f:selectItems value="#{Permit_Dtls_bean.ser_type_array}"/>
+                </p:selectOneMenu>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="replace_dt" value="#{language.date_of_replacement}" />
+                </label>
+                <p:inputText id="replace_dt" value="#{Permit_Dtls_bean.replace_dt}" readonly="#{Permit_Dtls_bean.readOnlyComponent}"/>
+            </div>
+
+        </div>
+    </div>
+</html>

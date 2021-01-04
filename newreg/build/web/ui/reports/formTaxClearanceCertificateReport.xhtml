@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="TCCPrintForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/reports/formTaxClearanceCertificateDetail.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:button onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="tccList" value="#{TCCPrint.li}" varStatus="status"  >
+                <p:outputPanel styleClass="bottom-space-50">
+                    <div id="main_tcc_data" class="position-relative">
+                        <div class="position-relative">
+                            <p:outputPanel  rendered="#{tccList.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{tccList.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+                        </div>
+                        <table class="datatable-panel-100 position-relative">
+                            <tr>
+                                <td class="left-position" style="width: 70px;">
+                                    <p:graphicImage library="images" name="#{tccList.image_logo}" style="width: 100px;" rendered="#{tccList.show_image_logo}" />
+                                </td>
+                                <td class="center-position">
+                                    <div class="center-position">
+                                        <h:outputText value="#{tccList.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                    </div>
+                                    <div class="center-position">
+                                        <span class="font-bold report-subheader"> <h:outputText value="#{tccList.subHeader} #{tccList.offName}" escape="false"/> </span>
+                                    </div>
+                                    <div class="center-position">
+                                        <h:outputText value="Tax Clearance Certificate" styleClass="font-bold report-subheader text-uppercase"/>
+                                    </div>                                    
+                                </td>
+                                <td class="right-position " style="width: 70px;">
+                                    <div class="inline-section">
+                                        <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                            <ui:param name="qrcodevalue" value="#{tccList.qrText}"/>   
+                                            <ui:param name="renderqrCode" value="true"/>   
+                                        </ui:include>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="datatable-panel position-relative" style="margin: 0px auto;">
+                            <div class="top-space">
+                                Certified that Shri <h:outputText value="#{tccList.ownerName}"  styleClass="font-bold"/> Owner of the Vehicle No. <h:outputText value="#{tccList.regnNO} (#{tccList.vchDescr})" styleClass="right-space bottom-space font-bold"/>
+                            </div>
+                            <div>
+                                Date of Registration :- <h:outputText value="#{tccList.regDate}" styleClass="font-bold"/>  
+                            </div>
+                            <div>
+                                Maker :- <h:outputText value="#{tccList.makerName}"/>  Model :- <h:outputText value="#{tccList.modelName}"/>
+                            </div>
+                            <div>
+                                <h:outputLabel rendered="#{TCCPrint.render_reportTcc_No}">
+                                    TCC No :-<h:outputText value="#{tccList.tcc_no}" styleClass="font-bold"/> 
+                                </h:outputLabel>
+                            </div>
+
+                            <div class="top-space bottom-space">
+                                <h:outputText value="Tax Paid Details :-" styleClass="font-bold"/>
+                            </div>
+                            <p:dataTable value="#{tccList.vtTaxDetailsList}" var="data" 
+                                         styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                                         datatable-second-column-right datatable-second-column-header-right 
+                                         datatable-third-column-right datatable-third-column-header-right
+                                         datatable-fourth-column-right datatable-fourth-column-header-right
+                                         datatable-fifth-column-right datatable-fifth-column-header-right
+                                         datatable-six-column-right datatable-six-column-header-right
+                                         datatable-seven-column-right datatable-seven-column-header-right
+                                         datatable-eight-column-right datatable-eight-column-header-right
+                                         ">
+                                <p:column headerText="Particular">
+                                    <h:outputText value="#{data.pur_cd_descr_vttax}" />
+                                </p:column>
+                                <p:column headerText="Amount">
+                                    <h:outputText value="#{data.tax_total_vttax}" />
+                                </p:column>
+                                <p:column headerText="Rcpt No">
+                                    <h:outputText value="#{data.rcpt_no_vttax}" />
+                                </p:column>
+                                <p:column headerText="Tax From">
+                                    <h:outputText value="#{data.tax_from_vttax}" styleClass="right-space" /> 
+                                </p:column>
+                                <p:column headerText="Tax Upto" >
+                                    <h:outputText value=" #{data.tax_upto_vttax}" styleClass="right-space" />
+                                </p:column>
+                                <p:column headerText="Tax Mode">
+                                    <h:outputText value="#{data.tax_mode_descr_vttax}" styleClass="right-space" /> 
+                                </p:column>
+                            </p:dataTable>
+
+                            <div class="top-space bottom-space">
+                                <h:outputText value="Difference Of Tax Details :-" styleClass="font-bold"/>
+                            </div>
+                            <p:dataTable value="#{tccList.diffofTaxxDetailsList}" var="data" 
+                                         styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                                         datatable-second-column-right datatable-second-column-header-right 
+                                         datatable-third-column-right datatable-third-column-header-right
+                                         datatable-fourth-column-right datatable-fourth-column-header-right
+                                         ">
+                                <p:column headerText="Fees">
+                                    <h:outputText value="#{data.fees_Diff_tax}" />
+                                </p:column>
+                                <p:column headerText="Fine">
+                                    <h:outputText value="#{data.fine_Diff_tax}" />
+                                </p:column>
+                                <p:column headerText="Rcpt No">
+                                    <h:outputText value="#{data.rcpt_no_Diff_tax}" />
+                                </p:column>
+                                <p:column headerText="Rcpt Date">
+                                    <h:outputText value="#{data.rcpt_dt_Diff_tax}" styleClass="right-space" /> 
+                                </p:column>
+                            </p:dataTable>
+
+                            <div class="top-space bottom-space">
+                                <h:outputText value="Tax Clear Details :-" styleClass="font-bold"/>
+                            </div>
+                            <p:dataTable value="#{tccList.taxPurposeList}" var="data" 
+                                         styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                                         datatable-second-column-right datatable-second-column-header-right 
+                                         datatable-third-column-right datatable-third-column-header-right
+                                         datatable-fourth-column-right datatable-fourth-column-header-right
+                                         ">
+                                <p:column headerText="Particular">
+                                    <h:outputText value="#{data.pur_cd_descr}" />
+                                </p:column>
+                                <p:column headerText="Tax Clear Upto" >
+                                    <h:outputText value=" #{data.clear_to}" styleClass="right-space" />
+                                </p:column>
+
+                                <p:column headerText="TCR No">
+                                    <h:outputText value="#{tccList.trc_no}" styleClass="right-space"  />
+                                </p:column>
+                                <p:column headerText="Remark" >
+                                    <h:outputText value=" #{tccList.remark_vt_tax_clr}" styleClass="right-space" />
+                                </p:column>
+                            </p:dataTable>
+
+                            <div class="top-space bottom-space">
+                                <h:outputText value="Tax Exemption Details :-" styleClass="font-bold"/>
+                            </div>
+                            <p:dataTable value="#{tccList.taxPurposeList}" var="data" 
+                                         styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                                         datatable-second-column-right datatable-second-column-header-right 
+                                         datatable-third-column-right datatable-third-column-header-right
+                                         datatable-fourth-column-right datatable-fourth-column-header-right
+                                         ">
+                                <p:column headerText="Tax Exemption From Date">
+                                    <h:outputText value="#{tccList.exem_fr}" />
+                                </p:column>
+                                <p:column headerText="Tax Exemption to Date" >
+                                    <h:outputText value=" #{tccList.exem_to}" styleClass="right-space" />
+                                </p:column>
+
+                                <p:column headerText="Remark" >
+                                    <h:outputText value=" #{tccList.remark_vt_tax_exem}" styleClass="right-space" />
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+
+                        <table class="datatable-panel position-relative" style="margin: 0 auto;">
+                            <tr>
+                                <td class="left-position top-align " style="width: 33%;"> 
+                                    <br />
+                                    <br />
+                                    Tax ledger completed &amp; certificate Issue 
+                                </td>
+                                <td class="center-position top-align"  style="width: 33%;">
+                                    <br />
+                                    <br />
+                                    Checked
+                                </td>
+                                <td class="right-position top-align"  style="width: 33%;"> 
+                                    <br />
+                                    <br />
+                                    Checked
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="left-position top-align" style="width: 33%;"> 
+                                    <br />
+                                    <br />
+                                    <br /> (Name and Signature of
+                                    <br />  Dealing Clerk)
+                                </td>
+                                <td class="center-position top-align"  style="width: 33%;">
+                                    <br />
+                                    <br />
+                                    <br /> (Name and Signature of
+                                    <br />  Accountant/ Jr. Actt.)
+                                </td>
+                                <td class="right-position top-align"  style="width: 33%;"> 
+                                    <br />
+                                    <br />
+                                    <br /> (Name and Signature of
+                                    <br />  Taxation Officer with seal)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{tccList.showRoadSafetySlogan}">
+                    <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                        <div class="center-position" style="display: inline-block;">
+                            <br /><br />
+                            <h:outputText value="#{tccList.roadSafetySloganDobj.english_lang}" /><br/>
+                            <h:outputText value="#{tccList.roadSafetySloganDobj.state_lang}" />
+
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

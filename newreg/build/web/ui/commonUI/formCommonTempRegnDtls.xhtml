@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:panel header="Temporary Registration Details" id="tmp_veh_info" style="margin-top: 10px;">
+                    <p:focus context="tmp_veh_info"/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_regn" value="#{label.temp_regn_no}"/>
+                            </label>
+                            <p:inputText id="tmp_regn" 
+                                         value="#{containerBean.tempReg.tmp_regn_no}" 
+                                         size="20" maxlength="20" autocomplete="off" styleClass="input" 
+                                         converter="toUpperCaseConverter" required="true" disabled="#{containerBean.blnDisableRegnTypeTemp}">
+                                <f:validateLength maximum="20" for="tmp_regn"/>
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tempRegnDt" value="Date of Temp Registration"/>
+                            </label>
+                            <p:calendar id="tempRegnDt"  value="#{containerBean.tempReg.tmp_regn_dt}" 
+                                        required="true" 
+                                        requiredMessage="Blank Temp Regn Date" pattern="dd-MMM-yyyy" navigator="true" 
+                                        maxdate="#{containerBean.currentDate}" disabled="#{containerBean.blnDisableRegnTypeTemp}" readonlyInput="true">
+                                <f:convertDateTime pattern="dd-MMM-yyyy" for="tempRegnDt"/> 
+                                <f:validateRequired for="tempRegnDt"/>
+
+                            </p:calendar>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tempRegnUptoDt" value="Temporary Registration Upto"/>
+                            </label>
+                            <p:calendar id="tempRegnUptoDt"  value="#{containerBean.tempReg.tmp_valid_upto}" 
+                                        required="true" 
+                                        requiredMessage="Blank Temporary Registration Upto" pattern="dd-MMM-yyyy" navigator="true" 
+                                        disabled="#{containerBean.blnDisableRegnTypeTemp}" readonlyInput="true">
+                                <f:convertDateTime pattern="dd-MMM-yyyy" for="tempRegnUptoDt"/> 
+                                <f:validateRequired for="tempRegnUptoDt"/>
+                            </p:calendar>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_state_cd" value="Temporary Registered State"/>
+                            </label>
+                            <p:selectOneMenu id="tmp_state_cd" value="#{containerBean.tempReg.tmp_state_cd}" 
+                                             filter="true" required="true" disabled="#{containerBean.blnDisableRegnTypeTemp}">
+                                <f:selectItem itemLabel="Select" itemValue="0"/>
+                                <f:selectItems value="#{containerBean.list_c_state}"/> 
+                                <p:ajax event="change" listener="#{containerBean.stateTempToListner}" process="@this" update="tmp_off_cd"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_off_cd" value="Temporary Registered Office "/>
+                            </label>
+                            <p:selectOneMenu id="tmp_off_cd" value="#{containerBean.tempReg.tmp_off_cd}"  
+                                             filter="true" required="true" disabled="#{containerBean.blnDisableRegnTypeTemp}">
+                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                <f:selectItems value="#{containerBean.list_office_to}"/>
+                                <f:validateRequired for="tmp_off_cd"/>
+                                <p:ajax event="change" listener="#{containerBean.officeTempToListner}" process="@this" update="tmp_dealer"/>
+                                <f:validator validatorId="selectOneValidator_0" for="dealer_cd"/> 
+                            </p:selectOneMenu>
+                        </div>
+
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tmp_dealer" value="#{label.dealer_cd}"/>
+                            </label>
+                            <p:selectOneMenu id="tmp_dealer" value="#{containerBean.tempReg.dealer_cd}"  
+                                             filter="true" disabled="#{containerBean.blnDisableRegnTypeTemp}">
+                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                <f:selectItems value="#{containerBean.list_dealer_cd}"/>     
+                                <!--<p:ajax event="change" listener="#{containerBean.dealerTempToListner}" process="@this" update="workbench_tabview:dealer_cd"/>-->
+                            </p:selectOneMenu>
+                        </div>
+
+
+                    </div>
+
+
+                    <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                    <!--                    <p:keyFilter mask="pint" for=" tmp_no_cyl tmp_stand_cap tmp_sleep_cap tmp_manu_mon tmp_manu_yr 
+                                                      tmp_ul_weight tmp_l_weight tmp_tf_rlw 
+                                                      tmp_wheelbase tmp_length tmp_width tmp_height tmp_manu_mon tmp_sale_amt"/>   -->
+                    <!--                    <p:keyFilter regEx="/[a-zA-Z0-9]/" for="tmp_chasi_no tmp_eng_no tmp_laser_code "/>
+                                        <p:keyFilter mask="pnum" for="tmp_hp tmp_f_area tmp_cubic_cap"/>
+                                        <p:keyFilter regEx="/[a-zA-Z0-9 ]/" for="tmp_color"/>  -->
+                    <!--#############################################################################################-->
+                </p:panel>
+            </div>
+        </div>
+    </div>
+</html>
+

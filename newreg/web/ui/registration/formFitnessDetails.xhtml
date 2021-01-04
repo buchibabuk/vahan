@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <p:panel  styleClass="top-space bottom-space">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_fitness_dt_disp"  value="#{language.fitnessTestDateAndTime}"/>
+                </label>
+                <p:inputText id="tf_fitness_dt_disp"  value="#{fitnessDobj.fit_chk_dt_descr}" disabled="true"/> 
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="fit_valid_to_disp" value="#{language.fitnessValidUpto}"/>
+                </label>
+                <p:inputText  id="fit_valid_to_disp" value="#{fitnessDobj.fit_valid_to_descr}" disabled="true"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_nid_disp"  value="#{language.nid}"/>
+                </label>
+                <p:inputText id="tf_nid_disp" value="#{fitnessDobj.fit_nid_descr}" disabled="true"/>
+            </div>
+        </div>
+
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_result_disp"  value="#{language.result}"/>
+                </label>
+                <p:selectOneMenu  id="tf_result_disp" value="#{fitnessDobj.fit_result}" disabled="true">
+                    <f:selectItem itemLabel="PASS" itemValue="Y"/>
+                    <f:selectItem itemLabel="FAIL" itemValue="N"/>
+                </p:selectOneMenu>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_inspected_by_disp"  value="#{language.inspectedByOfficer1}"/>
+                </label>
+                <p:inputText  id="tf_inspected_by_disp" value="#{fitnessDobj.fit_officer_name1}" disabled="true"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_inspected_by2_disp"  value="#{language.inspectionOfficer2}"/>
+                </label>
+                <p:inputText  id="tf_inspected_by2_disp" value="#{fitnessDobj.fit_officer_name2}" disabled="true"/>
+            </div>
+        </div>
+
+        <div class="ui-grid-row">  
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_state_name"  value="#{language.stateName}"/>
+                </label>
+                <p:inputText id="tf_state_name" value="#{fitnessDobj.state_name}" disabled="true"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_off_name" value="#{language.officeName}"/>
+                </label>
+                <p:inputText id="tf_off_name" value="#{fitnessDobj.off_name}" disabled="true"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_fare_meter_no_disp"  value="#{language.fareMeterNo}."/>
+                </label>
+                <p:inputText id="tf_fare_meter_no_disp" value="#{fitnessDobj.fare_mtr_no}" disabled="true"/>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_remarks_disp" value="#{language.remarksIfAny}"/>
+                </label>
+                <p:inputTextarea id="tf_remarks_disp" cols="30" maxlength="100" rows="3" value="#{fitnessDobj.remark}" disabled="true"/>
+            </div>
+        </div>
+
+    </p:panel>
+
+</html>
+
+
+
+

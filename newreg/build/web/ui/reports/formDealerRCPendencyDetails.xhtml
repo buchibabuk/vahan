@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent"> 
+    <ui:define name="content22" >
+
+        <h:form id="frm_dealRCPen" prependId="false">
+            <div class="ui-grid-row center-position top-space bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">Dealer Registration Pendency Details</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-col-12">
+                    <p:commandButton  value="Back" action="home" immediate="true"/> 
+                    <p:commandButton  value="Get Details" action="#{dealerRCPendency.showDealerPendencyDetails()}" update="panelDtlsID" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                        <p:blockUI block=":frm_dealRCPen" widgetVar="bui">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+                    </p:commandButton>
+                </div>
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="panelDtlsID" >
+                        <p:dataTable id="dealerRCTableID" rendered="#{dealerRCPendency.printDobj.size()>0}"   value="#{dealerRCPendency.printDobj}" var="list" rows="25" 
+                                     widgetVar="seatWorkList" filteredValue="#{dealerRCPendency.filteredSeat}" 
+                                     paginatorPosition="bottom" paginator="true"
+                                     rowIndexVar="index" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                            <f:facet name="header">  
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 left-position">
+                                        <h:outputText escape="false" value="Dealer Registration Pendency Details as on   #{dealerRCPendency.repGeneDate} for #{dealerRCPendency.dobj.offName}  "/>
+                                    </div>                                
+                                </div>
+                            </f:facet>
+                            <f:facet name="header">  
+                                <div class="ui-grid-row">                                
+                                    <div class="ui-grid-col-12 right-position">
+                                        <p:commandButton id="buttonDownloadFilelbl" value="Download File" action="#{dealerRCPendency.updatelblFile()}" onclick="PF('downloadRCDataDialog').show();" update=":frm_dealRCPen" rendered="#{dealerRCPendency.printDobj.size()>0}"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column styleClass="collumn-width center-position">
+                                <f:facet name="header">
+                                    <h:outputText value="Srl.No." styleClass="font-bold" />
+                                </f:facet>                            
+                                <h:outputText value="#{index +1}"/>
+                            </p:column>
+                            <p:column rendered="#{dealerRCPendency.showDealerName}" filterBy="#{list.dealerName}" filterMatchMode="contains" sortBy="#{list.dealerName}">
+                                <f:facet name="header">
+                                    <h:outputText value="Dealer Name" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.dealerName}" />
+                            </p:column>
+                            <p:column rendered="#{dealerRCPendency.showOfficeName}" filterBy="#{list.offName}" filterMatchMode="contains" sortBy="#{list.offName}">
+                                <f:facet name="header">
+                                    <h:outputText value="Office Name" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.offName}" />
+                            </p:column>
+                            <p:column filterBy="#{list.applNO}" filterMatchMode="contains" sortBy="#{list.applNO}">
+                                <f:facet name="header">
+                                    <h:outputText value="Application No" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.applNO}" />
+                            </p:column>
+                            <p:column filterBy="#{list.regnNO}" filterMatchMode="contains" sortBy="#{list.regnNO}">
+                                <f:facet name="header">
+                                    <h:outputText value="Registration No" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.regnNO}" />
+                            </p:column>
+                            <p:column filterBy="#{list.chasiNO}" filterMatchMode="contains" sortBy="#{list.chasiNO}">
+                                <f:facet name="header">
+                                    <h:outputText value="Chassis No" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.chasiNO}" />
+                            </p:column>
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Owner Name" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.ownerName}" />
+                            </p:column>                       
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Purpose" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.purpose}" />
+                            </p:column>
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Model Name" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.modelName}" />
+                            </p:column> 
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Hypothecated" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.hypth}" />
+                            </p:column> 
+                            <p:column filterBy="#{list.applStatus}" filterMatchMode="contains" sortBy="#{list.applStatus}">
+                                <f:facet name="header">
+                                    <h:outputText value="Status" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.applStatus}" />
+                            </p:column> 
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Pending At" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.status}" />
+                            </p:column> 
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Pending Since" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{list.pendingFrom}" />
+                            </p:column> 
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </div>
+            </div>            
+        </h:form>
+        <p:dialog id="downloadDataDialog" header="Different File Format" dynamic="true" closable="true" modal="true" widgetVar="downloadRCDataDialog">
+            <h:form id="formDispatchExport" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('downloadRCDataDialog').hide();" >
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":frm_dealRCPen:dealerRCTableID" fileName="#{dealerRCPendency.downloadFileName}"  />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>                    
+                    <h:commandLink action="#{dealerRCPendency.downloadCSV}" onclick="PF('downloadRCDataDialog').hide();">
+                        <p:graphicImage name="csv.png" width="24" library="images"/>
+                    </h:commandLink>
+
+                    <h:outputText value="XML FILE"/>
+                    <h:commandLink onclick="PF('downloadRCDataDialog').hide();">
+                        <p:graphicImage name="xml.png" width="24" library="images"/>
+                        <p:dataExporter type="xml" target=":frm_dealRCPen:dealerRCTableID" fileName="#{dealerRCPendency.downloadFileName}" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:blockUI block=":frm_dealRCPen" widgetVar="bui">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content22">
+        <h:form id="home_state_auth" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">Home State Authorization Addition Updation</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+
+                <p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no" value="#{label.appl_no}"/>
+                            </label>
+                            <p:inputText id="appl_no" readonly="true" value="Application Number" size="30"/>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel header="Permit/Home State Authorisation Details" styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.pmt_valid_from}"/>
+                            </label>
+                            <p:calendar />
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.pmt_valid_upto}"/>
+                            </label>
+                            <p:calendar />
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.period}"/>
+                            </label>
+                            <p:inputText value="Yearly"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="State Auhtorisation To"/>
+                            </label>
+                            <p:calendar/>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.auth_valid_from}"/>
+                            </label>
+                            <p:calendar />
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.auth_valid_upto}"/>
+                            </label>
+                            <p:calendar />
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel  header="Home State Authorisation Details" styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.bank_name}"/>
+                            </label>
+                            <p:selectOneMenu>
+                                <f:selectItem itemLabel="Select" itemValue="-1"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.branch}"/>
+                            </label>
+                            <p:inputText value="ENPTY"/>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.state}"/>
+                            </label>
+                            <p:inputText value="AI: ALL INDIA"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.challan_no}"/>
+                            </label>
+                            <p:inputText value="Challan No."/>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.challan_dt}"/>
+                            </label>
+                            <p:calendar/>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{pmtLabel.amt}"/>
+                            </label>
+                            <p:inputText value="15000"/>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Save">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:commandButton value="Reset" />
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

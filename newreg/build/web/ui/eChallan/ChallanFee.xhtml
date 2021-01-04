@@ -1,0 +1,263 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form id="ChallanFee">
+            <ui:include id="fee_recpt_no" src="/ui/recpt/form_current_rcpt_no.xhtml" />
+            <p:blockUI block="ChallanFee:challnadetailsPanel" widgetVar="bui_fancy">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <span class=" header-main">Enforcement Case Fee and Tax</span>
+                    </div>
+                </div>
+                <p:panel id="challnadetailsPanel" header="Payment of Enforcement Case Fee and Tax" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages id="messages"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="tf_applicationNo" value="Application No:" />
+                            </label>
+                            <p:inputText
+                                id="tf_applicationNo"
+                                value="#{challanFee.applicationNo}"
+                                maxlength="50" 
+                                validatorMessage="Enter only numeric characters"
+                                required="true"
+                                requiredMessage="Enter The Application No"
+                                >
+                                <p:ajax
+                                    listener="#{challanFee.accusedSelectListener}" 
+                                    event="blur"
+                                    update="messages,vehicleDetailsPanel, payableAmount,Tax_data_table,tfGTotal,tfFeeAmount,Own_Name,vehicleDetailsPanel
+                                    ,taxDetailsPanel,feeDetailsPanel,payableAmount,paymentOptions"
+                                    process="tf_applicationNo"
+                                    onstart ="PF('bui_fancy').show();" 
+                                    onerror ="PF('bui_fancy').hide();" 
+                                    oncomplete="PF('bui_fancy').hide();" 
+                                    />
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:panel header="Vehicle Details" id="vehicleDetailsPanel"  rendered="#{challanFee.vehicleDetailsPanel}" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="Vh_No" value="Vehicle No:"/>
+                            </label>
+                            <p:inputText id="Vh_No" disabled="true" value="#{challanFee.challanOwnerDobj.vehicleNo}"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="Chas_No" value="Chassis No:"/>
+                            </label>
+                            <p:inputText id="Chas_No" disabled="true" value="#{challanFee.challanOwnerDobj.chasiNo}"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="Own_Name" value="Owner Name:" />
+                            </label>
+                            <p:inputText disabled="true" id="Own_Name"  value="#{challanFee.challanOwnerDobj.ownerName}" />
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="Stat_From" value="State From:"/>
+                            </label>
+                            <p:selectOneMenu  disabled="true" id="Stat_From" value="#{challanFee.challanOwnerDobj.stateFrom}">
+                                <f:selectItems value="#{challanFee.stateList}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="Rto_Frm" value="RTO From:"  />
+                            </label>
+                            <p:selectOneMenu disabled="true" id="Rto_Frm" value="#{challanFee.challanOwnerDobj.rtoFrom}">
+                                <f:selectItems value="#{challanFee.rtoList}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="Vh_Class" value="Vehicle Class:"  />
+                            </label>
+                            <p:selectOneMenu disabled="true" id="Vh_Class" value="#{challanFee.challanOwnerDobj.vhClassCd}">
+                                <f:selectItems value="#{challanFee.vehicleClassList}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>                
+                </p:panel>
+
+                <p:panel id="feeDetailsPanel" header="Fee Details" visible="#{challanFee.hidefeespanel}"  styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Compounding Fee" />
+                            </label>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="tfFeeAmount" value="Amount:" />
+                            </label>
+                            <p:inputText disabled="true" id="tfFeeAmount" value="#{challanFee.tfAmount}" /> 
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel id="taxDetailsPanel" header="Tax Details"  visible="#{challanFee.hidetaxpanel}"  styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable id="Tax_data_table" binding="#{index}" var="challanTax" value="#{challanFee.challanTaxList}" styleClass="top-space bottom-space"  reflow="true">
+                                <p:column styleClass="datatable-panel-serial-no">  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="S.No:"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="#{index.rowIndex + 1 }."/>
+                                </p:column> 
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="Tax Type"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="Road Tax" rendered="#{challanTax.purCd == 58}"/>
+                                    <p:outputLabel value="Special Road Tax" rendered="#{challanTax.purCd == 59}"/>
+                                </p:column>
+                                <p:column >  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="Tax From"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="#{challanTax.taxFrom}"/>
+                                </p:column>
+                                <p:column >  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="Tax Upto"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="#{challanTax.taxUpto}"/>
+                                </p:column>
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="Tax Amount"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="#{challanTax.totalTax}"/>
+                                </p:column>
+
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="Penalty"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="#{challanTax.totalPenalty}"/>
+                                </p:column>
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="Interest"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="#{challanTax.totalInterest}"/>
+                                </p:column>
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        <p:outputLabel value="Total Amount"/>
+                                    </f:facet> 
+                                    <p:outputLabel value="#{challanTax.totalAmount}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:panel>
+                    <div class="ui-grid-row">
+                        <p:outputPanel id="paymentOptions">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for ="tfGTotal" value="Grand Total:" />
+                                </label>
+                                <p:inputText id="tfGTotal" value="#{challanFee.payableAmount}" />
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for ="Pay_Mode" value="Payment Mode:" />
+                                </label>
+                                <p:selectOneMenu id="Pay_Mode" value="#{challanFee.cmPaymentMode}">
+                                    <f:selectItem itemValue="1"  itemLabel="Select Payment Mode"/>
+                                    <f:selectItem itemValue="D"  itemLabel="Draft"/>
+                                    <f:selectItem itemValue="C"  itemLabel="Cash"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </p:outputPanel>    
+                    </div>     
+                </p:panel>
+
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton 
+                            value="Save" 
+                            icon="ui-icon-check" 
+                            id="payableAmount"
+                            rendered="#{challanFee.disableSaveButton}"
+                            update="ChallanFee,messages,payableAmount,bt_isprint"
+                            action="#{challanFee.saveFromData}"
+                            onclick="PF('bui_fancy').show();" 
+                            onerror ="PF('bui_fancy').hide();" 
+                            >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:commandButton id ="bt_isprint" value="Print Challan Fee Receipt"  action="#{challanFee.confirmprintCertificate()}" rendered="#{challanFee.disablePrintButton}"/>   
+
+
+
+                        <p:dialog id="printConfirmationPopup"  
+                                  widgetVar="printParticular"
+                                  modal="true" draggable="false" closable="false" hideEffect="explode"
+                                  header="Printed Confirmation Panel" styleClass="center-position">  
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Do you want to continue"/>
+                                    </label>
+                                    <!--                                    <p:commandButton  value="Confirm Print" onclick="PF('printParticular').hide();"                                   
+                                                                                          actionListener="#{challanFee.printCertificate()}"
+                                                                                          icon="ui-icon-check" ajax="false"/>-->
+                                    <p:commandButton  value="Confirm Print" onclick="PF('printParticular').hide();"                                   
+                                                      action="/ui/reports/formChallanCashReceiptReport.xhtml?faces-redirect=true"
+                                                      icon="ui-icon-check" ajax="false" immediate="true"/>
+                                    <p:commandButton value="Cancel" onsuccess="PF('printParticular').hide();" icon="ui-icon-close"/>
+                                </div>
+                            </div>
+                        </p:dialog>
+
+                        <!--                        <p:commandButton 
+                                                    value="Reset" 
+                                                    resetValues="true"
+                                                    action="#{challanFee.clearForm}"
+                                                    update="ChallanFee,messages,challnadetailsPanel" 
+                                                    immediate="true">
+                                                </p:commandButton>-->
+                        <p:commandButton value="Back" action="home" process="@this"  immediate="true" icon="ui-icon-arrowreturnthick-1-w"/>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog> 
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>    
+</ui:composition>

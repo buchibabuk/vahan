@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"> 
+    <ui:define name="content">
+        <p:messages  showDetail="true" showSummary="false" closable="true">
+            <p:autoUpdate/>
+        </p:messages>
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Application/ Registration No/ Chassis No Status</h1>
+                </div>
+            </div>
+            <p:outputPanel id="docUploadStatusId">
+                <div class="center-position" style="top:55px; right:20px; position: absolute; background: #c7dff7; width: 380px; border-right: 1px solid #1682ba; border-top-right-radius: 4px;">
+                    <p:dataTable id="documentUploadStatus" value="#{applRegStatus.documentUpload_bean.docDescrList}" var="docUploadDescr" rowIndexVar="index" scrollable="true" scrollHeight="80" rendered="#{applRegStatus.documentUpload_bean.docDescrList.size() > 0 and applRegStatus.documentUpload_bean.renderUiBasedDMSDocPanel}">
+                        <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}."/></p:column>
+                        <p:column headerText="Document">#{docUploadDescr.doc_desc}</p:column>
+                        <p:column headerText="Verified">
+                            <h:outputLabel value="#{docUploadDescr.doc_verified eq true ? 'Verified' : 'Not Verified'}" />
+                        </p:column>
+                        <p:column headerText="Approved">
+                            <h:outputLabel value="#{docUploadDescr.doc_approved eq true ? 'Approved' : 'Not Approved'}" />
+                        </p:column> 
+                    </p:dataTable>
+                </div>
+            </p:outputPanel>
+            <div class="ui-grid-row top-space bottom-space">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-10">
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <p:selectOneRadio value="#{applRegStatus.option}">
+                                <f:selectItem itemLabel="#{label.appl_no}" itemValue="applno" />
+                                <f:selectItem itemLabel="#{label.regn_no}" itemValue="regno" />
+                                <f:selectItem itemLabel="#{label.chasi_no}" itemValue="chasino" />
+                                <p:ajax event="change" listener="#{applRegStatus.updatemaxlen()}" process="@this" update=":masterLayout:tf_entry  :masterLayout:mainpanel :masterLayout:docUploadStatusId :masterLayout:viewDocPanelId"/>
+                            </p:selectOneRadio>
+                            <p:inputText  id="tf_entry" value="#{applRegStatus.entry_text}"  required="true"  requiredMessage="#{applRegStatus.option eq 'applno' ? 'Enter Correct Application Value' : applRegStatus.option eq 'regno' ? 'Enter Correct Registration Number Value' : applRegStatus.option eq 'chasino' ? 'Enter Correct Chassis Number Value' : null }"
+                                          maxlength="#{applRegStatus.maxlen}" converter="toUpperCaseConverter" styleClass="input"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-grid-row center-position top-space bottom-space">
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="viewDocPanelId">
+                        <p:commandButton id ="bt_ShowAll" value="Show"  actionListener="#{applRegStatus.showList}"  update=":masterLayout:mainpanel :masterLayout:docUploadStatusId :masterLayout:viewDocPanelId" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" />                   
+                        <p:commandButton id="viewDocId" styleClass="left-position" icon="ui-icon-folder-open" value="View Documents" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" process="@this" action="#{applRegStatus.documentUpload_bean.viewUploadedDocuments}" rendered="#{applRegStatus.documentViewButton}"/>
+                    </p:outputPanel>
+                </div>
+            </div>
+            <p:outputPanel id="mainpanel">
+                <p:outputPanel id="documentUploadDetailsId">
+                    <ui:include src="/ui/form_doc_upload.xhtml">
+                        <ui:param name="docUpload" value="#{applRegStatus.documentUpload_bean}"/>  
+                    </ui:include> 
+                </p:outputPanel>
+
+                <p:dataTable id="tb_showStatus" value="#{applRegStatus.curlist}" var="app" rows="10" 
+                             paginator="true" rowStyleClass="#{app.approvalStatus eq 'A' ? 'ui-datatable-green' : null} #{app.approvalStatus eq 'D' ? 'ui-datatable-red' : null} #{app.approvalStatus eq 'FC' ? 'ui-datatable-red' : null}#{app.approvalStatus eq 'P' ? 'ui-datatable-yellow' : null}" >
+                    <p:column headerText="Application No" width="10%" >#{app.appl_no}</p:column>
+                    <p:column headerText="Application Date" width="8%"><h:outputText value="#{app.appl_dt}" style="word-break: break-word !important;"/></p:column>
+                    <p:column headerText="Transaction Purpose" width="9%"><h:outputText value="#{app.purCdDescr}" style="word-break: break-word !important;"/></p:column>
+                    <p:column headerText="Registration No" width="9%">#{app.regno}</p:column>
+                    <p:column headerText="Current Status" style="word-break: break-word !important;"><h:outputText value="#{app.statusDesc}" style="word-break: break-word !important;"/></p:column>   
+                    <p:column headerText="HSRP Status"><h:outputText value="#{app.hsrpDone}" style="word-break: break-word !important;"/></p:column>   
+                    <p:column headerText="FC Print"><h:outputText value="#{app.fcPrinted}" style="word-break: break-word !important;"/></p:column>       
+                    <p:column headerText="RC Print / Smart Card Status" width="11%"><h:outputText value="#{app.rcPrinted} #{app.smartCardDone}" style="word-break: break-word !important;"/></p:column> 
+                    <p:column headerText="RC Dispatch Status">#{app.dispatchRCDone}</p:column> 
+                    <p:column headerText="Office Name">#{app.offName}</p:column> 
+                    <p:column headerText="Action" width="7%"> 
+                        <p:commandButton id ="bt_show" value="Show" actionListener="#{applRegStatus.showDetail(app)}"   update=":masterLayout:mainpanel"
+                                         onclick="PF('bui').show();" oncomplete="PF('bui').hide();"> 
+                            <f:param name="appl_no" value="#{app.appl_no}"/>
+                            <f:param name="pur_cd" value="#{app.purCd}"/>
+                            <f:param name="regnno" value="#{app.regno}"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>                  
+
+                <p:dataTable id="tb_showCurStatus" value="#{applRegStatus.sellist}" var="app1" rendered="#{applRegStatus.sellist.size()>0}"  >
+                    <p:column headerText="Application No" styleClass="font-bold" >#{app1.appl_no}</p:column>
+                    <p:column headerText="Transaction Purpose" styleClass="font-bold">#{app1.purCdDescr}</p:column>
+                    <p:column headerText="Registration No" styleClass="font-bold">#{app1.regno}</p:column>
+                    <p:column headerText="Current Status" styleClass="font-bold">#{app1.statusDesc}</p:column>                        
+                </p:dataTable>
+                <p:dataTable id="showStatus"  value="#{applRegStatus.statusList}" 
+                             var="app" rendered="#{applRegStatus.statusList.size()>0}">                    
+                    <p:column headerText="Action">
+                        <h:outputText value="#{app.action_descr}" />
+                    </p:column>                
+                    <p:column headerText="Status" >
+                        <h:outputText value="#{app.statusDesc}" />
+                    </p:column>
+                    <p:column headerText="Office Remark" >
+                        <h:outputText value="#{app.office_remark}" />
+                    </p:column>
+                    <p:column headerText="Public Remark" >
+                        <h:outputText value="#{app.publicRemark}" />
+                    </p:column>
+                    <p:column headerText="Processed by" >
+                        <h:outputText value="#{app.entered_by}" />
+                    </p:column>
+                    <p:column headerText="Processed on"  >
+                        <h:outputText value="#{app.entered_on}" />
+                    </p:column>
+                    <p:column headerText="Processed From IP"  >
+                        <h:outputText value="#{app.entry_ip}" />
+                    </p:column>
+                </p:dataTable>   
+
+            </p:outputPanel>
+            <!--            <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton  value="Back" action="home" immediate="true" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>-->
+        </div>
+        <p:blockUI block=":masterLayout" widgetVar="bui">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI> 
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,472 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+
+    <h:body onload="window.print();"> 
+        <h:form prependId="false" id="form20Id">
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="3" styleClass="table-width-three datatable-panel-100  bottom-space">
+                    <h:outputLabel value="Owner: #{form20Bean.dobj.oName} " styleClass="right-space" />
+                    <h:outputLabel value="Mobile: #{form20Bean.dobj.mobileNo}" styleClass="right-space" />
+                    <h:outputLabel value="Chassis: #{form20Bean.dobj.chasiNo}" styleClass="right-space bottom-space" />
+                </h:panelGrid>
+                <div class="center-position bottom-space">
+                    <p:button value="Back" outcome="/ui/dealer/form_printDealerReports.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show()"/>
+                    <p:commandButton action="#{form20Bean.printReports('form21')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Form21" styleClass="display-none" rendered="#{form20Bean.renderButton}" />
+                    <p:commandButton action="#{form20Bean.printReports('inspCertificate')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Inspection-Certificate" styleClass="display-none" rendered="#{form20Bean.renderButton}" />
+                    <p:commandButton action="#{form20Bean.printReports('disclaimer')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Owner Disclaimer" styleClass="display-none" rendered="#{form20Bean.renderButton}" >
+                        <f:param name="APPL_NO" value="#{form20Bean.applNo}"/>
+                        <f:param name="PUR_CD" value="#{form20Bean.purCd}"/>
+                        <f:param name="REGN_NO" value="#{form20Bean.regnNo}"/>
+                    </p:commandButton>
+                    <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>
+                <div class="position-relative">
+                    <div class="center-position">
+                        <span class="font-bold report-header bottom-line text-uppercase"> <h:outputText value="FORM 20"/> </span>
+                    </div>
+                    <div class="center-position">
+                        <span class="font-bold report-subheader"><h:outputText value="APPLICATION FOR REGISTRATION OF A MOTOR VEHICLE"/></span>
+                    </div>
+                    <div class="left-position font-bold bottom-space">
+                        To, <br />
+                        The REGISTERING AUTHORITY <br /> 
+                        #{form20Bean.dobj.offName} <br /> 
+                        ............................
+                    </div>
+                    <div class="inline-section qrcode-position-absolute">
+                        <pe:qrCode 
+                            renderMethod="#{form20Bean.renderMethod}"
+                            renderMode="#{form20Bean.mode}"
+                            text="#{form20Bean.text}"
+                            label="#{form20Bean.label}"
+                            size="#{form20Bean.size}"
+                            fillColor="#000000"
+                            fontName="Ubuntu"
+                            fontColor="#01A9DB"
+                            ecLevel="H"       
+                            radius="0.5"/>
+                    </div>
+                </div>
+
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="collumn-width top-align">1. </td>
+                        <td><h:outputLabel value="Full Name of the Person to be registered as registered owner" styleClass="right-space" /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.oName}"  /> </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align"></td>
+                        <td><h:outputLabel value=" Son/Wife/Daughter of"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value=" #{form20Bean.dobj.fName}"  />  </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">2. </td>
+                        <td><h:outputLabel value="Age of the Person to be registered as registered owner "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">3. </td>
+                        <td class="top-align"><h:outputLabel value="Permanent address of the Person to be &lt;br /&gt; registered as registered owner &lt;br /&gt; (Evidence to be produced)" escape="false" /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.address1} &lt;br /&gt; #{form20Bean.dobj.address2} &lt;br /&gt; #{form20Bean.dobj.city} &lt;br /&gt; #{form20Bean.dobj.pin} "  escape="false" /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">4. </td>
+                        <td><h:outputLabel value="Temporary address of the Person to the registered "  escape="false" /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.tempAddress1} #{form20Bean.dobj.tempAddress2} #{form20Bean.dobj.tempCity} #{form20Bean.dobj.tempPin}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">5. </td>
+                        <td><h:outputLabel value="Name and address of Dealer or Manufacturer from whom the vehicle is purchased"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.dealerName} #{form20Bean.dobj.dealerAddress1} #{form20Bean.dobj.dealerAddress2} #{form20Bean.dobj.dealerCity} #{form20Bean.dobj.dealerPin}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">6. </td>
+                        <td><h:outputLabel value="If Ex-Army vehicle or imported vehicle, enclose proof of approval of design by State Transport Authority"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">7. </td>
+                        <td><h:outputLabel value="Class of Vehicle If motor cycle, whether without or with gear "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.vehClass}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">8. </td>
+                        <td><h:outputLabel value="The Motor (a) a new vehicle (b) Ex-Army vehicle (c) Imported "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="NEW"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">9. </td>
+                        <td><h:outputLabel value="Type of Body "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.bodyType}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">10. </td>
+                        <td><h:outputLabel value="Type of vehicle "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.vehCatg}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">11. </td>
+                        <td><h:outputLabel value="Makers Name "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.makersName}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">12. </td>
+                        <td><h:outputLabel value="Month and year of Manufacturer "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.mfgMonthYear}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">13. </td>
+                        <td><h:outputLabel value="No of Cylinder "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.noOfCyl}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">14. </td>
+                        <td><h:outputLabel value="Horse power "  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.horsePower}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">15. </td>
+                        <td><h:outputLabel value="Cubic Capacity"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.cubCap}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">16. </td>
+                        <td><h:outputLabel value="Makers Classification"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.modelName}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">17. </td>
+                        <td><h:outputLabel value="Wheel base"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.wheelBase}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">18. </td>
+                        <td><h:outputLabel value="A. Chassis No(affix Pencil print)"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.chasiNo}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align"></td>
+                        <td><h:outputLabel value="B. Engine Number"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.engineNo}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">19. </td>
+                        <td><h:outputLabel value="Seating Cap(Including Driver)"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.seatCap}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">20. </td>
+                        <td><h:outputLabel value="Fuel used in the engine"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.fuel}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">21. </td>
+                        <td><h:outputLabel value="Unladen weight(kgs)" /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.unLdWt}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">22. </td>
+                        <td><h:outputLabel value="Particulars of Previous Registration and Registered No(if any)"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">23. </td>
+                        <td><h:outputLabel value="Colour or the body, wings and front end"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.color}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">24. </td>
+                        <td><h:outputLabel value="Model Manufactured Location"  /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.modelManuLocCodeDescr}"  /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div class="top-space bottom-space">I hereby declare that the Motor vehicle has not been registered in any state in India. Additional particulars to be completed only in the case of transport vehicles other than motor</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div class="page-break"></div>
+                            <h:panelGrid columns="3" styleClass="table-width-three datatable-panel-100  bottom-space">
+                                <h:outputLabel value="Owner: #{form20Bean.dobj.oName} " styleClass="right-space" />
+                                <h:outputLabel value="Mobile No: #{form20Bean.dobj.mobileNo}" styleClass="right-space" />
+                                <h:outputLabel value="Chassis: #{form20Bean.dobj.chasiNo}" styleClass="right-space bottom-space" />
+                            </h:panelGrid>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">25. </td>
+                        <td colspan="3" class="table-width-oneforth">
+                            <h:outputLabel value="Number Description  " />
+                            <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                                <h:outputLabel value="a) Front axle"/>
+                                <h:outputText value=": #{form20Bean.dobj.fAxleDesc}"/>
+                                <h:outputLabel value="b) Rear  axle"/>
+                                <h:outputText value=": #{form20Bean.dobj.rAxleDesc}"/>
+                                <h:outputLabel value="c) Other axle"/>
+                                <h:outputText value=": #{form20Bean.dobj.oAxleDesc}"/>
+                                <h:outputLabel value="d) Tandem axle"/>
+                                <h:outputText value=": #{form20Bean.dobj.tAxleDesc}"/>
+                            </h:panelGrid>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">26. </td>
+                        <td colspan="3" class="table-width-oneforth">
+                            <h:outputLabel value="Gross vehicle" styleClass="right-space" />
+                            <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                                <h:outputLabel value="a )As certified by"  styleClass="right-space bottom-space"/>
+                                <h:outputText value=": "/>
+                                <h:outputLabel value="b) To be refitted"  styleClass="right-space bottom-space"/>
+                                <h:outputText value=": "/>
+                            </h:panelGrid>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">27. </td>
+                        <td colspan="3" class="table-width-oneforth">
+                            <h:outputLabel value=" Maximum axle weight in (Kg.) " />
+                            <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                                <h:outputLabel value="a) Front axle"/>
+                                <h:outputText value=": #{form20Bean.dobj.fAxleWeight}"/>
+                                <h:outputLabel value="b) Rear  axle" />
+                                <h:outputText value=": #{form20Bean.dobj.rAxleWeight}"/>
+                                <h:outputLabel value="c) Other axle" />
+                                <h:outputText value=": #{form20Bean.dobj.oAxleWeight}"/>
+                                <h:outputLabel value="d) Tandem axle" />
+                                <h:outputText value=": #{form20Bean.dobj.tAxleWeight}"/>
+                            </h:panelGrid>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">28. </td>
+                        <td colspan="3" class="table-width-oneforth">
+                            <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                                <h:outputLabel value="a) Overall length" />
+                                <h:outputText value=": "/>
+                                <h:outputLabel value="b) Overall width: " />
+                                <h:outputText value=": "/>
+                                <h:outputLabel value="c) Overall height: " />
+                                <h:outputText value=": "/>
+                                <h:outputLabel value="d) Over hang:" />
+                                <h:outputText value=": "/>
+                            </h:panelGrid>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div class="top-space bottom-space">The above particulars are to be filled in for a rigid frame motor vehicle of two or more axle for an articulated vehicles of three or more axles, or to the extend applicable for trailer, where a second semi-trailer are to be registered with an articulated motor vehicle</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div class="top-space bottom-space">The following particulars are to be furnished for each semi-trailer</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">29. </td>
+                        <td><h:outputLabel value="AC Fitted" /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.acFitted}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">30. </td>
+                        <td><h:outputLabel value="Gross Vehicle Weight(kgs)" /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td> <h:outputText value="#{form20Bean.dobj.ldWt}"  />  </td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">31. </td>
+                        <td><h:outputLabel value="The vehicle is covered by valid insurance certificate or cover note of" /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td><h:outputText value="#{form20Bean.dobj.insDtls}"  /></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align">32. </td>
+                        <td><h:outputLabel value="The vehicle is exempted from Insurance." /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="collumn-width top-align"> </td>
+                        <td><h:outputLabel value="The relevant order is enclosed." /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="collumn-width top-align">33. </td>
+                        <td><h:outputLabel value="I have paid the prescribed fee of rupees............................. " /></td>
+                        <td class="collumn-width top-align">:</td>
+                        <td></td>
+                    </tr>
+                </table>
+                <table class="datatable-panel-100 bottom-space">
+                    <tr>
+                        <td class="left-position">
+                            <div class="right-space">
+                                <br />
+                                <br />
+                                <br />
+                                <br /> Date: ....... ....... ....... 
+                            </div>
+                        </td>
+                        <td class="right-position">
+                            <div class="right-space">
+                                <br />
+                                <br />
+                                <br /> Signature or thumb impression of the 
+                                <br /> person to be registered as registered owner
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="top-space">
+                    Note: The Motor Vehicle above described is :
+                    <ul style="list-style-type: lower-roman !important; margin-left: 24px; ">
+                        <li> Subject to Hire-Purchase agreement/Lease agreement with</li>
+                        <li>Subject to Hypothecation in favour of</li>
+                        <li>Not held under Hire-Purchase agreement or Lease agreement or subject to Hypothecation
+                        </li>
+                    </ul>
+                    <div>
+                        Hypothecation Details: <h:outputText value=" #{form20Bean.dobj.hypoDtls}"  /> 
+                    </div>
+                </div>
+                <div class="page-break"></div>
+                <h:panelGrid columns="3" styleClass="table-width-three datatable-panel-100 bottom-space">
+                    <h:outputLabel value="Owner: #{form20Bean.dobj.oName} " styleClass="right-space" />
+                    <h:outputLabel value="Mobile No: #{form20Bean.dobj.mobileNo}" styleClass="right-space" />
+                    <h:outputLabel value="Chassis: #{form20Bean.dobj.chasiNo}" styleClass="right-space bottom-space" />
+                </h:panelGrid>
+
+                <div class="center-position">
+                    <span class="font-bold report-header bottom-line text-uppercase"> CERTIFICATE INSPECTION OF MOTOR VEHICLE </span>
+                </div>
+
+                <div>
+                    Certified that the particulars contained in the application are true and that the vehicle complies with the requirement of the Motor Vehicle Act, 1988 and the Rules made there under.
+                </div>
+                <div class="bottom-space left-space table-width-two">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position">
+                                <div class="right-space">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />Date: ....... ....... ....... 
+                                </div>
+                            </td>
+                            <td class="right-position">
+                                <div class="right-space">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br /> Signature of the INSPECTING AUTHORITY
+                                    <br /> Name: ....... ....... ....... ....... 
+                                    <br />Designation:....... ....... ....... ....... 
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="center-position">
+                    <span class="font-bold report-header bottom-line text-uppercase"> <h:outputText value="(For OFFICE ENDORSEMENT)"/> </span>
+                </div>
+                <div class="bottom-space left-space">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position">
+                                <div class="right-space">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br /> Ref. No: ....... ....... ....... 
+                                </div>
+                            </td>
+                            <td class="right-position">
+                                <div class="right-space">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br /> Office of the ...... ....... ....... ....... ....... 
+                                    <br /> Dated ....... ....... ....... ....... ....... ......
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    The vehicle bearing chassis no and engine no has been assigned the registration number and registered in the name of and the vehicle is subject to an agreement or hire purchase / lease /hypothecation.
+                </div>
+
+
+                <div class="bottom-space left-space">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position">
+                                <div class="right-position right-space">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    Registering Authority
+                                    <br />
+                                    <br />
+                                </div>
+                                <div class="right-space">
+                                    To,<br />
+                                    ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... 
+                                    ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... ....... 
+                                    <br /> 
+                                    Name and address of the Financier By Registered post or deliver under proper acknowledgment
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <p:blockUI block="form20Id" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </h:body>
+</html>

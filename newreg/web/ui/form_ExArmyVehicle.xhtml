@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:p="http://primefaces.org/ui"    
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition>
+        <div class="ui-grid ui-grid-responsive"> 
+            <p:panel header="Ex_Army Vehicle Details"> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Voucher No:"  for="tf_Voucherno"/>
+                        </label>
+                        <p:inputText id="tf_Voucherno" value="#{exArmyBean.tf_Voucher_no}" maxlength="20" 
+                                     required="true" requiredMessage="Blank Voucher Number" converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>                        
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Voucher Date:"  for="tf_VoucherDate"/>
+                        </label>
+                        <p:calendar id="tf_VoucherDate"  value="#{exArmyBean.tf_VoucherDate}" mindate="#{owner_bean.ownerDobj.purchase_dt}" maxdate="#{owner_bean.currentDate}"
+                                    required="true" pattern="dd-MM-yyyy" navigator="true"
+                                    requiredMessage="Blank Voucher Date" >
+                        </p:calendar>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Place Of Purchase:"  for="tf_POP"/>
+                        </label>
+                        <p:inputText id="tf_POP" value="#{exArmyBean.tf_POP}" required="true" requiredMessage="Blank Place Of Purchase"
+                                     converter="toUpperCaseConverter" style="text-transform: uppercase">
+                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                        </p:inputText>
+                    </div>
+                </div> 
+            </p:panel>
+        </div>
+    </ui:composition>
+</html>

@@ -1,0 +1,398 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22">
+        <h:form id="from_surrender" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1><p:outputLabel id="header_msg" value="#{surren_goods_permit.header_msg}" styleClass="header-main"/></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel styleClass="top-space" rendered="#{surren_goods_permit.showEntryPanels}">
+                    <p:outputPanel  id="sur_permit">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height" ></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no" value="Registration Number/Permit Number:" />
+                                </label>
+                                <p:inputText id="regn_no" value="#{surren_goods_permit.regn_number}" maxlength="25" autocomplete="off" size="28"
+                                             style="text-transform:uppercase" required="true" requiredMessage="Please Enter The Registration No.">
+                                    <p:keyFilter regEx="/[a-z0-9/_]/i"/>                                                             
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Get Details" action="#{surren_goods_permit.getPermitDetail}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" ajax="true"/>
+                            <p:commandButton value="Reset" action="surrender_permit" update="@form"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel  rendered="#{surren_goods_permit.showApprovePanels}" styleClass="top-space">
+                    <p:outputPanel id="sur_permit_approval">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="surrender_approve" value="Application Number :" />
+                                </label>
+                                <p:selectOneMenu id="surrender_approve"  value="#{surren_goods_permit.approve_app_no}" >
+                                    <f:selectItems value="#{surren_goods_permit.verify_app_no_list}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>    
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{surren_goods_permit.showPermitApproveDetails()}" ajax="true" update=" All_detail "/>
+                                <p:commandButton value="Reset"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:tabView id="All_detail">
+                            <p:tab title="Owner Details">
+                                <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                                    <ui:param name="Owner_permit_detail" value="#{surren_goods_permit}"/>
+                                </ui:include>
+                            </p:tab>
+                            <p:tab title="Surrender / Restore Details">
+                                <p:panel header="Previous Permit Details">
+                                    <ui:include src="/ui/permit/form_permit_dtls.xhtml"/>
+                                </p:panel>
+                                <p:outputPanel id="authDtls" >
+                                    <p:panel header="Previous Home Authorization Details" styleClass="top-space" rendered="#{surren_goods_permit.authDobj ne null}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="authNo" value="Authorization No"/> 
+                                                </label>
+                                                <p:inputText id="authNo" value="#{surren_goods_permit.authDobj.authNo}" disabled="true"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="authFrom" value="Authorization From"/> 
+                                                </label>
+                                                <p:calendar id="authFrom" pattern="dd-MMM-yyyy" value="#{surren_goods_permit.authDobj.authFrom}" disabled="true"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="authUpto" value="Authorization Upto"/> 
+                                                </label>
+                                                <p:calendar id="authUpto" pattern="dd-MMM-yyyy" value="#{surren_goods_permit.authDobj.authUpto}" disabled="true"/>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                                <p:panel id="npAuth" styleClass="top-space bottom-space" visible="#{surren_goods_permit.showNpDetails}">
+                                    <f:facet name="header"> NP-Portal Authorization Details  </f:facet>
+                                    <div class="ui-grid-row">   
+                                        <ui:include src="/ui/permit/formNationalPermitDetails.xhtml">
+                                        </ui:include>
+                                    </div>
+                                </p:panel>
+                                <p:panel header="Re-Assigment Registration NO." styleClass="top-space bottom-space" rendered="#{surren_goods_permit.renderReAssigment}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="ReAssigRegnNo" value="Re-Assigment Registration No."/> 
+                                            </label>
+                                            <p:inputText id="ReAssigRegnNo" value="#{surren_goods_permit.reAssigmentRegnNo}" disabled="true"/>
+                                        </div>
+                                    </div> 
+                                </p:panel>
+
+                                <p:panel header="Previous Owner's Details" styleClass="top-space bottom-space" rendered="#{surren_goods_permit.existingOwnerDisable}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <p:dataTable id="old_owner" value="#{surren_goods_permit.listExistingOwnerDetails}" var="existingOwner" styleClass="panelRowHeight">
+
+                                                <p:column headerText="Owner Serial" width="8%">
+                                                    <h:outputText value="#{existingOwner.owner_sr}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Previous Owner Name" width="14%">                                          
+                                                    <h:outputText value="#{existingOwner.owner_name}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Father Name" width="14%">                                        
+                                                    <h:outputText value="#{existingOwner.f_name}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Current Address" width="32%">                                        
+                                                    <h:outputText value="#{existingOwner.c_add1} &#44;
+                                                                  #{existingOwner.c_add2} &#44;
+                                                                  #{existingOwner.c_add3} &#44;                                                         
+                                                                  #{existingOwner.c_district_name} &#44;
+                                                                  #{existingOwner.c_state_name} &#45;
+                                                                  #{existingOwner.c_pincode}"/> 
+                                                </p:column>
+
+                                                <p:column headerText="Permanent Address" width="32%">                                           
+                                                    <h:outputText value="#{existingOwner.p_add1} &#44;
+                                                                  #{existingOwner.p_add2} &#44;
+                                                                  #{existingOwner.p_add3} &#44;                                                          
+                                                                  #{existingOwner.p_district_name} &#44;
+                                                                  #{existingOwner.p_state_name} &#45;
+                                                                  #{existingOwner.p_pincode}"/>
+                                                </p:column>
+
+                                            </p:dataTable>                                    
+                                        </div>
+                                    </div>
+                                </p:panel>
+
+
+
+                                <p:panel id="surrender" styleClass="top-space"> 
+                                    <f:facet name="header"> Surrender/Restore Details
+                                        <span class="float-right">
+                                            <p:selectBooleanCheckbox value="#{surren_goods_permit.nocIssue}" rendered="#{surren_goods_permit.renderNocIssue}"/>
+                                            <h:outputText value="NOC Of Permit" style="color: red" rendered="#{surren_goods_permit.renderNocIssue}"/>
+                                        </span>
+                                    </f:facet>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="purpose" value="Purpose:"/> 
+                                            </label>
+                                            <p:selectOneMenu id="purpose" effect="fold" value="#{surren_goods_permit.purpose}"  >
+                                                <f:selectItems value="#{surren_goods_permit.purpose_list}"/>
+                                                <p:ajax event="change" listener="#{surren_goods_permit.onSelectTranferPurpose()}" partialSubmit="true" update="All_detail:surrender All_detail:npAuth"/>
+                                            </p:selectOneMenu>  
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="surender_dt" value="Date :"/>
+                                            </label>
+                                            <p:calendar id="surender_dt" effect="fold" immediate="true" value="#{surren_goods_permit.surrender_dt}"
+                                                        placeholder="(DD-MM-YYYY)" pattern="dd-MM-yyyy" maxdate="#{surren_goods_permit.currentDate}" 
+                                                        disabled="#{surren_goods_permit.surrDtDisable}"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="trans_purpose" value="Transfer for Excemption" rendered="#{surren_goods_permit.renderTransferCase}"/> 
+                                            </label>
+                                            <p:selectOneMenu id="trans_purpose" effect="fold" value="#{surren_goods_permit.trans_purpose}" rendered="#{surren_goods_permit.renderTransferCase}">
+                                                <f:selectItems value="#{surren_goods_permit.transferPurposeList}"/>
+                                            </p:selectOneMenu>  
+                                        </div>
+
+                                    </div>
+                                </p:panel>
+                                <p:panel header="Order Details" styleClass="top-space">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="issue_auth" value="Issuing By :"/>
+                                            </label>
+                                            <p:inputText id="issue_auth" styleClass="text-uppercase" autocomplete="off" value="#{surren_goods_permit.issue_auth}" maxlength="10" >
+                                                <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                                <f:validateLength maximum="10" for="issue_auth"/>
+                                            </p:inputText>   
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="refern_no" value="Order Number :"/>
+                                            </label>
+                                            <p:inputText id="refern_no" styleClass="text-uppercase" autocomplete="off" value="#{surren_goods_permit.refference_no}" maxlength="15">
+                                                <f:validateLength maximum="15" for="refern_no"/>
+                                                <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                            </p:inputText> 
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="effect_from_dt" value="Order Date :" />
+                                            </label>
+                                            <p:calendar id="effect_from_dt" effect="fold" immediate="true" value="#{surren_goods_permit.effect_from}"
+                                                        placeholder="(DD-MM-YYYY)" maxdate="#{surren_goods_permit.currentDate}" pattern="dd-MM-yyyy"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="remarks" value="Remarks :"/>
+                                            </label>
+                                            <p:inputText id="remarks"  styleClass="text-uppercase" autocomplete="off" value="#{surren_goods_permit.remarks}" maxlength="50">
+                                                <p:keyFilter regEx="/[a-z0-9_ ]/i"/>
+                                            </p:inputText>   
+                                        </div>
+                                    </div>                           
+                                </p:panel>
+                                <p:panel header="New Vehicle" id="abc" styleClass="top-space" rendered="#{surren_goods_permit.renderNewVeh}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="new_veh" value="New Registration No "/> 
+                                            </label>
+                                            <p:inputText id="new_veh" value="#{surren_goods_permit.new_regn_no}" styleClass="text-uppercase" autocomplete="off" disabled="#{surren_goods_permit.newRegnNoDisable}">
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <p:commandButton value="Get Details" action="#{surren_goods_permit.onBlurEnent()}" update="abc hypthDtls" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                                        </div>
+                                    </div>
+                                    <p:dialog id="newVehicleInfo" header="Owner Details" widgetVar="newinfo1" modal="true" closable="false" width="1000px" height="600px">
+                                        <p:commandButton value="Confirm" update="@form" action="#{surren_goods_permit.newRegistrationProcess()}" style="width: 100%" icon="ui-icon-check">
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/> 
+                                        </p:commandButton>
+                                        <ui:include src="/ui/commonUI/form_owner_dtls_common.xhtml">
+                                            <ui:param name="containerBean" value="#{surren_goods_permit}" />
+                                        </ui:include>
+                                        <ui:include src="/ui/commonUI/form_vehicle_dtls_common.xhtml">
+                                            <ui:param name="containerBean" value="#{surren_goods_permit}"/>
+                                        </ui:include>
+                                    </p:dialog>
+                                    <p:commandLink value="Edit Vehicle No.?" action="#{surren_goods_permit.editVehicleLink()}" styleClass="red text-uppercase" update="@form"/>
+                                    <p:outputPanel id="hypthDtls" styleClass="top-space" rendered="#{surren_goods_permit.renderNewVeh}">
+                                        <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+                                    </p:outputPanel>
+                                    <marquee onMouseOver="this.stop();" onMouseOut="this.start()"  behavior="scroll" direction="left" scrollamount="4" >
+                                        <p:outputLabel   value="Note: For check your Registration Details enter New Registration No and press Get Detail button !!!" styleClass="content-note"/>
+                                    </marquee>
+                                </p:panel>
+                            </p:tab>
+                            <p:tab id="Other_Veh_Info" title="Other Vehicle Information" rendered="#{surren_goods_permit.renderOtherVehicleInfo}">
+                                <ui:include src="/ui/permit/form_permit_check_Details.xhtml">
+                                    <ui:param name="Other_Veh_Info" value="#{surren_goods_permit}"/>
+                                </ui:include>
+                            </p:tab>
+                            <p:tab id="Upload" title="View/Upload Documents" rendered="#{surren_goods_permit.renderDocUploadTab}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 top-space-25">
+                                        <p:commandButton value="View/Upload Documents"
+                                                         icon="ui-icon-check" action="#{surren_goods_permit.openModifyUploadedDocumentService}"
+                                                         style="margin-top: 0px !important;" update="test_opnFrame"  />
+                                    </div>    
+                                </div>
+                            </p:tab>
+                        </p:tabView>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:panel id="changedByPrevUser" rendered="#{surren_goods_permit.prevChangedDataList.size()>0}"
+                                 toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                            <p:dataTable value="#{surren_goods_permit.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="Changed by Employee" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="Changed on" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel> 
+                    </div>
+                </div>
+
+                <p:panel id="panalSave" styleClass="top-space" rendered="#{surren_goods_permit.showEntryPanels}">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Save" action="#{surren_goods_permit.saveSurrenderDetails}"  
+                                             update="app_num_id" disabled="#{surren_goods_permit.disableBut}"  onclick="PF('bui').show();" oncomplete="PF('bui').hide();" >
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton value="Reset" action="surrender_permit" disabled="#{surren_goods_permit.disableBut}"/>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:outputPanel id="test_opnFrame">
+                    <p:dialog widgetVar="ifrmDlg" modal="true" header="Upload Document">
+                        <p:ajax event="close" />
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <iframe id="iframeCenter" src="#{surren_goods_permit.dmsUrl}"
+                                        height="600" width="1200" frameborder="0" scrolling="auto"
+                                        marginheight="1" marginwidth="1"> </iframe>
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel styleClass="top-space" rendered="#{surren_goods_permit.showVerifyPanels}" >
+                            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                <ui:param value="#{surren_goods_permit}" name="app_disapp"/>
+                            </ui:include>
+                        </p:outputPanel>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog>
+
+                        <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputLabel value="#{surren_goods_permit.app_no_msg}" escape="false"/>
+                                <f:facet name="footer">
+                                    <p:commandButton value="Exit for another application" 
+                                                     styleClass="ui-selectonemenu-label" action="surrender_permit"/>
+                                </f:facet> 
+                            </h:panelGrid>
+                        </p:dialog>
+
+                        <p:dialog id="no_Of_pmt" header="Number Of Permit" widgetVar="noOfPmt" modal="true" resizable="false" closable="false">
+                            <p:dataTable id="permitDetails"  value="#{surren_goods_permit.multiPermitDetails}" paginatorAlwaysVisible="false" var="virtual" rows="10"
+                                         paginator="true" widgetVar="seatWorkList" styleClass="top-space bottom-space"
+                                         emptyMessage="YOU HAVE NO PENDING PRINT ON THIS PERMIT TYPE." >
+                                <p:column headerText="Permit No.">
+                                    #{virtual.pmt_no}
+                                </p:column>
+                                <p:column headerText="Purpose Type" filterBy="#{virtual.paction}">
+                                    #{virtual.paction}
+                                </p:column>
+                                <p:column headerText="Valid From">
+                                    #{virtual.validFromInString}
+                                </p:column>
+                                <p:column headerText="Valid Upto">
+                                    #{virtual.validUptoInString}
+                                </p:column>
+                                <p:column headerText="Get Detail">
+                                    <p:commandButton value="Detail" action="#{surren_goods_permit.getPermitDetailThroughDataTable}" oncomplete="PF('noOfPmt').hide();" > 
+                                        <f:setPropertyActionListener target="#{surren_goods_permit.selectedValue}" value="#{virtual}"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:dialog>
+
+                        <p:blockUI block="@form" widgetVar="bui">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+                    </div>
+                </div>
+            </div>
+            <vcomponent:vahanMessages messages="#{PasPermitDtls.vahanMessages}"  rendered="#{PasPermitDtls.vahanMessages ne null}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

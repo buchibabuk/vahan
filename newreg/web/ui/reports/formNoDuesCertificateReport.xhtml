@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style>
+            @media print {
+                .left-space {
+                    margin-left: 10px;
+                }
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form prependId="false" id="rtoWiseTtlCollectionId">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/formNoDuesCerificate.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position bottom-space">
+                <span class="font-bold text-uppercase report-header"><h:outputText value="#{noOfDuesCerificateBean.dobj.rcpt_heading}"/> </span><br/>
+                <span class="font-bold text-uppercase report-sub-header "><h:outputText value="#{noOfDuesCerificateBean.dobj.rcpt_sub_heading}"/></span><br/>
+                <span class="font-bold text-uppercase report-sub-header "><h:outputText value="#{noOfDuesCerificateBean.dobj.rto_name },#{noOfDuesCerificateBean.dobj.state }-#{noOfDuesCerificateBean.dobj.pin_code }"/></span>
+            </div>
+            <div class="center-position top-space">
+                <span class="font-bold text-uppercase report-sub-header bottom-line center-position "><h:outputText value="No Dues Certificate"/></span>
+            </div>
+            <table class="datatable-panel bottom-space" style="margin: 0 auto;">
+                <tr>
+                    <td class="left-position">
+                        <div class="left-space">
+                            It is hereby informed that all original documents(RC, Permit, Fitness Certificate and deposit slip etc)
+                            related to registration of vehicle have been deposited by the applicant and retained to registration file in the respect of vehicle
+                            no. <h:outputText value="#{noOfDuesCerificateBean.dobj.vhicleNo}" class="font-bold text-uppercase"/> and Permit No. <h:outputText value="#{noOfDuesCerificateBean.dobj.permit_no}" class="font-bold text-uppercase"/>
+                        </div>
+                    </td>
+                    <td class="right-position">
+                        <div class="right-space">
+                            <img src=""  style="border: 1px solid #000 !important; height: 140px; width: 280px"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="datatable-panel bottom-space" style="margin: 0 auto;">
+                <h5>List of documents received for issuance of NDC:-</h5>
+            </div>
+            <div class="table-width-two datatable-panel bottom-space" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100 top-space" border="1">
+                    <h:outputLabel value="Original RC " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.rc}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Original Permit " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.permit}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Original Fitness " styleClass="right-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.fitness}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Challan Clearance report(Delhi Traffic Police) " styleClass="right-space left-space" />
+                    <h:outputText value="" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Challan Clearance report (Enf. Branch), Tpt Deptt" styleClass="right-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.challan_clearance}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="NCRB report " styleClass="right-space left-space" />
+                    <h:outputText value=""  styleClass="right-space left-space"/>
+                    <h:outputLabel value="All Pending dues like fitness,permit,Road Tax etc. " styleClass="right-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.all_due}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Undertaking from permit holder " styleClass="right-space left-space" />
+                    <h:outputText value="" class="font-bold text-uppercase left-space"/>
+                </h:panelGrid>
+            </div>
+            <br/>
+            <div class="datatable-panel bottom-space" style="margin: 0 auto;">
+                <h5>Particulars of vehicles/owner information:- </h5>
+            </div>
+            <div class="table-width-oneforth datatable-panel bottom-space" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100" border="1">
+                    <h:outputLabel value="Vehicle No. " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.vhicleNo}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Owner Name(Mr./Mrs.) " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.owner_name}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="S/O/D/O/W/O " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.father_name}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Address " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.address}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Chassis No" styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.chassis}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Engine No " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.eng_no}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Make " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.maker}" class="font-bold text-uppercase left-space"/>
+                    <h:outputLabel value="Manufacturing Year/Model " styleClass="right-space bottom-space left-space" />
+                    <h:outputText value="#{noOfDuesCerificateBean.dobj.manu_year}" class="font-bold text-uppercase left-space"/>
+                </h:panelGrid>
+            </div>
+            <br/>
+            <div class="datatable-panel bottom-space" style="margin: 0 auto;">
+                This certificate is issued after duly construing the contents of the section u/s 53, 54 and 56 of Motor vehicle Act, 1988.
+                The Issuance of LOI shall be subjected to fulfilling of existing permit conditions of TSRs. 
+            </div>
+            <br/>
+            <div class="datatable-panel bottom-space" style="margin: 0 auto;">
+                <span>
+                    <i><b>if the issuing authority has a reason to believe that the No Dues Certificate has been 
+                            obtained by fraud or misrepresentation or by withholding and information then the same shall be CANCELLED by competent authority at any later stage with vehicle registration and permit.  </b></i>
+                </span>
+            </div>
+            <div class="center-position top-space bottom-space">
+                <table class="datatable-panel">
+                    <tr>
+                        <td class="left-position">
+                            <div class="left-space">
+                                Prepared as per available record, if agreed, we may issue NDC
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="center-position top-space bottom-space">
+                <table class="datatable-panel">
+                    <td class="right-position">
+                        <div class="right-space">
+                            Signature &amp; Name of Registering Authority With official Seal<br />
+                        </div>
+                    </td>
+                </table>
+            </div>
+        </h:form>
+    </h:body>
+</html>

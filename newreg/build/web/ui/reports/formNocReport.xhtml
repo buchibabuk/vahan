@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <ui:define name="content">
+        <f:subview id="frm_print_noc">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">NOC Print Form </h1>
+                </div>
+            </div>
+            <p:panel id="nocprint" styleClass="top-space bottom-space" header="NOC Slip print panel">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <p:selectOneRadio id="tf_chasi_regno" value="#{nocprintBean.regnRadiobtn}">                               
+                            <f:selectItem itemLabel="Registration No" itemValue="R" />
+                            <f:selectItem itemLabel="Application No" itemValue="A" />
+                            <p:ajax event="change" partialSubmit="true" listener="#{nocprintBean.radioBtnListener}" update="nocprint"/> 
+                        </p:selectOneRadio>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label left-position">
+                            <p:outputLabel for="appl_no" value="#{nocprintBean.searchLabel}"/>
+                        </label>
+                        <p:inputText id="appl_no" autocomplete="off" value="#{nocprintBean.appl_regn_no}"  maxlength="#{nocprintBean.maxlenght}" styleClass="text-uppercase" >
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Print NOC" action="#{nocprintBean.confirmprintCertificate()}"  update="printNocConfirmationPopup" />  
+                        <p:commandButton  value="Back" action="home" immediate="true"/> 
+                    </div>
+                </div>
+                <p:dialog id="printNocConfirmationPopup"  
+                          widgetVar="printNOCCertificate"
+                          modal="true" draggable="false" closable="false" hideEffect="explode"
+                          header="Printed Confirmation Panel" styleClass="center-position">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Do you want to continue"/>
+                            </label>
+                            <p:commandButton  value="Confirm Print" oncomplete="PF('nocprint').hide();" onclick="PF('nocprint').show();
+                                    PF('printNOCCertificate').hide();" action="#{nocprintBean.printCertificateNOC()}" icon="ui-icon-check" 
+                                              update="@form"/>
+                            <p:commandButton value="Cancel" onsuccess="PF('printNOCCertificate').hide();" icon="ui-icon-close"/>
+                        </div>
+                    </div>
+                </p:dialog>
+                <p:blockUI block="nocprint" widgetVar="nocprint">  
+
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+
+                </p:blockUI> 
+            </p:panel>
+
+        </f:subview>
+
+    </ui:define>
+
+
+</ui:composition>

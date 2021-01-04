@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/permit/form_newPermit_Print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <c:if test="#{printDocXHTML.ownerPmtDobj.state_cd eq 'RJ'}">
+                <table class="datatable-panel">
+                    <tr>
+                        <td class="left-position">
+                            <br/>
+                            <br/>
+                            <div class="center-position inline-section">
+                                <h:outputText value="[#{printDocXHTML.purCdDescr}]"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="left-position">
+                            <div class="center-position inline-section">
+                                <h:outputText value="[Reason : #{printDocXHTML.dupReason}]" rendered="#{printDocXHTML.dupReasonRender}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </c:if>
+            <c:if test="#{printDocXHTML.ownerPmtDobj.state_cd ne 'RJ'}">
+                <table class="datatable-panel">
+                    <tr>
+                        <td class="left-position">
+                            <div class="center-position inline-section">
+                                <h:outputText value="[#{printDocXHTML.purCdDescr}]"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="left-position">
+                            <div class="center-position inline-section">
+                                <h:outputText value="[Reason : #{printDocXHTML.dupReason}]" rendered="#{printDocXHTML.dupReasonRender}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </c:if>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{printDocXHTML.image_logo}" style="width: 100px;" rendered="#{printDocXHTML.show_image_logo}" />
+                    </td>
+                    <td>
+                        <div class="center-position position-relative">
+                            <h:outputText value="Office of the secretary" rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'PY'}" styleClass="font-bold report-header text-uppercase"/><br/>
+                            <h:outputText value="#{printDocXHTML.main_header},#{printDocXHTML.passPmtDobj.off_cd}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position position-relative">
+                            <h:outputLabel value="[#{printDocXHTML.passPmtDobj.state_cd}]" styleClass="report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position position-relative">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.formName}"/> </span>
+                        </div>
+                        <div class="center-position bottom-space position-relative">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.ruleAndSection}"/> </span>
+                        </div>
+                        <div class="center-position position-relative">
+                            <span class="report-subheader text-uppercase bottom-space" > 
+                                <h:outputText value="#{printDocXHTML.pmtSubHeading}" />  
+                            </span>
+                        </div>  
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <pe:qrCode rendered="true"
+                                   renderMethod="canvas" 
+                                   renderMode="0" 
+                                   text="#{printDocXHTML.textQRcode}" 
+                                   label="QR Code"
+                                   size="110"
+                                   fillColor="000000" 
+                                   ecLevel="H" 
+                                   radius="0.5"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{printDocXHTML.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{printDocXHTML.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="1. Authorization No " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold"/>
+                    <h:outputLabel value="2. Name Of The Permit Holder " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.owner_name}" styleClass="font-bold" />
+                    <h:outputLabel value="3. Address   " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add1} #{printDocXHTML.ownerPmtDobj.c_add2} #{printDocXHTML.ownerPmtDobj.c_add3}, #{printDocXHTML.ownerPmtDobj.c_state} #{printDocXHTML.ownerPmtDobj.districtInString}-#{printDocXHTML.ownerPmtDobj.c_pincode}" />
+                    <h:outputLabel value="4. Registration Mark of the Vehicle " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" />
+                    <h:outputLabel value="5. Maker/Model/Year of Manufacturer " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.makerName}/#{printDocXHTML.ownerPmtDobj.modelName}/#{printDocXHTML.ownerPmtDobj.manuYearInString}" />
+                    <h:outputLabel value="6. Date of Registration" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.regnDateInString}" />
+                    <h:outputLabel value="7. Chassis Number" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.chasi_no}"  />
+                    <h:outputLabel value="8. Engine Number" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.engnNo}"  />
+                    <h:outputLabel value="9. Type of Vehicle :" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.vh_class} " />
+                    <h:outputLabel value="10. GVW(in Kgs)" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.ld_wt} " />
+                    <h:outputLabel value="11. Unladen Weight(in Kgs)" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.unld_wt} " />
+                    <h:outputLabel value="12. Seating Capacity " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.seat_cap}" />
+                    <h:outputLabel value="13. Date of Expiry of the Permit " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.period}" />
+                    <h:outputLabel value="14. Permit No of the Motor Vehicle" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}" />
+                    <h:outputLabel value="15. Permit Replace Date " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.passPmtDobj.replaceDateInString}" />                    
+                    <h:outputLabel value="16. Sleeper Capacity : " rendered="#{printDocXHTML.pmtFeeDobj.sleeper_cap gt 0}" styleClass="right-space bottom-space" />
+                    <h:outputText value="#{printDocXHTML.pmtFeeDobj.sleeper_cap}" rendered="#{printDocXHTML.pmtFeeDobj.sleeper_cap gt 0}" />
+                    <h:outputLabel value="16. Name of the permit issuing authority : " rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'PY' and printDocXHTML.pmtFeeDobj.sleeper_cap lt 1}" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="17. Name of the permit issuing authority : " rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'PY' and printDocXHTML.pmtFeeDobj.sleeper_cap gt 0}" styleClass="right-space bottom-space" />                    
+                    <h:outputText value="The Secretory, STA,Puducherry " rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'PY'}" />
+                </h:panelGrid>
+            </div>
+            <br/>
+
+            <p:outputPanel rendered="#{printDocXHTML.passPmtDobj.region_covered ne null}" styleClass="top-space">
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel value="The Authorization is valid throughout the Territory of India/ in the State(s) of" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.region_covered}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+
+            <br/>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="Validity of this Authorization " styleClass="right-space bottom-space" />
+                    <h:outputText value="From: &#160;&#160;#{printDocXHTML.passPmtDobj.validFromInString} &#160;&#160;&#160;&#160; To:&#160;&#160;#{printDocXHTML.passPmtDobj.validUptoInString}" styleClass="font-bold"/>
+                </h:panelGrid>
+            </div>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:outputLabel value=" As per Rule 85(3) the vehicle shall not remain outside the home state for a period of
+                               more than three months. The permit holder shall ensure that every return of the tourist
+                               vehicle to the home State is reported to the authority which issued the permit." rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'PY'}" styleClass="right-space bottom-space" />
+            </div>
+            <br/>
+            <br/>
+            <div class="top-space bottom-space datatable-panel position-relative"  style="margin: 0 auto;">
+                <p:outputPanel rendered="#{!printDocXHTML.footerRender}">
+                    <table class="datatable-panel-100" >
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                <br/>
+                                Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <p:graphicImage id="showSignImgOff" value="#{printDocXHTML.viewSignFileOff1}" rendered="#{printDocXHTML.viewSignFileOff1 ne null}" cache="false" style="height: 50px !important; width: auto;"/>
+                                    <br/>
+                                    Secretary<br/>
+                                    Regional Transport Authority<br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </p:outputPanel>
+                <p:outputPanel rendered="#{printDocXHTML.footerRender}">
+                    <table class="datatable-panel-100 position-relative">
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                <br/>
+                                Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section position-relative">
+                                    <p:graphicImage id="showSignImgOff1" value="#{printDocXHTML.viewSignFileOff1}" rendered="#{printDocXHTML.viewSignFileOff1 ne null}" cache="false" style="height: 50px !important; width: auto;"/>
+                                    <br/>
+                                    <h:outputText value="#{printDocXHTML.footerSignature}"/><br/>
+                                    <h:outputText value="State Transport Authority" rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'PY'}"/><br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}" rendered="#{printDocXHTML.ownerPmtDobj.state_cd ne 'PY'}"/><br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </p:outputPanel>
+            </div>
+            <div class="page-break"></div>
+            <ui:include src="/ui/permitreports/AITPPaymentData.xhtml"/>
+        </h:form>
+    </h:body>
+</html>
+

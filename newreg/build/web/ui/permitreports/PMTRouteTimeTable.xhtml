@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="SCTTPermitForm" prependId="false">
+            <!--            <div class="center-position">
+                            <p:button value="Back" outcome="/ui/permit/form_newPermit_Print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                            <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                        </div>-->
+            <p:outputPanel rendered="#{printDocXHTML.routeTimeTableData ne null and printDocXHTML.routeTimeTableData.size()>0}">
+<br/><br/>
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                            </td>
+                            <td class="left-position left-space">
+                                <br/>
+                                <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                                <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <br/>
+
+                <br/>
+                <br/>
+                <div class="center-position position-relative">
+                    <h:outputText value="Route Time Table Detail" styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <p:dataTable var="routeTimeDtls" value="#{printDocXHTML.routeTimeTableData}" styleClass="datatable-panel-100">
+                        <p:column headerText="Route Code" styleClass="center-position">
+                            <h:outputText value="#{routeTimeDtls.route_cd}" />
+                        </p:column>
+                        <p:column headerText="Stoppage" styleClass="center-position">
+                            <h:outputText value="#{routeTimeDtls.stoppage}" />
+                        </p:column>
+                        <p:column headerText="Journey Day" styleClass="center-position">
+                            <h:outputText value="#{routeTimeDtls.day}" />
+                        </p:column>
+                        <p:column headerText="Arrival Time (HH:MM)">
+                            <h:outputText value="#{routeTimeDtls.route_fr_time}" />
+                        </p:column>                        
+                        <p:column headerText="Departure Time (HH:MM)" styleClass="center-position">
+                            <h:outputText value="#{routeTimeDtls.route_to_time}" />
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                <br/>
+                <br/>
+                <div class="top-space bottom-space datatable-panel position-relative"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                <br/>
+                                Date: <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <p:graphicImage id="showSignImgOff2" value="#{printDocXHTML.viewSignFileOff1}" rendered="#{printDocXHTML.viewSignFileOff1 ne null}" cache="false" style="height: 50px !important; width: auto;"/>
+                                    <br/>
+                                    <h:outputText value="#{printDocXHTML.footerSignature}"/> <br/>
+                                    <h:outputText value="#{printDocXHTML.main_footer},"/><br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

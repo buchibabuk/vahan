@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button id="back_to_hsrp_auth" value="Back" outcome="/ui/reports/formHSRPAuthorization.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{hsrpAuthRptBean.dobj.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{hsrpAuthRptBean.dobj.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <table class="datatable-panel-100 bottom-space position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <div class="inline-section vehicle-type">                                    
+                            <p:outputPanel styleClass="inline-section" > 
+                                <p:graphicImage name="#{hsrpAuthRptBean.dobj.image_logo}" library="images" style="width: 100px;" rendered="#{hsrpAuthRptBean.dobj.show_image_logo}"/>
+                            </p:outputPanel>
+                        </div>
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position">
+                            <h:outputText value="#{hsrpAuthRptBean.dobj.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{hsrpAuthRptBean.dobj.subHeader}, #{hsrpAuthRptBean.dobj.offName}" escape="false"/> </span>
+                        </div>
+                        <div class="center-position top-space">
+                            <span class="font-bold report-subheader bottom-line"> <h:outputText value="(In Triplicate) (Office/ Vendor/Owner's Copy)"/> </span>
+                        </div>
+
+                        <div class="center-position bottom-space">
+                            <h:outputText value="High Security Registration Plate(HSRP) Authorization Slip" styleClass="font-bold report-subheader bottom-line text-uppercase"/>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                            <ui:param name="qrcodevalue" value="#{hsrpAuthRptBean.dobj.qrText}"/>   
+                            <ui:param name="renderqrCode" value="true"/>   
+                        </ui:include>
+                    </td>
+
+                </tr>
+            </table>
+
+
+            <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Application No: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.applNo}" />
+                    <h:outputLabel value="Dated: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.reportGeneratedon}"/>
+                    <h:outputLabel value="Registration No: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.regnNo}"  />
+                    <h:outputLabel value="Registration Date: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.regnDt}"  />
+                    <h:outputLabel value="Owner Name: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.ownerName}"  />
+                    <h:outputLabel value="Son/Wife/Daughter of: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.fatherName}"  />
+                    <h:outputLabel value="Chassis No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.chasiNo}"  />
+                    <h:outputLabel value="Engine No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.engNo}"  />
+                    <h:outputLabel value="Vehicle Class: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.vchDesc}"  />
+                    <h:outputLabel value="Vehicle Model: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.modelName}"  />
+                    <h:outputLabel value="Manufacturer Name: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.makerName}"  />
+                    <h:outputLabel value="Fuel Used: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.fuelDesc}"  />
+                    <h:outputLabel value="Color: " styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.color}"  />
+                    <h:outputLabel value="Month/Year of Manuf.: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.manuMnt} / #{hsrpAuthRptBean.dobj.manuYr}"  />
+                </h:panelGrid>
+            </div>
+            <div class="datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel-100" style="margin: 0 auto;">
+                    <h:outputText value="Owner Address: #{hsrpAuthRptBean.dobj.currAddr}"  />
+                </h:panelGrid>  
+            </div>
+            <div class="table-width-four bottom-space datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Mobile No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.mobile}"   />
+                    <h:outputLabel value="E-mail-ID: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{hsrpAuthRptBean.dobj.emailId}"  />
+                </h:panelGrid>
+            </div>
+            <div class="center-position top-space bottom-space datatable-panel position-relative" style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            <div class="left-space">
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                This letter can not be treated as Certificate of Registration.
+                                <br />
+                                <br />
+                            </div>
+                        </td>
+                        <td class="right-position">
+                            <div class="right-space">
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                Signature/Seal of Registering Authority
+                                <br />
+                                <br />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <div class="center-position top-space datatable-panel position-relative" style="margin: 0 auto;">
+                <h:outputText value="HSRP Vendor's Delivery Slip" styleClass="font-bold report-header bottom-line text-uppercase"/> 
+            </div>
+
+            <div class="center-position top-space datatable-panel position-relative" style="margin: 0 auto;">
+                <span class="font-bold report-subheader bottom-line"> <h:outputText value="(In Triplicate) (Office/ Vendor/Owner's Copy)"/> </span>
+            </div>
+
+            <div class="table-width-four bottom-space datatable-panel position-relative" style="margin: 0 auto;">
+                <div class="left-space">
+                    <span class="font-bold bottom-line">HSRP Details</span>
+                </div>
+                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Application No: " styleClass="right-space bottom-space" />
+                    <h:outputText value=":#{hsrpAuthRptBean.dobj.applNo}" />
+                    <h:outputLabel value="Dated " styleClass="right-space bottom-space" />
+                    <h:outputText value=":#{hsrpAuthRptBean.dobj.reportGeneratedon}"/>
+                    <h:outputLabel value="HSRP Front Laser ID "  styleClass="right-space bottom-space"/>
+                    <h:outputText value=":"   />  
+                    <h:outputLabel value="HSRP Rear Laser ID "  styleClass="right-space bottom-space"/>
+                    <h:outputText value=":"   /> 
+                    <h:outputLabel value="HSRP Fixation Date "  styleClass="right-space bottom-space"/>
+                    <h:outputText value=":"   />  
+                    <h:outputLabel value="HSRP Rear Laser HSRP Fixation "  styleClass="right-space bottom-space"/>
+                    <h:outputText value=":"   /> 
+                    <h:outputLabel value="HSRP Fixation Amount Receipt No. "  styleClass="right-space bottom-space"/>
+                    <h:outputText value=":"   />  
+                    <h:outputLabel value="HSRP Fixation Amount Paid On"  styleClass="right-space bottom-space"/>
+                    <h:outputText value=":"   /> 
+                </h:panelGrid>
+            </div>
+
+
+            <div class="bottom-space right-position right-space datatable-panel position-relative" style="margin: 0 auto;">
+                <div class="center-position" style="display: inline-block;">
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    Signature/Seal of Authorized HSRP Vendor
+                </div>
+            </div>
+            <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{hsrpAuthRptBean.dobj.showRoadSafetySlogan}">
+                <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                    <div class="center-position" style="display: inline-block;">
+                        <br />
+                        <h:outputText value="#{hsrpAuthRptBean.dobj.roadSafetySloganDobj.english_lang}" /><br/>
+                        <h:outputText value="#{hsrpAuthRptBean.dobj.roadSafetySloganDobj.state_lang}" />
+
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

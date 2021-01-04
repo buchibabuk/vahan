@@ -1,0 +1,423 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"    
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">  
+
+    <ui:define name="content">                  
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="stmt_report_subview">
+                <div class="ui-grid-row center-position top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.daily} #{language.acc_stmt} / #{language.consolidated} #{language.acc_stmt}</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row" styleClass="top-space bottom-space">
+                    <div class="ui-grid-col-6">
+                        <p:panel id="accStmt" styleClass="top-space bottom-space datatable-panel" header="#{language.acc_stmt}" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="user_code" value="#{language.user_username}"/>
+                                    </label>
+
+                                    <p:selectOneMenu id="user_code" value="#{dailyAndConsolidateStmtRptBean.user_code}" filter="true"  >
+                                        <f:selectItems value="#{dailyAndConsolidateStmtRptBean.list_vm_user}"/>
+                                        <p:ajax event="valueChange" partialSubmit="true"  listener="#{dailyAndConsolidateStmtRptBean.onselectCashier()}" update="consolidateStmt" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="TVNTVVCLASSTAX" value="#{language.report_type}"/>
+                                    </label>
+
+                                    <p:selectOneMenu id="TVNTVVCLASSTAX" value="#{dailyAndConsolidateStmtRptBean.tv_ntv_class_code}" filter="true"  >
+                                        <f:selectItems value="#{dailyAndConsolidateStmtRptBean.list_tv_ntv_class_code}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-3">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="frdt_cal" value="#{language.date} #{language.from}"/>
+                                    </label>
+                                    <p:outputPanel id="fromdatecal">
+                                        <p:calendar id="frdt_cal" value="#{dailyAndConsolidateStmtRptBean.frdt_cal}" maxdate="#{dailyAndConsolidateStmtRptBean.today}" 
+                                                    pattern="dd-MMM-yyyy" navigator="true" readonlyInput="true">
+                                            <p:ajax event="dateSelect" partialSubmit="true" process="frdt_cal" listener="#{dailyAndConsolidateStmtRptBean.onDateSelect}" update="StmtType todatecal" />
+                                        </p:calendar>
+                                    </p:outputPanel>
+                                </div>
+                                <div class="ui-grid-col-3">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="todt_cal" value="#{language.date} #{language.upto}"/>
+                                    </label>
+                                    <p:outputPanel id="todatecal">
+                                        <p:calendar id="todt_cal" value="#{dailyAndConsolidateStmtRptBean.todt_cal}" 
+                                                    pattern="dd-MMM-yyyy" navigator="true" mindate="#{dailyAndConsolidateStmtRptBean.minToDate}" maxdate="#{dailyAndConsolidateStmtRptBean.maxToDate}" readonlyInput="true">
+                                            <p:ajax event="dateSelect" partialSubmit="true" process="todt_cal" listener="#{dailyAndConsolidateStmtRptBean.onUptoDateSelect}" update="StmtType fromdatecal" />                                        
+                                        </p:calendar>
+                                    </p:outputPanel>
+                                </div>                                        
+                            </div> 
+                            <div class="ui-grid-row">   
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:outputPanel id="StmtType">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="consolidateStmt" value="#{language.accs_stmt_as}"/>
+                                        </label>
+                                        <p:selectOneMenu id="consolidateStmt" filter="true" value="#{dailyAndConsolidateStmtRptBean.consolidateStmt}" >                                             
+                                            <f:selectItems value="#{dailyAndConsolidateStmtRptBean.list_vm_consolidateStmt}"/>
+                                        </p:selectOneMenu>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">   
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:commandButton value="#{language.show}"
+                                                     action="#{dailyAndConsolidateStmtRptBean.displayDailyAccStmt()}" update="dailyconsolidateonscreen consolidateOnscreen dailyDispalypanel consolidateDispalypanel cancelpanel canceldatalist drftchallaninscreen drftchallan DDDetailpanel DDDetailListpanel"
+                                                     onclick="PF('bui').show()" oncomplete="PF('bui').hide()"/> 
+                                    <p:commandButton value="#{language.print}"
+                                                     action="#{dailyAndConsolidateStmtRptBean.printDailyAccStmt()}" onclick="PF('bui').show()" oncomplete="PF('bui').hide()"/> 
+                                    <p:button value="#{language.collection_summary}" outcome="/ui/report/form_collectionSummary.xhtml?faces-redirect=true" /> 
+                                </div>
+                            </div>
+
+                        </p:panel>
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <p:panel rendered="#{!dailyAndConsolidateStmtRptBean.is_dealerUser}" styleClass="top-space bottom-space" header="Draft / Cheque Collected Statement">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="bankcd" value="#{language.bank_name}"/>
+                                    </label>
+                                    <p:selectOneMenu id="bankcd" filter="true" 
+                                                     value="#{dailyAndConsolidateStmtRptBean.bank_code}" >
+                                        <f:selectItem itemValue="all" itemLabel="#{language.all_bank}"/>
+                                        <f:selectItems value="#{dailyAndConsolidateStmtRptBean.list_vm_bankcd}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">   
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="insttype" value="#{language.instrument_type}"/>
+                                    </label>
+                                    <p:selectOneMenu id="insttype" filter="true" value="#{dailyAndConsolidateStmtRptBean.inst_type}" >
+                                        <f:selectItems value="#{dailyAndConsolidateStmtRptBean.instrumentList}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">   
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <p:commandButton value="#{language.show}" action="#{dailyAndConsolidateStmtRptBean.displayDailyDraftStmReport()}" update="drftchallaninscreen drftchallan dailyDispalypanel consolidateDispalypanel cancelpanel DDDetailpanel"
+                                                     onclick="PF('bui').show()" oncomplete="PF('bui').hide()"/>  
+                                    <p:commandButton value="#{language.generate}" action="#{dailyAndConsolidateStmtRptBean.printDailyDraftStmReport()}" onclick="PF('bui').show()" oncomplete="PF('bui').hide()"/> 
+
+                                </div>
+                                <div class="ui-grid-col-6">
+
+                                </div>
+                            </div>
+                        </p:panel>
+                    </div>
+                </div>
+                <div class="ui-grid-row center-position top-space bottom-space">
+                    <div class="ui-grid-col-12 datatable-second-column-left">
+                        <p:outputPanel id="dailyDispalypanel">
+                            <p:dataTable rendered="#{dailyAndConsolidateStmtRptBean.dailyListDispaly}" id="dailyconsolidateonscreen" value="#{dailyAndConsolidateStmtRptBean.dailylist}" var="onscreen" rowIndexVar="rowkey"
+                                         styleClass="border-transparent datatable-second-column-left datatable-third-column-left datatable-fourth-column-left datatable-fifth-column-left">
+                                <f:facet name="header"><h:outputText value="#{dailyAndConsolidateStmtRptBean.consolidatHeaderLabel}" /></f:facet>
+                                <p:column styleClass="collumn-width center-position">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.user_srno}" />
+                                    </f:facet>
+                                    <h:outputText value="#{onscreen.srindex}" rendered="#{onscreen.received_dt != null}" />                                
+                                </p:column>
+                                <p:column style="width: 135px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.regn_no}/&lt;br /&gt;#{language.chasi_no}" styleClass="resp-label-section left-position" escape="false" />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.regn_no}"/>
+                                </p:column>
+                                <p:column style="width: 205px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.name}/&lt;br /&gt;#{language.user_vehClass}" styleClass="resp-label-section left-position" escape="false" />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.name}"/>
+                                </p:column>
+                                <p:column style="width: 110px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.rcpt_no}/&lt;br /&gt;#{language.home_rightpanelApplno}" styleClass="resp-label-section left-position" escape="false"   />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.receipt_No}" />
+                                </p:column>
+                                <p:column style="width: 205px;"  >
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.transaction}" styleClass="resp-label-section left-position" escape="false"   />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.transaction}" escape="false" />
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.fee}/&lt;br /&gt;#{language.tax}" styleClass="resp-label-section right-position" escape="false"/>
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.amount}" styleClass="right-position right-space" />
+                                </p:column> 
+                                <p:column rendered="#{dailyAndConsolidateStmtRptBean.ispaymentShare}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.vendor}/&lt;br /&gt;#{language.share}" styleClass="resp-label-section right-position" escape="false"/>
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.amountVendor}" styleClass="right-position right-space" />
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.fine}/&lt;br /&gt;#{language.penalty}" styleClass="resp-label-section right-position" escape="false" />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.feeCM_Penalty_Tax}" styleClass="right-position right-space" />
+                                </p:column>
+
+                                <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_surcharge}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.surcharge}" styleClass="resp-label-section right-position"  />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.surcharge}" styleClass="right-position right-space" />
+                                </p:column>
+
+                                <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_interest}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.interest}" styleClass="resp-label-section right-position"  />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.interest}" styleClass="right-position right-space" />
+                                </p:column>
+                                <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_amount1}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{taxFieldLabel.taxFieldDobj.tax1Label}" styleClass="resp-label-section right-position"  />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.amount1}" styleClass="right-position right-space" />
+                                </p:column> 
+                                <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_amount2}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{taxFieldLabel.taxFieldDobj.tax2Label}" styleClass="resp-label-section right-position"  />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.amount2}" styleClass="right-position right-space" />
+                                </p:column> 
+
+                                <p:column style="width:50px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{language.amount}" styleClass="resp-label-section right-position"  />
+                                    </f:facet>
+                                    <h:outputLabel value="#{onscreen.total}" styleClass="right-position right-space" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel> 
+                    </div>
+                </div>                
+
+                <p:outputPanel id="consolidateDispalypanel">
+                    <p:dataTable rendered="#{dailyAndConsolidateStmtRptBean.consolidateListDispaly}" id="consolidateOnscreen" value="#{dailyAndConsolidateStmtRptBean.consolidateListonscreen}" var="onscreenconsolidate" rowIndexVar="rowkey"  
+                                 styleClass="border-transparent">
+                        <f:facet name="header"><h:outputText value="#{dailyAndConsolidateStmtRptBean.consolidatHeaderLabel}" /></f:facet>
+                        <p:column styleClass="collumn-width center-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.user_srno}" styleClass="resp-label-section center-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreenconsolidate.srindex}" rendered="#{onscreenconsolidate.transaction != null or onscreenconsolidate.accHead != null}"/>   
+                        </p:column> 
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_transaction}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.transaction}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.transaction}" styleClass="left-position right-space" escape="false"/>
+                        </p:column>                        
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_acchead}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.acc_head}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.accHead}"  styleClass="left-position right-space" />
+                        </p:column>
+
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.renderClassType}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.class_type}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.class_type}" styleClass="left-position right-space" escape="false"/>
+                        </p:column>
+
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_amount}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.amount}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.amount}"  styleClass="right-position right-space"/>
+                        </p:column>
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_feeAndtax}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.fee}/#{language.tax}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.amount}"  styleClass="right-position right-space"/>
+                        </p:column>
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.ispaymentShare}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.vendor} #{language.share}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.amountVendor}"  styleClass="right-position right-space"/>
+                        </p:column>
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_penalty}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.fine}/#{language.penalty}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.feeCM_Penalty_Tax}"  styleClass="right-position right-space" />
+                        </p:column>
+
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_surcharge}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.surcharge}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.surcharge}"  styleClass="right-position right-space"/>
+                        </p:column>
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_interest}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.interest}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.interest}"  styleClass="right-position right-space"/>
+                        </p:column>
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_amount1}">
+                            <f:facet name="header">
+                                <h:outputText value="#{taxFieldLabel.taxFieldDobj.tax1Label}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.amount1}"  styleClass="right-position right-space"/>
+                        </p:column>
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_amount2}">
+                            <f:facet name="header">
+                                <h:outputText value="#{taxFieldLabel.taxFieldDobj.tax2Label}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.amount2}"  styleClass="right-position right-space"/>
+                        </p:column>
+                        <p:column rendered="#{dailyAndConsolidateStmtRptBean.is_total}">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.totalAmount}" styleClass="resp-label-section right-position"  />
+                            </f:facet>
+                            <h:outputLabel value="#{onscreenconsolidate.total}"  styleClass="right-position right-space"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+                <p:outputPanel id="drftchallaninscreen">
+                    <p:dataTable rendered="#{dailyAndConsolidateStmtRptBean.onscreenDraftchallangenerate.size()>0 ? true : false}" id="drftchallan" value="#{dailyAndConsolidateStmtRptBean.onscreenDraftchallangenerate}" var="onscreendraft"  rowIndexVar="rowkey" 
+                                 styleClass="border-transparent datatable-third-column-right datatable-fourth-column-right datatable-fifth-column-right">
+                        <f:facet name="header">#{dailyAndConsolidateStmtRptBean.onscreenDraftchallangenerate.size()>0 ? dailyAndConsolidateStmtRptBean.onscreenDraftchallangenerate.get(0).reportHeader : ''} <h:outputText value="(#{dailyAndConsolidateStmtRptBean.selusername})" /></f:facet>
+                        <p:column styleClass="collumn-width center-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.user_srno}" />
+                            </f:facet>
+                            <h:outputText value="#{rowkey+1}" />                                
+                        </p:column>
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.number}" styleClass="resp-label-section center-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreendraft.instrument_no}" styleClass="inline-section right-space" />
+                        </p:column> 
+
+                        <p:column styleClass="left-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.home_rightpanelApplno}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreendraft.application_No}" styleClass="resp-label-section left-position" escape="false"/>
+                        </p:column>  
+                        <p:column styleClass="left-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.rcpt_no}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreendraft.receipt_No}" styleClass="resp-label-section left-position" escape="false"/>
+                        </p:column>  
+
+                        <p:column styleClass="left-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.date}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreendraft.instrumentDate}" styleClass="resp-label-section left-position"/>
+                        </p:column>  
+
+                        <p:column styleClass="left-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.bank_name}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreendraft.bankName}" styleClass="resp-label-section left-position"/>
+                        </p:column> 
+
+                        <p:column styleClass="left-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.branch_name}" styleClass="resp-label-section left-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreendraft.branchName}" styleClass="resp-label-section left-position"/>
+                        </p:column> 
+                        <p:column styleClass="right-position">
+                            <f:facet name="header">
+                                <h:outputText value="#{language.amount}" styleClass="resp-label-section center-position"  />
+                            </f:facet>
+                            <h:outputText value="#{onscreendraft.instrument}" styleClass="inline-section right-space" />
+                        </p:column> 
+
+
+                    </p:dataTable>
+                </p:outputPanel>
+                <div class="datatable-panel" style="margin: 0px auto;">
+                    <p:outputPanel id="cancelpanel">
+                        <p:dataList id="canceldatalist" rendered="#{dailyAndConsolidateStmtRptBean.dailyListDispaly}" value="#{dailyAndConsolidateStmtRptBean.onscreenCancelReceipt}" var ="onscreencancelReceipt" styleClass="border-transparent top-space bottom-space">
+                            <h:outputText value="#{language.cancelled_receipt}" styleClass="font-bold right-space" /> <h:outputText value="#{onscreencancelReceipt.cancel_receipt}" /> 
+                        </p:dataList>
+                    </p:outputPanel>
+                </div>
+                <div class="datatable-panel" style="margin: 0px auto;">
+                    <p:outputPanel id="DDDetailpanel">
+                        <p:dataTable id="DDDetailListpanel"  var="DDdataList"                                      
+                                     rendered="#{dailyAndConsolidateStmtRptBean.displayInstDDDetails}" 
+                                     value="#{dailyAndConsolidateStmtRptBean.ddDtlsList}" 
+                                     styleClass="border-transparent" style="width: 300px !important;">
+                            <p:column headerText="#{language.details}" styleClass="left-position" style="width: 150px !important;">
+                                <h:outputText value="#{DDdataList.instrumentDeac}" styleClass="inline-section"/>
+                            </p:column>
+                            <p:column headerText="#{language.amount} (#{language.rs})" styleClass="right-position">
+                                <h:outputText value="#{DDdataList.instrumentAmt}" styleClass="right-space inline-section"/>
+                            </p:column>
+                            <p:columnGroup type="footer" rendered="#{dailyAndConsolidateStmtRptBean.displayInstDDDetails}">
+                                <p:row>
+                                    <p:column footerText="#{language.totalAmount}(#{language.rs})" styleClass="font-bold left-position" />
+                                    <p:column footerText="#{dailyAndConsolidateStmtRptBean.dobj.grandTotal}/-" styleClass="font-bold right-position right-space" />
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </p:outputPanel>
+                </div>
+            </f:subview>
+        </div>           
+        <p:blockUI block=":masterLayout" widgetVar="bui">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI> 
+    </ui:define>
+</ui:composition>
+
+

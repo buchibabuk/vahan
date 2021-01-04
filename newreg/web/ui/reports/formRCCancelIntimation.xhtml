@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <h:form id="frm_RCCancel" prependId="false">
+            <div class="ui-grid-row top-space bottom-space">
+                <div class="ui-grid-col-12">
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>            
+            <p:outputPanel id="numberpanel" rendered="#{!rccancelintimation.renderReportPanel}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <h1 class="header-main">RC Cancel Report</h1>
+                        </div>
+                    </div>
+                    <p:outputPanel styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no" value="Registration No"/>
+                                </label>
+                                <p:inputText id="regn_no" value="#{rccancelintimation.rcCancellDobj.regn_no}"  maxlength="10" styleClass="text-uppercase"
+                                             required="true" requiredMessage="Please enter Registration Number" converter="toUpperCaseConverter" autocomplete="off">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Print" action="#{rccancelintimation.checkRCCancelDetails()}" update="@form"/>
+                                <p:commandButton value="Back" action="home" immediate="true"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel id="ReportPanel" rendered="#{rccancelintimation.renderReportPanel}">
+                <div class="center-position">
+                    <p:button value="Back" outcome="/vahan/home.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                    <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{rccancelintimation.rcCancellDobj.reportHeading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <div class="position-relative">
+                    <div class="center-position">
+                        <span class="font-bold report-subheader"> <h:outputText value="#{rccancelintimation.rcCancellDobj.reportSubHeading}"/> </span>
+                    </div>
+                    <div class="center-position ">
+                        <span class="font-bold report-subheader text-uppercase"> <h:outputText value="#{rccancelintimation.rcCancellDobj.off_name}"/> </span>                    
+                    </div>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="Order" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <br/>
+                <table class="datatable-panel" style="margin: 0 auto;">
+                    <tr>
+                        <td class="left-position top-align">
+                            <span class="font-bold"> No:  </span>
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.appl_no}"/>                        
+                        </td>
+                        <td class="right-position top-align">
+                            <span class="font-bold">Dated: </span>
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.printDate}"/>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <div class="bottom-space">Where the owner has applied to the Registering Authority, <span class="font-bold"><h:outputText value="#{rccancelintimation.rcCancellDobj.off_name}"/></span> for cancellation of
+                        registration certificate U/S-55(1) of MV Act.1988.The MVI,<span class="font-bold"><h:outputText value="#{rccancelintimation.rcCancellDobj.off_name}"/></span> has also inspected the vehicle on 
+                        <h:outputText value="#{rccancelintimation.rcCancellDobj.fit_chk_dt}"/>  and obtained that the vehicle is permanently incapable of use.
+                    </div>
+                    <div class="bottom-space">
+                        Thus an exercising of the power conferred U/S-55(1) MV Act.1988,The Regional Transport               
+                        Officer and Registering Authority M.V Department,<span class="font-bold"><h:outputText value="#{rccancelintimation.rcCancellDobj.off_name}"/></span> do hereby cancel the registration
+                        Certificate of the vehicle bearing Registration No. <span class="font-bold"><h:outputText value="#{rccancelintimation.rcCancellDobj.regn_no}"/></span> with following particulars
+                        w.e.f <span class="font-bold"><h:outputText value="#{rccancelintimation.rcCancellDobj.fit_chk_dt}"/></span>
+                    </div>
+                    <div class="table-width-two bottom-space top-space">
+                        <p:panelGrid columns="2" id="rcCancelIntimation" styleClass="left-position datatable-panel-100">
+                            <h:outputText value="Vehicle Regd No" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.regn_no}" />
+                            <h:outputText value="Chassis No" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.chasi_no}" />
+                            <h:outputText value="Engine No" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.eng_no}" />
+                            <h:outputText value="Month of Manufacture" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.manu_mon}" />
+                            <h:outputText value="Year of Manufacture" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.manu_yr}" />
+                            <h:outputText value="Vehicle class" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.vh_class_desc}" />
+                            <h:outputText value="Vehicle category" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.vch_catg}" />
+                            <h:outputText value="Body type" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.body_type}" />
+                            <h:outputText value="Date of Registration" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.regn_dt}" />
+                            <h:outputText value="Tax Piad Up to" />
+                            <h:outputText value="#{rccancelintimation.rcCancellDobj.tax_upto}" />
+                        </p:panelGrid>
+                    </div>
+                </div>
+                <table class="datatable-panel" style="margin: 0 auto;">
+                    <tr>
+                        <td class="float-right">
+                            <div class="left-position">
+                                <br />
+                                <br />
+                                <br />
+                                <span class="font-bold"> Registering Authority. </span>
+                                <br />
+                                <span class="font-bold report-subheader text-uppercase"> <h:outputText value="#{rccancelintimation.rcCancellDobj.off_name}"/> </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>

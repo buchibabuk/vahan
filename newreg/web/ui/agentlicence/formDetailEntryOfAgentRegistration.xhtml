@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="form_detailentry">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">DETAIL ENTRY OF AGENT REGISTRATION</h1>
+                    </div>
+                </div>
+                <!--                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <ui:include src="/ui/recpt/form_current_rcpt_no.xhtml" />                       
+                                    </div>
+                                </div>-->
+
+                <p:outputPanel id ="agtlictype">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-6">
+                            <p:selectOneRadio id="console" value="#{agentRegistration.dobj.newRenewalAgentLicence}"
+                                              columns="3" layout="responsive"  disabled="#{agentRegistration.dissableChooseNewRenewAgentLicenceOption}">
+                                <f:selectItem itemLabel="New Agent Licence" itemValue="New_Agent_Licence" />
+                                <f:selectItem itemLabel="Renew Agent Licence" itemValue="Renew_Agent_Licence" />
+                                <f:selectItem itemLabel="Duplicate Agent Licence" itemValue="Duplicate_Agent_Licence" />
+                                <p:ajax  event="change" listener="#{agentRegistration.fillNewRenewAgentLicenceOption}"
+                                         update="agtlictype agtlicren agtlicdup"/>
+                            </p:selectOneRadio>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:messages showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+
+                <p:panel header="Renew Agent Licence" id="agtlicren" styleClass="bottom-space" visible="#{agentRegistration.showRenewAgentLicenceApplication}">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Agent Licence No.:"/>
+                            </label>
+                            <p:inputText value="#{agentRegistration.existingLicNo}">
+                                <p:ajax listener="#{agentRegistration.agentdetails}" event="change" partialSubmit="true" update="agentRegistraionDetail"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:panel header="Duplicate Agent Licence" id="agtlicdup" styleClass="bottom-space" visible="#{agentRegistration.showDupAgentLicenceApplication}">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Agent Licence No.:"/>
+                            </label>
+                            <p:inputText  value="#{agentRegistration.existingLicNo}">
+                                <p:ajax listener="#{agentRegistration.agentdetails}" event="change" partialSubmit="true" update="agentRegistraionDetail"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:outputPanel id="agentRegistraionDetail">
+                    <p:panel id="agentRegistraion" header="Agent Registration Details" rendered="#{agentRegistration.agentRegistraionPanel}">
+                        <p:dialog id="popup" widgetVar="confDlgFee" modal="true" draggable="false" 
+                                  closable="true" closeOnEscape="false" header="Do you want to continue">  
+                            <p:panel id="popupSavePanel">
+                                <div class="center-position bottom-space top-space">
+                                    <h:outputText value="Generating Application Number" styleClass="font-bold"/>
+                                </div>
+                                <div class="font-bold center-position bottom-space">
+                                    <h:outputText value="Application Number: #{agentRegistration.applNo}" />
+                                </div>
+                                <div class="center-position bottom-space">
+                                    <p:button value="OK" onclick="PF('bui').show();" outcome="home" icon="ui-icon-check" />
+                                </div>
+                            </p:panel>
+                            <p:blockUI block="popupSavePanel" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:dialog>
+                        <p:dialog id="licencepopup" header="Licence Generation" widgetVar="confDlgFeeAgentDetail" modal="true" draggable="false" 
+                                  closable="true" closeOnEscape="false">  
+                            <p:panel id="popupLicencePanel">
+                                <div class="center-position bottom-space top-space">
+                                    <h:outputText value="Generating Licence Number" styleClass="font-bold"/>
+                                </div>
+                                <div class="font-bold center-position bottom-space">
+                                    <h:outputText value="Licence Number: #{agentRegistration.licNo}" />
+                                </div>
+                                <div class="center-position bottom-space">
+                                    <p:commandButton value="OK" onclick="PF('bui').show();" oncomplete="PF('confDlgFeeAgentDetail').hide();"  
+                                                     icon="ui-icon-check" ajax="false"
+                                                     action="#{agentRegistration.saveApproveDetails()}" update="form_detailentry" />
+                                </div>
+                            </p:panel>
+                            <p:blockUI block="popupLicencePanel" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:dialog>
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  value="Owner's Name:" />   
+                                </label>
+                                <p:inputText value="#{agentRegistration.dobj.ownName}" disabled="#{agentRegistration.agentRegistraionField}" id="oname"  maxlength="35" required="true"
+                                             requiredMessage="Blank : Owner Name"
+                                             styleClass="text-uppercase" autocomplete="off">
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  value="S/D/W of :"/>   
+                                </label>
+                                <p:inputText value="#{agentRegistration.dobj.fname}" disabled="#{agentRegistration.agentRegistraionField}" id="fname"  maxlength="35" styleClass="text-uppercase"
+                                             required="true" requiredMessage="Blank : S/D/W Field">
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="mobNo"  value="Mobile Number:" />   
+                                </label>
+                                <p:inputText id="mobNo" value="#{agentRegistration.dobj.mobileNo}" disabled="#{agentRegistration.agentRegistraionField}" styleClass="inline-section" required="true"
+                                             requiredMessage="Blank : Mobile No"
+                                             autocomplete="off" validatorMessage="Invalid Mobile Number !!!"
+                                             maxlength="10">
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                    <f:validateLength maximum="10" />
+                                    <p:keyFilter mask="num" />
+                                </p:inputText>
+                            </div>
+                        </div>                
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-6">  
+                                <p:panel header="Current Address">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  value="Current Address1:" />   
+                                            </label>
+                                            <p:inputText value="#{agentRegistration.dobj.currAdd1}" disabled="#{agentRegistration.agentRegistraionField}" id="curradd1" required="true" requiredMessage="Blank Current Address1"
+                                                         maxlength="35" autocomplete="off"  converter="toUpperCaseConverter" 
+                                                         styleClass="text-uppercase">  
+                                                <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  value="Current Address2:" />   
+                                            </label>
+                                            <p:inputText value="#{agentRegistration.dobj.currAdd2}" disabled="#{agentRegistration.agentRegistraionField}" id="curradd2" required="true" requiredMessage="Blank Current Address2"
+                                                         maxlength="35" autocomplete="off"  converter="toUpperCaseConverter" 
+                                                         styleClass="text-uppercase">  
+                                                <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  value="City:" />   
+                                            </label>
+                                            <p:inputText value="#{agentRegistration.dobj.city}" disabled="#{agentRegistration.agentRegistraionField}" id="ccity"
+                                                         required="true" requiredMessage="Blank City"
+                                                         maxlength="30" autocomplete="off"  converter="toUpperCaseConverter" 
+                                                         styleClass="text-uppercase">
+                                                <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>  
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="fee_c_district" value="District :" />   
+                                            </label>
+                                            <p:selectOneMenu id="fee_c_district"  value="#{agentRegistration.dobj.c_district}" disabled="#{agentRegistration.agentRegistraionField}" filter="true">
+                                                <p:ajax partialSubmit="true" process="@this" update="@this"/>
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                <f:selectItems value="#{agentRegistration.districtList}"/>
+                                            </p:selectOneMenu>
+                                        </div>  
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  value="Pin Code:" />   
+                                            </label>
+                                            <p:inputText value="#{agentRegistration.dobj.c_pincode}" disabled="#{agentRegistration.agentRegistraionField}" id="cpincode" size="10"
+                                                         required="true" requiredMessage="Blank Current PinCode"
+                                                         autocomplete="off" maxlength="6" styleClass="text-uppercase">                                                
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                                <f:validateLength maximum="6" />
+                                                <p:keyFilter mask="num" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </div>
+                            <p:spacer width="10px"/>
+                            <div class="ui-grid-col-6">
+                                <p:panel>
+                                    <f:facet name="header">                                        
+                                        Permanent Address 
+                                        <span class="float-right">
+                                            <p:selectBooleanCheckbox id="sameAsCurrAdd" disabled="#{agentRegistration.agentRegistraionField}" value="#{agentRegistration.sameAsCurrAddress}">
+                                                <p:ajax event="change" listener="#{agentRegistration.sameAsCurrentAddress}" update="sameAddress"/>
+                                            </p:selectBooleanCheckbox>
+                                            <h:outputText value=" Same as Current Address" />
+                                        </span>
+                                    </f:facet>
+                                    <p:outputPanel id="sameAddress" styleClass="capital">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="Office Address1:" />   
+                                                </label>
+                                                <p:inputText value="#{agentRegistration.dobj.pcurrAdd1}" disabled="#{agentRegistration.agentRegistraionField}" id="padd1" required="true" requiredMessage="Blank Current Address1"
+                                                             maxlength="35" autocomplete="off" converter="toUpperCaseConverter" 
+                                                             styleClass="text-uppercase" > 
+                                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="Office Address2:" />   
+                                                </label>
+                                                <p:inputText value="#{agentRegistration.dobj.pcurrAdd2}" disabled="#{agentRegistration.agentRegistraionField}" id="padd2" required="true" requiredMessage="Blank Current Address2"
+                                                             maxlength="35" autocomplete="off" converter="toUpperCaseConverter" 
+                                                             styleClass="text-uppercase">  
+                                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="City:" />   
+                                                </label>
+                                                <p:inputText value="#{agentRegistration.dobj.pcity}" disabled="#{agentRegistration.agentRegistraionField}" id="pcity" required="true" requiredMessage="Blank City"
+                                                             maxlength="30" autocomplete="off" converter="toUpperCaseConverter" 
+                                                             styleClass="text-uppercase"> 
+                                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="District :" />   
+                                                </label>
+                                                <p:selectOneMenu  value="#{agentRegistration.dobj.p_district}" disabled="#{agentRegistration.agentRegistraionField}" id="pdistrict" filter="true">
+                                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                    <f:selectItems value="#{agentRegistration.districtList}"/>
+                                                    <p:ajax partialSubmit="true" process="@this" update="@this"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>                                    
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel  value="Pin Code:" />   
+                                                </label>
+                                                <p:inputText value="#{agentRegistration.dobj.p_pincode}" disabled="#{agentRegistration.agentRegistraionField}" id="ppincode" size="10"
+                                                             required="true" requiredMessage="Blank Current PinCode"
+                                                             autocomplete="off" maxlength="6" styleClass="text-uppercase">                                                
+                                                    <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                                    <f:validateLength maximum="6" />
+                                                    <p:keyFilter mask="num" />
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel>  
+                                </p:panel> 
+                            </div>
+                        </div>
+                        <p:panel header="" styleClass="top-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  value="Valid From:" />   
+                                    </label>
+                                    <p:calendar pattern="dd-MMM-yyyy"  value="#{agentRegistration.dobj.validFrom}" disabled="#{agentRegistration.agentRegistraionField}" id="validfrom"  maxdate="true" navigator="true" readonlyInput="true">
+                                        <p:ajax listener="#{agentRegistration.dateSelectEvent()}" event="dateSelect"  partialSubmit="true" update="dateUpTo"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  value="Valid Upto :" />   
+                                    </label>
+                                    <p:calendar id="dateUpTo" pattern="dd-MMM-yyyy"  value="#{agentRegistration.dobj.validUpTo}"
+                                                disabled="true">
+                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  value="Name of Counter:"/>
+                                    </label>
+                                    <p:inputText value="#{agentRegistration.dobj.counter}" disabled="#{agentRegistration.agentRegistraionField}" id="counter"  maxlength="50" styleClass="input">
+                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  value="Place of Business:"/>
+                                    </label>
+                                    <p:inputText value="#{agentRegistration.dobj.placeOfBusiness}" id="pbusiness"  maxlength="50" styleClass="input">
+                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:panel>
+                </p:outputPanel>
+                <p:panel rendered="#{agentRegistration.entry}">
+                    <div class="ui-grid-row top-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Save" action="#{agentRegistration.save()}" update="agentRegistraion" />
+                            <p:commandButton value="Reset" action="#{agentRegistration.reset()}" process="@this" immediate="true" styleClass="button" update="agentRegistraion"/>
+                            <p:button value="Cancel"  outcome="home" />
+                        </div>
+                    </div></p:panel>
+                <p:panel rendered="#{agentRegistration.verifyAprrove}" styleClass="top-space bottom-space">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{agentRegistration}"/>
+                    </ui:include>
+                </p:panel>
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>

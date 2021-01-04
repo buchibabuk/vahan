@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/ui/session/errorPageLayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="content">
+        <h:form id="formWarningError" prependId="false">
+            <div class="message-content-panel left-position"> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <div class="header-section error-message-header red top-space text-uppercase">                   
+                            "Sorry, Something went Wrong!!!"
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-grid-row left-space">
+                    <div class="ui-grid-col-12">
+                        <ul style="list-style-type: disc; margin-left: 24px;" class="dialogTitle-text font-bold" >                    
+                            <li>Don't Login from Multiple Location.</li>
+                            <li>Don't Use Multiple Tab of the Browser.</li>
+                            <li>Don't Use Back Button of the Browser and Keyboard.</li>
+                            <li>Don't Use F5 Button of the Keyboard for Refreshing the Page.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row left-space center-position">
+                    <div class="ui-grid-col-12">
+                        <h3>Please <span class="red font-bold"> Re-Login</span> to Continue After Some Time or Contact to the Office Administrator.</h3>
+                        <div class="dialogTitle-text red font-bold">                   
+                            Thanks.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>    
+    </ui:define>
+</ui:composition>

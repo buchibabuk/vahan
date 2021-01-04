@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"   
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content">
+        <f:subview id="frm_AgntCertprint">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_printAgntCert" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputText value="CERTIFICATE OF AGENT"/></h1>
+                        </div>
+                    </div>                
+                    <p:outputPanel id="rb_agentPnl" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-5 left-position">
+                                <p:selectOneRadio id="rb_agentBtn" value="#{agentCertBean.rcRadiobtn}" layout="responsive" columns="2">                               
+                                    <f:selectItem itemLabel="By Licence No" itemValue="REGNNO" />
+                                    <f:selectItem itemLabel="Pending Agent Certificate(Last 15 Days)" itemValue="PENREGNNO" />
+                                    <p:ajax event="change" listener="#{agentCertBean.agentRBListener}" update="printAgentCertPanel printAgtCert agentOutputpanel btnAgentCertPrint agentregnpanel" onstart="PF('blockPrintAgent').show();" oncomplete="PF('blockPrintAgent').hide();"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="agentOutputpanel">
+                        <p:panel id="agentregnpanel" header="Agent Certificate by Licence No" rendered="#{agentCertBean.printAgentbyRegnNo}" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regn_no" value="Licence No" />
+                                    </label>
+                                    <p:inputText id="regn_no" value="#{agentCertBean.regn_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase" >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getAgentDtls" value="Get Details" action="#{agentCertBean.getAgentCertDetails}" update="printAgentCertPanel"/>  
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:outputPanel id="printAgentCertPanel">
+                        <p:dataTable id="printAgtCert" rowKey="#{printAgentCert.appl_no}"  value="#{agentCertBean.printAgentCertDobj}" selection="#{agentCertBean.selectedAgentCertDobj}" var="printAgentCert" rows="10"  paginatorPosition="bottom"
+                                     widgetVar="seatWorkList" filteredValue="#{agentCertBean.filteredSeat}" paginator="true" rowIndexVar="rowkey" rendered="#{agentCertBean.printAgentCertDobj.size()>0 ? true : flase}">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    <p:outputLabel value="Agent Certificate Print" />
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application No" filterBy="#{printAgentCert.appl_no}" filterMatchMode="contains" sortBy="#{printAgentCert.appl_no}">#{printAgentCert.appl_no}</p:column>                        
+                            <p:column headerText="Licence No" filterBy="#{printAgentCert.agent_licence_no}" filterMatchMode="contains" sortBy="#{printAgentCert.agent_licence_no}">#{printAgentCert.agent_licence_no}</p:column>
+                            <p:column headerText="Select to Print" selectionMode="multiple" style="text-align: center" />
+                        </p:dataTable>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:outputPanel id="btnAgentCertPrint">
+                                    <p:commandButton value="Print Agent Cert" rendered="#{agentCertBean.printAgentCertDobj.size()>0 ? true : flase}"  action="#{agentCertBean.confirmPrintAgentCert()}" /> 
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:dialog  id="printAgentCertonfirmationPopup" styleClass="center-position" widgetVar="printAgentCertificate" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" 
+                                                  onclick="PF('blockPrintAgent').show();"  oncomplete="PF('printAgentCertificate').hide(); PF('blockPrintAgent').hide();"                                 
+                                                  action="#{agentCertBean.printAgentCertificateReport()}"
+                                                  icon="ui-icon-check"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('printAgentCertificate').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                </p:outputPanel>
+                <p:blockUI block="frm_printAgntCert" widgetVar="blockPrintAgent">
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </div>
+            <vcomponent:vahanMessages messages="#{agentCertBean.vahanMessages}"  rendered="#{agentCertBean.vahanMessages ne null}"/>
+        </f:subview>
+    </ui:define>        
+</ui:composition>
+

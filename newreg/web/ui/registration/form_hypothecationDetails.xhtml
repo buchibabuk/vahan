@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <p:dataTable  id="datatable_hypth" value="#{hypothecationDetails_bean.listHypthDetails}"
+                  rendered="#{hypothecationDetails_bean.listHypthDetails.size()>0}"
+                  var="hypth" rowIndexVar="index" styleClass="panelRowHeight top-space bottom-space">
+
+        <f:facet name="header">
+            #{language.hypth_header}
+        </f:facet>
+
+        <p:column headerText="#{language.user_srno}"  styleClass="collumn-width center-position">
+            <p:outputLabel value="#{index +1}."/>
+        </p:column>
+
+        <p:column headerText="#{language.type}" width="8%">
+            <h:outputText value="#{hypth.hp_type_descr}"/>
+        </p:column>
+
+        <p:column headerText="#{language.financer}" width="14%">
+            <h:outputText value="#{hypth.fncr_name}"/>
+        </p:column>
+
+        <p:column headerText="#{language.address}" width="40%">
+            <h:outputText value="#{hypth.fncr_add1} &#44; 
+                          #{hypth.fncr_add2} &#44;
+                          #{hypth.fncr_add3} &#44;
+                          #{hypth.fncr_district_descr} &#44;                                              
+                          #{hypth.fncr_state_name} &#45;
+                          #{hypth.fncr_pincode}"/>
+        </p:column>
+
+        <p:column headerText="#{language.from}" width="8%">
+            <h:outputText value="#{hypth.from_dt_descr}"/>
+        </p:column>
+
+    </p:dataTable> 
+</html>

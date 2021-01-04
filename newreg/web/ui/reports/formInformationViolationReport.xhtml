@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+
+    </h:head>
+
+    <h:body >
+        <h:form prependId="false">
+
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/eChallan/formChallanReferTo.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+
+
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="Court of the hon'ble Chief Judicial Magistrate" styleClass="font-bold report-header bottom-line text-uppercase"/> </span>
+            </div>
+
+            <div class="center-position">
+                <h:outputText value="#{informationViolationReportBean.irDobj.recieptHeading}" class="font-bold report-subheader bottom-line"/>
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{informationViolationReportBean.irDobj.recieptSubHeading}" class="font-bold report-subheader bottom-line" escape="false"/>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="(Enforcement Section)"/> </span>
+            </div>
+            <div class="center-position top-space">
+                <span class="font-bold report-subheader bottom-line"> <h:outputText value="Information of violation of M.V.act 1988"/> </span>
+            </div>
+
+
+            <!--           <div class="center-position top-space bottom-space datatable-panel" style="margin: 0 auto;">
+                                        <table class="datatable-panel-100">
+                                            <tr>
+                                                <td class="left-position">
+                                                    <div class="left-space">
+                                                        Application No <h:outputText value="#{refTocourt.irDobj.applicationno}"  styleClass="font-bold" />
+                                                    </div>
+                                                </td>
+                                                <td class="right-position">
+                                                    <div class="right-space">
+                                                        District: <h:outputText value=""  styleClass="font-bold" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>-->
+
+
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <ol>
+
+                    <li><span> Application No </span> <h:outputText value="#{informationViolationReportBean.irDobj.applicationno}"  styleClass="font-bold" /></li>
+                    <li><span>Name and address of Accused with police station :</span> <h:outputText value="#{informationViolationReportBean.irDobj.accusedName}" /></li>
+                    <li><span>V/s(as above) </span> <h:outputText value="#{informationViolationReportBean.irDobj.accusedAddress}" /></li>
+                    <li><span>(as above) </span> <h:outputText value="#{informationViolationReportBean.irDobj.accusedPoliceStation}" /></li>
+                </ol>
+            </div>
+            <div class="datatable-panel bottom-space" style="margin: 0 auto;">
+                <ol>
+                    <li><span>Driving Licence No. with District name and year of issue :</span> <h:outputText value="" /></li>
+                    <li><span>Vehicle registration No. :</span> <h:outputText value="#{informationViolationReportBean.irDobj.vehicleNo}" styleClass="font-bold" /></li>
+                    <li><span>Place of incident (with Police Station):</span>  <h:outputText value="#{informationViolationReportBean.irDobj.challanPlace}" /></li>
+                    <li><span>Sections of Motor Vehicle Act.1988</span>  <h:outputText value="" /></li>
+                    <li><span>Date and time of incident :</span>  <h:outputText value="#{informationViolationReportBean.irDobj.challanDate}::#{informationViolationReportBean.irDobj.challanTime}" /></li>
+                    <li><span>Short Summary of offences : </span> <h:outputText value="" /></li>
+                    <li><span>Name and address of Witness(with police Station)</span> <h:outputText value="#{informationViolationReportBean.irDobj.witnessName}, #{informationViolationReportBean.irDobj.witnessAdd},#{informationViolationReportBean.irDobj.witnessPoliceStation} " /></li>
+                    <li><span>Detail of Previous offences and Punishment of accused:</span>  <h:outputText value="" /></li>
+                    <li><span>Reporting officer’s (Officer to inform) designation and name :</span>  <h:outputText value="#{informationViolationReportBean.irDobj.repotingOfficer}" /> </li>
+                    <li><span>Refer Court Name :</span>  <h:outputText value="#{informationViolationReportBean.irDobj.courtName}" /></li>
+                    <li><span>Hearing Date :</span>  <h:outputText value="#{informationViolationReportBean.irDobj.hearingDate}" /> </li>
+                </ol>
+            </div>
+            <div class="datatable-panel" style="margin: 0px auto;">
+                <p:dataTable value="#{informationViolationReportBean.coutAndAuthList}" styleClass="border-transparent" var="list" rowIndexVar="rowIndex"
+                             rendered="#{informationViolationReportBean.coutAndAuthList.size()>0?true:false}"  >
+                    <f:facet name="header"> 
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6 left-position"><h:outputText value=" Authority Details" styleClass="inline-section top-space font-bold" /></div>
+
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Sr No." styleClass="collumn-width center-position">  
+                        #{rowIndex+1}  
+                    </p:column>  
+                    <p:column headerText="Authority Refer Date" style="word-break: keep-all;">
+                        <h:outputText value="#{list.authorityReferDate}" />
+                    </p:column>
+                    <p:column headerText="Authority Name" style="word-break: keep-all;">
+                        <h:outputText value="#{list.authorityName}"/>
+                    </p:column>
+                    <p:column headerText="Offence" style="word-break: keep-all;">
+                        <h:outputText value="#{list.offence}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <br/>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                So you are requested to punish the accused as per rule. 
+            </div>
+
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <p:outputLabel value="Papers Enclosed:"/>
+                <p:outputLabel value="value"/>
+            </div>
+
+            <div class="center-position top-space bottom-space datatable-panel" style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            <div class="left-space">
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                            </div>
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position">
+                                <br />
+                                <br />
+                                <br />Signature
+                                <br />Designation <h:outputText value="value" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </h:form>
+    </h:body>
+</html>

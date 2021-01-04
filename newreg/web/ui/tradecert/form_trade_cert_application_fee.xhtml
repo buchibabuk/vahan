@@ -1,0 +1,330 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+    <ui:define name="script">
+        <h:outputScript library="js" name="tradecertutil.js"/>
+    </ui:define>
+
+    <ui:define name="content"> 
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="new_trade_cert_application_fee_subview">
+
+                <p:dialog id="onlinePaymentdialog" draggable="false" closable="false" resizable="false" widgetVar="onlinePaymentvar"
+                          header="Online Payment Details" dynamic="true" modal="true">                        
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <h:outputText id ="onlineUserCredentialsTxt" value="#{applicationFeeTradeCert.onlineUserCredentialmsg}" styleClass="font-bold"/>
+                            <br/>
+                            <br/>
+                            The above mentioned credentials has been sent to dealer mobile no.
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">                            
+                            <p:commandButton  value="OK" oncomplete="PF('onlinePaymentvar').hide();" 
+                                              action ="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                        </div>
+                    </div>                        
+                </p:dialog>
+
+                <p:blockUI block="confirm_panel1" widgetVar="bui_dlg" >
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <p:dialog id="confirmationPopup" visible="#{not empty facesContext.messageList}" widgetVar="confDlgTradeCert"
+                          modal="true" draggable="false" closable="false" hideEffect="explode"
+                          header="Trade Certificate Application Fee Confirmation Panel"> 
+                    <p:outputPanel id="confirm_panel1">
+                        <p:focus for="mobileNo" rendered="#{applicationFeeTradeCert.paymentType eq 'onlinePayment'}"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages  showDetail="true" showSummary="false" closable="true">
+                                    <p:autoUpdate/>
+                                </p:messages>
+                            </div>
+                        </div>
+                        <div class="center-position bottom-space top-space">
+                            <h:outputLabel value="Total instrument amount in excess that will be adjusted in 'Miscellaneous' head:-" rendered="#{applicationFeeTradeCert.renderMiscFeeAmount}"/>
+                        </div>
+                        <div class="font-bold center-position bottom-space top-space">
+                            <h:outputText value="In Rupees: #{applicationFeeTradeCert.miscAmount}" rendered="#{applicationFeeTradeCert.renderMiscFeeAmount}"/>
+                        </div>
+
+                        <div class="center-position bottom-space top-space">
+                            <h:outputLabel value="Total amount to be paid in cash:-" rendered="#{applicationFeeTradeCert.paymentBean.balanceAmount != 0}"/>
+                        </div>
+                        <div class="font-bold center-position bottom-space top-space">
+                            <h:outputText value="In Rupees: #{applicationFeeTradeCert.paymentBean.balanceAmount}" rendered="#{applicationFeeTradeCert.paymentBean.balanceAmount != 0}"/>
+                        </div>
+                        <p:outputPanel id="mobileNoInputOptPnl" rendered="#{applicationFeeTradeCert.paymentType eq 'onlinePayment'}">
+                            <div class="ui-grid-row top-space bottom-space">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <h:outputText value="Mobile Number To Receive User-Credentials :" styleClass="font-bold" />
+                                    </label> 
+                                    <p:inputText id="mobileNo" autocomplete="off" 
+                                                 value="#{applicationFeeTradeCert.mobileNo}" 
+                                                 placeholder="Enter mobile number" styleClass="input"
+                                                 maxlength="10">                                            
+                                        <p:keyFilter for="mobileNo" regEx="/[0-9]/i" />
+                                    </p:inputText>
+                                    <br/>
+                                    <h:outputText value="*Mandatory in case of online payment." styleClass="green"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputLabel value="Do you want to continue"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space"> 
+                                <p:commandButton disabled="#{applicationFeeTradeCert.disableSave}" value="Save Trade Certificate Application Fee"  onclick="calPenalty();
+                                        PF('bui_dlg').show();" 
+                                                 oncomplete="calPenalty();PF('bui_dlg').hide();PF('confDlgTradeCert').hide();" 
+                                                 update="new_trade_cert_application_fee_subview:onlineUserCredentialsTxt appl_no_pnl amount_details" 
+                                                 action="#{applicationFeeTradeCert.save()}" icon="ui-icon-check">
+                                </p:commandButton>
+                                <p:commandButton value="Cancel" oncomplete="calPenalty();PF('confDlgTradeCert').hide();" onclick="calPenalty();" action="#{applicationFeeTradeCert.displayTotalAmount}" actionListener="#{applicationFeeTradeCert.resetMiscFee()}" update="amount_details lb_fee_collected_value" icon="ui-icon-close" />
+
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog id="rcptNoPopup" visible="#{not empty applicationFeeTradeCert.rcptNoPopup}" widgetVar="dlgRcptNoPopup" 
+                          modal="true" draggable="false" resizable="false" closable="false" hideEffect="explode">  
+
+                    <f:facet name="header">
+                        <h3>Alert!</h3>
+                    </f:facet>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">                                   
+                            <p:separator/>
+                            <h2 class="red">#{applicationFeeTradeCert.rcptNoPopup}"</h2>
+                            <p:separator/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">                            
+                            <p:button value="Ok" onclick="PF('dlgRcptNoPopup').hide();" 
+                                      outcome ="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                        </div>
+                    </div>
+                </p:dialog>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <h:panelGroup rendered="#{applicationFeeTradeCert.fixCashModeForDealerAdmin}">
+                            <ui:include src="/ui/recpt/form_current_rcpt_no.xhtml" />             
+                        </h:panelGroup>
+                    </div>
+                </div>
+                <p:outputPanel id="trade_panel">
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                                <p:autoUpdate/>
+                            </p:growl>
+                            <p:messages showDetail="true" showSummary="false" closable="true">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <h1 class="header-main"> Collecting Fee for Trade Certificate </h1>
+                        </div>
+                    </div>
+                    <p:panel header="Trade Certificate Application Details" id="appl_no_pnl" styleClass="top-space bottom-space" visible="#{applicationFeeTradeCert.visibleTradeCertificateApplicationPanel}">
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-4">
+                                <h:outputText  id="lb_appl" value="#{label.appl_no}" styleClass="inline-section right-space" />
+                                <h:outputText  id="lb_appl_no" value="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.applNo}" styleClass="font-bold inline-section "/>
+                            </div>
+
+                            <div class="ui-grid-col-8">
+                                <h:outputText id="lb_dealer_for" value="#{label.applicant}" styleClass="inline-section right-space"/>
+                                <h:outputText id="lb_dealer_name" value="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.dealerName}" styleClass="font-bold inline-section "/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <h:outputText id="lb_trade_cert_type_label" value="#{label.appl_trade_cert_type} " styleClass="inline-section right-space"/>
+                                <h:outputText id="lb_trade_cert_type" value="#{applicationFeeTradeCert.tradeCertType}" styleClass="font-bold inline-section "/>
+
+                            </div>
+                            <div class="ui-grid-col-8 ">
+                                <h:outputText  id="lb_stock_appl" value="Stock Transfer Application " styleClass="inline-section right-space" rendered="#{applicationFeeTradeCert.stockTransferReq}"/>
+                                <h:outputText  id="lb_stock_appl_value" value="TRUE" styleClass="font-bold inline-section " rendered="#{applicationFeeTradeCert.stockTransferReq}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel header="Application Sections Details" id="application_sections_panel" visible="#{applicationFeeTradeCert.visibleApplicationDetailPanel}">
+                        <p:dataTable selection="#{applicationFeeTradeCert.applicationFeeTradeCertDobj}" rowKey="#{applicationFeeTradeCertDobj.srNo}" var="applicationFeeTradeCertDobj" id="application_sections_data_table" styleClass="top-space bottom-space" value="#{applicationFeeTradeCert.applicationSectionsList}"  paginator="false">
+                            <p:column headerText="#{label.sr_no}" styleClass="collumn-width center-position">
+                                <h:outputText  id="lb_sr_no" value="#{applicationFeeTradeCertDobj.srNo}" />
+                            </p:column>
+                            <c:if test="#{applicationFeeTradeCert.tradeCertNoNotBlank}">    
+                                <p:column headerText="T.C. Number">
+                                    <h:outputText  id="lb_cert_no" value="#{applicationFeeTradeCertDobj.tradeCertNo}" />
+                                </p:column>
+                                <p:column headerText="#{label.valid_upto}">
+                                    <h:outputText  id="lb_valid_upto" value="#{applicationFeeTradeCertDobj.validUptoAsString}"/>
+                                </p:column>
+                            </c:if>
+                            <p:column headerText="#{label.vh_catg}" rendered="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd ne 'OR'}">
+                                <h:outputText  id="lb_veh_catg_for" value="#{applicationFeeTradeCertDobj.vehCatgName}"/>
+                            </p:column>
+                            <p:column headerText="#{label.vh_class}" rendered="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd eq 'OR'}">
+                                <h:outputText  id="lb_veh_class_for" value="#{applicationFeeTradeCertDobj.vehCatgName}"/>
+                            </p:column>
+                            <p:column headerText="#{label.fuel}" rendered="#{applicationFeeTradeCert.displayFuel}">
+                                <h:outputText  id="lb_fuel_type_for" value="#{applicationFeeTradeCertDobj.fuelTypeName}"/>
+                            </p:column>
+                            <p:column headerText="Vehicle Count" rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}">
+                                <h:outputText  id="lb_no_of_allowed_vehicles" value="#{applicationFeeTradeCertDobj.noOfAllowedVehicles}"/>
+                            </p:column>
+
+                            <p:column headerText="#{label.fee}"> 
+                                <h:outputText  id="lb_total_fee" value="#{applicationFeeTradeCertDobj.feeCollected}"/>
+                            </p:column>
+                            <p:column headerText="#{label.tax}" rendered="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd ne 'CG'}">
+                                <h:outputText  id="lb_total_tax" value="#{applicationFeeTradeCertDobj.taxCollected}"/>
+                            </p:column>
+
+                            <p:column headerText="#{label.fine}" rendered="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd ne 'CG'}">
+                                <h:inputText  onchange="calPenalty();" id="lb_fine" value="#{applicationFeeTradeCertDobj.fine1}" maxlength="6" style="width: 80% !important" />
+                                <p:keyFilter for="lb_fine" mask="pnum" />
+                            </p:column>
+
+                            <p:column headerText="#{label.surcharge}" rendered="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd ne 'CG'}">
+                                <h:outputText  id="lb_total_surcharge" value="#{applicationFeeTradeCertDobj.surcharge}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div class="ui-grid-row">                          
+                            <div class="ui-grid-col-12">
+                                <c:if test="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.manualFeeReceiptAmount != 0}">
+                                    <span class="font-italic green bottom-line">Rs.</span><h:outputText id="lb_manual_fee_collected_value" value="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.manualFeeReceiptAmount}"  styleClass="font-bold bottom-line"/><span class="font-italic green bottom-line">/- adjusted against previously paid vide receipt number </span><h:outputText  value="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.manualFeeReceiptNumber}"  styleClass="font-bold bottom-line"/><span class="font-italic green bottom-line"> dated </span><h:outputText  value="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.manualFeeReceiptDate}"  styleClass="font-bold bottom-line"/>
+                                </c:if>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">                          
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-1">
+                                <p:outputLabel   value="Balance Tax :" 
+                                                 styleClass="font-bold"
+                                                 rendered="#{applicationFeeTradeCert.tradeCertType eq 'RENEW'
+                                                             and applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd eq 'RJ'}"/>         
+                            </div>
+                            <div class="ui-grid-col-2">
+                                <p:inputText id="balTax"  value="#{applicationFeeTradeCert.balanceTax}"
+                                             onchange="calPenalty();"
+                                             rendered="#{applicationFeeTradeCert.tradeCertType eq 'RENEW'
+                                                         and applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd eq 'RJ'}"
+                                             maxlength="8"
+                                             required="true" requiredMessage="Balance tax must no be empty"
+                                             >
+                                    <f:validateRequired />
+                                    <f:validateLongRange minimum="0" maximum="99999999" />
+                                    <p:keyFilter for="balTax" regEx="/[0-9]/"/>
+
+                                </p:inputText>         
+                            </div>
+                        </div>
+
+                        <p:panel  header ="Fee Amount Details" id="amount_details" styleClass="top-space bottom-space" visible="#{applicationFeeTradeCert.renderAmountDetailsPanel}">
+                            <div id="abc" class="ui-grid-row">
+                                <p:outputPanel rendered="#{!applicationTradeCert.doNotShowNoOfVehicles}" styleClass="ui-grid-col-2">
+                                    <h:outputText id="lb_no_of_allowed_vehicles" value="#{label.no_of_allowed_vehicles}: " styleClass="inline-section right-space"/>
+                                    <h:outputText id="lb_no_of_allowed_vehicles_value" value=" #{applicationFeeTradeCert.noOfVehGrandTotal}" styleClass="font-bold inline-section center-position datatable-panel-100 collumn-width"/>
+                                </p:outputPanel>    
+                                <div class="ui-grid-col-3">
+                                    <p:outputPanel rendered="#{applicationFeeTradeCert.renderUserChargesAmountPanel and applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd ne 'CG'}">
+                                        <h:outputText id="lb_service_charge_collected" value="#{label.service_charge}: " styleClass="inline-section right-space"/>
+                                        <h:outputText id="lb_service_charge_collected_value" value=" #{applicationFeeTradeCert.serviceChargeInString}"  styleClass="font-bold inline-section center-position datatable-panel-100 collumn-width"/>
+                                    </p:outputPanel>
+                                </div>
+
+
+
+                                <div class="ui-grid-col-3">
+                                    <!--                                    <p:outputPanel id="miscFeeOutputPanel" rendered="#  {applicationFeeTradeCert.renderMiscFeeAmount}" styleClass="inline-section right-space">
+                                                                                    <h:outputText id="lb_misc_fee" value="Misc Fee: "/>
+                                                                                    <h:outputText id="lb_misc_fee_value" value=" # {applicationFeeTradeCert.miscAmount}"  styleClass="font-bold inline-section center-position datatable-panel-100 collumn-width"/>
+                                                                        </p:outputPanel>-->
+
+                                    <h:outputText id="lb_transaction_charge_collected" value="#{label.transaction_charge}: " styleClass="inline-section right-space"/>
+                                    <h:outputText id="lb_transaction_charge_collected_value" value=" #{applicationFeeTradeCert.transactionChargeInString}"  styleClass="font-bold inline-section center-position datatable-panel-100 collumn-width"/>
+
+                                </div>
+
+                                <p:outputPanel rendered="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.stateCd ne 'CG'}" styleClass="ui-grid-col-2">
+                                    <h:outputText id="lb_fine_collected" value=" Total Fine Collected: " styleClass="inline-section right-space"/>
+                                    <h:outputText id="txt_total_fine_collected" value=" 0" styleClass="font-bold inline-section center-position datatable-panel-100 collumn-width"/>
+                                </p:outputPanel>  
+
+                                <div class="ui-grid-col-2">
+                                    <h:outputText id="lb_fee_collected" value=" #{label.grand_total}: " styleClass="inline-section right-space"/>
+                                    <h:outputText id="lb_fee_collected_value" value=" #{applicationFeeTradeCert.totalAmountInString}" styleClass="font-bold inline-section center-position datatable-panel-100 collumn-width" />
+                                </div>
+                            </div>
+                            <p:outputLabel id="payAndFeePanel" rendered="#{applicationFeeTradeCert.fixCashModeForDealerAdmin}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <ui:include src="/ui/fee/form_payment_collection.xhtml">
+                                            <ui:param name="paymentBean" value="#{applicationFeeTradeCert.paymentBean}"/>
+                                            <ui:param name="headerName" value="payment"/>
+                                        </ui:include> 
+                                    </div>
+                                </div>                      
+                            </p:outputLabel>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <c:if test="#{applicationFeeTradeCertDobj.receiptNumber ne ''}">
+                                        <span class="text-info">Fee Receipt will be generated after collection of fee with respect to application::</span> '<h:outputText value="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.applNo}" styleClass="font-bold"/>' <span class="text-info">submitted on the behalf of dealer::</span> '<h:outputText value="#{applicationFeeTradeCert.applicationFeeTradeCertDobj.getDealerName()}" styleClass="font-bold"/>' <span class="text-info">with the receipt number.</span>
+                                    </c:if>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:panel>
+                    <p:outputPanel id="buttonsPanel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="bt_save"   value="#{applicationFeeTradeCert.saveCaption}" 
+                                                 action="#{applicationFeeTradeCert.validateForm('cash')}" update="amount_details" actionListener="#{applicationFeeTradeCert.resetMiscFee()}"
+                                                 disabled="#{applicationFeeTradeCert.disableSave}" icon="ui-icon-disk"  onclick="PF('bui_fancy').show()" 
+                                                 oncomplete="PF('bui_fancy').hide();calPenalty();" rendered="#{!applicationFeeTradeCert.onlinePaymentInitiated}" />
+                                <p:commandButton value="Back" action="#{applicationFeeTradeCert.back()}" onclick="PF('bui_fancy').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                                <p:commandButton value="Online Payment" action ="#{applicationFeeTradeCert.validateForm('onlinePayment')}"  styleClass="button" update="confirmationPopup"  rendered="#{applicationFeeTradeCert.renderOnlinePayBtn}" icon="ui-icon-transferthick-e-w"/>
+                                <p:commandButton value="Cancel Online Payment" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" action ="#{applicationFeeTradeCert.getCancelPayment()}" update="buttonsPanel" rendered="#{applicationFeeTradeCert.renderCancelPayment}" icon="ui-icon-cancel">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                </p:commandButton> 
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 left-position">
+                                <h:outputText value="#{applicationFeeTradeCert.onlineUserCredentialmsg}"  rendered="#{applicationFeeTradeCert.renderUserAndPasswored}" class="green font-bold bottom-space right-position"/>
+                                <br/>
+                                <br/>
+                                <h:outputText value="Note:" class="font-bold top-space right-position" rendered="#{applicationFeeTradeCert.renderOnlinePayBtn}"/>
+                                <h:outputText value=" If any dealer wants to pay through ONLINE Payment Gateway / DEBIT Card then cashier can opt for that option. 
+                                              The dealer will get the credentials on his/her registered mobile number for online payment." rendered="#{applicationFeeTradeCert.renderOnlinePayBtn}"  class="red font-bold top-space right-position"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel> 
+                <p:blockUI block="trade_panel" widgetVar="bui_fancy">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </f:subview>
+
+        </div>
+    </ui:define>
+</ui:composition>

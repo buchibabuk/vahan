@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core"
+    >
+
+    <div class="ui-grid ui-grid-responsive">
+        <h:form id="restrctUser" prependId="false">
+            <p:panel id="office_timing" header="#{language.restrictUserCategoryForLogin}" styleClass="top-space" >
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3 resp-blank-height"></div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.state}:"/>
+                        </label>
+                        <p:inputText disabled="true" value="#{restrictuserbean.restrictUser.stateName}" />
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.user_usercategory}: "/>
+                        </label>
+                        <p:selectCheckboxMenu id="userCatg" value="#{restrictuserbean.restrictUserList}" label="#{language.select_case}" filter="true"
+                                              filterMatchMode="startsWith">
+                            <f:selectItems value="#{restrictuserbean.userCatgList}" />
+                        </p:selectCheckboxMenu>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="#{language.save}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" action="#{restrictuserbean.save()}">
+                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:button value="#{language.login_back}" outcome="home"  icon="ui-icon-arrowreturnthick-1-w"/>
+                    </div>
+                </div>
+            </p:panel>
+            <p:blockUI block="restrctUser" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </div>
+</html>

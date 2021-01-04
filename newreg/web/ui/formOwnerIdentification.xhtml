@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+    <ui:define name="content22">
+        <h:form id="ownerIdentityForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main"><h:outputText value ="#{owneridentification.header}" /></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel id="recp_function" styleClass="top-space">
+                    <p:focus for='uer_regn_no'/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="uer_regn_no" value="Vehicle Number:" />
+                            </label>
+                            <p:inputText id="uer_regn_no" required="true" styleClass="text-uppercase"
+                                         value="#{owneridentification.user_regn_no}" autocomplete="off" rendered="true" requiredMessage="Please Enter Vehicle Number"
+                                         maxlength="10" size="28">
+                                <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>                                                             
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row top-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Details"  onclick="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                             action="#{owneridentification.bt_get_Details()}" 
+                                             update="pn_own_identity" />
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="pn_own_identity">
+                    <p:panel header="#{label.o_identification}" styleClass="top-space bottom-space" rendered="#{owneridentification.showUpdatePanel}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ownerCatg" value="Owner Category"/>
+                                </label>
+                                <p:selectOneMenu id="ownerCatg" value="#{owneridentification.owner_ctg}" 
+                                                 filter="true"  required="true" requiredMessage="Select Owner Category">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:selectItems value="#{owneridentification.listOwnerCatg}" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_mobNo" value="#{label.mob_no}"/>
+                                </label>
+                                <p:inputText id="tf_mobNo" value="#{owneridentification.mobile_no}" maxlength="10"  autocomplete="off" required="true">
+                                    <f:validator validatorId="mobileNoValidator"/>
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_email" value="#{label.email}"/>
+                                </label>
+                                <p:inputText id="tf_email" value="#{owneridentification.email_id}"   maxlength="100" autocomplete="off">
+                                    <f:validator validatorId="emailValidator"/>
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_pan" value="#{label.pan_no}"/>
+                                </label>
+                                <p:inputText id="tf_pan" value="#{owneridentification.pan_no}" converter="toUpperCaseConverter" styleClass="input" maxlength="10" autocomplete="off">
+                                    <f:validator validatorId="panValidator"/>
+                                    <f:ajax event="blur" render="@this" execute="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_aadhar" value="#{label.aadhar}"/>
+                                </label>
+                                <p:inputText id="tf_aadhar" value="#{owneridentification.aadhar_no}" converter="toUpperCaseConverter" styleClass="input" maxlength="12" autocomplete="off">
+                                    <f:validator validatorId="aadharValidator"/>
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_passport" value="#{label.passport}"/>
+                                </label>
+                                <p:inputText id="tf_passport" value="#{owneridentification.passport_no}" converter="toUpperCaseConverter" styleClass="input" maxlength="15" autocomplete="off"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_rationCard" value="#{label.ration_card}"/>
+                                </label>
+                                <p:inputText id="tf_rationCard" value="#{owneridentification.ration_card_no}" converter="toUpperCaseConverter"  styleClass="input" maxlength="15" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_voterId" value="#{label.voter_id}"/>
+                                </label>
+                                <p:inputText id="tf_voterId" value="#{owneridentification.voter_id}" converter="toUpperCaseConverter"  styleClass="input" maxlength="15" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_dl" value="#{label.dl}"/>
+                                </label>
+                                <p:inputText id="tf_dl" value="#{owneridentification.dl_no}" converter="toUpperCaseConverter" styleClass="input" maxlength="15" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Update" action="#{owneridentification.updateOwnerIdentification()}"  onclick="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                 update="@form">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:commandButton value="Reset" action="#{owneridentification.back()}" update="@form"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:blockUI block="ownerIdentityForm" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+                <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                <p:keyFilter mask="pint" for="tf_mobNo"/>
+                <p:keyFilter mask="pint" for="tf_aadhar"/>
+                <p:keyFilter regEx="/[a-zA-Z0-9]/" for="tf_pan"/>
+                <p:keyFilter mask="email" for="tf_email"/>
+                <!--#############################################################################################-->
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+
+

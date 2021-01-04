@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"      
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <composite:interface>        
+        <composite:attribute name="messages" default="Something Went Wrong, Please Contact to the System Administrator"/>
+    </composite:interface>
+
+    <composite:implementation>        
+        <p:dialog visible="true" widgetVar="dlgRecordNotFound"  style="background-color: #ac2925"
+                  modal="true" draggable="false" dynamic="true" 
+                  resizable="false" closable="false" hideEffect="explode">  
+            <p:outputPanel id="msgDialogPanel">
+                <f:facet name="header">
+                    <h3 style="color: #000000">Alert!</h3>
+                </f:facet>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">                                   
+                        <p:separator/>
+                        <h2 style="color: red">#{cc.attrs.messages}</h2>
+                        <p:separator/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">                            
+                        <p:button id="back_to_home" value="Ok" onclick="PF('blockInterface').show();" 
+                                  outcome="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                    </div>
+                </div>   
+            </p:outputPanel>   
+            <p:blockUI block="msgDialogPanel" widgetVar="blockInterface">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </p:dialog>
+
+    </composite:implementation>
+</html>

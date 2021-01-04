@@ -1,0 +1,188 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content22"> 
+        <h:form id="formDscAuthenticate" enctype="multipart/form-data">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-3 resp-blank-height"></div>
+                    <div class="ui-grid-col-6">
+                        <h1 class="header-main">DSC REGISTRATION</h1>
+                    </div> 
+                </div>
+                <div class="top-space bottom-space">
+                    <p:outputPanel rendered="#{dscRegisBean.noteMessage}">
+                        <p:autoUpdate/>
+                        <span class="font-bold red">Note: </span>                             
+                        <span class="font-bold">Please Register DSC for Approval by RTO.</span>                        
+                    </p:outputPanel>
+                </div>
+                <p:outputPanel id="doc_digital_sign" styleClass="bottom-space">
+                    <p:panel header="Digital Signature Certificate(DSC)">
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <h:inputHidden value="#{dscRegisBean.certificatexml}" id="fetchvl"/>
+                                <p:commandButton value="How to Register DSC" styleClass="open-counter" style="margin-top: 0px !important" onclick="PF('dlg1').show();"/>
+                                <p:dialog widgetVar="dlg1" modal="true" header="Instruction">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <b>Step-1 :</b>
+                                            <span>
+                                                Click On DSC Registration.
+                                            </span><br/>
+                                            <b>Step-2 :</b>
+                                            <span>
+                                                Click On Certificate Serial no.
+                                            </span>
+                                            <br/>
+                                            <b>Step-3 :</b>
+                                            <span>
+                                                Enter Your Password.
+                                            </span>
+                                            <br/>                                                     
+                                        </div>
+                                    </div>   
+                                </p:dialog>
+                                <p:commandButton value="DSC Registration" action="#{dscRegisBean.connectToDsc()}" update="pnl_steps registXMl" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                                <h:inputHidden value="#{dscRegisBean.registrationxml}" id="registXMl"/>
+                                <h:inputHidden value="#{dscRegisBean.registrationResponseXml}" id="registResXMl"/>
+                                <p:remoteCommand  oncomplete="myFunction();" autoRun="true"/>
+                                <p:remoteCommand name="callRegistrationDsc" actionListener="#{dscRegisBean.dscRegistration}" update="registeredDscs"/>                              
+                                <p:outputPanel id="pnl_steps">
+                                    <p:dataTable value="#{dscRegisBean.dscServiceCertificateList}" rendered="#{dscRegisBean.dscServiceCertificateList.size() > 0}" var="dscConn" styleClass="top-space"
+                                                 rowIndexVar="index">
+                                        <f:facet name="header">
+                                            <h:outputText value="Certificate's Details" styleClass="report-header font-bold red"/>
+                                        </f:facet>
+                                        <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                            <p:outputLabel value="#{index+1}."/>
+                                        </p:column>
+                                        <p:column headerText="Click On Serial No And Connect Certificate">
+                                            <p:commandLink   value="#{dscConn.serialNo}"  actionListener="#{dscRegisBean.revocStr(dscConn)}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                             style="color: blue">
+                                                <p:confirm header="Confirmation" message="Are You Sure You Want To Register DSC Serial No #{dscConn.serialNo} DSC User Name #{dscConn.userName} Dsc ValidUpto #{dscConn.certValidUpto}?" icon="ui-icon-alert"/>                                                   
+                                            </p:commandLink>
+                                        </p:column>
+                                        <p:column headerText="Vendor Name"><h:outputText   value="#{dscConn.vendorName}"/></p:column>
+                                        <p:column headerText="Dsc User Name"><h:outputText   value="#{dscConn.userName}"/></p:column>
+                                        <p:column headerText="Valid Upto"><h:outputText   value="#{dscConn.certValidUpto}"/></p:column>
+                                    </p:dataTable> 
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>              
+                <p:blockUI block="formDscAuthenticate" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+                <p:outputPanel id="registeredDscs">
+                    <p:panel header="Registered Digital Signature Certificate(DSC)" rendered="#{dscRegisBean.dscConnectedList.size() > 0}">
+                        <p:dataTable value="#{dscRegisBean.dscConnectedList}"  var="registeredDsc" styleClass="top-space"
+                                     rowIndexVar="index">
+                            <f:facet name="header">
+                                <h:outputText value="Registered DSC Certificate's Details" styleClass="report-header font-bold red"/>
+                            </f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                <h:outputText value="#{index+1}."/>
+                            </p:column>
+                            <p:column headerText="Serial No">
+                                <h:outputText value="#{registeredDsc.serialNo}" style="color: blue"/>
+                            </p:column>
+                            <p:column headerText="Vendor Name"><h:outputText   value="#{registeredDsc.vendorName}"/></p:column>
+                            <p:column headerText="DSC User Name"><h:outputText   value="#{registeredDsc.userName}"/></p:column>
+                            <p:column headerText="Valid Upto"><h:outputText   value="#{registeredDsc.certValidUpto}"/></p:column>
+                            <p:column headerText="Verified Status">                                
+                                <p:outputLabel value ="Verified" rendered="#{registeredDsc.verifyStatus}" />
+                                <p:outputLabel value ="Not Verified" rendered="#{!registeredDsc.verifyStatus}" />
+                            </p:column>
+                        </p:dataTable>  
+                    </p:panel>
+                </p:outputPanel>
+            </div>
+            <script>
+
+                function myFunction()
+                {
+                    //                                    alert("komal=======");
+                    if (window.XMLHttpRequest) {
+                        //                    // code for modern browsers
+
+                        xhrFields = new XMLHttpRequest();
+                    } else {
+                        //                    // code for old IE browsers
+
+                        xhrFields = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        url: "http://127.0.0.1:55100/registration/getCertList",
+                        xhrFields: {withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: function (Resp) {
+                            //  alert("Divice Connected sucessfully");
+                            console.log(Resp);
+                            // alert(Resp);
+                            document.getElementById('formDscAuthenticate:fetchvl').value = Resp;
+
+                            xhrFields: {
+                                withCredentials: true
+                            }
+                            //                                       
+                        },
+                        error: function (ts) {
+                            alert("Please try after some time ");
+                        }
+                    });
+
+                }
+
+
+                function registerCert()
+                {
+                    //  alert("registerCert=======");
+
+                    var resp = document.getElementById('formDscAuthenticate:registXMl').value;
+                    if (window.XMLHttpRequest) {
+                        //                    // code for modern browsers
+                        // alert("====resp===========" + resp);
+                        xhrFields = new XMLHttpRequest();
+                    } else {
+                        //                    // code for old IE browsers
+                        // alert("byeeeeeeeeeee");
+                        xhrFields = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    $.ajax({
+                        type: "POST", url: "http://127.0.0.1:55100/registration/registerCert", contentType: "application/xml; charset=utf-8",
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        data: resp,
+                        success: function (res) {
+                            // alert("sucesss   ");
+                            // console.log(res);
+
+                            document.getElementById('formDscAuthenticate:registResXMl').value = res;
+
+                            xhrFields: {
+                                withCredentials: true
+                            }
+                            callRegistrationDsc();
+                            //                                       
+                        },
+                        error: function (ts) {
+                            // alert(resp);
+                            alert("Please try after some time ");
+                        }});
+                }
+            </script>
+        </h:form>
+    </ui:define>
+</ui:composition>

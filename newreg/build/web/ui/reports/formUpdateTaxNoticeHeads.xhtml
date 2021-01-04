@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content">
+        <f:subview id="frm_updateTDN">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frmUTDN">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputText value="Form Updating Tax Demand Notice Head"/></h1>
+                        </div>
+                    </div>
+                    <p:outputPanel id="radiopanelUTDN" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-8 left-position">
+                                <p:selectOneRadio id="rbrcUTDN" value="#{updateTNHeads.radiobtn}" layout="grid" columns="5">                               
+                                    <f:selectItem itemLabel="Head1" itemValue="H1" />
+                                    <f:selectItem itemLabel="Head2" itemValue="H2" />
+                                    <f:selectItem itemLabel="Head3" itemValue="H3" />
+                                    <f:selectItem itemLabel="Head4" itemValue="H4" />
+                                    <f:selectItem itemLabel="Head5" itemValue="H5" />
+                                    <p:ajax event="change" listener="#{updateTNHeads.getHeadValueListener()}" update="regnpanelUTDN" onstart="PF('blockform').show();" oncomplete="PF('blockform').hide();"/> 
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>  
+                    <p:outputPanel id="radioOutputpanelUTDN" >
+                        <p:panel id="regnpanelUTDN" header="Showing the value of Head wise" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{updateTNHeads.headLabel}"/>
+                                    </label>
+                                    <p:inputTextarea id="head" value="#{updateTNHeads.headValue}"  autoResize="true" counter="display" maxlength="800" counterTemplate="Characters Remaining: &lt;span class='red font-bold'&gt;{0}&lt;/span&gt;">
+                                        <f:validateLength maximum="800" for="head"/>
+                                    </p:inputTextarea>
+                                    <h:outputText id="display" styleClass="text-success inline-section"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-10">
+                                    <label class="field-label resp-label-section">
+                                        <span class="red"> <span class="font-bold">Note: </span>Please don't <span class="font-bold text-uppercase">delete </span> the HTML tags like &lt;br /&gt; &lt;ol&gt; &lt;li&gt; etc.</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtlsUTDN" value="Save" action="#{updateTNHeads.confirmSaveHead}"/>  
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>                
+                    <p:dialog  id="confirmationPopupUTDN" styleClass="center-position" widgetVar="saveHead" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Update Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Update" 
+                                                  onclick="PF('blockform').show();"  oncomplete="PF('saveHead').hide(); PF('blockform').hide();"                                 
+                                                  action="#{updateTNHeads.updateHead()}"
+                                                  icon="ui-icon-check"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('saveHead').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <p:blockUI block="frmUTDN" widgetVar="blockform">
+                        <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+            </div>
+        </f:subview>
+    </ui:define>
+</ui:composition>

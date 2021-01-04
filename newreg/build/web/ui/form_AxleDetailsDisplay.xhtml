@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid ui-grid-responsive"> 
+        <p:panel header="#{language.axleDetails}" styleClass="top-space bottom-space">
+            <div class="ui-grid-row">                
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="noOfAxle" value="#{language.noOfAxle}"/>
+                    </label>
+                    <p:inputText id="noOfAxle" value="#{axleBean.noOfAxle}" autocomplete="off" maxlength="2" required="true"
+                                 requiredMessage="Blank No Of Axle's" disabled="true">
+                    </p:inputText>
+                </div>
+            </div>
+            <p:panel header="#{language.numberDescriptionandSizeofTyres}" styleClass="top-space bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_front1" value="#{language.front}"/>
+                        </label>
+                        <p:inputText id="tf_front1" value="#{axleBean.tf_Front1}" autocomplete="off" maxlength="20" required="true"
+                                     requiredMessage="Blank Front Axle" converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase"  disabled="true">
+
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_frontTyre" value="#{language.frontTyre}"/>
+                        </label>
+                        <p:inputText id="tf_frontTyre" value="#{axleBean.tf_Front_tyre}" autocomplete="off" maxlength="1" required="true"
+                                     requiredMessage="Blank Front Tyre Axle" converter="toUpperCaseConverter"
+                                     styleClass="input"  disabled="true">
+
+                        </p:inputText>
+
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_rear1" value="#{language.rear}" />
+                        </label>
+                        <p:inputText id="tf_rear1" value="#{axleBean.tf_Rear1}" autocomplete="off" maxlength="20"
+                                     style="text-transform: uppercase;"
+                                     required="true"
+                                     requiredMessage="Blank Rear Axle" converter="toUpperCaseConverter"  disabled="true">
+
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_RearTyre" value="#{language.rearTyre}"/>
+                        </label>
+                        <p:inputText id="tf_RearTyre" value="#{axleBean.tf_Rear_tyre}" autocomplete="off" maxlength="1"
+                                     converter="toUpperCaseConverter" required="true" requiredMessage="Blank Rear Tyre Axle"
+                                     styleClass="input"  disabled="true">
+
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row"> 
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_other1" value="#{language.other}"/>
+                        </label>
+                        <p:inputText id="tf_other1" value="#{axleBean.tf_Other1}" autocomplete="off" converter="toUpperCaseConverter"
+                                     maxlength="20" styleClass="input"  disabled="true">
+
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_OtherTyre" value="#{language.otherTyre}"/>
+                        </label>
+
+                        <p:inputText id="tf_OtherTyre" value="#{axleBean.tf_Other_tyre}" autocomplete="off" maxlength="2"
+                                     converter="toUpperCaseConverter" validatorMessage="Value should be numeric." styleClass="input"  disabled="true">
+                            <!--                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>-->
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_tandem1" value="#{language.tandem}" />
+                        </label>
+                        <p:inputText id="tf_tandem1" value="#{axleBean.tf_Tandem1}" autocomplete="off" maxlength="20" converter="toUpperCaseConverter"
+                                     style="text-transform: uppercase" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_TandemTyre" value="#{language.tandemTyre}"/>
+                        </label>
+                        <p:inputText id="tf_TandemTyre" value="#{axleBean.tf_Tandem_tyre}" autocomplete="off" converter="toUpperCaseConverter"
+                                     maxlength="1" styleClass="input"  disabled="true"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_Rear_Over" value="#{language.rearOverhang}" />
+                        </label>
+                        <p:inputText id="tf_Rear_Over" value="#{axleBean.r_overhang}" autocomplete="off" maxlength="5" converter="toUpperCaseConverter"
+                                     styleClass="input"  disabled="true"/>
+                    </div>
+                </div>
+                <!--                <p:keyFilter mask="pint" for="tf_Rear_Over,tf_frontTyre,tf_RearTyre,tf_OtherTyre,tf_TandemTyre" />-->
+            </p:panel>
+
+            <p:panel header="#{language.registeredAxleWeight}" styleClass="top-space bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_front" value="#{language.front}"/>
+                        </label>
+                        <p:inputText id="tf_front" value="#{axleBean.tf_Front}" autocomplete="off" maxlength="6" required="true" converter="toUpperCaseConverter"
+                                     requiredMessage="Blank Front Registered Axle" validatorMessage="Value should be numeric."  disabled="true">
+
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_rear" value="#{language.rear}" />
+                        </label>
+
+                        <p:inputText id="tf_rear" value="#{axleBean.tf_Rear}" autocomplete="off" maxlength="6" required="true" converter="toUpperCaseConverter"
+                                     requiredMessage="Blank Rear Registered Axle" validatorMessage="Value should be numeric."  disabled="true">
+
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_other" value="#{language.other}"/>
+                        </label>
+                        <p:inputText id="tf_other" value="#{axleBean.tf_Other}" converter="toUpperCaseConverter" autocomplete="off" maxlength="6" validatorMessage="Value should be numeric."  disabled="true"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_tandem" value="#{language.tandem}" />
+                        </label>
+                        <p:inputText id="tf_tandem" value="#{axleBean.tf_Tandem}" converter="toUpperCaseConverter" autocomplete="off" maxlength="6" validatorMessage="Value should be numeric."  disabled="true"/>
+                    </div>
+                </div>
+                <!--*****************************************Key Filters****************************************/-->
+                <!--                <p:keyFilter mask="pint" for="tf_front,tf_rear,tf_other,tf_tandem" />-->
+            </p:panel>
+        </p:panel>
+    </div>
+</html>

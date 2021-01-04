@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="./../../masterLayoutPage.xhtml"
+                xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"
+                xmlns:v4="http://java.sun.com/jsf/passthrough"
+                >
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">
+        <h:form id="ChallanReferTo">
+
+            <p:messages  id="referMsg"></p:messages>                    
+
+            <p:panel  header="Challan Refer TO">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  value="Case Preference"  />
+                        </label>
+                        <p:selectOneMenu id="somReferTo" value="#{challanRefer.challnReferTo}" filter="true">
+                            <f:selectItem itemLabel="Select Where U Want TO Refer" itemValue="-1"></f:selectItem>
+                            <f:selectItem itemLabel="All Cases Refer TO Court" itemValue="1"></f:selectItem>
+                            <f:selectItem itemLabel="All Cases Refer TO Court And All/Some Caces send to Authorities(RTA,STA,LA,RA,TO) " itemValue="2"></f:selectItem>
+                            <f:selectItem itemLabel="All/Some Caces send to Authorities(RTA,STA,LA,RA,TO) " itemValue="3"></f:selectItem>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  value="Application No:"  />
+                        </label>
+                        <p:inputText id="somApplNo"  value="#{challanRefer.applicationNo}" required="true" requiredMessage="Please Enter Application No"   styleClass="text-uppercase"
+                                     converter="toUpperCaseConverter">
+                            <p:ajax listener="#{challanRefer.getChallanWiseOffenceList()}" event="blur" process="somApplNo somReferTo" update="referMsg somOffence sm_authority_list referToAutPenal referToCourtPenal savePanel"></p:ajax>
+                        </p:inputText>
+                    </div>
+                </div>
+            </p:panel>
+            <p:outputPanel id="referToCourtPenal" >
+                <p:panel header="Refer To Court" rendered="#{challanRefer.referToCourtDisabled}" >
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Court Name:"  />
+                            </label>
+                            <p:selectOneMenu id="sm_court_list" value="#{challanRefer.courtCode}" filter="true">  
+                                <f:selectItem itemLabel="Select Court" itemValue="-1"></f:selectItem>
+                                <f:selectItems value="#{challanRefer.courtList}"/>  
+                                <p:ajax process="sm_court_list" event="change" listener="#{challanRefer.getSelectedValues('court',challanRefer.courtCode)}" update="sm_magistrate_list"></p:ajax>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <p:outputPanel rendered="#{challanRefer.showMagistrateSom}">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="sm_magistrate_list"  value="Magistrate:"/>
+                                </label>
+                                <p:selectOneMenu id="sm_magistrate_list" value="#{challanRefer.magistrate}"   filter="true">  
+                                    <f:selectItem itemLabel="--Select Magistrate--"  itemValue="-1" /> 
+                                    <f:selectItems value="#{save.magistrateList}"/>  
+                                    <p:ajax process="sm_magistrate_list" event="change" listener="#{challanRefer.getSelectedValues('magistrate',challanRefer.magistrate)}" update="sm_court_list"></p:ajax>
+
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel   value="Hearing Date:" rendered="#{challanRefer.hearingdate}" />
+                            </label>
+                            <p:calendar  
+                                id="cal_hearing_date" 
+                                value="#{challanRefer.hearingDate}"
+                                rendered="#{challanRefer.hearingdate}"
+                                size="15" 
+                                pattern="dd/MM/yyyy"
+                                navigator="true"
+                                autocomplete="off"
+                                mindate="#{challanRefer.minDate}"
+                                >
+                                <f:convertDateTime pattern="dd/MM/yyyy"  />
+                            </p:calendar>
+                        </div>
+                    </div>
+
+
+                </p:panel>
+            </p:outputPanel>
+            <p:outputPanel id="referToAutPenal"  >
+                <p:panel header="Refer To Authority" rendered="#{challanRefer.referToAuthorityDisabled}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Authority Name:"  />
+                            </label>
+                            <p:selectOneMenu id="sm_authority_list" value="#{challanRefer.authorityCode}" filter="true">  
+                                <f:selectItems value="#{challanRefer.authorityList}"/>  
+                            </p:selectOneMenu>
+                        </div>
+
+
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Offence"  />
+                            </label>
+                            <p:selectOneMenu id="somOffence" value="#{challanRefer.offenceCode}" filter="true">
+                                <f:selectItems value="#{challanRefer.offenceList}" ></f:selectItems>
+                                <p:ajax listener="#{challanRefer.getOffenceWiseSection()}" event="change"  process="somOffence" update="somSection tfAmount tfAccused" ></p:ajax>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  value="Section:"  />
+                            </label>
+                            <p:selectOneMenu id="somSection" value="#{challanRefer.sectionCode}"  >
+
+                                <f:selectItems value="#{challanRefer.sectionList}"  ></f:selectItems>
+                            </p:selectOneMenu>
+                        </div>
+
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfAccused"  value="Accused"  />
+                            </label> 
+                            <p:inputText id="tfAccused"  value="#{challanRefer.accusedDescr}" disabled="true"></p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfAmount "  value="Amount"  />
+                            </label> 
+                            <p:inputText id="tfAmount"  value="#{challanRefer.penalty}" disabled="true"></p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton id="add_acc_details" value="REFER OFFENCE" >
+                                <p:ajax event="click"
+                                        process="referToAutPenal"
+                                        listener="#{challanRefer.offenceDetailsForRefer()}"
+                                        update="referToAutPenal  referMsg"></p:ajax>
+                            </p:commandButton>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable value="#{challanRefer.challanReferDetailList}"  var="offRefDet"  
+                                         id="offenceReferDetails" editable="true" 
+                                         style="width:auto; overflow-x:scroll; overflow-y:scroll" styleClass="top-space bottom-space">
+                                <p:ajax event="rowEdit"  listener="#{challanRefer.editChallanRefrenceDetails}" />  
+                                <p:ajax event="rowEditCancel" listener="#{challanRefer.deleteChallanRefrenceDetails}"   /> 
+                                <p:column>
+                                    <f:facet name="header">  
+                                        <h:outputText value="Authority Name :" />  
+                                    </f:facet>
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{offRefDet.authoritydescr}" styleClass="text-uppercase"  />  
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:inputText value="#{offRefDet.authoritydescr}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">  
+                                        <h:outputText value="Offence :" />  
+                                    </f:facet>
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{offRefDet.offenceDescr}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:inputText value="#{offRefDet.offenceDescr}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+
+
+                                <p:column>
+                                    <f:facet name="header">  
+                                        <h:outputText value="Section :" />  
+                                    </f:facet>
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{offRefDet.sectionDescr}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:inputText value="#{offRefDet.sectionDescr}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+
+                                <p:column>
+                                    <f:facet name="header">  
+                                        <h:outputText value="Accused :" />  
+                                    </f:facet>
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{offRefDet.accusedDescr}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:inputText value="#{offRefDet.accusedDescr}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+                                <p:column>
+                                    <f:facet name="header">  
+                                        <h:outputText value="Penalty :" />  
+                                    </f:facet>
+                                    <p:cellEditor>  
+                                        <f:facet name="output">  
+                                            <h:outputText value="#{offRefDet.penalty}" styleClass="text-uppercase" />  
+                                        </f:facet>  
+                                        <f:facet name="input">  
+                                            <p:inputText value="#{offRefDet.penalty}" styleClass="text-uppercase" maxlength="20" />  
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column> 
+
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        <h:outputText value="Option" />  
+                                    </f:facet>
+                                    <p:rowEditor />  
+                                </p:column> 
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:panel id="savePanel"  rendered="#{challanRefer.showSavePenal}">
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="btSaveReferDetails" value="Save Refere Details" action="#{challanRefer.saveChallanReferDetais}" update="referMsg,somApplNo,offenceReferDetails,referToAutPenal printOutPutPanel" >
+                            </p:commandButton>
+
+                            <p:commandButton id="btResetReferDEtails" value="Reset Refere Details" action="#{challanRefer.reset()}"></p:commandButton>
+                        </div>
+                    </div>
+                </p:panel>
+
+            </p:outputPanel>
+            <p:outputPanel id="printOutPutPanel">
+                <p:panel id="printPanel"  rendered="#{challanRefer.showPrintPenal}">
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="printreport" value="Print Report" icon="ui-icon-print" process="printreport" immediate="true" 
+                                             action="#{challanRefer.printReport()}"  >
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+            <vahan:vahanMessages messages="#{challanRefer.vahanMessages}"  rendered="#{challanRefer.vahanMessages ne null}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

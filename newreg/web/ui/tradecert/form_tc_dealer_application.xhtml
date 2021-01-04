@@ -1,0 +1,710 @@
+<ui:composition
+    template = "/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content"> 
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="_application_">
+                <!-- =========================================================== FORM BEGIN =========================================================== -->
+                <p:outputPanel id="trade_panel">
+
+                    <p:panel id="trade_panel_render" rendered="#{publicApplicationTradeCertBean.renderTradePanel}" styleClass="bottom-space border-none">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <h1 class="header-main">Applicant Entry &amp; Apply For Trade Certificate Application</h1> 
+                            </div>
+                        </div>
+                        <p:outputPanel id="printForm16Panel" rendered="#{publicApplicationTradeCertBean.applicationInVerifyStage}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Print [ Form 16/18 ] " icon="ui-icon-print" action="#{publicApplicationTradeCertBean.confirmTradeCertApplicationPrint()}" onclick="PF('bui_fancy').show()" 
+                                                     oncomplete="PF('bui_fancy').hide()"  />
+                                </div>
+                            </div>
+                        </p:outputPanel>    
+                        <p:outputPanel id="financerOrdealer" rendered="#{!publicApplicationTradeCertBean.verifyMode and !publicApplicationTradeCertBean.hideApplicantType}">
+                            <div class="ui-grid-row">  
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <h:outputText value="Applicant Type: " styleClass="font-bold"  />
+                                    </label>
+                                    <p:selectOneRadio id="financerOrdealerChooser"  columns="2"  value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantCategory}" layout="responsive" >  
+                                        <f:selectItem itemLabel="Financer" itemValue="F" />
+                                        <f:selectItem itemLabel="Dealer" itemValue="D" />
+                                        <p:ajax  event="change" listener="#{publicApplicationTradeCertBean.showFinancerOrDealerListener}" update="applicantPanel"/> 
+                                    </p:selectOneRadio>
+
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel id="applicationType" rendered="#{!publicApplicationTradeCertBean.verifyMode}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <h:outputText value="Application Type: " styleClass="font-bold"  />
+                                    </label>
+                                    <p:selectOneRadio id="applicationTypeChooser"  columns="4"  value="#{publicApplicationTradeCertBean.applicationType}" layout="responsive" >  
+                                        <f:selectItem itemLabel="New" itemValue="NEW" />
+                                        <f:selectItem itemLabel="Amend" itemValue="AMEND" />
+                                        <f:selectItem itemLabel="Renew" itemValue="RENEW" />
+                                        <f:selectItem itemLabel="Duplicate" itemValue="DUPLICATE" />
+                                        <p:ajax  event="change" listener="#{publicApplicationTradeCertBean.showTradeCertEntryDailog}" update="applicantPanel trade_cert_no_entry_Dlg_pnl financerOrdealer trade_panel"/> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <br/>
+                        </p:outputPanel>
+
+                        <p:outputPanel id="applicantPanel" styleClass="bottom-space">
+                            <p:outputPanel id="applicantPersonalDetailsPanel" >
+
+                                <p:outputPanel id="dealerDetailsPanel" styleClass="bottom-space">
+                                    <p:panel header="Section 1: Applicant Details" styleClass="bottom-space">
+                                        <p:outputPanel >
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-4" >
+                                                    <label class="field-label resp-label-section"> 
+                                                        <h:outputText value="Applicant Name: " styleClass="font-bold"  />
+                                                    </label>
+                                                    <p:inputText id="applicantName" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantName}" 
+                                                                 autocomplete="off" converter="toUpperCaseConverter" styleClass="input" 
+                                                                 maxlength="50" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                                 placeholder="Name of applicant">
+                                                    </p:inputText>
+                                                    <br/>
+                                                    <h:outputText value="*Field is mandatory to be filled by both(individual or company/firm)." styleClass="green"/>
+                                                    <br/>
+                                                    <h:outputText value="*Allowed to enter 50 characters having {a-z},{A-Z},{space},{forward-slash}" styleClass="green"/>
+                                                </div>
+
+                                                <div class="ui-grid-col-4" >
+                                                    <p:outputPanel rendered="#{publicApplicationTradeCertBean.showFinancer}">
+                                                        <label class="field-label resp-label-section"> 
+                                                            <h:outputText value="Branch Name: " styleClass="font-bold"  />
+                                                        </label>
+                                                        <p:inputText id="branchName" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantBranchName}" 
+                                                                     autocomplete="off" converter="toUpperCaseConverter" styleClass="input" 
+                                                                     maxlength="50" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                                     placeholder="Name of applicant">
+                                                        </p:inputText>
+                                                        <br/>
+                                                        <h:outputText value="*Field is mandatory to be filled by both(individual or company/firm)." styleClass="green"/>
+                                                        <br/>
+                                                        <h:outputText value="*Allowed to enter 50 characters having {a-z},{A-Z},{space},{forward-slash}" styleClass="green"/>
+                                                    </p:outputPanel>
+                                                    <p:outputPanel rendered="#{!publicApplicationTradeCertBean.showFinancer}">
+                                                        <label class="field-label resp-label-section" > 
+                                                            <h:outputText value="Applicant Type: " styleClass="font-bold"  />
+                                                        </label>
+                                                        <p:selectOneRadio id="individualOrCompanyChooser"  columns="2"  value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.individualOrCompany}" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" layout="responsive">  
+                                                            <f:selectItem itemLabel="Individual" itemValue="Individual" />
+                                                            <f:selectItem itemLabel="Company/ Firm" itemValue="Company" />
+                                                            <p:ajax  event="change" listener="#{publicApplicationTradeCertBean.relationFormModificationListener}" update="applicantRelation"/> 
+                                                        </p:selectOneRadio>
+                                                        <h:outputText value="*Select to notify whether the applicant is an Individual or Company/ Firm/ Organization/ Financial-Institution" styleClass="green"/>
+                                                    </p:outputPanel>
+                                                </div>
+
+
+                                                <div class="ui-grid-col-4" >
+                                                    <p:outputPanel rendered="#{!publicApplicationTradeCertBean.showFinancer}">
+                                                        <label class="field-label resp-label-section">
+                                                            <h:outputText value="Son/Wife/Daughter Of: " styleClass="font-bold" />
+                                                        </label>
+                                                        <p:inputText id="applicantRelation" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantRelation}" 
+                                                                     autocomplete="off" 
+                                                                     converter="toUpperCaseConverter"  styleClass="input" maxlength="50" 
+                                                                     disabled="#{publicApplicationTradeCertBean.company or publicApplicationTradeCertBean.disableFieldforexist}"
+                                                                     placeholder="Relation of applicant (if Individual)">
+                                                            <p:keyFilter regEx="/[a-zA-Z /]/i" for="applicantRelation"/>
+                                                        </p:inputText>                                        
+                                                        <br/>
+                                                        <h:outputText value="*Not applicable in case of company / firm" styleClass="green"/>
+                                                        <br/>
+                                                        <h:outputText value="*Allowed to enter 50 characters having {a-z},{A-Z},{space},{forward-slash}" styleClass="green"/>
+                                                        <br/>
+                                                        <h:outputText value="*Please include S/o, W/o, D/o for Son, Wife, Daughter respectively before guardian name." styleClass="green"/>
+                                                    </p:outputPanel>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Address: " styleClass="font-bold" />
+                                                </label>
+                                                <p:inputTextarea maxlength="100" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"  id="fullAddress" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantAddress1}"  rendered="#{publicApplicationTradeCertBean.verifyMode}">
+                                                </p:inputTextarea>
+                                                <p:inputText id="applicantAddress1" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantAddress1}" 
+                                                             disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                             rendered="#{!publicApplicationTradeCertBean.verifyMode}"
+
+                                                             converter="toUpperCaseConverter" styleClass="input" maxlength="35" 
+
+                                                             placeholder="address fill-up line 1 for 35 characters">  
+                                                </p:inputText>
+                                                <br/>
+                                                <p:inputText id="applicantAddress2" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantAddress2}" 
+                                                             disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                             converter="toUpperCaseConverter" styleClass="input" maxlength="35" 
+                                                             rendered="#{!publicApplicationTradeCertBean.verifyMode}"
+                                                             placeholder="address fill-up line 2 for 35 characters">  
+                                                </p:inputText>
+                                                <p:selectOneMenu id="applicantDistrict" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantDistrict}" 
+                                                                 filter="true" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"  rendered="#{!publicApplicationTradeCertBean.verifyMode and !publicApplicationTradeCertBean.showFinancer}">
+                                                    <f:selectItem itemLabel="-SELECT DISTRICT-" itemValue="-1"/>
+                                                    <f:selectItems value="#{publicApplicationTradeCertBean.applicantDistrictList}" />
+                                                </p:selectOneMenu>
+                                                <p:selectOneMenu id="applicantDistrict_f" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantDistrict}" 
+                                                                 filter="true" disabled="true"  rendered="#{!publicApplicationTradeCertBean.verifyMode and publicApplicationTradeCertBean.showFinancer}">
+                                                    <f:selectItem itemLabel="-SELECT DISTRICT-" itemValue="-1"/>
+                                                    <f:selectItems value="#{publicApplicationTradeCertBean.fixedDistrictList}" />
+                                                </p:selectOneMenu>
+
+                                                <br/>
+
+                                                <h:outputLabel value="*In order to select the 'District', please select 'State' first. " styleClass="green" />
+                                                <h:outputLabel value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                <h:outputLabel value="*Allowed to enter 35 characters in each textbox having {a-z},{A-Z},{0-9},{dot},{hyphen},{back-slash},{underscore},{space},{forward-slash},{comma}" styleClass="green"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Pincode: " styleClass="font-bold"  />
+                                                </label>
+                                                <p:inputMask id="applicantPincode" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantPincode}"  
+                                                             styleClass="input" autocomplete="off" maxlength="6" 
+                                                             disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                             mask="99 99 99"
+                                                             placeholder="Pincode of applicant">
+                                                    <f:validateLength minimum="6" for="applicantPincode"/>                                                    
+                                                </p:inputMask>                                                                                                
+                                                <br/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*CANNOT enter less than 6 digits; Else field will be cleared" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Pincode of an applicant cannot be zero ( 0 )" styleClass="green"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Email: " styleClass="font-bold"/>
+                                                </label>
+                                                <p:inputText id="applicantMailId" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantMailId}" 
+                                                             autocomplete="off"  
+                                                             maxlength="50" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                             placeholder="Mail-Id of applicant">                                                
+                                                </p:inputText>
+                                                <!--                                                <br/>
+                                                                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>-->
+                                                <br/>
+                                                <h:outputText value="*Allowed to enter 50 characters having {a-z},{A-Z},{0-9},{dot},{underscore},{@}" styleClass="green"/>
+                                                <br/>
+                                            </div>
+
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Mobile No: " styleClass="font-bold"  />
+                                                </label>
+                                                <p:inputMask id="applicantMobileNumber" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantMobileNumber}" 
+                                                             styleClass="input"  maxlength="10" mask="99999 99999" 
+                                                             disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                             placeholder="Mobile number of applicant">                                                                                                                                                                                                                  
+                                                    <f:validateLength minimum="10" for="applicantMobileNumber"/>                                                    
+                                                </p:inputMask>                                                
+
+                                                <br/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*CANNOT enter less than 10 digits; Else field will be cleared" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Mobile number of an applicant cannot be zero ( 0 )" styleClass="green"/>
+
+                                            </div>
+
+                                            <div class="ui-grid-col-4">
+                                                <p:outputPanel rendered="#{publicApplicationTradeCertBean.showFinancer}">
+                                                    <label class="field-label resp-label-section"> 
+                                                        <h:outputText value="Land Line No: " styleClass="font-bold"  />
+                                                    </label>
+                                                    <p:inputMask id="landLineNumber" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.landLineNumber}"                                                                 
+                                                                 styleClass="input"  maxlength="10" mask="99999 99999" 
+                                                                 disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                                 placeholder="Landline number of applicant">                                                                                                                                                                                                                  
+                                                        <f:validateLength minimum="10" for="landLineNumber"/>                                                    
+                                                    </p:inputMask>                                                
+
+                                                    <br/>
+                                                    <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                    <br/>
+                                                    <h:outputText value="*CANNOT enter less than 10 digits; Else field will be cleared" styleClass="green"/>
+                                                    <br/>
+                                                    <h:outputText value="*Landline number of an applicant cannot be zero ( 0 )" styleClass="green"/>
+                                                </p:outputPanel>
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </p:panel>
+                                    <p:panel header="Showroom Details" rendered="#{!publicApplicationTradeCertBean.showFinancer}">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Show Room Name: " styleClass="font-bold"  />
+                                                </label>
+                                                <p:inputText id="showRoomName" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.showRoomName}" 
+                                                             autocomplete="off" converter="toUpperCaseConverter" styleClass="input" 
+                                                             maxlength="50" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                             placeholder="Name of Show Room">
+                                                </p:inputText>
+                                                <br/>
+                                                <h:outputText value="*Field is mandatory to be filled by both(individual or company/firm)." styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Allowed to enter 50 characters having {a-z},{A-Z},{space},{forward-slash}" styleClass="green"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Show Room Address: " styleClass="font-bold" />
+                                                </label>
+                                                <p:inputText id="showRoomAddress1" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.showRoomAddress1}" 
+                                                             disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                             converter="toUpperCaseConverter" styleClass="input" maxlength="35" 
+                                                             placeholder="address fill-up line 1 for 35 characters">  
+                                                </p:inputText>
+                                                <br/>
+                                                <p:inputText id="showRoomAddress2" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.showRoomAddress2}" 
+                                                             disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                             converter="toUpperCaseConverter" styleClass="input" maxlength="35" 
+                                                             placeholder="address fill-up line 2 for 35 characters">  
+                                                </p:inputText>
+                                                <p:selectOneMenu id="showRoomDistrict" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.showRoomDistrict}" 
+                                                                 filter="true" disabled="true">
+                                                    <f:selectItem itemLabel="-SELECT DISTRICT-" itemValue="-1"/>
+                                                    <f:selectItems value="#{publicApplicationTradeCertBean.fixedDistrictList}" />
+                                                </p:selectOneMenu>
+                                                <br/>
+                                                <h:outputText value="*In order to select the 'District', please select 'State' first. " styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Allowed to enter 35 characters in each textbox having {a-z},{A-Z},{0-9},{dot},{hyphen},{back-slash},{underscore},{space},{forward-slash},{comma}" styleClass="green"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Show Room Pincode: " styleClass="font-bold"  />
+                                                </label>
+                                                <p:inputMask id="showRoomPincode" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.showRoomPincode}"  
+                                                             styleClass="input" autocomplete="off" maxlength="6" 
+                                                             disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                             mask="99 99 99"
+                                                             placeholder="Pincode of Show Room">
+                                                    <f:validateLength minimum="6" for="showRoomPincode"/>                                                    
+                                                </p:inputMask>                                                                                                
+                                                <br/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*CANNOT enter less than 6 digits; Else field will be cleared" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Pincode of an applicant cannot be zero ( 0 )" styleClass="green"/>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                            <p:blockUI block="applicantPersonalDetailsPanel" widgetVar="applicantDetailsPanelBlocker"/>
+                            <p:outputPanel  id="section2Panel" styleClass="bottom-space">
+                                <p:panel header="Section 2: Applicant Affiliation">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel rendered="#{publicApplicationTradeCertBean.applicationType eq 'NEW' or publicApplicationTradeCertBean.applicationType eq 'RENEW' or publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.applicationType eq 'AMEND'}">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Number Of Trade Certificates: " styleClass="font-bold" rendered="#{!(publicApplicationTradeCertBean.applicationType eq 'RENEW')}"/>
+                                                    <h:outputText value="Number Of Trade Certificates To Be Renewed: " styleClass="font-bold" rendered="#{publicApplicationTradeCertBean.applicationType eq 'RENEW'}" />
+                                                </label>
+
+                                                <p:inputText id="noOfTradeCertificatesRequired"  
+                                                             value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.noOfTradeCertificateReqFromApplicant}"
+                                                             autocomplete="off" styleClass="input" maxlength="4"                                                              
+                                                             placeholder="Number of Certificates Required from applicant" rendered="#{(publicApplicationTradeCertBean.applicationType eq 'NEW' or publicApplicationTradeCertBean.applicationType eq 'RENEW') and !publicApplicationTradeCertBean.verifyMode}">                                                    
+                                                    <p:keyFilter for="noOfTradeCertificatesRequired" regEx="/[0-9]/i" />
+                                                </p:inputText>
+
+                                                <p:inputText  id="no_of_tc_required_for_duplicate" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.noOfTradeCertificateReqFromApplicant}" rendered="#{publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.applicationType eq 'AMEND' or ((publicApplicationTradeCertBean.applicationType eq 'RENEW' or publicApplicationTradeCertBean.applicationType eq 'NEW') and publicApplicationTradeCertBean.verifyMode)}" disabled="true"/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Allowed to enter 4 characters having {0-9}" styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Number of trade certificates cannot be zero ( 0 )" styleClass="green"/>
+                                            </p:outputPanel>
+                                        </div>
+
+                                        <p:outputPanel styleClass="ui-grid-col-4" rendered="#{publicApplicationTradeCertBean.applicationType eq 'RENEW'}">
+                                            <label class="field-label resp-label-section"> 
+                                                <h:outputText value="Total No. Of Vehicles Sold/Financed Last Year: " styleClass="font-bold" />
+                                            </label>
+
+                                            <p:inputText id="noOfVehiclesSold"  
+                                                         value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.extraVehiclesSoldLastYr}"
+                                                         autocomplete="off" styleClass="input" maxlength="4"
+                                                         disabled="#{publicApplicationTradeCertBean.disableFieldforexist and publicApplicationTradeCertBean.verifyMode}" 
+                                                         placeholder="Total No. Of Vehicles Sold/Financed Last Year" >                                                
+                                                <p:keyFilter for="noOfVehiclesSold" regEx="/[0-9]/i" />
+                                            </p:inputText>
+                                            <h:outputText value="*Allowed to enter 4 characters having {0-9}" styleClass="green"/>                                                                                       
+                                        </p:outputPanel>
+
+                                        <p:outputPanel styleClass="ui-grid-col-4" rendered="#{publicApplicationTradeCertBean.applicationType eq 'AMEND'}">
+                                            <label class="field-label resp-label-section"> 
+                                                <h:outputText value="Amended Number Of Trade Certificates: " styleClass="font-bold" />
+                                            </label>
+
+                                            <p:inputText id="amendedNoOfTradeCertificatesRequired"  
+                                                         value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.noOfTradeCertificateReqFromApplicant}"
+                                                         autocomplete="off" styleClass="input" maxlength="4"
+                                                         placeholder="Amended Number of Certificates Required from applicant" >                                               
+                                                <p:keyFilter for="amendedNoOfTradeCertificatesRequired" regEx="/[0-9]/i" />
+                                            </p:inputText>
+                                            <h:outputText value="*Allowed to enter 4 characters having {0-9}" styleClass="green"/>
+                                            <br/>
+                                            <h:outputText value="*Number of trade certificates cannot be zero ( 0 )" styleClass="green"/>
+                                        </p:outputPanel>
+
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel rendered="#{!publicApplicationTradeCertBean.showFinancer}">  
+                                                <label class="field-label resp-label-section"> 
+                                                    <p:outputLabel value="GSTIN: " styleClass="font-bold"  />
+                                                </label>
+                                                <p:inputMask id="applicantTinNo" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.applicantTinNo}" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                             converter="toUpperCaseConverter"
+                                                             autocomplete="off"
+                                                             styleClass="input" 
+                                                             maxlength="15"                                                         
+                                                             mask="***************"
+                                                             placeholder="GSTIN of applicant">      
+                                                    <p:ajax event="blur" listener="#{publicApplicationTradeCertBean.verifyTinNoOnBlur}"/>
+                                                </p:inputMask>  
+                                                <!--                                                <br/>
+                                                                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>-->
+                                                <br/>
+                                                <h:outputText value="*CANNOT enter less than 15 digits" styleClass="green"/>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+
+                                    <p:panel  rendered="#{publicApplicationTradeCertBean.applicationModeRadio eq 'Generate_Application'}" styleClass="border-none"> 
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Motor Vehicle(s) Class In Which Authorized To Deal: " styleClass="font-bold" />
+                                                </label>
+                                                <p:selectManyMenu id="vehClassAffiliated" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.vehClassAffiliatedByApplicantList}" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                                  filter="true" filterMatchMode="contains" valueChangeListener="#{publicApplicationTradeCertBean.singleSelectionImplementationListener}"  showCheckbox="true" style="height:135px !important;" rendered="#{publicApplicationTradeCertBean.applicationType eq 'NEW' and !publicApplicationTradeCertBean.verifyMode and !publicApplicationTradeCertBean.basicDetailsSaved}">
+                                                    <f:selectItems value="#{publicApplicationTradeCertBean.vehClassList}" />
+                                                    <p:ajax event="change" listener="#{publicApplicationTradeCertBean.applicantVehClassAffiliatedSelectionListener}" update="vehClassAffiliated "/>
+                                                </p:selectManyMenu>
+                                                <p:selectManyMenu id="vehClassAffiliatedForRenewDuplicate" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.vehClassAffiliatedByApplicantListForEx}" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                                  filter="true" filterMatchMode="contains" showCheckbox="false" style="height:135px !important;" rendered="#{publicApplicationTradeCertBean.applicationType eq 'RENEW' or publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.verifyMode or publicApplicationTradeCertBean.basicDetailsSaved or publicApplicationTradeCertBean.applicationType eq 'AMEND'}">
+                                                    <f:selectItems value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.vehClassAffiliatedByApplicantListForEx}" />
+                                                </p:selectManyMenu>
+                                                <br/>
+                                                <h:outputText value="*Only click inside the check-box, not on label. Else; all selection will be lost." styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                            </div>
+
+                                            <div class="ui-grid-col-4">
+                                                <p:outputPanel rendered="#{!publicApplicationTradeCertBean.showFinancer}">  
+                                                    <label class="field-label resp-label-section"> 
+                                                        <h:outputText value="Manufacturers: " styleClass="font-bold"  />
+                                                    </label>
+                                                    <p:selectManyMenu id="applicantManufacturer" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.selectedApplicantManufacturerList}"  disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                                      filter="true" filterMatchMode="contains" showCheckbox="true" style="height:135px !important" rendered="#{publicApplicationTradeCertBean.applicationType eq 'NEW' and !publicApplicationTradeCertBean.verifyMode and !publicApplicationTradeCertBean.basicDetailsSaved}">
+                                                        <f:selectItems value="#{publicApplicationTradeCertBean.applicantManufacturerList}" var="manufacturer" itemLabel="#{manufacturer.label}" itemValue="#{manufacturer.value}" />
+                                                    </p:selectManyMenu>
+                                                    <p:selectManyMenu id="applicantManufacturerForRenewDuplicate" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.selectedApplicantManufacturerListForEx}"   disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"
+                                                                      filter="true" filterMatchMode="contains" showCheckbox="false" style="height:135px !important" rendered="#{publicApplicationTradeCertBean.applicationType eq 'RENEW' or publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.verifyMode or publicApplicationTradeCertBean.basicDetailsSaved or publicApplicationTradeCertBean.applicationType eq 'AMEND'}">
+                                                        <f:selectItems value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.selectedApplicantManufacturerListForEx}"/>
+                                                    </p:selectManyMenu>
+                                                    <br/>
+                                                    <h:outputText value="*Allowed to select(check) many." styleClass="green"/>
+                                                    <br/>
+                                                    <h:outputText value="*Only click inside the check-box, not on label. Else; all selection will be lost." styleClass="green"/>
+                                                    <br/>
+                                                    <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                </p:outputPanel>   
+                                            </div>   
+
+                                        </div>
+                                        <br/>
+                                        <p:outputPanel rendered="#{!publicApplicationTradeCertBean.showFinancer}">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section"> 
+                                                        <h:outputText value="LOI Authorisation Number: " styleClass="font-bold" />
+                                                    </label>
+                                                    <p:outputPanel rendered="#{publicApplicationTradeCertBean.applicationType eq 'NEW' }">
+                                                        <p:inputText id="LOIAuthorisationNo"  
+                                                                     value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.LOIAuthorisationNo}"
+                                                                     autocomplete="off" styleClass="input" maxlength="15" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}" 
+                                                                     placeholder="LOI Authorisation Number">
+                                                            <p:ajax event="blur" update="LOIAuthorisationNo" />
+                                                            <p:keyFilter for="LOIAuthorisationNo" regEx="/[a-zA-Z0-9]/i" />
+                                                        </p:inputText>
+                                                    </p:outputPanel>
+                                                    <p:inputText  id="LOIAuthorisationNoForRenewDup" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.LOIAuthorisationNo}" rendered="#{publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.applicationType eq 'RENEW' or publicApplicationTradeCertBean.applicationType eq 'AMEND'}" disabled="true"/>
+                                                    <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                                    <br/>
+                                                    <h:outputText value="*Allowed to enter 15 characters having {0-9}" styleClass="green"/>
+                                                    <br/>
+                                                    <h:outputText value="*LOI Authorisation Number cannot be zero ( 0 )" styleClass="green"/>
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section"> 
+                                                        <h:outputText value="LOI Authorisation Date: " styleClass="font-bold" />
+                                                    </label>
+                                                    <p:outputPanel rendered="#{publicApplicationTradeCertBean.applicationType eq 'NEW' }">
+                                                        <p:calendar id="LOIAuthorisationDate" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}"  value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.LOIAuthorisationDate}" 
+                                                                    placeholder="LOI Authorisation Date" pattern="dd-MMM-yyyy"  navigator="true" >
+                                                        </p:calendar>
+                                                    </p:outputPanel>
+                                                    <p:inputText  id="LOIAuthorisationDateForRenewDup" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.LOIAuthorisationDateString}" rendered="#{publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.applicationType eq 'RENEW' or publicApplicationTradeCertBean.applicationType eq 'AMEND'}" disabled="true"/>
+                                                    <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>                                                                
+                                                </div>
+                                            </div>                                                                                                                     
+                                        </p:outputPanel>                                                                               
+                                        <div class="ui-grid-row top-space">                                                                            
+                                            <div class="ui-grid-col-4">
+                                                <p:outputPanel rendered="#{publicApplicationTradeCertBean.applicationType eq 'RENEW'or publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.applicationType eq 'AMEND'}">
+                                                    <label class="field-label resp-label-section"> 
+                                                        <h:outputText value="Trade certificate No: " styleClass="font-bold" />
+                                                    </label>  
+                                                    <p:inputText id="tradeCertNo"  
+                                                                 value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.tradeCertNo}"
+                                                                 autocomplete="off" styleClass="input" maxlength="4"
+                                                                 converter="toUpperCaseConverter"
+                                                                 placeholder="Trade Certificate No" disabled="true">                                                                                                      
+                                                    </p:inputText>
+                                                </p:outputPanel>
+                                            </div>   
+                                            <div class="ui-grid-col-4">
+                                                <p:outputPanel rendered="#{publicApplicationTradeCertBean.applicationType eq 'DUPLICATE' or publicApplicationTradeCertBean.applicationType eq 'RENEW' or publicApplicationTradeCertBean.applicationType eq 'AMEND'}">
+                                                    <label class="field-label resp-label-section"> 
+                                                        <h:outputText value="Valid UpTo: " styleClass="font-bold" />
+                                                    </label>                                               
+                                                    <p:inputText  id="validUpto"  placeholder="Valid Upto"  value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.validUptoDateString}"  disabled="true"/>  
+                                                </p:outputPanel>
+                                                <br/>               
+                                            </div>
+                                        </div>    
+
+                                        <div class="ui-grid-row top-space">
+                                            <div class="ui-grid-col-12 center-position">
+                                                <p:commandButton id="addBasicDetailsCB" action="#{publicApplicationTradeCertBean.displayBasicDetailsConfirmationBox()}"  
+                                                                 value="Add Basic Details To Application" 
+                                                                 icon="ui-icon-circle-plus" rendered="#{!publicApplicationTradeCertBean.basicDetailsSaved and !publicApplicationTradeCertBean.renderFileMovement}"
+                                                                 disabled="#{publicApplicationTradeCertBean.addingBasicDetailsDisabled}" update="save_basic_dtls_confirm_panel_tc"/>                                           
+                                                <p:button value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w" rendered="#{!publicApplicationTradeCertBean.visibleApplicationDetailPanel and !publicApplicationTradeCertBean.renderFileMovement}"/>
+                                                <!--                                                <br/>
+                                                                                                <h:outputText value="*Temporarily save the trade certificate requirement for 'Number of Trade Certificates' and 'Vehicle Category' along with 'Applicant Details'  " styleClass="green"/>-->
+                                            </div>
+                                        </div>
+
+                                    </p:panel>
+                                    <p:panel  rendered="#{publicApplicationTradeCertBean.applicationModeRadio eq 'Edit_Application'}" styleClass="border-none"> 
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Motor Vehicle(s) Class In Which Authorized To Deal: " styleClass="font-bold" />
+                                                </label>
+                                                <p:selectManyMenu id="vehClassAffiliatedEX" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.vehClassAffiliatedByApplicantListForEx}" 
+                                                                  filter="true" filterMatchMode="contains" showCheckbox="false" style="height:135px !important;" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}">
+                                                    <f:selectItems value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.vehClassAffiliatedByApplicantListForEx}" />
+                                                </p:selectManyMenu>
+                                                <br/>
+                                                <h:outputText value="*Only click inside the check-box, not on label. Else; all selection will be lost." styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                            </div>
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section"> 
+                                                    <h:outputText value="Manufacturers: " styleClass="font-bold"  />
+                                                </label>
+                                                <p:selectManyMenu id="applicantManufacturerEX" value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.selectedApplicantManufacturerListForEx}"   
+                                                                  filter="true" filterMatchMode="contains" showCheckbox="false" style="height:135px !important" disabled="#{publicApplicationTradeCertBean.disableFieldforexist}">
+                                                    <f:selectItems value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.selectedApplicantManufacturerListForEx}"/>
+                                                </p:selectManyMenu>
+                                                <br/>
+                                                <h:outputText value="*Allowed to select(check) many." styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Only click inside the check-box, not on label. Else; all selection will be lost." styleClass="green"/>
+                                                <br/>
+                                                <h:outputText value="*Mandatory for both individual or company / firm" styleClass="green"/>
+                                            </div>                                    
+                                        </div>                                                                             
+                                    </p:panel>
+                                </p:panel>
+                            </p:outputPanel>
+                            <p:blockUI block="section2Panel" widgetVar="section2PanelBlocker"/>
+
+                            <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                            <p:keyFilter regEx="/[a-zA-Z /]/i" for="applicantName"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9.\-\\ /,_]/i" for="applicantAddress1"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9.\-\\ /,_]/i" for="applicantAddress2"/>
+                            <p:keyFilter for="applicantPincode" regEx="/[0-9]/i" />
+                            <p:keyFilter regEx="/[a-zA-Z /]/i" for="showRoomName"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9.\-\\ /,_]/i" for="showRoomAddress1"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9.\-\\ /,_]/i" for="showRoomAddress2"/>
+                            <p:keyFilter for="showRoomPincode" regEx="/[0-9]/i" />
+                            <p:keyFilter for="applicantMobileNumber" regEx="/[0-9]/i" />
+                            <p:keyFilter regEx="/[a-zA-Z0-9._@]/i" for="applicantMailId"/>
+                            <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="applicantTinNo"/>
+                            <!--#############################################################################################-->
+                        </p:outputPanel>
+                    </p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel rendered="#{publicApplicationTradeCertBean.renderFileMovement}" id="control_buttons_file_mov" styleClass="bottom-space top-space">
+                                <ui:include src="/ui/role/file_movement_app_disapp.xhtml" >
+                                    <ui:param name="app_disapp" value="#{publicApplicationTradeCertBean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:blockUI block="trade_panel" widgetVar="bui_fancy" >
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <!-- ============================================================ FORM END ====================================================== -->
+
+                <!-- ============================================================ DIALOG BEGIN ====================================================== -->
+                <p:dialog id="saveBasicDtlsConfirmationPopupTC" modal="true" header="Trade Certificate Application Error | Warning | Information Messages Confirmation Panel..."
+                          visible="#{not empty facesContext.messageList}"
+                          widgetVar="saveBasicDtlsConfirmationPopupTC" width="70%" style="margin-top: -675px; position: absolute"
+                          hideEffect="explode" closeOnEscape="true" closable="true"> 
+                    <p:outputPanel id="save_basic_dtls_confirm_panel_tc">
+                        <p:messages styleClass="left-position" />
+                        <c:choose>
+                            <c:when test="#{!publicApplicationTradeCertBean.validationNotSuccessful}">  
+                                <p:outputLabel value="Press 'Save Details In Temporary Application' to confirm and save the applicant details (Section 1,2) else 'Cancel' the process. "/>
+                            </c:when>
+                            <c:otherwise>
+                                <p:outputLabel value="Press 'Cancel' to abort submission process and fix the Error(s) | Warning(s). "/>
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="ui-grid-row top-space">                                                                              
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="saveBasicDetailsDlgButton" value="Save Details In Temporary Application" action="#{publicApplicationTradeCertBean.saveDetailsInTemporatyApplication()}" update ="trade_panel confirmationPopup" oncomplete="PF('saveBasicDtlsConfirmationPopupTC').hide();"
+                                                 icon="ui-icon-disk" onclick="PF('saveBasicDtlsBlocker').show();" disabled="#{publicApplicationTradeCertBean.validationNotSuccessful}">
+                                </p:commandButton>
+                                <p:commandButton value="Cancel" oncomplete="PF('saveBasicDtlsConfirmationPopupTC').hide();" 
+                                                 onclick="PF('saveBasicDtlsConfirmationPopupTC').hide();"  icon="ui-icon-close">
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:blockUI block="saveBasicDtlsConfirmationPopupTC" widgetVar="saveBasicDtlsBlocker">
+                    Saving basic details... please wait<br />
+                    <p:graphicImage value="/resources/images/ajax_loader_blue.gif"  library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+                <p:dialog id="confirmationPopup" visible="#{not empty facesContext.messageList and publicApplicationTradeCertBean.applicationFlowSrNo eq '1'}"  
+                          style="text-align:center" widgetVar="confDlgTradeCert"
+                          modal="true" draggable="false" closable="false" hideEffect="explode"
+                          header="Trade Certificate Application Confirmation Panel"> 
+                    <p:outputPanel id="confirm_panel1">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:outputLabel value="Do you want to continue"/><br/> 
+                        <br />
+
+                        <div class="center-position">
+                            <p:commandButton value="OK" action="#{publicApplicationTradeCertBean.back()}" oncomplete="PF('confDlgTradeCert').hide();PF('addVehCatgDtlsBlocker').hide();" 
+                                             icon="ui-icon-check" >
+                            </p:commandButton>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+
+                <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printTradeCertificateApplication" modal="true" draggable="false" 
+                           closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                    <p:outputPanel id="confirm_panel3">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" onsuccess="PF('printTradeCertificateApplication').hide();"                                   
+                                                  action="#{publicApplicationTradeCertBean.printTradeCertApplicationDetails()}" 
+                                                  icon="ui-icon-check" onclick="PF('bui_dlg').show()" 
+                                                  oncomplete="PF('bui_dlg').hide()"  />
+                                <p:commandButton value="Cancel" onsuccess="PF('printTradeCertificateApplication').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:outputPanel>  
+                    <p:blockUI block="confirm_panel3" widgetVar="bui_dlg" >
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:dialog>
+
+                <p:dialog id="trade_cert_no_entry_Dlg" dynamic="true" styleClass="otp_dialog"
+                          widgetVar="trade_cert_no_entry_Dlg" 
+                          modal="true" draggable="false" closable="false" resizable="false"
+                          header="Trade Certificate Application T.C Number Entry Panel..."  width="30%" responsive="true" position="center center">
+                    <p:focus for="tcNumber" />
+                    <p:panel id="trade_cert_no_entry_Dlg_pnl" styleClass="bottom-space border-none">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages  showDetail="true" showSummary="false" closable="true">
+                                    <p:autoUpdate/>
+                                </p:messages>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <label class="field-label resp-label-section">
+                                    <h:outputText value="Trade Certificate Number:" styleClass="font-bold" />
+                                </label> 
+                                <p:inputText id="tcNumber" autocomplete="on" 
+                                             value="#{publicApplicationTradeCertBean.publicApplicationTradeCertDobj.tradeCertNo}" 
+                                             placeholder="enter trade certificate number" styleClass="input"
+                                             maxlength="20"  required="true" requiredMessage="Please enter trade certificate no." >                                            
+                                    <p:keyFilter for="tcNumber" regEx="/[0-9A-Z/]/i" />
+
+                                </p:inputText>
+                                <br/>
+                                <h:outputText value="*Mandatory for both renew and duplicate type of cases." styleClass="green"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="fetchTCDetails" value="Fetch Details"  action="#{publicApplicationTradeCertBean.fetchTCDetails()}"  update="dealerDetailsPanel section2Panel financerOrdealer trade_panel" onclick="PF('tradeCertNoEntryBlocker').show();" oncomplete="PF('tradeCertNoEntryBlocker').hide();" icon="ui-icon-search"/>
+                                <p:button value="Cancel" outcome="/ui/tradecert/form_tc_dealer_application.xhtml?faces-redirect=true" icon="ui-icon-closethick"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:blockUI block="_application_:trade_cert_no_entry_Dlg_pnl" widgetVar="tradeCertNoEntryBlocker">
+                        Fetching trade certificate details... please wait<br />
+                        <p:graphicImage value="/resources/images/ajax_loader_blue.gif"  library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:dialog>
+                <!-- =========================================================== DIALOG END =========================================================== -->
+
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>

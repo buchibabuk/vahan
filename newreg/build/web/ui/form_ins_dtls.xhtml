@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <f:subview id="ins_details">
+        <ui:composition >
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:panel id="insurance_details" header="#{language.ins_dtls}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 left-position">
+                                    <h:outputText styleClass="red font-bold header-subheader" rendered="#{ins_bean.iibData}"
+                                                  value="#{ins_bean.insuranceFromServiceMessage}"></h:outputText>  
+                                    <h:outputText styleClass="red font-bold header-subheader" rendered="#{!ins_bean.iibData and ins_bean.ins_upto ne null}"
+                                                  value="#{ins_bean.insuranceFromVahanMessage}"></h:outputText>  
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="ins_type" value="#{language.ins_type}"/>
+                                        </label>
+                                        <p:selectOneMenu id="ins_type"
+                                                         value="#{ins_bean.insType}" disabled="#{ins_bean.disable}"
+                                                         filter="true" filterMatchMode="contains"
+                                                         required="true" >
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                            <f:selectItems value="#{ins_bean.list_ins_type}"/>
+                                            <f:validator validatorId="selectOneValidator" for="ins_type"/>
+                                            <p:ajax listener="#{ins_bean.insTypeListener}" update="insurance_details" partialSubmit="true"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="ins_cd"  value="#{language.ins_company}"/>
+                                        </label>
+                                        <p:selectOneMenu id="ins_cd" value="#{ins_bean.compCode}" disabled="#{ins_bean.disable}"
+                                                         filter="true"  filterMatchMode="contains"
+                                                         required="true">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                            <f:selectItems value="#{ins_bean.list_comp_cd}"/>
+                                            <f:validator validatorId="selectOneValidator" for="ins_cd"/>
+                                            <p:ajax partialSubmit="true"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="policy_no" value="#{language.policy_no}"/>
+                                        </label>
+                                        <p:inputText id="policy_no" value="#{ins_bean.policyNo}" size="35" maxlength="25" autocomplete="off" disabled="#{ins_bean.disable}"
+                                                     required="true" requiredMessage="Blank : Policy Number." validatorMessage="Invalid Policy Number."
+                                                     style="text-transform: uppercase" converter="toUpperCaseConverter" validator="#{validateFunction.validatePolicyNo}">
+                                            <f:validateRequired for="policy_no"/>
+                                            <p:keyFilter preventPaste="true"/>
+                                            <p:ajax listener="#{ins_bean.policy_no_blur_listener}" update="policy_no" event="blur" partialSubmit="true"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ins_from" value="#{language.insurance_from} #{label.datePattern}"/>
+                                    </label>
+                                    <p:calendar id="ins_from" value="#{ins_bean.ins_from}" mindate="#{ins_bean.min_dt}"  maxdate="#{ins_bean.max_dt}" 
+                                                readonlyInput="true" disabled="#{ins_bean.govtVehFlag or ins_bean.disable}"
+                                                navigator="true" pattern="dd-MMM-yyyy" autocomplete="off" required="true" requiredMessage="Blank Insurance from date." validatorMessage="Insurance from date out of range problem, please select {Purchase Date} again to remove this message.">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="ins_from" type="date" />                                        
+                                        <p:ajax event="dateSelect" process="@this"  update="ins_upto ins_year" listener="#{ins_bean.fromDateChangeListener}" partialSubmit="true"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ins_year" value="#{language.ins_Period}"/>
+                                    </label>
+                                    <p:selectOneMenu id="ins_year"  value="#{ins_bean.selectedYear}" disabled="#{ins_bean.govtVehFlag or ins_bean.disable}" required="true" requiredMessage="Plese select Insurance validity Year.">                                                                                                                        
+                                        <f:selectItem itemLabel="---SELECT---" itemValue="0" />    
+                                        <f:selectItem itemLabel="1 Year" itemValue="1" />    
+                                        <f:selectItem itemLabel="2 Years" itemValue="2" />    
+                                        <f:selectItem itemLabel="3 Years" itemValue="3" />    
+                                        <f:selectItem itemLabel="4 Years" itemValue="4" />    
+                                        <f:selectItem itemLabel="5 Years" itemValue="5" />    
+                                        <f:validator validatorId="selectOneValidator_0" />
+                                        <p:ajax event="change" update="ins_upto ins_year" listener="#{ins_bean.updateInsuranceUptoDate}"/>
+                                    </p:selectOneMenu>    
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ins_upto" value="#{language.insurance_upto} #{label.datePattern}"/>
+                                    </label>
+                                    <p:calendar id="ins_upto" value="#{ins_bean.ins_upto}"  disabled="#{ins_bean.insUptoDisable}"
+                                                mindate="#{ins_bean.max_dt}" navigator="true" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                                autocomplete="off" required="true" requiredMessage="Blank Insurance To Date">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="ins_upto" type="date" />
+                                        <p:ajax event="dateSelect" process="@this" update="@this"  listener="#{ins_bean.uptoDateChangeListener}" partialSubmit="true"/>
+                                    </p:calendar>
+
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">  
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="idv" value="#{language.idv}"/>
+                                    </label>                                    
+                                    <p:inputText id="idv" value="#{ins_bean.idv}" required="true" requiredMessage="Blank IDV" 
+                                                 autocomplete="off" maxlength="9" >
+                                        <p:ajax update="idv" event="blur" partialSubmit="true"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <p:keyFilter mask="pint" for="idv"/>
+                        </p:panel>
+                    </div>
+                </div>
+            </div>
+        </ui:composition>
+    </f:subview>
+</html>

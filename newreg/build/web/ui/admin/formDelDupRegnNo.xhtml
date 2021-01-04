@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">#{language.delDupvehno}</h1>
+                </div>
+            </div>
+            <p:outputPanel id="showDup_id">
+                <p:messages id="updateMessage"  closable="true" >
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:outputPanel id="pnl_regnNo" rendered="#{delDupReg.showRegistrationNo}">
+                    <p:keyFilter regEx="/[a-zA-Z0-9/]/i" for="regnNo"/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">              
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel id="regVehTypeLabel" for="regnNo" value="#{language.dupVehno}"/>
+                            </label>
+                            <p:inputText id="regnNo" value="#{delDupReg.regnNo}" autocomplete="off"
+                                         styleClass="input" 
+                                         converter="toUpperCaseConverter"  maxlength="10" 
+                                         requiredMessage="#{language.regn_noblank}" 
+                                         disabled="#{delDupReg.disableRegnNo}" >
+                                <!--                                <p:ajax event="blur"/>-->
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="#{language.show}" ajax="false"
+                                             onclick="PF('ajax_status').show()" 
+                                             oncomplete="PF('ajax_status').hide();" 
+                                             update="regn_no_details pnlRegnList pnl_datatable vdd_regn_no_details " action="#{delDupReg.showListOfRegNo}" 
+                                             rendered="#{!delDupReg.disableRegnNo}" />
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <span class="font-bold">#{language.note}:</span> <span class="red">#{language.dupmsg}</span>
+                        </div>
+                    </div>
+
+                    <!-- add vdd -->
+
+                    <p:panel rendered="#{delDupReg.renderVddDup}" header="View Duplicate Registration Numbers Office Wise">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="off_cd_to" value="Select Office"/>
+                                </label>
+                                <p:selectOneMenu id="off_cd_to" value="#{delDupReg.offCd}" filter="true" filterMatchMode="contains"
+                                                 requiredMessage="Blank:Select Office">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                    <f:selectItems value="#{delDupReg.office_list}"/>
+                                    <!--                                <f:validator for="off_cd_to" validatorId="selectOneValidator_0"/>-->
+                                    <p:ajax event="change" listener="#{delDupReg.getVddDuplcateVeh}" update=" vdd_regn_no_details vddregnoid" onstart="PF('ajax_status').show()" oncomplete="PF('ajax_status').hide();" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:outputPanel id="vdd_regn_no_details" rendered="#{delDupReg.renderVddDup}"  styleClass="top-space">
+
+                            <p:dataTable  id="vddregnoid"   value="#{delDupReg.vddDupListRegno}" var="vdd_regn"   paginator="true" rowIndexVar="index"
+                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}" rows="100" 
+                                          selectionMode="single" selection="#{delDupReg.delDupRegnNoDobj}" rowKey="#{vdd_regn.regnNo}" widgetVar="vddregnoidDel">
+
+                                <f:facet name="{Exporters}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 right-position">
+                                            <p:outputLabel rendered="#{delDupReg.vddDupListRegno.size()>0}" value="Download" />
+                                            <h:commandLink rendered="#{delDupReg.vddDupListRegno.size()>0}">
+                                                <p:graphicImage name="excel.png"  title="EXCEL FILE"  width="24" library="images"/>
+                                                <p:dataExporter type="xls" target="vddregnoid" fileName="DupRegnos" />
+                                            </h:commandLink>
+                                            <h:commandLink rendered="#{delDupReg.vddDupListRegno.size()>0}">
+                                                <p:graphicImage name="csv.png"  title="CSV FILE"  width="24" library="images"/>
+                                                <p:dataExporter type="csv" target="vddregnoid" fileName="DupRegnos" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                <f:facet name="header">
+                                    <div class="left-position font-bold">
+                                        Duplicate Registration Numbers
+                                    </div>
+                                </f:facet>
+                                <p:ajax event="rowSelect" listener="#{delDupReg.onRowSelect}" update="regnNo" />
+                                <p:ajax event="rowUnselect" listener="#{delDupReg.onRowUnselect}" update="regnNo" />
+                                <p:column headerText="#{language.srNo}" width="7%">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+                                <p:column  headerText="Registration No" filterBy="#{vdd_regn.regnNo}"  filterMatchMode="contains" >
+                                    <h:outputText value="#{vdd_regn.regnNo}" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="Office" >
+                                    <h:outputText value="#{vdd_regn.offices}" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="Total">
+                                    <h:outputText value="#{vdd_regn.totalOffices}" styleClass="textUpperCase" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:panel>
+                    <!-- End vdd -->
+                </p:outputPanel>
+                <p:outputPanel id="regn_no_details" rendered="#{delDupReg.renderDelete_Duplicate}" >
+                    <p:outputPanel id="pnl_datatable">
+                        <p:outputPanel id="pnlRegnList" rendered="#{delDupReg.showRegList}" >
+                            <p:dataTable  id="tb_RegnNameList" value="#{delDupReg.regnNameList}" var="regn" rowIndexVar="index" >
+                                <f:facet name="header">
+                                    <div class="left-position font-bold">
+                                        #{language.delDupvehno}
+                                    </div>
+                                </f:facet>
+                                <p:column headerText="#{language.srNo}" exportable="false" styleClass="center-position collumn-width">
+                                    <h:outputText value="#{index+1}" />
+                                </p:column>
+
+                                <p:column  headerText="#{language.home_rightpanelregno}">
+                                    <p:outputLabel value="#{regn.regn_no}" styleClass="textUpperCase" />
+                                </p:column><p:column  headerText="#{language.ownerSrNo}" width="5%">
+                                    <p:outputLabel value="#{regn.owner_sr}" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="#{language.owner_name}" >
+                                    <p:outputLabel value="#{regn.owner_name}"  styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="#{language.f_name}" >
+                                    <p:outputLabel value="#{regn.f_name}"  styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="#{language.officeName}">
+                                    <p:outputLabel value="#{regn.off_name}(#{regn.state_cd}#{regn.off_cd})" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="#{language.stateName}">
+                                    <p:outputLabel value="#{regn.state_name}" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="#{language.financierName}">
+                                    <p:outputLabel value="#{regn.hpaDobj.fncr_name}" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="#{language.status}" styleClass="collumn-width">
+                                    <p:outputLabel value="#{regn.statusDescr}" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column  headerText="#{language.last_rcptdate}">
+                                    <p:outputLabel value="#{regn.lastRcptDt}" styleClass="textUpperCase" />
+                                </p:column>
+                                <p:column >
+                                    <p:commandButton value="#{language.show}" action="#{delDupReg.getDetails(regn)}" update="@form"
+                                                     onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();" rendered="#{delDupReg.regnNameList.size()>1}"></p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="panelOwnerInfo">
+
+                        <p:outputPanel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{delDupReg.render}"> 
+
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-3 resp-blank-height"></div>
+                                <div class="ui-grid-col-6">
+                                    <ui:include src="/ui/registration/registrationStatusParameters.xhtml">
+                                        <ui:param name="regStatusParam" value="#{delDupReg.regStatus}"/>
+                                    </ui:include>
+
+                                </div>  
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-1">
+                                    <p:commandButton value="Back" onclick="PF('ajax_status').show();" action="#{delDupReg.backToRegnList}" process="@this" update="@form" immediate="true" icon="ui-icon-arrowreturnthick-1-w" styleClass="right-position"/>
+                                </div>
+                            </div>
+
+                            <p:tabView styleClass="top-space bottom-space" >
+
+                                <!--################################# Owner Details ########################################## -->
+                                <p:tab  id="owner_details_tab" title="#{language.ownerDetails}">
+                                    <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{delDupReg.ownerDetail}"/>
+                                        <ui:param name="listOwnerCatg" value="#{delDupReg.listOwnerCatg}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+
+                                <!--################################# Vehicle Details ######################################## -->
+                                <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}">                                
+                                    <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{delDupReg.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+                                <!--###################### Hypothecation and Insurance Details ############################### -->
+                                <p:tab id="HypothecationOwner"  title="#{language.hypothecation_InsuranceInformation}">      
+                                    <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                                    <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>                                
+                                </p:tab>  
+                                <!--########################################################################################## -->     
+
+                                <!--###################### Commercial Trailer Details ######################################## -->
+                                <p:tab id="CommercialTrailerDetails"  title="#{language.attachedTrailerDetails}">  
+                                    <ui:include src="/ui/form_commercial_trailer_dtls.xhtml"/>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+                                <!--###################### Fitness Details ######################################## -->
+                                <p:tab id="fitnessDetails"  title="#{language.fitnessDetails}" rendered="#{delDupReg.fitnessDobj ne null}">  
+                                    <ui:include src="/ui/registration/formFitnessDetails.xhtml">
+                                        <ui:param name="fitnessDobj" value="#{delDupReg.fitnessDobj}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+
+                                <!--###################### Commercial Trailer Details ######################################## -->
+                                <p:tab id="HSRPDetails"  title="#{language.hsrpDetails}" rendered="#{delDupReg.hsrpDetailsBean.ishsrp}">  
+                                    <ui:include src="/ui/formHSRPDetails.xhtml"/>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+                                <!--###################### Commercial Trailer Details ######################################## -->
+                                <p:tab id="SmartCardDetails" title="#{delDupReg.scDetailsBean.tabTitle}" rendered="#{delDupReg.smartcardStatus}">  
+                                    <ui:include src="/ui/formSmartCardDetails.xhtml"/>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+                                <!--###################### Commercial Trailer Details ######################################## -->
+                                <p:tab id="VehicleHistoryDetails"  title="#{language.vehicleHistoryDetails}">  
+                                    <ui:include src="/ui/formVehicleHistoryDetails.xhtml"/>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+                                <p:tab id="PermitDetails"  title="#{language.permitDetails}" rendered="#{delDupReg.isTransport}">  
+                                    <ui:include src="/ui/permitDetails.xhtml"/>
+                                </p:tab>
+                                <!--########################################################################################## -->
+
+                            </p:tabView>
+                            <p:outputPanel id="pnl_delete" rendered="#{delDupReg.showDelete}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="#{language.movetoHistory}"  onclick="PF('ajax_status').show();"
+                                                         action="#{delDupReg.showConfirmationBox}" 
+                                                         update="pnl_delete dele_regn_no_details pnl_regnNo" immediate="true"  
+                                                         />
+                                    </div>
+                                </div>
+                                <p:dialog header="#{language.home_confirm}" widgetVar="ConfirmationBlock" id="dialog_Confirmation" 
+                                          resizable="false" width="400px" height="150px" style="margin: -125px auto !important" closable="false">
+                                    <div class="center-position font-bold top-space">
+                                        <h:outputText value="#{language.confirmTohistory}"/>  
+                                    </div>
+                                    <div class="center-position top-space">
+                                        <span class="font-bold"><h:outputText value="#{delDupReg.ownerDetail.regn_no}"/>  </span>   
+                                        <span class="font-bold"><h:outputText value="#{delDupReg.ownerDetail.off_name}"/>,  </span>   
+                                        <span class="font-bold"><h:outputText value="#{delDupReg.ownerDetail.state_name}"/></span>  
+
+                                    </div>
+                                    <div class="font-bold top-space red center-position">
+                                        <h:outputText value="#{language.dupRestore}"/> 
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton value="#{language.yes}" onstart="PF('ajax_status').show();"  oncomplete="PF('ajax_status').hide();"
+                                                             action="#{delDupReg.deleteDuplicateRegnNo}" 
+                                                             update="regn_no_details showDup_id" immediate="true" styleClass="center-position">
+                                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}"  icon="ui-icon-alert" />
+                                            </p:commandButton>
+                                            <p:commandButton value="#{language.no}" 
+                                                             onclick="PF('ConfirmationBlock').hide();
+                                                     PF('ajax_status').hide();"
+                                                             update="regn_no_details" immediate="true" styleClass="center-position">
+
+                                            </p:commandButton>
+                                        </div>
+                                    </div>
+                                </p:dialog> 
+                                <p:dialog modal="true">
+                                    <p:confirmDialog global="true">
+                                        <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="PF('ConfirmationBlock').hide();
+                                                     PF('ajax_status').hide();" />
+                                        <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" onclick="PF('ConfirmationBlock').hide();
+                                                     PF('ajax_status').hide();" />
+                                    </p:confirmDialog>
+                                </p:dialog>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:outputPanel  id="dele_regn_no_details" rendered="#{delDupReg.rendeDel_show}" styleClass="top-space" >
+
+
+
+                    <!--             Delete_Duplicate by amit-->
+                    <p:dataTable  id="del_tb_RegnNameList"
+                                  value="#{delDupReg.regnDupList}" var="regn_del"
+                                  rowIndexVar="index">
+                        <f:facet name="header">
+                            <div class="left-position font-bold">
+                                #{language.restoreVeh}
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="#{language.srNo}" exportable="false" width="7%">
+                            <h:outputText value="#{index+1}" />
+                        </p:column>
+
+                        <p:column  headerText="#{language.home_rightpanelregno}">
+                            <p:outputLabel value="#{regn_del.regn_no}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.owner_name}">
+                            <p:outputLabel value="#{regn_del.owner_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.stateName}">
+                            <p:outputLabel value="#{regn_del.state_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.officeName}">
+                            <p:outputLabel value="#{regn_del.off_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.status}">
+                            <p:outputLabel value="#{regn_del.statusDescr}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.last_rcptdate}">
+                            <p:outputLabel value="#{regn_del.lastRcptDt}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column >
+                            <p:commandButton value="#{language.restore}" action="#{delDupReg.reStoreDuplicateRegnNo(regn_del)}"   onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="pnl_delete dele_regn_no_details showDup_id">                                                   
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/></p:commandButton>
+                            <p:blockUI block="showDup_id" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+
+
+                            <!--                                    <p:commandButton value="Restore" action="# {delDupReg.reStoreDuplicateRegnNo(regn_del)}"   update="pnl_delete dele_regn_no_details"
+                                                                                 onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"></p:commandButton>-->
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+                <div>
+
+                </div>
+
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton id="bk_id" value="#{language.login_back}" onclick="PF('ajax_status').show();" rendered="#{delDupReg.render_back}" action="#{delDupReg.backToRegnNO}" process="@this" update="@form" immediate="true" icon="ui-icon-arrowreturnthick-1-w" styleClass="right-position"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <!--            <p:blockUI block=":masterLayout" widgetVar="ajax_status_without_image">
+                        </p:blockUI>-->
+            <p:blockUI block=":masterLayout" widgetVar="ajax_status_without_image">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <p:panel id="dialogAlreadyInwardedAppl" rendered="#{delDupReg.statusList ne null and delDupReg.statusList.size()>0}"
+                     header="#{language.dupReasonmsg}"
+                     styleClass="top-space bottom-space">
+                <p:dataTable value="#{delDupReg.statusList}" var="applnInwarded"
+                             rowIndexVar="srlNo">
+                    <f:facet name="header">
+                        <h:outputText value="#{language.dupReasonmsg}  #{delDupReg.regnNo} #{language.dupReasonmsg2}"/>
+                    </f:facet>    
+                    <p:column headerText="#{language.user_srno}" width="5%">#{srlNo +1}.</p:column>
+                    <p:column headerText="#{language.home_rightpanelApplno}">#{applnInwarded.getAppl_no()}</p:column> 
+                    <p:column headerText="#{language.home_rightpanelregno}">#{applnInwarded.regn_no} </p:column>
+                    <p:column headerText="#{language.purpose}">#{applnInwarded.purCdDescr}</p:column>
+                </p:dataTable>               
+            </p:panel>
+        </div>
+
+    </ui:define>
+</ui:composition>

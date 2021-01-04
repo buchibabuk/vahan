@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title>
+            <ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert>
+        </title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="stylesheet.min.css"/>
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+    </h:head>
+    <ui:insert name="script">
+        <!--your script will be here. -->
+    </ui:insert>
+    <h:body>       
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="headerTemplate" prependId="false">
+                <div>
+                    <ui:include src="/leftMenuPanel.xhtml"/>
+                </div>
+            </h:form>
+            <div class="ui-grid-row content-section top-space">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-8">
+                    <ui:insert name="content">
+                        <!-- Main Content will be declared here -->
+                    </ui:insert>
+                </div>
+                <div class="ui-grid-col-2 resp-blank-height"></div> 
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <div id="footer_view">
+                        <ui:insert name="footer">
+                            <ui:include src="/footer.xhtml"/>
+                        </ui:insert>
+                    </div> 
+                </div>
+            </div>
+        </div>      
+    </h:body>
+</html>

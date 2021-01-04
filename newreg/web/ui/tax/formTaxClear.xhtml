@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formVehDetails" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Vehicle Tax Clear /Refund</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelVehDtls" rendered="#{taxClearBean.appl_details.ownerDobj eq null}">
+                    <p:panel id="taxClearPanel" rendered="#{!taxClearBean.render}">
+                        <p:outputPanel rendered="#{taxClearBean.purCodeList eq null}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfRegNo" value="Vehicle Registration No."/>
+                                    </label>
+                                    <p:inputText  id="tfRegNo" value="#{taxClearBean.taxClearDobj.regnno}"
+                                                  maxlength="10"
+                                                  required="true"
+                                                  requiredMessage="Please Enter Registration No."
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Validate Registration No" action="#{taxClearBean.validateRegistration()}"
+                                                     update="formVehDetails:panelOwnerInfo panelVehDtls panelVehTAXDtls outputpanel_appdisapp save_penal dialogDupRegNo" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+                <p:dialog id="dialogDupRegNo" header="Road tax can not be collected for multiple records" widgetVar="varDupRegNo" 
+                          closable="true" modal="true" dynamic="true" width="90%" style="margin: 0 auto !important">
+                    <h:outputLabel value="Please contact to Office Admin to remove duplicate records." rendered="#{taxClearBean.renderMoveToHistoryButton}" styleClass="red font-bold" />
+                    <p:dataTable id="duplicateRegn" value="#{taxClearBean.dupRegnList}" var="dupRegn"
+                                 rowIndexVar="index" rendered="#{taxClearBean.dupRegnList.size()>1}">
+
+                        <f:facet name="header">
+                            <h:outputText value="Duplicate Record Found for Registration No. "/>
+                        </f:facet>
+
+                        <p:column headerText="Sr.No" styleClass="center-position collumn-width">#{index +1}.</p:column>
+
+                        <p:column headerText="#{label.regn_no}" style="word-break: keep-all;">#{dupRegn.regn_no}</p:column>
+
+                        <p:column headerText="Owner Sr No." style="word-break: keep-all;" width="6%">#{dupRegn.owner_sr}</p:column>
+
+                        <p:column headerText="#{label.owner_name}" width="12%">#{dupRegn.owner_name}</p:column>
+
+                        <p:column headerText="S/W/D of" width="12%">#{dupRegn.f_name}</p:column>
+
+                        <p:column headerText="#{label.office}" width="13%">#{dupRegn.off_name}(#{dupRegn.state_cd}#{dupRegn.off_cd})</p:column>
+
+                        <p:column headerText="Financier Name" style="word-break: keep-all;">#{dupRegn.hpaDobj.fncr_name}</p:column>  
+
+                        <p:column headerText="Status">#{dupRegn.statusDescr}</p:column>  
+
+                        <p:column headerText="Last Receipt Date" style="word-break: keep-all;">#{dupRegn.lastRcptDt}</p:column>  
+
+                        <p:column headerText="Move to History" rendered="#{!taxClearBean.renderMoveToHistoryButton}" style="word-break: keep-all;" width="12%">
+                            <p:commandButton value="Move to History" rendered="#{dupRegn.off_cd != taxClearBean.currentOffCd}"
+                                             action="#{taxClearBean.delDuplicateVehDetails(dupRegn)}" 
+                                             immediate="true" styleClass="center-position">
+                                <p:confirm header="Confirmation" message="Are you Sure"  icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>                                        
+                    <p:confirmDialog global="true"   >
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>                            
+                </p:dialog>
+                <p:dialog id="dialogAlreadyInwardedAppl" header="Application Can't be Inward!" widgetVar="varInwardedApplNo" 
+                          closable="true" modal="true" dynamic="true" height="200" width="800" resizable="false">
+                    <h:form id="alreadyInwaredApplNo">
+                        <p:dataTable value="#{taxClearBean.statusList}" var="applnInwarded"
+                                     rendered="#{taxClearBean.statusList.size()>0}"
+                                     rowIndexVar="srlNo">
+                            <f:facet name="header">
+                                <h:outputText value="Application number(s) which are pending for approval are listed below:"/>
+                            </f:facet>    
+                            <p:column headerText="Sr.No" width="5%">#{srlNo +1}.</p:column>
+                            <p:column headerText="Application No">#{applnInwarded.getAppl_no()}</p:column> 
+                            <p:column headerText="Registration No">#{applnInwarded.regn_no} </p:column>
+                            <p:column headerText="Purpose">#{applnInwarded.purCdDescr}</p:column>
+                            <p:column headerText="Office">#{applnInwarded.offName}</p:column>
+                            <p:column headerText="State">#{applnInwarded.stateName}</p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+
+                <p:outputPanel id="panelOwnerInfo">
+
+                    <p:outputPanel id="ownerInfo" rendered="#{taxClearBean.render}"> 
+
+
+
+
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">
+                                <div class="report-header font-bold bottom-line">Details for Vehicle Registration No. #{taxClearBean.taxClearDobj.regnno} </div>
+                            </div>                            
+                        </div>
+
+                        <p:outputPanel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-2">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="cbTax"  value="Refund/Excess/Balance Tax"/>
+                                        </label>
+                                        <p:selectBooleanCheckbox id="cbTax" disabled="#{taxClearBean.disableChaeckBox}"  value="#{taxClearBean.renderTaxPanel}" >
+                                            <p:ajax event="change"  update="panelOwnerInfo"/>
+                                        </p:selectBooleanCheckbox> 
+                                    </div>
+                                    <div class="ui-grid-col-2">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="cbClear"  value="Clear Tax"/>
+                                        </label>
+                                        <p:selectBooleanCheckbox id="cbClear" disabled="#{taxClearBean.disableChaeckBox}"  value="#{taxClearBean.renderClearPanel}"  >
+                                            <p:ajax event="change"  update="panelOwnerInfo"/>
+                                        </p:selectBooleanCheckbox> 
+                                    </div>
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+
+                        <p:outputPanel  rendered="#{taxClearBean.appl_details.ownerDobj ne null}">
+                            <ui:include src="/ui/registration/panel_applicationdetails.xhtml">
+                                <ui:param name="appl_details" value="#{taxClearBean.appl_details}"/>            
+                            </ui:include> 
+                        </p:outputPanel>
+
+                        <!--// Show table for tax detail from VT_TAX-->
+                        <p:dataTable id="tb_showTaxdetail"  value="#{taxClearBean.taxDetaillist}" 
+                                     paginator="#{taxClearBean.taxDetaillist.size()>5}" rows="5" paginatorPosition="bottom"
+                                     scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    Tax Paid
+                                </div>
+                            </f:facet>
+                            <p:column headerText="SI.No" width="5%">
+                                <h:outputText value="#{index+1}" />                                
+                            </p:column>
+                            <p:column headerText="Tax Type">
+                                <h:outputText value="#{sc.descrold}" />
+                            </p:column>
+                            <p:column headerText="Receipt No">
+                                <h:outputText value="#{sc.rcpt_noold}" />
+                            </p:column>
+                            <p:column headerText="Tax From">
+                                <h:outputText value="#{sc.tax_fromold}" />
+                            </p:column>
+                            <p:column headerText="Tax Upto">
+                                <h:outputText value="#{sc.tax_uptoold}" />
+                            </p:column>                  
+                            <p:column headerText="Challan Date">
+                                <h:outputText value="#{sc.rcpt_dtold}" />
+                            </p:column>
+                            <p:column headerText="Tax Amount">
+                                <h:outputText value="#{sc.tax_amtold}" />
+                            </p:column>
+                            <p:column headerText="Fine/Penalty">
+                                <h:outputText value="#{sc.tax_fineold}" />
+                            </p:column>                   
+                        </p:dataTable>
+
+                        <!--// Show table for tax history from VH_TAX_CLEAR-->
+                        <p:dataTable id="tb_showHistrorytaxtable"  value="#{taxClearBean.taxDetaillistHistory}" 
+                                     paginator="#{taxClearBean.taxDetaillistHistory.size()>5}" rows="5" paginatorPosition="bottom"
+                                     scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    Tax Clear History
+                                </div>
+                            </f:facet>
+                            <p:column headerText="SI.No" width="5%">
+                                <h:outputText value="#{index+1}" />                                
+                            </p:column>
+                            <p:column headerText="Tax Type">
+                                <h:outputText value="#{sc.descrHist}" />
+                            </p:column>                            
+                            <p:column headerText="Tax From">
+                                <h:outputText value="#{sc.tax_fromHist}" />
+                            </p:column>
+                            <p:column headerText="Tax Upto">
+                                <h:outputText value="#{sc.tax_uptoHist}" />
+                            </p:column>
+                            <p:column headerText="Order No">
+                                <h:outputText value="#{sc.rcpt_noHist}" />
+                            </p:column>
+                            <p:column headerText="Order Date">
+                                <h:outputText value="#{sc.op_dtHist}" />
+                            </p:column>                           
+
+                        </p:dataTable>
+
+                        <!--// Show table for Tax Difference detail-->
+                        <p:dataTable id="tb_showTaxdifference"  value="#{taxClearBean.taxDifferenceDetaillist}" 
+                                     paginator="#{taxClearBean.taxDifferenceDetaillist.size()>5}" rows="5" paginatorPosition="bottom"
+                                     scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    Tax Balance/Difference Details
+                                </div>
+                            </f:facet>
+                            <p:column headerText="SI.No" width="5%">
+                                <h:outputText value="#{index+1}" />                                
+                            </p:column>
+                            <p:column headerText="Balance Tax">
+                                <h:outputText value="#{sc.fees_Diff_tax}" />
+                            </p:column>
+                            <p:column headerText="Balance Penalty">
+                                <h:outputText value="#{sc.fine_Diff_tax}" />
+                            </p:column>
+                            <p:column headerText="Receipt No.">
+                                <h:outputText value="#{sc.rcpt_no_Diff_tax}" />
+                            </p:column>
+                            <p:column headerText="Receipt Date">
+                                <h:outputText value="#{sc.rcpt_dt_Diff_tax}" />
+                            </p:column>    
+                        </p:dataTable>
+
+
+
+
+                        <p:outputPanel rendered="#{taxClearBean.renderTaxPanel}">
+                            <ui:include src="/ui/tax/formRefundAndExcessAmount.xhtml">
+                                <ui:param  name="containerBean" value="#{taxClearBean}"/>            
+                            </ui:include> 
+                        </p:outputPanel>
+
+                        <p:panel id="panelVehTAXDtls" header="Clear Tax Detail" rendered="#{taxClearBean.renderClearPanel}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="selectedTaxType" value="Select Tax Type"/>
+                                    </label>
+                                    <p:selectCheckboxMenu id="selectedTaxType" required="true" requiredMessage="Please Select Tax Type" value="#{taxClearBean.selectedPur_cd}" disabled="#{taxClearBean.disableTaxType}" label="Select Tax Type">
+                                        <f:selectItems value="#{taxClearBean.pur_cd}"/>
+                                    </p:selectCheckboxMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="mvtaxfrom" value="#{taxClearBean.taxClearUptoDescr} From" />
+                                    </label>
+                                    <p:calendar id="mvtaxfrom" value="#{taxClearBean.taxClearDobj.clear_fr}"  pattern="dd-MMM-yyyy" 
+                                                requiredMessage="Blank Mv Tax From" readonlyInput="true"   navigator="true" required="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="mvtaxfrom"/> 
+                                        <p:ajax event="dateSelect" listener="#{taxClearBean.listnerUpdateUptoForTaxClear()}"  process="@this" update="taxclearupto"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="taxclearupto" value="#{taxClearBean.taxClearUptoDescr} Upto"/>
+                                    </label>
+                                    <p:calendar id="taxclearupto" value="#{taxClearBean.taxClearDobj.taxclearuptodt}" maxdate="#{taxClearBean.maxDateUpto}" pattern="dd-MMM-yyyy" 
+                                                mindate="#{taxClearBean.minDateForClear}"   requiredMessage="Blank tax Clear upto" readonlyInput="true" navigator="true" required="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="taxclearupto"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tforderno" value="Order/Tax Clearance No"/>
+                                    </label>
+                                    <p:inputText  id="tforderno" value="#{taxClearBean.taxClearDobj.orderno}"
+                                                  maxlength="10"
+                                                  requiredMessage="Please Enter order No."
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"
+                                                  required="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="orderdate" value="Order Date"/>
+                                    </label>
+                                    <p:calendar id="orderdate"  value="#{taxClearBean.taxClearDobj.orderdt}" 
+                                                requiredMessage="Blank Order date" readonlyInput="true"
+                                                maxdate="#{taxClearBean.maxDate}"
+                                                pattern="dd-MMM-yyyy" navigator="true" required="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy" for="orderdate"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfclearby" value="Clear By"/>
+                                    </label>
+                                    <p:inputText  id="tfclearby" value="#{taxClearBean.taxClearDobj.clearby}"
+                                                  maxlength="10"
+                                                  requiredMessage="Please Enter Clear by"
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"
+                                                  required="true"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfremarks" value="Remarks"/>
+                                    </label>
+                                    <p:inputText  id="tfremarks" value="#{taxClearBean.taxClearDobj.remarks}"
+                                                  maxlength="50"
+                                                  requiredMessage="Please Enter Remarks"
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase"
+                                                  required="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="receiptNo" rendered="#{taxClearBean.orflag}" value="Receipt Number"/>
+                                    </label>
+                                    <p:inputText  id="receiptNo" rendered="#{taxClearBean.orflag}" value="#{taxClearBean.taxClearDobj.recieptNo}" converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  required="true"
+                                                  requiredMessage="Please Enter Receipt No."
+                                                  styleClass="text-uppercase"
+                                                  maxlength="16"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="receiptDate" value="Receipt Date" rendered="#{taxClearBean.orflag}"/>
+                                    </label>
+                                    <p:calendar id="receiptDate" rendered="#{taxClearBean.orflag}" value="#{taxClearBean.taxClearDobj.recieptDate}"  pattern="dd-MMM-yyyy" 
+                                                requiredMessage="Blank Receipt Date" maxdate="#{taxClearBean.maxDate}" readonlyInput="true" navigator="true" required="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="receiptDate"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:panel id="changedByPrevUser" rendered="#{taxClearBean.prevChangedDataList.size()>0}"
+                         toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                    <p:dataTable value="#{taxClearBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="Changed by Employee" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+                        <p:column headerText="Changed Data by Previous Employee" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+                        <p:column headerText="Changed on" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <p:outputPanel id="save_penal">
+                    <p:panel styleClass="top-space bottom-space"  rendered="#{taxClearBean.showSavePanel}">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">                                    
+                                <p:commandButton value="Save" action="#{taxClearBean.savetaxclear()}">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                </p:commandButton>
+                                <p:button value="Back" outcome="/ui/tax/formTaxClear.xhtml?faces-redirect=true" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="outputpanel_appdisapp" rendered="#{taxClearBean.appl_details.ownerDobj ne null}">    
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{taxClearBean}"/>
+                    </ui:include>
+                </p:outputPanel>
+
+
+                <p:blockUI block="formVehDetails" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+                <p:outputPanel id="confirmDialog">
+                    <p:dialog  widgetVar="confirmDialogVar" resizable="false" modal="true"
+                               draggable="false" closable="false" hideEffect="explode" header="Confirmation !!">  
+                        <div class="bottom-space center-position">
+                            <span class="ui-button-icon-left ui-icon ui-c ui-icon-alert inline-section"></span> 
+                            <span>As per the details, the vehicle has been found financed by #{taxClearBean.moveToHistoryOwnerDtls.hpaDobj.fncr_name} in office #{taxClearBean.moveToHistoryOwnerDtls.off_name}.</span>
+                            <br/>
+                            <span class="font-bold center-position">Do you want to move the financier details to office #{taxClearBean.currentOfficeName}?</span>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position top-space">
+                                <p:commandButton value="Yes" action="#{taxClearBean.moveHistoryDuplicateVehDetails('true')}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="PF('ajax_status').show();
+                                                             PF('confirmDialogVar').hide();"
+                                                 onsuccess="PF('ajax_status').hide();" />
+                                <p:commandButton value="No" action="#{taxClearBean.moveHistoryDuplicateVehDetails('false')}" 
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" onclick="PF('ajax_status').show();
+                                                             PF('confirmDialogVar').hide();"
+                                                 onsuccess="PF('ajax_status').hide();" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"    
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22"> 
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formGenApplNoDis" prependId="false"> 
+                <p:growl id="msgs" />
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Dispose Endorsement Tax After Approval</h1>
+                    </div>
+                </div>
+                <p:outputPanel >
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+
+                        <div class="center-position">
+                            <p:commandButton value="Close" immediate="true" >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
+                        </div>
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="disposePanel" >
+                        <p:focus context="disposePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRegnNo" value="Registration Number"/>
+                                </label>
+                                <p:inputText  id="tfRegnNo" value="#{disposeEndrsmntTaxBean.regnNo}" 
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="Please Enter Registration No"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" disabled="#{disposeEndrsmntTaxBean.render}"/>
+                            </div>
+                            <div class="ui-grid-col-4">              
+
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="appl_no_id" for="applno_id" value="Application No" rendered="#{disposeEndrsmntTaxBean.applNo !=null}"/>
+                                </label>
+                                <p:inputText id="applno_id" value="#{disposeEndrsmntTaxBean.applNo}" autocomplete="off"
+                                             styleClass="input" 
+                                             converter="toUpperCaseConverter" required="true" maxlength="20" 
+                                             requiredMessage="Vehicle No Can't be Blank" 
+                                             disabled="true" rendered="#{disposeEndrsmntTaxBean.applNo !=null}" >
+                                </p:inputText>
+
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{disposeEndrsmntTaxBean.showDetails()}"
+                                                 update="formGenApplNoDis:panelOwnerInfo formGenApplNoDis" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()" rendered="#{!disposeEndrsmntTaxBean.render}"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" rendered="#{disposeEndrsmntTaxBean.renderBackBtm}"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfRegnNo" mask="alphanum"/>
+                    </p:panel>
+
+                </p:outputPanel>
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{disposeEndrsmntTaxBean.render}">                    
+                        <p:tabView styleClass="top-space bottom-space" >
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{disposeEndrsmntTaxBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{disposeEndrsmntTaxBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+
+                        <p:panel id="his_id" header="Endorsement Tax Detail" style="margin-bottom:20px" rendered="#{disposeEndrsmntTaxBean.historyEndosrsmtsList.size() >0}">
+                            <p:dataTable value="#{disposeEndrsmntTaxBean.historyEndosrsmtsList}" var="historyendormnts" id="histryendmntTable">
+                                <p:column headerText="Application No">
+                                    <h:outputText value="#{historyendormnts.applNo}" />
+                                </p:column>
+                                <p:column headerText="Mode">
+                                    <p:selectOneMenu  value="#{historyendormnts.modMnulAuto}"  label="Mode A/M" disabled="true">
+                                        <f:selectItem itemLabel="Select One" itemValue="" />
+                                        <f:selectItems value="#{disposeEndrsmntTaxBean.modeHashMap}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column headerText="No of Quarter cumpulsory">
+                                    <h:outputText value="#{historyendormnts.noofQuarter}" />
+                                </p:column>
+                                <p:column headerText="Tax Rate">
+                                    <h:outputText value="#{historyendormnts.taxRate}" />
+                                </p:column>
+                                <p:column headerText="Tax With Effect From Date">
+                                    <p:calendar id="endorsfrom_ends" value="#{historyendormnts.withEffectDate}"  pattern="dd-MMM-yyyy" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorsfrom_ends" /> 
+                                    </p:calendar>
+                                </p:column>
+                                <p:column headerText="Tax Endorsement Date">
+                                    <p:calendar value="#{historyendormnts.endorsFromDate}"  pattern="dd-MMM-yyyy" 
+                                                readonlyInput="true" navigator="true" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorstaxupto_ends"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </p:column>
+                                <p:column headerText="Tax Endorsement To">
+                                    <p:calendar value="#{historyendormnts.endorsUpto}"  pattern="dd-MMM-yyyy" 
+                                                readonlyInput="true" navigator="true" disabled="true">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"  for="endorstaxupto_ends"/> 
+                                        <p:ajax event="dateSelect" process="@this"/>
+                                    </p:calendar>
+                                </p:column>
+
+
+                                <p:column headerText="Author">
+                                    <f:facet name="header">
+                                        <h:outputText value="Remark" />
+                                    </f:facet>
+                                    <h:outputText value="#{historyendormnts.remark}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:panel>
+
+                        <p:outputPanel id="reason_id"  rendered="#{!disposeEndrsmntTaxBean.renderFileMove}">
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Dispose" action="#{disposeEndrsmntTaxBean.disposeEndorsTax()}"
+                                                     update="formGenApplNoDis:panelOwnerInfo formGenApplNoDis" onclick="PF('ajax_status').show()"
+                                                     oncomplete="PF('ajax_status').hide()" >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" /></p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" />
+                                    <p:commandButton  value="Reset" actionListener="#{disposeEndrsmntTaxBean.reset()}" immediate="true" styleClass="button" update="formGenApplNoDis:panelOwnerInfo formGenApplNoDis panelApplInward  "></p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel id="outputpanel_appdisapp" rendered="#{disposeEndrsmntTaxBean.renderFileMove}">       
+                            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                <ui:param name="app_disapp" value="#{disposeEndrsmntTaxBean}"/>
+                            </ui:include>  
+                        </p:outputPanel>
+
+                        <p:panel id="changedByPrevUser" rendered="#{disposeEndrsmntTaxBean.listPreviousChanges.size()>0}" >
+                            <p:dataTable value="#{disposeEndrsmntTaxBean.listPreviousChanges}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="Changed by" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="Changed Data" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="Changed on" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+                    </p:panel>
+                </p:outputPanel>    
+                <!-- OTP for Change Vehicle Office-->
+                <p:blockUI block="formGenApplNoDis" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+                <vahan:vahanMessages messages="#{disposeEndrsmntTaxBean.vahanMessages}"  rendered="#{disposeEndrsmntTaxBean.vahanMessages ne null}"/>
+            </h:form>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

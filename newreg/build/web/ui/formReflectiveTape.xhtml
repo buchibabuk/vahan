@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui">
+
+    <p:panel id ="pnReflectiveDetails" header="#{language.reflectiveTapeDetails}" styleClass="top-space bottom-space">
+        <div class="ui-grid-row">  
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_certificate_no" value="#{language.reflectiveTapeCertificateNo}"/>
+                </label>
+                <p:inputText id="tf_certificate_no"  value="#{ownerDobj.reflectiveTapeDobj.certificateNo}" disabled="#{ownerDobj.reflectiveTapeDobj.isDisable_certificateNo}" required="true" requiredMessage="Blank: Reflective Cerificate Number"
+                             maxlength="15" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_reflective_fitment_dt"  value="#{language.reflectiveDateFitmentDate}"/>
+                </label>
+                <p:calendar id="tf_reflective_fitment_dt"  value="#{ownerDobj.reflectiveTapeDobj.fitmentDate}"
+                            mindate="#{ownerDobj.purchase_dt}" maxdate="#{ownerDobj.currentDate}"
+                            pattern="dd-MMM-yyyy"  navigator="true" autocomplete="off" readonlyInput="true"
+                            disabled="#{ownerDobj.reflectiveTapeDobj.isDisable_fitmentDate}" required="true" requiredMessage="Blank: Reflective Fitted On Date">
+                </p:calendar>                 
+            </div>
+
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_reflective_manu_name" value="#{language.reflectiveTapeManufacturerName}"/>
+                </label>
+                <p:inputText id="tf_reflective_manu_name"  value="#{ownerDobj.reflectiveTapeDobj.manuName}" disabled="#{ownerDobj.reflectiveTapeDobj.isDisable_manuName}" required="true"
+                             requiredMessage="Blank: Reflective Tape Manufacturer Name"
+                             maxlength="60" autocomplete="off" style="text-transform: uppercase"
+                             converter="toUpperCaseConverter"/>
+            </div>
+        </div>
+    </p:panel>
+</html>

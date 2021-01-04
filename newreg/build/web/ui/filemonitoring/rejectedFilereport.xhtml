@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <p:dialog id="popup" visible="#{not empty facesContext.messageList}"
+                      styleClass="center-position"
+                      widgetVar="dlg1"
+                      modal="true" draggable="false" closable="false">  
+                <p:messages/>
+                <p:commandButton value="OK" oncomplete="PF('dlg1').hide();"/>
+            </p:dialog> 
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Rejected File(s) Report</h1>
+                </div>
+            </div>
+            <p:outputPanel>
+                <p:autoUpdate/>
+                <p:outputPanel id="pnlrejetedfilereport">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel  value="Select Dealer" styleClass="field-label-mandate"/>
+                            <p:selectOneMenu  id="selectDealer" filter="true" value="#{rejectedfilereport.dealerName}">
+                                <f:selectItem itemLabel="---Select Dealer---"  itemValue="-1"/>
+                                <f:selectItems  value="#{rejectedfilereport.dearlist}"/>
+                                <p:ajax event="change" listener="#{rejectedfilereport.getRnderCalender()}" update="tblreceivefile popup bt_submit toDateC toDate fromDate fromDateC btnReport datatablepanel"  onstart="PF('bui').show();" oncomplete="PF('bui').hide();" partialSubmit="true"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel value="From Date:" rendered="#{rejectedfilereport.enableCalender}" id="fromDate"/>
+                            <p:calendar rendered="#{rejectedfilereport.enableCalender}" id="fromDateC" pattern="dd/MM/yyyy" value="#{rejectedfilereport.fromdate}" maxdate="#{rejectedfilereport.today}" 
+                                        navigator="true" readonlyInput="true"  effect="fold" >
+                            </p:calendar>
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel value="To Date:" rendered="#{rejectedfilereport.enableCalender}" id="toDate"/>
+                            <p:calendar rendered="#{rejectedfilereport.enableCalender}" id="toDateC" pattern="dd/MM/yyyy" value="#{rejectedfilereport.toDate}"  maxdate="#{rejectedfilereport.today}" 
+                                        navigator="true" readonlyInput="true"  effect="fold" >
+                            </p:calendar>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Report" rendered="#{rejectedfilereport.enableCalender}" id="btnReport"  action="#{rejectedfilereport.getRejectedFiles()}" update="tblreceivefile popup bt_submit toDateC toDate fromDate fromDateC btnReport datatablepanel" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" />
+                            <p:commandButton rendered="#{rejectedfilereport.enablePrint}" id="bt_submit" value="Print" action="#{rejectedfilereport.reDirectToPrint()}"   icon="ui-icon-disk"  onstart="PF('bui').show();" oncomplete="PF('bui').hide();" />
+                        </div>
+                    </div>
+                    <p:outputPanel id="datatablepanel" >
+                        <p:dataTable  var="rejectedfiles" rendered="#{rejectedfilereport.enablePrint}"  id="tblreceivefile"  value="#{rejectedfilereport.filelist}" >
+                            <p:column headerText="Sr. No." styleClass="collumn-width center-position" >
+                                <h:outputText value="#{rejectedfiles.srNo}"/>
+                            </p:column>
+                            <p:column headerText="File Number" >
+                                <h:outputText value="#{rejectedfiles.appl_no}"/>
+                            </p:column>
+                            <p:column headerText="Status" >
+                                <h:outputText value="#{rejectedfiles.status}"/>
+                            </p:column>
+                            <p:column headerText="Remarks" >
+                                <h:outputText value="#{rejectedfiles.statusDesc}"/>
+                            </p:column>
+                            <p:column headerText="Rejection Date" >
+                                <h:outputText value="#{rejectedfiles.rejectedDate}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:outputPanel> 
+            </p:outputPanel>
+        </div>
+        <p:blockUI block="pnlrejetedfilereport" widgetVar="bui">
+            <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+    </ui:define>
+</ui:composition>

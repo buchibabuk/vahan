@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <script>
+            var formSubmitted = false;
+            function onSubmitButton() {
+                if (!formSubmitted) {
+                    formSubmitted = true;
+                } else {
+                    // disable event propagation if form is already submitted
+                    event.preventDefault();
+                }
+            }
+        </script>
+        
+            
+        
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="formPrint" prependId="false">
+
+            <div class="center-position">
+                <p:commandButton value="Back" action="formSingleDraftPayment" onclick="PF('bui').show();" 
+                                 icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none"/>      
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="ui-grid-row center-position bottom-space">
+                <div class="ui-grid-col-12">
+                    <h:outputText class="header-main bottom-line" value="Draft Against Multiple Registration No" />
+                </div>
+            </div>
+            <div class="ui-grid-row center-position bottom-space">
+                <div class="ui-grid-col-12">
+                    <h:outputText class="header-subheader" value="Draft Details" />
+                </div>
+
+            </div>
+
+            <p:dataTable id="pay_table" value="#{draftRcptReportBean.paymentlist}" 
+                         editable="false" var="payment" rowIndexVar="index">
+
+                <p:column headerText="S.No." styleClass="collumn-width center-position"  >
+                    <p:outputLabel value="#{index +1}."/>
+                </p:column>
+                <p:column headerText="Instrument">
+                    #{payment.instrumentDesc}
+                </p:column>
+                <!--disabled="# {payment.rowflag}"-->
+                <p:column headerText="Bank Name">
+                   #{payment.bankNameDesc}
+                </p:column>
+                <p:column headerText="Number" styleClass="center-position">
+                    #{payment.number}
+                </p:column>
+                <p:column headerText="Dated" styleClass="center-position">                       
+                    #{payment.dateInFormat}                           
+                </p:column>
+                <p:column headerText="Amount" styleClass="center-position" >
+                    #{payment.amount} 
+                </p:column>
+
+                <p:column headerText="Branch" styleClass="center-position">
+                    #{payment.branch} 
+                </p:column>
+
+
+            </p:dataTable>
+
+            <div class="ui-grid-row center-position bottom-space top-space">
+                <div class="ui-grid-col-12">
+                    <h:outputText class="header-subheader" value="Receipt Details" />
+                </div>
+            </div>
+            <div class="center-position">
+                <p:dataTable id="pnl_cartList_display" var="cart" value="#{draftRcptReportBean.list}" 
+                             rowIndexVar="index" scrollHeight="80">
+                    <p:column headerText="S.No." styleClass="collumn-width center-position"  >
+                        <p:outputLabel value="#{index +1}."/>
+                    </p:column>
+                    <p:column headerText="Registration Number" styleClass="collumn-width center-position"  >#{cart.regn_no}</p:column>
+                    <p:column headerText="Amount" styleClass="collumn-width center-position"  >#{cart.amount}</p:column>
+                    <p:column headerText="Receipt No" styleClass="collumn-width center-position"  >#{cart.receiptNo}</p:column>
+
+                </p:dataTable>
+            </div>
+
+            <p:blockUI block="formPrint" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </h:body>
+</html>

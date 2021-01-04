@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="bootstrap-3.3.1" name="css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body>
+        <h:form id="RcDeliveryInfo" prependId="false">
+            <div class="center-position">
+                <p:button id="back_to_dwld_disp" value="Back" outcome="#{TDNoticeBean.returnURL}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" icon="ui-icon-print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="TDNList" value="#{TDNoticeBean.selectedTDNlist}" varStatus="status">
+                <div class="center-position">
+                    <h:outputText value="#{TDNList.rcpt_heading}" styleClass="font-bold report-header text-uppercase bottom-line" />
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{TDNList.rcpt_subheading} , #{TDNList.offName}" styleClass="font-bold report-subheader" escape="false"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="Notice in case of dues on Motor Vehicle" styleClass="font-bold report-subheader"/>
+                </div>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <table class="datatable-panel-100 bottom-space">
+                        <tr>
+                            <td class="left-position top-align">
+                                <span class="font-bold"> Memo No:  </span> <h:outputText value="-------------------"/>
+                            </td>
+                            <td class="right-position top-align">
+                                <span class="font-bold"> Date:  </span> <h:outputText value="#{TDNList.printDate}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="bottom-space">
+                        <h:outputText value="To," styleClass="font-bold"/><br />
+                        <h:outputText value="#{TDNList.owner_name}" styleClass="font-bold"/> <br />
+                        <h:outputText value="#{TDNList.fatherName}" styleClass="font-bold"/> <br />
+                        <h:outputText value="#{TDNList.curr_address}" styleClass="font-bold"/><br />
+                        <h:outputText rendered="#{TDNoticeBean.renderPermanantAddress}" value="Permanant Address:#{TDNList.permanant_address}" styleClass="font-bold"/>
+                    </div><br />
+                    <div class="bottom-space font-bold"> Subject:- Notice of Demand in Respect of Vehicle No.  <h:outputText value="#{TDNList.regn_no}"/>  ( <h:outputText value="#{TDNList.vch_class_desc}"/>, <h:outputText value="#{TDNList.vch_catg_cd}"/>  )</div>
+                    <div class="bottom-space"> 
+                        <h:outputText value="#{TDNList.taxNoticeHead1}" escape="false"/>
+                    </div>
+
+                    <p:dataTable value="#{TDNList.listTaxAmt}" var="data" 
+                                 styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                                 datatable-second-column-right datatable-second-column-header-right">
+                        <p:column headerText="Particular">
+                            <h:outputText value="#{data.taxTenure}" styleClass="font-bold"/>
+                        </p:column>
+                        <p:column headerText="Tax Amount">
+                            <h:outputText value="#{data.taxamt} " styleClass="right-space font-bold" />
+                        </p:column>
+                    </p:dataTable>
+                    <hr />                     
+                    <div> <span class="font-bold"> Total Rs: <h:outputText value="#{TDNList.taxamt}/-"/> (In words: <h:outputText value="#{TDNList.taxAmtInWords}"/>)  </span> </div>
+                    <div> <span class="font-bold"> Fitness valid upto: <h:outputText value="#{TDNList.fitvalidt}"/> </span> </div>
+                    <div> <span class="font-bold"> Note:  </span>  Fine/Penalty Amount will be calculated as on payment date. </div> 
+                    <div class="top-space">
+                        <h:outputText value="#{TDNList.taxNoticeHead2}" escape="false"/>
+                    </div>
+                    <table class="datatable-panel" style="margin: 0 auto;">
+                        <tr>
+                            <td  class="left-position font-bold">
+                                <br /><br /><br />
+                            </td>
+                            <td class="right-position">
+                                <br />
+                                <br /><h:outputText value="RTO #{TDNList.offName}" styleClass="font-bold"/>
+                                <br />Dated: <h:outputText value="#{TDNList.printDate}" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div class='top-space'>
+                        <h:outputText value="#{TDNList.taxNoticeHead3}" escape="false"/>
+                    </div>
+                </div>
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

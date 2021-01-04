@@ -1,0 +1,69 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+
+        <h:form id="verifyDSC">
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">DSC VERIFICATION</h1>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+
+            <p:panel header="DSC Verification" styleClass="bottom-space">
+                <p:dataTable  id="verifyDscDataTable" value="#{dscRegisBean.dealerUnVerifiedList}" var="unVerified"  filteredValue="#{dscRegisBean.filteredList}" rowIndexVar="index" rows="10" paginator="true" paginatorPosition="bottom">
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}."/></p:column>
+                    <p:column headerText="Dealer Name" filterBy="#{unVerified.dealerName}" filterMatchMode="contains" sortBy="#{unVerified.dealerName}">#{unVerified.dealerName}(#{unVerified.dealerCd})</p:column>
+                    <p:column headerText="Serial No">#{unVerified.serialNo}</p:column>
+                    <p:column headerText="Vendor Name">#{unVerified.vendorName}</p:column>
+                    <p:column headerText="DSC User Name">#{unVerified.userName}</p:column>
+                    <p:column headerText="Valid Upto">#{unVerified.certValidUpto}</p:column>
+                    <p:column headerText="Serial No(Hexa Decimal)">#{unVerified.serailNoInHexaDecimalForm}</p:column>
+                    <p:column headerText="Verify">
+                        <p:selectBooleanCheckbox value="#{unVerified.verifyStatus}"/>
+                    </p:column>
+                </p:dataTable> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton  value="Verify" action="#{dscRegisBean.verifyDlrDetails()}" update="@form" onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                            <p:confirm header="Confirmation" message="Are You Sure You Want To Verify?" icon="ui-icon-alert"/>   
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:panel header="DSC Verified" styleClass="bottom-space">
+                <p:dataTable  id="verifiedDscDataTable" value="#{dscRegisBean.dealerVerifiedList}" var="verified" rowIndexVar="index" rows="10" paginator="true" paginatorPosition="bottom">
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}."/></p:column>
+                    <p:column headerText="Dealer Name">#{verified.dealerName}</p:column>
+                    <p:column headerText="Serial No">#{verified.serialNo}</p:column>
+                    <p:column headerText="Vendor Name">#{verified.vendorName}</p:column>
+                    <p:column headerText="DSC User Name">#{verified.userName}</p:column>
+                    <p:column headerText="Valid Upto">#{verified.certValidUpto}</p:column>  
+                    <p:column headerText="Serial No(Hexa Decimal)">#{verified.serailNoInHexaDecimalForm}</p:column>
+                </p:dataTable>               
+            </p:panel>
+
+            <p:blockUI block="verifyDSC" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </ui:define>
+</ui:composition>

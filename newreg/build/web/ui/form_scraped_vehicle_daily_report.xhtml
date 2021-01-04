@@ -1,0 +1,99 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content22" >
+        <h:body >
+            <h:form id="dnd_file" prependId="false">
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <h1><h:outputText value="#{scrap_vehicle.header}" styleClass="header-main" /></h1>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages  showDetail="true" showSummary="false" closable="true">
+                                <p:autoUpdate/>
+                            </p:messages>
+                            <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                                <p:autoUpdate/>
+                            </p:growl>
+                        </div>
+                    </div>
+                    <p:outputPanel id="datePanal"  styleClass="bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  value="From Date" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar tabindex="2" id="valid" value="#{scrap_vehicle.valid_from}" required="true" requiredMessage="Please select From Date" autocomplete="true" pattern="dd-MMM-yyyy" maxdate="#{scrap_vehicle.currentDate}"
+                                            placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999"> 
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  value="To Date" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar tabindex="2" id="valid_to" value="#{scrap_vehicle.valid_to}" required="true" requiredMessage="Please select Upto Date" autocomplete="true" pattern="dd-MMM-yyyy" mindate="#{scrap_vehicle.valid_from}" maxdate="#{scrap_vehicle.currentDate}"
+                                            placeholder="(DD-MMM-YYYY) Ex: 01-JAN-1999"> 
+                                </p:calendar>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton id="btn" value="Submit" ajax="false" onclick="PF('bui').show();" icon="ui-icon-check" oncomplete="PF('bui').hide();" action="#{scrap_vehicle.scrappedVehicle()}" update="msgs,outpanel,scrabDetails,valid,btn_print,valid_to"/>
+                                <p:commandButton id="btn_print" value="Print" action="#{scrap_vehicle.printReport()}" process="@this" rendered="#{scrap_vehicle.renderprint}" icon="ui-icon-print"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="outpanel" rendered="#{scrap_vehicle.renderPanel}">
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable id="scrabDetails"  value="#{scrap_vehicle.scrapList}" var="scrap" rows="10" rowIndexVar="index" paginator="true">
+                                    <f:facet name="header">
+                                        <h:outputText value="Scrapped Vehicle Detail From  #{scrap_vehicle.scrap_from} To #{scrap_vehicle.scrap_upto}"/>
+                                    </f:facet>
+                                    <p:column headerText="Sr.No" width="5%"> <p:outputLabel value="#{index +1}."/></p:column>
+                                    <p:column headerText="Vehicle No">  
+                                        <h:outputText value="#{scrap.oldRegnno}" />  
+                                    </p:column>
+                                    <p:column headerText="Loi No">  
+                                        <h:outputText value="#{scrap.loino}" />  
+                                    </p:column>
+                                    <p:column headerText="Owner Name">  
+                                        <h:outputText value="#{scrap.ownName}" />  
+                                    </p:column>
+                                    <p:column headerText="Father Name">  
+                                        <h:outputText value="#{scrap.fname}" />  
+                                    </p:column>
+                                    <p:column headerText="Address">  
+                                        <h:outputText value="#{scrap.currentAddress}" />  
+                                    </p:column>
+                                    <p:column headerText="Issue Date">  
+                                        <h:outputText value="#{scrap.opdt}" />  
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <h:outputText value="Total No of Record = #{scrap_vehicle.total_record}" />
+                                    </f:facet>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:blockUI block="datePanal" widgetVar="bui">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+
+                </div>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,237 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-col-12">
+                <f:subview id="tax_insta_payment_subview">
+                    <p:blockUI block="ownerInformationPanel" widgetVar="bui_fancy">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:dialog id="confirmationPopupp"
+                              style="text-align:center" header="Payment Collection Details"
+                              widgetVar="confDlgTax" dynamic="true"
+                              modal="true" draggable="false" >
+                        <p:outputLabel value="Do you want to continue"/><br></br>
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Confirm Payment" oncomplete="PF('confDlgTax').hide();"
+                                             action="#{taxInstallCollectionBean.saveInstallDetails()}" icon="ui-icon-check" ajax="false" >
+                            </p:commandButton>
+
+                            <p:commandButton value="Cancel" oncomplete="PF('confDlgTax').hide();" icon="ui-icon-close" />
+
+                        </h:panelGrid>
+                    </p:dialog>
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">Reconfigure of Tax Installment</h1>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row" >
+                        <div class="ui-grid-col-12">
+                            <p:outputPanel id="regnNoPanel">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+
+                                <div class="ui-grid-col-4 ">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_regn_no" value="Enter Registration No:" />
+                                    </label>
+                                    <p:inputText  id="tf_regn_no" value="#{taxInstallCollectionBean.regn_no}" size="20" maxlength="10"
+                                                  autocomplete="off"   style="text-transform: uppercase" disabled="#{taxInstallCollectionBean.renderAllPanel}"
+                                                  converter="toUpperCaseConverter"  >
+
+                                    </p:inputText>
+                                    <p:keyFilter mask="alphanum" for="tf_regn_no"/>
+
+                                </div>
+
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+
+
+                    <p:outputPanel id="getButtonPanel">
+                        <div class="ui-grid-row center-position" >
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="getDetail" value="Get Details" onclick="PF('bui_fancy').show();" action="#{taxInstallCollectionBean.regnNo_focusLost}" rendered="#{!taxInstallCollectionBean.renderAllPanel}"  update="ownerInformationPanel regnNoPanel getButtonPanel"
+                                                 oncomplete="PF('bui_fancy').hide()" />
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="ownerInformationPanel">
+                        <p:outputPanel   rendered="#{taxInstallCollectionBean.renderAllPanel}">
+
+                            <ui:include src="../commonUI/form_owner_vehicle_dtls_mvtax.xhtml"  >
+                                <ui:param name="containerBean" value="#{taxInstallCollectionBean}" />
+                            </ui:include>
+
+                            <!--//////Include for Tax installment pending and paid information-->
+                            <p:outputPanel id="panelOwnerInfo">
+
+                                <div class="ui-grid-row center-position bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <div class="report-header font-bold bottom-line">Installment Details</div>
+                                    </div>
+                                </div>
+                                <p:panel id="panelVehTAXDtls" header="Installment File Details" styleClass="top-space bottom-space">
+                                    <div class="ui-grid-row">
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tfclearby" value="File Ref No."/>
+                                            </label>
+                                            <p:inputText  id="tfclearby" value="#{taxInstallCollectionBean.filerefNo}"
+                                                          maxlength="10"
+                                                          requiredMessage="Please Enter Clear by"
+                                                          converter="toUpperCaseConverter"
+                                                          autocomplete="off"
+                                                          styleClass="text-uppercase"
+                                                          required="true"
+                                                          disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tforedrIssby" value="Order Issue By."/>
+                                            </label>
+                                            <p:inputText  id="tforedrIssby" value="#{taxInstallCollectionBean.orderIssueBy}"
+                                                          maxlength="10"
+                                                          requiredMessage="Please Enter Clear by"
+                                                          converter="toUpperCaseConverter"
+                                                          autocomplete="off"
+                                                          styleClass="text-uppercase"
+                                                          required="true"
+                                                          disabled="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tforderno" value="Order No."/>
+                                            </label>
+                                            <p:inputText  id="tforderno" value="#{taxInstallCollectionBean.orderNo}"
+                                                          maxlength="10"
+                                                          requiredMessage="Please Enter order No."
+                                                          converter="toUpperCaseConverter"
+                                                          autocomplete="off"
+                                                          styleClass="text-uppercase"
+                                                          required="true"
+                                                          disabled="true"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="orderdate" value="Order Date"/>
+                                            </label>
+                                            <p:calendar id="orderdate"  value="#{taxInstallCollectionBean.orderDate}"
+                                                        requiredMessage="Blank Order date" readonlyInput="true"
+                                                        maxdate="#{taxClearBean.maxDate}"
+                                                        pattern="dd-MMM-yyyy" navigator="true" required="true" disabled="true">
+                                                <f:convertDateTime pattern="dd-MMM-yyyy" for="orderdate"/>
+                                                <p:ajax event="dateSelect" process="@this"/>
+                                            </p:calendar>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                                <!--//////////////-->
+                                <!--// Show table for Paid Installments-->
+                                <p:outputPanel id="panelshowHistrorytaxtable">
+                                    <p:dataTable id="tb_showHistrorytaxtable"  value="#{taxInstallCollectionBean.installmentPaidDetaillist}"
+                                                 paginator="#{taxInstallCollectionBean.installmentPaidDetaillist.size()>6}" rows="6" paginatorPosition="bottom"
+                                                 scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                                        <f:facet name="header">
+                                            <div class="left-position">
+                                                Paid Installments
+                                            </div>
+                                        </f:facet>
+                                        <p:column headerText="Installment No">
+                                            <h:outputText value="#{sc.serialnoPaid}" />
+                                        </p:column>
+                                        <p:column headerText="Installment Amount">
+                                            <h:outputText value="#{sc.taxAmountInstPaid}" />
+                                        </p:column>
+                                        <p:column headerText="Installment Due Date">
+                                            <h:outputText value="#{sc.paydueDatePaid}" />
+                                        </p:column>
+                                        <p:column headerText="Receipt No.">
+                                            <h:outputText value="#{sc.rcptNo}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:outputPanel>
+
+                                <div class="ui-grid-row center-position bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <div class="report-header font-bold bottom-line">Reconfigure Installments</div>
+                                    </div>
+                                </div>
+
+                                <!--// Show table for Pending Installments-->
+                                <p:outputPanel id="removeadd">
+                                    <p:remoteCommand name="onCellEditTableComplete" update="tb_showtaxtable"/>
+                                    <p:dataTable id="tb_showtaxtable"  value="#{taxInstallCollectionBean.installmentPendingDetaillist}" editable="true"
+                                                 paginator="#{taxInstallCollectionBean.installmentPendingDetaillist.size()>5}" rows="6" paginatorPosition="bottom"
+                                                 scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                                        <f:facet name="header">
+                                            <div class="left-position">
+                                                Reconfigure Installments
+                                            </div>
+                                        </f:facet>
+                                        <p:ajax event="rowEdit" listener="#{taxInstallCollectionBean.onRowEdit}" oncomplete="onCellEditTableComplete()"  update="tb_showtaxtable">
+
+                                        </p:ajax>
+                                        <p:ajax event="rowEditCancel" listener="#{taxInstallCollectionBean.onRowCancel}" oncomplete="onCellEditTableComplete()"  update="tb_showtaxtable"/>
+                                        <p:column headerText="Installment No">
+                                            <h:outputText value="#{sc.serialno}" />
+                                        </p:column>
+                                        <p:column headerText="Installment Amount">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{sc.taxAmountInst}"/></f:facet>
+                                                <f:facet name="input"><p:inputText id="taxAmountInst" value="#{sc.taxAmountInst}" style="width:100%" maxlength="8"/></f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Installment Due Date">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{sc.paydueDate}" /></f:facet>
+                                                <f:facet name="input"><p:calendar  pattern="dd-MMM-yyyy" value="#{sc.payDate}" id="paydueDate"  style="width:100%"/></f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Tax mode" rendered="false">
+                                            <h:outputText value="#{sc.taxMode}" />
+                                        </p:column>
+
+                                        <p:column style="width:32px" >
+                                            <p:rowEditor />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:outputPanel id="pg_save" styleClass="center-position">
+                                        <p:commandButton value="Save" action="#{taxInstallCollectionBean.saveInstallDetails()}" >
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                        </p:commandButton>
+                                        <p:commandButton  value="Reset" actionListener="#{taxInstallCollectionBean.reset()}"  update="ownerInformationPanel regnNoPanel"
+                                                          action="/ui/tax/formTaxInstallReConfigure.xhtml?faces-redirect=true"/>
+                                        <p:commandButton  value="Back" action ="/home.xhtml?faces-redirect=true"/>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </f:subview>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

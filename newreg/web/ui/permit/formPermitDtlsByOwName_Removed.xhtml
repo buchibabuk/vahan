@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formVehDetails" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Permit Details by Owner Name</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel styleClass="top-space bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-8">
+                            <p:selectOneRadio id="select_task" value="#{pmtByOwn.option}">
+                                <f:selectItem itemLabel="By Owner Name" itemValue="1"/>
+                                <f:selectItem itemLabel="By Permit No." itemValue="2"/>
+                                <f:ajax event="click"  listener="#{pmtByOwn.onChange()}" render="ownTDtls GetOwnerDtls GetPmtNoDtls"/>
+                            </p:selectOneRadio>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel id="GetOwnerDtls">
+                    <p:panel id="GetOwnerDtlsPanel" rendered="#{pmtByOwn.option eq '1'}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfOwnName" value="Owner Name" styleClass="field-label-mandate" rendered="#{pmtByOwn.option eq '1'}"/>
+                                </label>
+                                <p:inputText  id="tfOwnName" value="#{pmtByOwn.ownerName}" autocomplete="off" style="text-transform:uppercase" rendered="#{pmtByOwn.option eq '1'}"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfFtName" value="Father Name" rendered="#{pmtByOwn.option eq '1'}"/>
+                                </label>
+                                <p:inputText  id="tfFtName" value="#{pmtByOwn.ftName}" autocomplete="off" style="text-transform:uppercase" rendered="#{pmtByOwn.option eq '1'}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="GetPmtNoDtls">
+                    <p:panel id="GetPmtNoDtlsPanel" rendered="#{pmtByOwn.option eq '2'}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pmtNo" value="Permit Number" styleClass="field-label-mandate" rendered="#{pmtByOwn.option eq '2'}"/>
+                                </label>
+                                <p:inputText  id="pmtNo" value="#{pmtByOwn.pmtNo}" autocomplete="off" style="text-transform:uppercase" rendered="#{pmtByOwn.option eq '2'}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details" action="#{pmtByOwn.get_Details()}" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();" update="ownTDtls"/>
+                            <p:button value="Back" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel id="ownTDtls">
+                    <p:panel header="Permit Reservation Details" rendered="#{not empty pmtByOwn.pmtDtlsList}" styleClass="top-space bottom-space">
+                        <p:dataTable id="pmtOwnDtls" var="ownDtls" value="#{pmtByOwn.pmtDtlsList}" rows="10" rowIndexVar="index"
+                                     paginator="#{pmtByOwn.pmtDtlsList.size()>10}">
+                            <p:column headerText="Sr.No" width="2%">#{index + 1}</p:column>
+                            <p:column headerText="Vehicle No." >#{ownDtls.regn_no}</p:column>
+                            <p:column headerText="Permit No." >#{ownDtls.pmt_no}</p:column>
+                            <p:column headerText="Registration Date" >#{ownDtls.regnDt}</p:column>
+                            <p:column headerText="Owner Name">#{ownDtls.owner_name}</p:column>
+                            <p:column headerText="Father's/Husband's Name">#{ownDtls.f_name}</p:column>
+                            <p:column headerText="Address">#{ownDtls.address}</p:column>
+                            <p:column headerText="Status">#{ownDtls.status}</p:column>
+                            <f:facet name="footer">
+                                In total there are #{pmtByOwn.pmtDtlsList.size()} Records.
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:blockUI block="@form" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

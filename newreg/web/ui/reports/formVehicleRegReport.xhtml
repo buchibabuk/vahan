@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:body onload="window.print();">
+        <h:form id="formPrint" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="home" onclick="PF('bui').show();" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none"/>      
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <p:outputPanel style="min-height: 300px !important;">
+                <ui:include src="formVehicleRegistrationDetail.xhtml" >
+                    <ui:param name="ownerDetail" value="#{regnPrint.ownerDetail}"/>
+                </ui:include>
+            </p:outputPanel>
+
+            <hr class="top-space bottom-space" />
+
+            <p:outputPanel>
+                <ui:include src="formVehicleRegistrationDetail.xhtml" >
+                    <ui:param name="ownerDetail" value="#{regnPrint.ownerDetail}"/>
+                </ui:include>
+            </p:outputPanel>
+
+            <p:blockUI block="formPrint" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </h:body>
+</html>

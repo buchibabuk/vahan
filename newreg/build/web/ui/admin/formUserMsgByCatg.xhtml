@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+    <ui:define name="content">
+        <script type="text/javascript">
+            function scrollMsgToBottom(elementName) {
+                var el = document.getElementById(elementName);
+                el.scrollTop = el.scrollHeight;
+            }
+        </script>
+
+        <style>
+            .ui-datatable.borderless thead th,
+            .ui-datatable.borderless tbody,
+            .ui-datatable.borderless tbody tr,
+            .ui-datatable.borderless tbody td {
+                border-style:none;
+                background: #ffffff
+            }
+
+
+            .ui-datatable.borderless tbody td {
+                padding:5px!important;
+                vertical-align: top!important;
+
+            }
+        </style>
+
+        <f:metadata>
+            <f:viewParam name="userMsgType" value="#{userMsgByCatgBean.userMsgType}" />
+            <f:viewAction action="#{userMsgByCatgBean.onLoad}" />
+        </f:metadata>
+
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">#{userMsgByCatgBean.formHeader}</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="outpnl_user_msg_catg" rendered="#{userMsgByCatgBean.readMsgByUserCatg}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12" >
+                                <p:messages id="msg_user_msg_catg" closable="true">
+                                    <p:autoUpdate/>
+                                </p:messages>
+
+
+                                <p:dataTable  id="tbl_user_msg_catg" var="message" value="#{userMsgByCatgBean.userMessagesListByCatg}" rowIndexVar="index" emptyMessage=""
+                                              styleClass="top-space bottom-space" rows="8" paginator="true"
+                                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                              rowsPerPageTemplate="5,10,15" style="width:1024px;height:768px;margin:0 auto">
+                                    <p:column styleClass="top-align" headerText="Date" width="15%" style="font-size:14px;height:50px;">
+                                        <h:outputText value="#{message.messageDate}"/>
+                                    </p:column>
+                                    <p:column styleClass="top-align" headerText="Message" style="font-size:14px;height:50px;">
+                                        <h:outputText value="#{message.message}"/>
+                                    </p:column>
+                                </p:dataTable>
+
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="pnl_UserMsgByCatg" rendered="#{!userMsgByCatgBean.readMsgByUserCatg}">
+                        <p:messages id="msg" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panel styleClass="scroll-panel-height scroll-panel-overflow">
+                            <p:outputPanel id="pnl_SendMsg">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-3 resp-blank-height"></div>
+                                    <div class="ui-grid-col-3">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="State"/>
+                                        </label>
+                                        <p:inputText disabled="true" value="#{userMsgByCatgBean.state_name}" />
+                                    </div>
+                                    <div class="ui-grid-col-3">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="User Category: "/>
+                                        </label>
+                                        <p:selectCheckboxMenu id="userCatg" value="#{userMsgByCatgBean.userMsgByCatgList}" label="--SELECT--" filter="true"
+                                                              filterMatchMode="startsWith">
+                                            <f:selectItems value="#{userMsgByCatgBean.userCatgList}" />
+                                        </p:selectCheckboxMenu>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="Message User"  action="#{userMsgByCatgBean.showMessageDialog()}"
+                                                         update="pnl_Message msg" oncomplete="PF('dlg').show();scrollMsgToBottom('pnl_usermessageslist');">
+                                        </p:commandButton>
+                                        <p:button value="Back" outcome="userMsg"  icon="ui-icon-arrowreturnthick-1-w"/>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                        </p:panel>
+                        <p:dialog  id="openDlg" header="Send Message" widgetVar="dlg" modal="true" height="500" width="800">       
+
+                            <p:ajax event="close" listener="#{userMsgByCatgBean.handleClose()}" update="msg" />
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:messages id="dlgmsg" closable="true">
+                                        <p:autoUpdate/>
+                                    </p:messages>
+                                    <p:panel id="pnl_usermessageslist" style="min-height:300px;max-height:300px;overflow:auto;">
+                                        <p:outputPanel id="pnl_Message">
+                                            <p:dataTable  id="tbl_usermessageslist" value="#{userMsgByCatgBean.userMessagesList}" var="message" rowIndexVar="index" emptyMessage=""
+                                                          styleClass="panelRowHeight top-space bottom-space borderless">
+                                                <p:column styleClass="font-bold top-align" width="40%">
+                                                    #{message.fromUser}
+                                                    (<span style="font-size:8px">#{message.messageDate}</span>)
+                                                </p:column>
+                                                <p:column styleClass="top-align">
+                                                    <span style="overflow-wrap:normal">#{message.message}</span>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:panel id="pnl_msgbox">
+                                        <p:inputTextarea  styleClass="datatable-panel-100" maxlength="500" value="#{userMsgByCatgBean.messageText}">
+                                            <p:keyFilter regEx="/[A-Z0-9\.,-@ ]/i"/>
+                                        </p:inputTextarea>
+                                    </p:panel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+
+                                    <p:outputPanel id="outpnl_sendmessage">
+                                        <p:commandButton value="Send Message" action="#{userMsgByCatgBean.sendMessage}" id="send_message"
+                                                         update="pnl_Message pnl_msgbox msg" oncomplete="scrollMsgToBottom('pnl_usermessageslist')">
+                                        </p:commandButton>
+
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </p:dialog>
+
+                    </p:outputPanel>
+                </div>
+            </div>
+            <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </div>
+    </ui:define>
+</ui:composition>

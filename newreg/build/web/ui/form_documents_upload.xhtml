@@ -1,0 +1,494 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content22"> 
+        <h:form id="formDocumentUpload" enctype="multipart/form-data">
+            <p:outputPanel rendered="#{documentUploadBean.renderApiBasedDMSDocPanel}">
+                <div class="ui-grid ui-grid-responsive">
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-3 resp-blank-height"></div>
+                        <div class="ui-grid-col-6">
+                            <h1 class="header-main">DOCUMENTS UPLOAD</h1>
+                        </div>                  
+                        <div class="ui-grid-col-3 right-position">
+                            <p:outputPanel>
+                                <p:autoUpdate/>
+                                <p:outputLabel styleClass="inline-section right-space" rendered="#{documentUploadBean.showDigitalSignLabel}">
+                                    <h3 class="#{documentUploadBean.dscConnected ? 'open-counter' : 'close-counter'}  counter-button inline-section center-position" >
+                                        <span class="glyphicon #{documentUploadBean.dscConnected ? 'glyphicon-eye-open' : 'glyphicon-eye-close' } right-space"></span> Digital Sign Certificate
+                                    </h3>                        
+                                </p:outputLabel>
+                            </p:outputPanel>    
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages closable="true" showDetail="true" showSummary="false">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </div>
+                    </div>
+                    <div class="top-space bottom-space">
+                        <p:outputPanel>
+                            <p:autoUpdate/>
+                            <div class="inline-section font-bold red top-align right-space">Note: </div> 
+                            <ol class="inline-section">
+                                <li>
+                                    Document Accepted:  <h:outputText value="#{documentUploadBean.noteMessasge}" styleClass="font-bold" />  <span class="font-bold">extension format only.</span>
+                                    Maximum size of the file uploaded should be less than  <span class="font-bold"> 200 Kb</span>.
+                                </li>
+                                <li>
+                                    Mozilla Firefox ESR User use version 52 and then further restrict auto-update. 
+                                </li>
+                                <li>
+                                    <span class="red font-bold">Please clear your Browser History first, if you are facing the issue.</span>
+                                </li>
+                            </ol>
+                        </p:outputPanel>
+                    </div>
+                    <p:outputLabel id="successMsg">
+                        <p:dialog widgetVar="successDialog" rendered="#{not empty documentUploadBean.successUplodedMsg}"
+                                  modal="true" closable="false" resizable="false" draggable="false" header="Documents Uploded Msg">
+                            <p:outputLabel value="#{documentUploadBean.successUplodedMsg}" escape="false"/>
+                            <div class="center-position">
+                                <p:button value="Ok" onclick="PF('successDialog').hide();"                                              
+                                          outcome="home" icon="ui-icon-check"/>
+
+                            </div>
+                        </p:dialog>
+                    </p:outputLabel>
+                    <p:remoteCommand autoRun="#{documentUploadBean.pendingWorkFlowCall}"  actionListener="#{documentUploadBean.callMethodForPendingWork}" update=":formDocumentUpload:appl_details_panel :formDocumentUpload:fileMovementId  :formDocumentUpload:upload_output :formDocumentUpload:doc_list_panel_id  :formDocumentUpload:homeId :formDocumentUpload:doc_digital_sign" immediate="true"/>
+                    <h:inputHidden value="#{documentUploadBean.pdfSignXML}" id="signxmlpdf"/>
+                    <h:inputHidden value="#{documentUploadBean.pdfSignResponseXML}" id="signxmlpdfresponse"/>
+                    <p:remoteCommand name="callSigningPdf" actionListener="#{documentUploadBean.signedPDFFile}"/>
+
+                    <p:outputPanel id="doc_digital_sign" styleClass="bottom-space">
+                        <p:panel header="Digital Signature Certificate(DSC)" rendered="#{documentUploadBean.showDigitalSignPanel}">
+                            <div class="ui-grid-row top-space">
+                                <div class="ui-grid-col-12 center-position">
+                                    <h:inputHidden value="#{documentUploadBean.certificatexml}" id="fetchvl"/>
+                                    <p:commandButton value="How to connect to DSC" styleClass="open-counter" style="margin-top: 0px !important" onclick="PF('dlg1').show();"/>
+                                    <p:dialog widgetVar="dlg1" modal="true" header="Instruction">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <b>Step-1 :</b>
+                                                <span>
+                                                    Click On Connect To Dsc.
+                                                </span><br/>
+                                                <b>Step-2 :</b>
+                                                <span>
+                                                    Click On Certificate Serial no.
+                                                </span>
+                                                <br/>
+                                                <b>Step-3 :</b>
+                                                <span>
+                                                    Enter Your Password.
+                                                </span>
+                                                <br/>                                                     
+                                            </div>
+                                        </div>   
+                                    </p:dialog>
+                                    <p:commandButton value="Connect to DSC" action="#{documentUploadBean.connectToDsc()}" update="pnl_steps registXMl"/>
+                                    <h:inputHidden value="#{documentUploadBean.registrationxml}" id="registXMl"/>
+                                    <h:inputHidden value="#{documentUploadBean.registrationResponseXml}" id="registResXMl"/>
+                                    <p:remoteCommand rendered="#{documentUploadBean.showDigitalSignPanel}" oncomplete="myFunction();" autoRun="true"/>
+                                    <p:remoteCommand name="callRegistrationDsc" actionListener="#{documentUploadBean.dscRegistration}"/>                              
+                                    <p:outputPanel id="pnl_steps">
+                                        <p:dataTable value="#{documentUploadBean.dscServiceCertificateList}" rendered="#{documentUploadBean.dscServiceCertificateList.size() > 0}" var="dscConn" styleClass="top-space"
+                                                     rowIndexVar="index">
+                                            <f:facet name="header">
+                                                <h:outputText value="Certificate's Details" styleClass="report-header font-bold red"/>
+                                            </f:facet>
+                                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                                <p:outputLabel value="#{index+1}."/>
+                                            </p:column>
+                                            <p:column headerText="Serial No">
+                                                <h:outputText   value="#{dscConn.serialNo}"/>                     
+                                            </p:column>
+                                            <p:column headerText="User Name"><h:outputText   value="#{dscConn.userName}"/></p:column>
+                                            <p:column headerText="Valid Upto"><h:outputText   value="#{dscConn.certValidUpto}"/></p:column>
+                                            <p:column headerText="Action">
+                                                <p:commandButton value="Connect"  onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{documentUploadBean.revocStr(dscConn)}" icon="ui-icon-newwin" rendered="#{dscConn.showActionBtn}">
+                                                    <p:confirm header="Confirmation" message="Are You Sure Want to Connect?" icon="ui-icon-alert" />
+                                                </p:commandButton>      
+                                            </p:column>
+                                        </p:dataTable> 
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">                        
+                            <p:outputPanel id="upload_output" >
+                                <p:panel header="Application Detail" id="appl_inpt_panel" styleClass="bottom-space" rendered="#{documentUploadBean.renderApplicationInputPanel}">
+                                    <div class="ui-grid-row">
+                                        <h:outputText styleClass="red font-bold" value="#{documentUploadBean.noteMsg}"/>
+                                    </div>
+                                    <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="appl_no"/>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel id="uploadApplNo" >
+                                                <label class="field-label resp-label-section ">
+                                                    <p:outputLabel for="appl_no" value="#{label.appl_no}"/>
+                                                </label>
+                                                <p:inputText id="appl_no" autocomplete="off" value="#{documentUploadBean.applNo}" disabled="#{documentUploadBean.applFieldDisabled}"  
+                                                             maxlength="16"  requiredMessage="Application No. can not be blank."
+                                                             styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                                </p:inputText>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section ">
+                                                <p:outputLabel for="remarks_id" value="Remarks"/>
+                                            </label>
+                                            <p:inputText id="remarks_id"  requiredMessage="Remarks can not be blank." autocomplete="off" value="#{documentUploadBean.remarks}" maxlength="90" styleClass="text-uppercase" converter="toUpperCaseConverter" />
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton value="Upload/Modify Document" id="btnUpload" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{documentUploadBean.validateApplAndFileUpload()}" icon="ui-icon-newwin" rendered="#{documentUploadBean.renderApplicationInputPanel}" update=":formDocumentUpload:appl_details_panel :formDocumentUpload:fileMovementId  :formDocumentUpload:upload_output :formDocumentUpload:doc_list_panel_id  :formDocumentUpload:homeId :formDocumentUpload:doc_digital_sign">
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert" />
+                                            </p:commandButton>                                   
+                                            <p:button value="Home" outcome="home" icon="ui-icon-home"/>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel> 
+                            <p:outputPanel id="appl_details_panel">
+                                <p:panel header="Application Detail"   styleClass="bottom-space" rendered="#{documentUploadBean.renderApplicatioDetailsAndCarouselPanel}">
+                                    <div class="ui-grid-row"> 
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="application_no" value="#{label.appl_no}" />
+                                            </label>
+                                            <p:inputText id="application_no" value="#{documentUploadBean.applNo}" size="20" readonly="true" styleClass="input"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="application_dt" value="#{label.appl_dt}"/>
+                                            </label>
+                                            <p:inputText id="application_dt" value="#{documentUploadBean.applDt}" size="20" readonly="true" styleClass="input"/>
+
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel value="#{label.regn_no}" />
+                                            </label>
+                                            <p:inputText value="#{documentUploadBean.regnNo}" size="20" readonly="true" styleClass="input"/>                                    
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="owner_name" value="#{label.owner_name}"/>
+                                            </label>
+                                            <p:inputText id="owner_name" value="#{documentUploadBean.ownerDetailsDobj.owner_name}" size="35" readonly="true" styleClass="input"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="chasi_no" value="#{label.chasi_no}"/>
+                                            </label>
+                                            <p:inputText id="chasi_no" value="#{documentUploadBean.ownerDetailsDobj.chasi_no}" size="35" readonly="true" styleClass="input"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="purpose_description" value="#{label.purpose}"/>
+                                            </label>
+                                            <p:inputText id="purpose_description" value="#{documentUploadBean.purposeDescr}" size="35" readonly="true" styleClass="input"/>
+                                        </div>
+                                    </div>    
+                                </p:panel> 
+                            </p:outputPanel>
+
+                            <p:outputPanel id="doc_list_panel_id" styleClass="bottom-space">
+                                <p:panel rendered="#{documentUploadBean.renderApplicatioDetailsAndCarouselPanel}">                           
+                                    <ui:include src="/ui/form_api_based_digital_signed_doc_upload.xhtml">
+                                        <ui:param name="docDigitalSignDobj" value="#{documentUploadBean}"/>
+                                    </ui:include>
+                                </p:panel>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="fileMovementId">
+                                <p:panel  rendered="#{documentUploadBean.showFileFlowBtn}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton value="File Movement" id="fileFlowId" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{documentUploadBean.fileFlow()}" icon="ui-icon-newwin" update="formDocumentUpload:successMsg">
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert" />
+                                            </p:commandButton>                                 
+                                            <p:button value="Home" outcome="home" icon="ui-icon-home"/>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="homeId">
+                                <p:panel rendered="#{documentUploadBean.showHomeBtn}">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">                                                            
+                                            <p:button value="Home" outcome="home" icon="ui-icon-home"/>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel>
+
+
+                            <p:blockUI block="@form"  widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%">
+                                    <p:outputLabel value="Please wait......."/>
+                                </p:graphicImage>
+                            </p:blockUI>
+                        </div>                    
+                    </div>
+                </div> 
+                <script>
+
+                    function myFunction()
+                    {
+                        //                                    alert("komal=======");
+                        if (window.XMLHttpRequest) {
+                            //                    // code for modern browsers
+
+                            xhrFields = new XMLHttpRequest();
+                        } else {
+                            //                    // code for old IE browsers
+
+                            xhrFields = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+
+                        $.ajax({
+                            type: "GET",
+                            url: "http://127.0.0.1:55100/registration/getCertList",
+                            xhrFields: {withCredentials: true
+                            },
+                            crossDomain: true,
+                            success: function (Resp) {
+                                //  alert("Divice Connected sucessfully");
+                                console.log(Resp);
+                                // alert(Resp);
+                                document.getElementById('formDocumentUpload:fetchvl').value = Resp;
+
+                                xhrFields: {
+                                    withCredentials: true
+                                }
+                                //                                       
+                            },
+                            error: function (ts) {
+                                alert("Please try after some time ");
+                            }
+                        });
+
+                    }
+
+
+                    function registerCert()
+                    {
+                        //  alert("registerCert=======");
+
+                        var resp = document.getElementById('formDocumentUpload:registXMl').value;
+                        // alert(resp);
+                        if (window.XMLHttpRequest) {
+                            //                    // code for modern browsers
+                            // alert("====resp===========" + resp);
+                            xhrFields = new XMLHttpRequest();
+                        } else {
+                            //                    // code for old IE browsers
+                            // alert("byeeeeeeeeeee");
+                            xhrFields = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+
+                        $.ajax({
+                            type: "POST", url: "http://127.0.0.1:55100/registration/registerCert", contentType: "application/xml; charset=utf-8",
+                            xhrFields: {
+                                withCredentials: true
+                            },
+                            crossDomain: true,
+                            data: resp,
+                            success: function (res) {
+                                // alert("sucesss   ");
+                                // console.log(res);
+
+                                document.getElementById('formDocumentUpload:registResXMl').value = res;
+
+                                xhrFields: {
+                                    withCredentials: true
+                                }
+                                callRegistrationDsc();
+                                //                                       
+                            },
+                            error: function (ts) {
+                                // alert(resp);
+                                alert("Please try after some time ");
+                            }});
+                    }
+
+
+                    function fileSigning()
+                    {
+                        // alert("fileSigning=======");
+
+                        var resp = document.getElementById('formDocumentUpload:signxmlpdf').value;
+                        // alert(resp);
+                        if (window.XMLHttpRequest) { //                    // code for modern browsers
+                            //     alert("====resp===========" + resp);
+                            xhrFields = new XMLHttpRequest();
+                        } else {
+                            //                    // code for old IE browsers
+                            //    alert("byeeeeeeeeeee");
+                            xhrFields = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+
+                        $.ajax({
+                            type: "POST",
+                            url: "http://127.0.0.1:55100/signing/fileSigning",
+                            contentType: "application/xml; charset=utf-8",
+                            xhrFields: {
+                                withCredentials: true
+                            },
+                            crossDomain: true,
+                            data: resp,
+                            success: function (res) {
+                                // alert("sucesss   ");
+                                // alert(res);
+
+
+                                document.getElementById('formDocumentUpload:signxmlpdfresponse').value = res;
+
+                                xhrFields: {
+                                    withCredentials: true
+                                }
+                                callSigningPdf();
+                                //                                       
+                            },
+                            error: function (ts) {
+                                alert("Please try after some time ");
+                            }
+                        });
+                    }
+
+                </script>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{documentUploadBean.renderUiBasedDMSDocPanel}">
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">DOCUMENTS UPLOAD</h1>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages closable="true" showDetail="true" showSummary="false">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </div>
+                    </div>
+
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">                        
+                            <p:outputPanel id="upload_outputId" >
+                                <div class="ui-grid-row">
+                                    <h:outputText styleClass="red font-bold" value="#{documentUploadBean.noteMsg}"/>
+                                </div>
+                                <p:panel header="Application Detail" id="file_upload_panel" styleClass="bottom-space">
+                                    <p:keyFilter regEx="/[a-zA-Z0-9]/i" for="appl_no"/>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel id="uploadApplNoId" >
+                                                <label class="field-label resp-label-section ">
+                                                    <p:outputLabel for="appl_noId" value="#{label.appl_no}"/>
+                                                </label>
+                                                <p:inputText id="appl_noId" autocomplete="off" value="#{documentUploadBean.applNo}" disabled="#{documentUploadBean.applFieldDisabled}"  
+                                                             maxlength="16" required="true" requiredMessage="Application No. can not be blank."
+                                                             styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                                </p:inputText>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section ">
+                                                <p:outputLabel for="remarks_id_form" value="Remarks"/>
+                                            </label>
+                                            <p:inputText id="remarks_id_form" required="true" requiredMessage="Remarks can not be blank." autocomplete="off" value="#{documentUploadBean.remarks}" maxlength="90" styleClass="text-uppercase" converter="toUpperCaseConverter" />
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton value="Upload/Modify Document" id="btnUploadForm" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{documentUploadBean.validateApplAndFileUpload()}" icon="ui-icon-newwin" rendered="#{documentUploadBean.renderDocumentPendingBtn}">
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert" />
+                                            </p:commandButton>
+                                            <p:commandButton value="Upload Pending Document" id="pendingbtnUpload" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{documentUploadBean.uploadPendingDocuments()}" icon="ui-icon-document" rendered="#{documentUploadBean.renderDocumentPendingBtn}">
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert" />
+                                            </p:commandButton>
+                                            <p:button value="Home" outcome="home" icon="ui-icon-home"/>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel>
+                            <p:outputPanel id="doc_list_panel">
+                                <p:outputPanel rendered="#{documentUploadBean.documentUploadShow}">
+                                    <p:dataTable id="documentUploadDT" value="#{documentUploadBean.docDescrList}" var="docDescr" rowIndexVar="index" >
+                                        <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                                            <p:outputLabel value="#{index +1}."/></p:column>
+                                        <p:column headerText="Documents" style="width: 40%;">#{docDescr.doc_desc}</p:column>
+                                        <p:column headerText="Document Information">
+                                            <h:outputLabel value="#{docDescr.doc_url}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">  
+                                            <p:commandButton id="idViewDoc" styleClass="red" value="Modify/View Documents for Application No #{documentUploadBean.applNo}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();"  action="#{documentUploadBean.validateApplAndFileUpload()}" update="successFileUpload dmsFileUpload_panel" />                                         
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                            <p:outputPanel id="dmsFileUpload_panel">
+                                <p:dialog id="viewUploadedDms" modal="true" widgetVar="dmsfileUploaded" header="-- Displaying D.M.S Utility : Uploaded Documents Viewier -- " closeOnEscape="true" closable="true" dynamic="true" draggable="false" >
+                                    <p:ajax  event="close" onstart="PF('bui').show();" process="@this" onsuccess="PF('bui').hide();" listener="#{documentUploadBean.dialogCloseEventListener()}" />
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <iframe  src="#{documentUploadBean.dmsFileUploadUrl}" height="600" width="1290"  frameborder="0" scrolling="auto" marginheight="1" marginwidth="1"/>
+                                        </div>                                        
+                                    </div>
+                                </p:dialog>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="successFileUpload">
+                                <p:dialog widgetVar="successUploadDialog" header="Confirmation !!!" modal="true" closable="true" dynamic="true">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <h:outputLabel escape="false" value="#{documentUploadBean.successUplodedMsg}"/> 
+                                            <p:button value="Ok" outcome="home" rendered="#{!documentUploadBean.documentUploadShow}" />
+                                        </div>
+                                    </div>
+                                </p:dialog>
+                            </p:outputPanel>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog>
+                            <p:blockUI block=":masterLayout"  widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%">
+                                    <p:outputLabel value="Please wait......."/>
+                                </p:graphicImage>
+                            </p:blockUI> 
+                        </div>                    
+                    </div>
+                </div> 
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>

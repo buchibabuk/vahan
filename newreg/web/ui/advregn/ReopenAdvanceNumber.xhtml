@@ -1,0 +1,69 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:f="http://java.sun.com/jsf/core"
+    >  
+
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="stmt_report_subview">                
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:outputLabel value="#{language.reopenAdvanceNumber}" styleClass="center-position"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row center-position top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="ReopenList">
+                            <p:dataTable id="ReopenNumberList" value="#{reopenadvancenumberBean.reopenlist}" var="onscreen" rowIndexVar="rowkey" paginator="true" rows="15">                        
+                                <p:column styleClass="center-position" headerText="#{language.regnNO}" filterBy="#{onscreen.regn_no}" filterMatchMode="contains">                                    
+                                    <h:outputText value="#{onscreen.regn_no}"/>                                
+                                </p:column>
+                                <p:column styleClass="center-position" headerText="#{language.owner_name}">                                    
+                                    <h:outputText value="#{onscreen.owner_name}"/>
+                                </p:column>
+                                <p:column styleClass="center-position" headerText="#{language.booking_date}">                                    
+                                    <h:outputText value="#{onscreen.book_dt}" />
+                                </p:column>
+                                <p:column styleClass="collumn-width center-position" headerText="#{language.select_no}">
+                                    <p:selectBooleanCheckbox value="#{onscreen.checked}">
+                                        <p:ajax event="change" listener="#{reopenadvancenumberBean.reOpenAdvancedSelected}" update="stmt_report_subview"/>
+                                        <f:attribute name="onscreen" value="#{onscreen}"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                            </p:dataTable>
+                            <p:commandButton value="#{language.reopen}" action="#{reopenadvancenumberBean.reOpen()}" ajax="false"/>
+                        </p:outputPanel> 
+                    </div>
+                </div>    
+
+                <p:dialog id="db_reopened" visible="#{reopenadvancenumberBean.showReopenedList}" widgetVar="dlgdb_reopened"
+                          modal="true" draggable="false" closable="false" hideEffect="explode" header="Info ">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Number of Opened Fancy Numbers #{reopenadvancenumberBean.openedListCount}"/>
+                            </label>
+                            <p:commandButton value="#{language.ok}" oncomplete="PF('dlgdb_reopened').hide();"                                              
+                                             icon="ui-icon-check" update="ReopenList" action="#{reopenadvancenumberBean.ok()}" ajax="false"/>
+                        </div>
+                    </div>
+                </p:dialog>
+            </f:subview>
+        </div>       
+    </ui:define>
+</ui:composition>
+
+
+

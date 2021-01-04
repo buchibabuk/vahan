@@ -1,0 +1,410 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <meta http-equiv="refresh" content="900"/>
+        <title>
+            <ui:insert name="windowTitle">#{label.vahanTitle}#{loginBean.serverIpAddress}</ui:insert>
+        </title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="stylesheet.min.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+        <h:outputScript library="js" name="md5.js" />
+        <h:outputScript library="js" name="sha256.js" />
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+        <style> 
+            .chartdiv {
+                width: 100%;
+                height: 430px;
+            }
+        </style>
+        <script type="text/javascript">
+            //<![CDATA[
+            function makePassword() {
+                var element = document.getElementById("passwordID");
+                var val = element.value;
+                if (val !== null && val !== '') {
+                    var shaval = hex_sha256(val);
+                    var element1 = document.getElementById("txtNumber");
+                    var randomnumber = element1.value;
+                    val = shaval + randomnumber;
+                    var shaval = hex_sha256(val);
+                    element.value = shaval;
+                    return true;
+                }
+            }
+            //]]>
+
+            $(function() {
+                $('.marquee').marquee();
+                $('.marquee-with-fast-options').marquee({
+                    speed: 25000,
+                    gap: 2,
+                    delayBeforeStart: 0,
+                    duration: 10,
+                    direction: 'left',
+                    duplicated: false,
+                    pauseOnHover: true
+                });
+            });
+
+            function noBack() {
+                window.history.go(1);
+            }
+            $(document).ready(function() {
+                $('.no-copy-paste').on("cut copy paste", function(e) {
+                    e.preventDefault();
+                });
+            });
+        </script>
+
+    </h:head>
+    <h:body onload="noBack();">
+        <h:form id="loginForm" prependId="false">
+            <div>
+                <ui:include src="/leftMenuPanel.xhtml"/>
+            </div>
+            <div id="main-content" class="container">
+
+                <div  data-direction="left" class='marquee-with-fast-options top-space'>
+                    <h4>
+                        <p:outputLabel   escape="false" value="#{masterHome.alertMessage}">                      
+                        </p:outputLabel>
+                    </h4>
+                    <!--                    <p:outputPanel>
+                        <div class="red h4"># {masterHome.alertMessage}</div>
+                    </p:outputPanel>-->
+                </div>
+
+                <div class="ui-grid ui-grid-responsive">
+                    <p:outputPanel  rendered="#{!masterHome.allowConn}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <div class="red h2 bottom-space">#{language.login_vahan_maintenancemsg}</div>
+                                <div class=" red h3">#{language.login_plse_try_some_time}</div>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-9">
+                            <div class="chart-outer-box">
+<!--                                <div class="center-position chart-title-bar">#{language.login_status_centralized_vahan} #{loginBean.totalV4_offices}</div>-->
+                                <div class="center-position chart-title-bar">#{language.login_status_centralized_vahan} #{loginBean.statesV4} #{language.login_states} #{loginBean.officsV4} #{language.login_offices})</div>
+                                <p:chart  type="bar" model="#{loginBean.barChartModel7}" responsive="true" styleClass="chartdiv"/>
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <p:outputPanel id="loginPanelOutput" styleClass="">
+                                <p:panel  header="#{language.login}">  
+                                    <p:outputPanel id="loginPanel" rendered="#{loginBean.renderValidateUserIdPanel}">  
+                                        <p:messages id="errorMessages"  closable="true">
+                                            <p:autoUpdate/>
+                                        </p:messages>
+                                        <!--                                        <h:inputHidden id="txtNumber" value="# {loginBean.hiddenRandomNo}"/>-->
+                                        <div class="left-position" style="padding-left: 10px;">
+                                            <div class="center-position" style="position: relative;">
+                                                <div class="user-background">
+                                                    <p:graphicImage library="images" name="login-user.png" alt="User Profile" />
+                                                </div>
+                                            </div>
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="user_id" value="#{language.user_userID}"/>
+                                                    </label>
+                                                    <p:inputText style="width: 100%" id="user_id" value="#{loginBean.user_id}" required="true" maxlength="20" autocomplete="off" requiredMessage="#{language.login_required_usr_id}" size="28" />
+                                                </div>
+                                            </div>
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-12">
+                                                    <vahan:vahanCaptcha  labelName="#{language.login_enter_verification_code}" catpchaRefresh="true"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="ui-grid-row center-position bottom-space top-space">
+                                                <div class="ui-grid-col-12">
+                                                    <p:commandButton action="#{loginBean.validateUserid()}" 
+                                                                     value="#{language.login_submit}"
+                                                                     update="loginPanelOutput"
+                                                                     onclick="PF('bui').show();"
+                                                                     oncomplete="PF('bui').hide();"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p:keyFilter mask="email" for="user_id"/>
+                                    </p:outputPanel>
+                                    <p:outputPanel id="login_otp_Panel" rendered="#{loginBean.renderLoginPanel}">
+                                        <p:messages id="message1"  closable="true">
+                                            <p:autoUpdate/>
+                                        </p:messages>
+                                        <h:inputHidden id="txtNumber" value="#{loginBean.hiddenRandomNo}"/>
+                                        <!--                                        <h:inputHidden id="shaTxtNum" value="# {loginBean.shaRandomNo}"/>-->
+                                        <f:facet name="header" rendered="#{loginBean.renderOTPFields}">
+                                            #{language.login_with_otp}
+                                        </f:facet>
+                                        <div class="center-position" style="position: relative;">
+                                            <div class="user-background">
+                                                <p:graphicImage library="images" name="login-user.png" alt="User Profile" />
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <h:outputText   value="#{language.user_userID} : #{loginBean.user_id}" styleClass="font-bold no-copy-paste" />
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="passwordID" value="#{language.login_pwd}"/>
+                                                </label>
+                                                <p:password style="width: 100%" 
+                                                            styleClass="no-copy-paste"
+                                                            id="passwordID" 
+                                                            value="#{loginBean.password}" 
+                                                            autocomplete="off"
+                                                            required="true"
+                                                            feedback="false" 
+                                                            requiredMessage="#{language.login_pwd_not_blank}" 
+                                                            size="28" 
+                                                            onblur="return makePassword();">
+                                                </p:password>
+
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                        </div>
+                                        <p:dialog modal="true" height="300" width="500">
+
+                                        </p:dialog>
+                                    </p:outputPanel>
+                                    <!--                                    OTP related Panel-->
+
+                                    <p:outputPanel id="login_otp" rendered="#{loginBean.renderOTPPanel}">
+                                        <p:messages id="message"  closable="true">
+                                            <p:autoUpdate/>
+                                        </p:messages>
+                                        <!--                                        <h:inputHidden id="txtNumber" value="# {loginBean.hiddenRandomNo}"/>-->
+                                        <f:facet name="header" rendered="#{loginBean.renderOTPBasedFields}">
+                                            #{language.login_with_otp}
+                                        </f:facet>
+                                        <div class="center-position" style="position: relative;">
+                                            <div class="user-background">
+                                                <p:graphicImage library="images" name="login-user.png" alt="User Profile" />
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 bottom-space">
+                                                <h:outputText id="userid_msg" value="#{loginBean.otpNote}." rendered="#{loginBean.renderOTPBasedFields}" styleClass="font-bold red" />
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12">
+                                                <h:outputText   value="#{language.user_userID} : #{loginBean.user_id}" styleClass="font-bold no-copy-paste" />
+                                            </div>
+                                        </div>
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <p:password placeholder="#{language.login_enter_otp}" 
+                                                            id="otp_text"
+                                                            style="margin-top: 11px !important" 
+                                                            maxlength="6"
+                                                            value="#{loginBean.mobile_otp}"
+                                                            autocomplete="off"
+                                                            rendered="#{loginBean.renderOTPBasedFields}"
+                                                            >
+                                                    <p:keyFilter regEx="/[0-9]/"/>
+                                                </p:password>
+                                            </div>
+                                            <div class="ui-grid-col-2">
+                                                <p:commandButton  id="regen_otp" 
+                                                                  value="#{language.login_resend_otp}"
+                                                                  action="#{loginBean.regenrateOTP()}"
+                                                                  immediate="true" 
+                                                                  rendered="#{loginBean.renderOTPBasedFields}" 
+                                                                  onclick="PF('dlg1').show();"  /> 
+                                            </div>
+                                        </div>
+                                        <p:dialog modal="true" height="300" width="500">
+
+                                        </p:dialog>
+                                    </p:outputPanel>
+                                    <!--                                    End OTP related panel-->
+                                    <div class="ui-grid-row center-position bottom-space top-space">
+                                        <div class="ui-grid-col-12">
+                                            <p:commandButton action="#{loginBean.loginProject}" 
+                                                             id="login"
+                                                             rendered="#{!loginBean.forcedLoginFlag and loginBean.renderLoginButton}"
+                                                             value="#{language.login}"
+                                                             update="loginForm"
+                                                             ajax="false"
+                                                             onclick="PF('bui').show();"
+                                                             oncomplete="PF('bui').hide();"
+                                                             icon="ui-icon-unlocked" />
+                                            <p:commandButton action="#{loginBean.loginProject}" 
+                                                             id="force_login"
+                                                             rendered="#{loginBean.forcedLoginFlag and loginBean.renderLoginButton}"
+                                                             value="#{language.login_forced}"
+                                                             update="loginForm"
+                                                             ajax="false"
+                                                             onclick="PF('bui').show();"
+                                                             oncomplete="PF('bui').hide();"
+                                                             icon="ui-icon-unlocked" />
+                                            <p:commandButton id="submit_form"
+                                                             update="loginForm"
+                                                             value="#{language.login_submit}"
+                                                             rendered="#{loginBean.renderSubmitButton}"
+                                                             action="#{loginBean.validatePasswordAndSendOtp()}"
+                                                             /> 
+                                            <p:commandButton id="reset_form"
+                                                             icon="ui-icon-arrowreturnthick-1-w"
+                                                             action="#{loginBean.reset}"
+                                                             rendered="#{loginBean.renderBackButton}"
+                                                             update="loginForm"
+                                                             immediate="true"
+                                                             value="#{language.login_back}"
+                                                             /> 
+
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 right-position right-space">
+                                            <h:commandLink id="forgt_pwd" value="#{language.login_forget_pwd}" rendered="#{loginBean.forgetpassword}" styleClass="font-bold" style="color: blue" action="#{loginBean.forgetPassForm()}" immediate="true"/> 
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel>
+                            <p:blockUI block="loginPanel" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </div>
+                    </div>
+                    <div class="center-position header-info">
+                        #{language.login_other_information}
+                    </div>
+                    <div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/vahanservice/" target="_blank">
+                                <p:graphicImage library="images" name="icon-citizen-service.png" alt="Citizen Services" />
+                                <div class="info-box-content">#{language.login_citizen_services}</div>
+                            </a>
+                        </div>
+
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/fancy/" target="_blank">
+                                <p:graphicImage library="images" name="icon-fancy-no.png" alt="Fancy Number" />
+                                <div class="info-box-content">#{language.login_fancy_no}</div>
+                            </a>
+                        </div>
+                        <div class="info-box-section">
+                            <a href="https://parivahan.gov.in/analytics/" target="_blank">
+                                <p:graphicImage library="images" name="icon-analytics.png" alt="Analytics" />
+                                <div class="info-box-content">#{language.login_analytics}</div>
+                            </a>
+                        </div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/vahan4dashboard/" target="_blank">
+                                <p:graphicImage library="images" name="icon-vahan-dashboard.png" alt="Vahan Dashboard" />
+                                <div class="info-box-content">#{language.login_vahan_dashboard}</div>
+                            </a>
+                        </div>
+
+
+                    </div>
+                    <div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.nic.in/nrservices/" target="_blank">
+                                <p:graphicImage library="images" name="icon-nrServices.png" alt="nrservices" />
+                                <div class="info-box-content">#{language.login_national_register_service}</div>
+                            </a>
+                        </div>
+
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/paidnrservices/" target="_blank">
+                                <p:graphicImage library="images" name="icon-paid-nr-service.png" alt="Paid NR Services" />
+                                <div class="info-box-content">#{language.login_paid_nr_service}</div>
+                            </a>
+                        </div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/vahanreport/" target="_blank">
+                                <p:graphicImage library="images" name="icon-mis-report.png" alt="MIS Report" />
+                                <div class="info-box-content">#{language.login_mis_report}</div>
+                            </a>
+                        </div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/vahanbacklog/" target="_blank">
+                                <p:graphicImage library="images" name="icon-backlog.png" alt="Backlog" />
+                                <div class="info-box-content">#{language.login_backlog}</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/makermodel/vahan/welcome.xhtml" target="_blank">
+                                <p:graphicImage library="images" name="icon-homologation.png" alt="Homologation" />
+                                <div class="info-box-content">#{language.login_homologation}</div>
+                            </a>
+                        </div>
+
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/npermit/" target="_blank">
+                                <p:graphicImage library="images" name="icon-national-permit.png" alt="National Permit" />
+                                <div class="info-box-content">#{language.login_national_permit}</div>
+                            </a>
+                        </div>
+
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/cngmaker/vahan/welcome.xhtml" target="_blank">
+                                <p:graphicImage library="images" name="icon-cng-maker.png" alt="CNG Maker" />
+                                <div class="info-box-content">#{language.logn_cng_maker}</div>
+                            </a>
+                        </div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/sldmaker/vahan/welcome.xhtml" target="_blank">
+                                <p:graphicImage library="images" name="icon-sld-maker.png" alt="SLD Maker" />
+                                <div class="info-box-content">#{language.login_sld_maker}</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+
+                        <div class="info-box-section">
+                            <a href="http://www.morth.nic.in/" target="_blank">
+                                <p:graphicImage library="images" name="icon-morth.png" alt="MoRTH" />
+                                <div class="info-box-content">#{language.login_morth}</div>
+                            </a>
+                        </div>
+                        <div class="info-box-section">
+                            <a href="http://nextmile.gov.in/" target="_blank">
+                                <p:graphicImage library="images" name="icon-news-letter.png" alt="Parivahan News Letter" />
+                                <div class="info-box-content">#{language.login_parivahan_news_letter}</div>
+                            </a>
+                        </div>
+                        <div class="info-box-section">
+                            <a href="https://vahan.parivahan.gov.in/vltdmaker/vahan/welcome.xhtml" target="_blank">
+                                <p:graphicImage library="images" name="icon-vltd.png" alt="VLTD Maker" />
+                                <div class="info-box-content">#{language.login_vltd_maker}</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="footer_view" class="top-space">
+                <ui:include src="/footer.xhtml"/>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

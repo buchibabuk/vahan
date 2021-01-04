@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>
+            <h3>Changes Made</h3>
+        </title>
+    </h:head>
+    <h:body>
+        <p:dataTable var="comp" value="#{comparisonBean.compareChagnesList}"  paginator="true" rows="10" emptyMessage="No Changes Made by you">
+            <p:column headerText="Field Name(s)">
+                <h:outputText value="#{comp.fields}" />
+            </p:column>
+            <p:column headerText="Old Value(s)">
+                <h:outputText value="#{comp.old_value}"/>
+            </p:column>
+            <p:column headerText="New Value(s)">
+                <h:outputText value="#{comp.new_value}" />
+            </p:column>       
+        </p:dataTable>
+    </h:body>
+
+</html>

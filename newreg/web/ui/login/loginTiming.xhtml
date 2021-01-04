@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content22">
+
+        <h:form id="logintiming" prependId="false">
+            <p:messages closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <div class="ui-grid-row top-space bottom-space">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">#{language.officeTiming}</h1> 
+                </div>
+            </div>
+            <p:panel id="office_timing" header="#{language.setOfficeTiming}">
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-3 resp-blank-height"></div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.state}:"/>
+                        </label>
+                        <p:inputText readonly="true" disabled="true" value="#{loginTimingBean.loginTiming.stateName}" />
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.user_office}:"/>
+                        </label>
+                        <p:inputText readonly="true" disabled="true" value="#{loginTimingBean.loginTiming.officeName}" />
+                    </div>
+                </div>
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-3 resp-blank-height"></div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.officeOpenTiming}:"/>
+                        </label>
+                        <p:calendar id="time1" value="#{loginTimingBean.loginTiming.open_timing}" pattern="HH:mm:ss" timeOnly="true" readonlyInput="true" />
+                    </div>
+                    <div class="ui-grid-col-3">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.officeCloseTiming}:"/>
+                        </label>
+                        <p:calendar id="time2" value="#{loginTimingBean.loginTiming.close_timing}" pattern="HH:mm:ss" timeOnly="true" readonlyInput="true" />
+                    </div>
+                </div>
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="#{language.save}" rendered="#{loginTimingBean.loginTiming.saveButton}" action="#{loginTimingBean.save()}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" update="user_timing"/>
+                        <p:commandButton value="#{language.modifyTiming}" rendered="#{!loginTimingBean.loginTiming.saveButton}" action="#{loginTimingBean.save()}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" update="user_timing"/>
+                        <p:button value="#{language.login_back}" outcome="seatwork" icon="ui-icon-arrowreturnthick-1-w"/>
+                        <p:commandButton value="#{language.singleUserTiming}" action="#{loginTimingBean.gotUserdetails()}" update="usertiming_list"  styleClass="open-counter"  />
+                    </div>
+                </div>
+            </p:panel>
+            <p:outputPanel styleClass="bottom-space" id="usertiming_list">
+                <p:dataTable id="user_timing" 
+                             rendered="#{loginTimingBean.loginTiminglist ne null and loginTimingBean.loginTiminglist.size() > 0}" 
+                             var="dobj" 
+                             rowIndexVar="index"  
+                             value="#{loginTimingBean.loginTiminglist}"
+                             paginator="true"
+                             rows="8"
+                             rowsPerPageTemplate="8,5,10,20"
+                             paginatorPosition="bottom">
+                    <f:facet name="header" >
+                        <p:outputLabel value="#{language.setUsersOffTiming}"/>
+                    </f:facet>
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}"/>
+                    </p:column>
+                    <p:column headerText="#{language.state}">
+                        <h:outputText value="#{dobj.stateName}"/>
+                    </p:column>
+                    <p:column headerText="#{language.officeName}">
+                        <h:outputText value="#{dobj.officeName}"/>
+                    </p:column>
+                    <p:column headerText="#{language.user_username}">
+                        <h:outputText value="#{dobj.user_name}"/>
+                    </p:column>
+                    <p:column headerText="#{language.officeOpenTiming}">
+                        <p:calendar id="time3" value="#{dobj.open_timing}" pattern="HH:mm:ss" timeOnly="true" disabled="true" readonlyInput="true" readonly="true"/>
+                    </p:column>
+                    <p:column headerText="#{language.officeCloseTiming}">
+                        <p:calendar id="time4" value="#{dobj.close_timing}" pattern="HH:mm:ss" timeOnly="true" readonlyInput="true" />
+                    </p:column>
+                    <p:column headerText="#{language.action}">
+                        <p:commandButton value="#{language.updateOffTiming}" action="#{loginTimingBean.saveUserTiming(dobj)}" process="@this" update="usertiming_list" ajax="false"  onclick="PF('block_panel').show()" onsuccess="PF('block_panel').hide()"/>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+
+            <p:blockUI block="logintiming" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

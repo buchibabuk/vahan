@@ -1,0 +1,751 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"  
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{to_bean.appl_details}"/>            
+            </ui:include>  
+        </h:form>
+    </ui:define>
+    <ui:define name="content">         
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <h:form id="form_to" prependId="false">                        
+                        <p:panel header="#{language.exist_owner_details}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="old_owner" value="#{to_bean.listExistingOwnerDetails}" var="existingOwner" styleClass="panelRowHeight">
+
+                                        <p:column headerText="#{language.Owner_Serial}" width="10%">
+                                            <h:outputText value="#{existingOwner.owner_sr}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{language.pre_owner_name}" width="14%">                                          
+                                            <h:outputText value="#{existingOwner.owner_name}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{language.father_name}" width="14%">                                        
+                                            <h:outputText value="#{existingOwner.f_name}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{language.current_add}" width="32%">                                        
+                                            <h:outputText value="#{existingOwner.c_add1} &#44;
+                                                          #{existingOwner.c_add2} &#44;
+                                                          #{existingOwner.c_add3} &#44;                                                         
+                                                          #{existingOwner.c_district_name} &#44;
+                                                          #{existingOwner.c_state_name} &#45;
+                                                          #{existingOwner.c_pincode}"/> 
+                                        </p:column>
+
+                                        <p:column headerText="#{language.permanent_add}" width="32%">                                           
+                                            <h:outputText value="#{existingOwner.p_add1} &#44;
+                                                          #{existingOwner.p_add2} &#44;
+                                                          #{existingOwner.p_add3} &#44;                                                          
+                                                          #{existingOwner.p_district_name} &#44;
+                                                          #{existingOwner.p_state_name} &#45;
+                                                          #{existingOwner.p_pincode}"/>
+                                        </p:column>
+
+                                    </p:dataTable>                                    
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+
+                        <p:outputPanel>
+                            <p:autoUpdate/>
+                            <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closable="false" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+                                <div class="center-position">
+                                    <p:commandButton value="Close" immediate="true">
+                                        <p:resetInput target="@form"/>
+                                    </p:commandButton>
+                                </div>
+                                <p:messages>
+                                    <p:autoUpdate/>
+                                </p:messages>
+                            </p:dialog>
+                        </p:outputPanel>
+                        <p:outputPanel id="adv_ret_panel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 right-position right-space">
+                                    <h:panelGroup rendered="#{to_bean.fancyRetention}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="fancyRetention" value="#{language.Fancy_No_Retention}" styleClass="font-bold red" />
+                                        </label>
+                                        <p:selectOneMenu id="fancyRetention" value="#{to_bean.selectedFancyRetnetion}" required="true" disabled="#{to_bean.disableRetSelectOneMenu}">
+                                            <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                            <f:selectItem itemLabel="#{language.yes}" itemValue="YES"/>
+                                            <f:selectItem itemLabel="#{language.no}" itemValue="NO"/>
+                                            <f:validator validatorId="selectOneValidator" for="fancyDetention"/>  
+                                        </p:selectOneMenu>
+                                    </h:panelGroup>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel rendered="#{to_bean.retAllowed}">    
+                                        <p:selectBooleanCheckbox id="adv_regn" value="#{to_bean.advRegnCheck}" styleClass="inline-section" disabled="#{to_bean.disableAdvRegnCheck}"  >
+                                            <p:ajax update="pd_choice_no" listener="#{to_bean.advanceCheckListener}" partialSubmit="true"/>
+                                        </p:selectBooleanCheckbox>
+                                        <h:outputText value="#{language.advance_no_check}" styleClass="inline-section font-bold red"/>                                    
+                                    </p:outputPanel>
+                                </div>
+                                <div class="ui-grid-col-4 left-position">
+                                    <p:outputPanel rendered="#{to_bean.retAllowed}">
+
+                                    <p:selectBooleanCheckbox id="adv_ret"  value="#{to_bean.retCheck}" 
+                                                             styleClass="inline-section" disabled="#{to_bean.disableRetCheck}">
+                                        <p:ajax update="ret_panel" listener="#{to_bean.retCheckListener}" process="@form" partialSubmit="true"/>
+                                    </p:selectBooleanCheckbox>  
+                                    <h:outputText value="#{language.retention_no_check}" styleClass="inline-section font-bold red"/>
+                                </p:outputPanel>
+                            </div>
+                        </div>
+                        </p:outputPanel>
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:outputPanel rendered="#{to_bean.auctionVisibilityTab}"
+                                               styleClass="top-space bottom-space">
+                                    <ui:include src="/ui/form_auction_dtls.xhtml">
+                                        <ui:param name="auctionDobj" value="#{to_bean.auctionDobj}"/>
+                                    </ui:include>
+                                </p:outputPanel> 
+                            </div>
+                        </div>
+
+                        <p:panel header="#{language.new_owner_details}" styleClass="bottom-space top-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="purpose_type" value="#{language.purpose}"/>
+                                        </label>
+                                        <p:selectOneMenu id="purpose_type" value="#{to_bean.purposeType}" disabled="#{to_bean.purposeType eq 'Theft' or to_bean.purposeType eq 'Destroyed' or to_bean.purposeType eq 'Confiscation'}">                     
+
+                                            <!-- 5 is the purpose code of TO -->
+                                            <c:if test="#{to_bean.appl_details.pur_cd eq 5}">
+                                                <f:selectItem itemLabel="#{language.to_purpose_sale}" itemValue="Sale"/>
+                                                <f:selectItem itemLabel="#{language.to_purpose_auction}" itemValue="Auction"/>
+                                                <f:selectItem itemLabel="#{language.to_purpose_succession}" itemValue="Succession"/>                                            
+                                                <f:selectItem itemLabel="#{language.to_purpose_destroyed}" itemValue="Destroyed"/>                                            
+                                                <c:if test="#{to_bean.purposeType eq 'Theft'}">
+                                                    <f:selectItem itemLabel="#{language.to_purpose_theft}" itemValue="Theft"/>
+                                                </c:if>
+                                                <c:if test="#{to_bean.purposeType eq 'Confiscation'}">
+                                                    <f:selectItem itemLabel="#{language.to_purpose_confiscation}" itemValue="Confiscation"/>
+                                                </c:if>
+                                            </c:if>
+
+                                            <!-- 12 is the purpose code of FRC -->
+                                            <c:if test="#{to_bean.appl_details.pur_cd eq 12}">
+                                                <f:selectItem itemLabel="#{language.to_purpose_rcSurrender}" itemValue="RC-Surrendered"/>
+                                                <f:selectItem itemLabel="#{language.to_purpose_OwnRefusedRc}" itemValue="Owner Refused to Deliver the RC"/>
+                                                <f:selectItem itemLabel="#{language.to_purpose_absconding}" itemValue="Owner Absconding"/>                                            
+                                            </c:if>
+                                            <p:ajax event="change" listener="#{to_bean.updatePurposeType}" process="@this" update="label_tf_dt @this"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_n_owner_sr" value="#{language.Owner_Serial}:"/>
+                                        </label>
+                                        <p:inputText id="tf_n_owner_sr" value="#{to_bean.listExistingOwnerDetails.get(0).owner_sr+1}" required="true" size="3"
+                                                     requiredMessage="#{language.blank} #{language.Owner_Serial}" maxlength="2" autocomplete="off" disabled="true">
+                                            <f:validateRequired for="tf_n_owner_sr"/>
+                                            <f:validateLength maximum="2" for="tf_n_owner_sr"/>                                           
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_n_owner_name" value="#{language.owner_name}"/>
+                                        </label>
+                                        <p:inputText  id="tf_n_owner_name" value="#{to_bean.to_dobj.owner_name}" required="true" size="45" disabled="#{to_bean.boolOwnerName}"
+                                                      requiredMessage="#{language.blank} #{language.owner_name}" maxlength="35"  autocomplete="off" converter="toUpperCaseConverter"
+                                                      styleClass="text-uppercase">
+                                            <f:validateRequired for="tf_n_owner_name"/>
+                                            <f:validateLength maximum="35" for="tf_n_owner_name"/>  
+                                            <p:ajax  process="@this" update="@this" partialSubmit="true"/>                                            
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_n_owner_code" value="#{language.owner_cd}"/>
+                                        </label>
+                                        <p:selectOneMenu id="tf_n_owner_code" value="#{to_bean.to_dobj.owner_cd}"
+                                                         filter="true" disabled="#{to_bean.boolOwnrCode}" required="true">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                            <f:selectItems value="#{to_bean.list_owner_code}" />
+                                            <p:ajax event="change" listener="#{to_bean.vehOwner_cdListener}" update="tf_f_name" partialSubmit="true"/>
+                                            <f:validator validatorId="selectOneValidator" for="tf_n_owner_code"/>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_f_name" value="#{language.father_name}"/>
+                                        </label>
+                                        <p:inputText id="tf_f_name" value="#{to_bean.to_dobj.f_name}" required="true" size="45"
+                                                     requiredMessage="#{language.blank} #{language.father_name}" maxlength="35" disabled="#{to_bean.boolFName}"
+                                                     autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                            <f:validateRequired for="tf_f_name"/>
+                                            <f:validateLength maximum="35" for="tf_f_name"/>                                            
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_n_owner_catg" value="#{language.owner_catg}"/>
+                                        </label>
+                                        <p:selectOneMenu id="tf_n_owner_catg" value="#{to_bean.to_dobj.owner_ctg}" 
+                                                         filter="true" disabled="#{to_bean.boolOwnrCatg}" required="true">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                            <f:selectItems value="#{to_bean.list_owner_catg}" />
+                                            <f:validator validatorId="selectOneValidator" for="tf_n_owner_catg"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_sale_amt" value="#{language.sale_amt}:"/>
+                                        </label>
+                                        <p:inputText id="tf_sale_amt" value="#{to_bean.to_dobj.sale_amt}" required="true" size="15"
+                                                     requiredMessage="#{language.blank} #{language.sale_amt}" maxlength="9" autocomplete="off">
+                                            <f:validateRequired for="tf_sale_amt"/>
+                                            <f:validateLength maximum="9" for="tf_sale_amt"/>                                            
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel id="label_tf_dt" for="tf_dt" 
+                                                           value="#{to_bean.purposeTypeLabel} #{language.date}:#{label.datePattern}"/>
+                                        </label>
+                                        <p:calendar id="tf_dt" value="#{to_bean.to_dobj.sale_dt}" required="true" size="15"
+                                                    requiredMessage="#{language.blank} #{language.to_sold_onRemark}" navigator="true" 
+                                                    pattern="dd-MMM-yyyy" maxdate="#{to_bean.today}" mindate="#{to_bean.minDate}" readonlyInput="true">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" for="tf_dt"/> 
+                                            <f:validateRequired for="tf_dt"/>
+                                        </p:calendar> 
+
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_transfer_dt" value="#{language.transfer_dt}:#{label.datePattern}"/>
+                                        </label>
+                                        <p:calendar id="tf_transfer_dt" value="#{to_bean.to_dobj.transfer_dt}" required="true" size="15" readonlyInput="true"
+                                                    requiredMessage="#{language.blank} #{language.transfer_dt}" navigator="true" pattern="dd-MMM-yyyy" maxdate="#{to_bean.today}" mindate="#{to_bean.minDate}">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" for="tf_transfer_dt"/> 
+                                            <f:validateRequired for="tf_transfer_dt"/>
+                                        </p:calendar>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_gaddress" value="#{language.garage_add}:"/>
+                                        </label>
+                                        <p:inputTextarea id="tf_gaddress" value="#{to_bean.to_dobj.garage_add}" cols="45" rows="1" 
+                                                         maxlength="50" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                            <f:validateLength maximum="50" for="tf_gaddress"/>                   
+                                        </p:inputTextarea>
+                                    </div>
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                </div>
+                            </div>                 
+                        </p:panel>
+
+                        <ui:include src="/ui/form_ownerIdentification.xhtml">
+                            <ui:param name="owner_identification" value="#{to_bean.owner_identification}"/>  
+                        </ui:include>
+
+
+                        <p:tabView id="tabViewTO" styleClass="bottom-space">
+                            <p:tab title="#{language.add_detail}">
+                                <div class="ui-grid-row top-space bottom-space">
+                                    <div class="ui-grid-col-6">
+                                        <p:panel header="#{language.current_add}" styleClass="datatable-panel">                                           
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_c_add1" value="#{language.address1}"/>
+                                                    </label>
+                                                    <p:inputText  id="tf_c_add1" value="#{to_bean.to_dobj.c_add1}" size="50" required="true" styleClass="text-uppercase"
+                                                                  requiredMessage="#{language.blank} #{language.current_add}" maxlength="35" autocomplete="off" converter="toUpperCaseConverter">
+                                                        <f:validateRequired for="tf_c_add1"/>
+                                                        <f:validateLength maximum="35" for="tf_c_add1"/>                                                         
+                                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/> 
+                                                    </p:inputText>
+                                                </div>
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_c_add2" value="#{language.address2}"/>
+                                                    </label>
+                                                    <p:inputText id="tf_c_add2" value="#{to_bean.to_dobj.c_add2}" size="50" styleClass="text-uppercase"
+                                                                 maxlength="35" autocomplete="off" converter="toUpperCaseConverter" required="true" requiredMessage="#{language.blank} #{language.address2}">                                   
+                                                        <f:validateLength maximum="35" for="tf_c_add2"/>    
+                                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/> 
+                                                    </p:inputText>
+                                                </div>
+                                            </div>  
+                                            <div class="ui-grid-row">
+
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_c_add3" value="#{language.address3}"/>
+                                                    </label>
+                                                    <p:inputText  id="tf_c_add3" value="#{to_bean.to_dobj.c_add3}" 
+                                                                  maxlength="35" autocomplete="off" converter="toUpperCaseConverter" 
+                                                                  styleClass="text-uppercase">                                                   
+                                                        <f:validateLength maximum="35" for="tf_c_add3"/>
+                                                        <p:ajax partialSubmit="true"/>
+                                                    </p:inputText>
+                                                </div>
+
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_c_state" value="#{language.state}"/>
+                                                    </label>
+                                                    <p:selectOneMenu id="tf_c_state" value="#{to_bean.to_dobj.c_state}" required="true" filter="true">
+                                                        <f:selectItems value="#{to_bean.list_c_state}"/>
+                                                        <p:ajax event="change" listener="#{to_bean.cStateListener}" update="tf_c_district" partialSubmit="true"/>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_c_district" value="#{language.district}"/>
+                                                    </label>
+                                                    <p:selectOneMenu id="tf_c_district"  value="#{to_bean.to_dobj.c_district}" filter="true" required="true">
+                                                        <f:selectItem itemLabel="--Select District--" itemValue="-1"/>
+                                                        <f:selectItems value="#{to_bean.list_c_district}"/>
+                                                        <f:validator validatorId="selectOneValidator" for="tf_c_district"/>
+                                                        <p:ajax partialSubmit="true"/>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_c_pincode" value="#{language.pin}"/>
+                                                    </label>
+                                                    <p:inputText id="tf_c_pincode" value="#{to_bean.to_dobj.c_pincode}" size="10" required="true"
+                                                                 requiredMessage="#{language.blank}: #{language.pin}" maxlength="6" autocomplete="off">                                                        
+                                                        <f:validateRequired for="tf_c_pincode"/>
+                                                        <f:validateLength maximum="6" for="tf_c_pincode"/>
+                                                        <f:validator validatorId="pinCodeValidator" for="tf_c_pincode"/>
+                                                        <p:ajax event="blur" partialSubmit="true"/>                                                     
+                                                    </p:inputText>
+                                                    <p:keyFilter mask="pint" for="tf_c_pincode"/>
+                                                </div>
+                                            </div>
+                                        </p:panel>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <p:panel id="paddress">
+                                            <f:facet name="header">                                        
+                                                #{language.permanent_add}
+                                                <p:selectBooleanCheckbox id="sameAsCurrAdd" value="#{to_bean.sameAsCurrAddress}" style="margin-left:300px">
+                                                    <p:ajax event="change" listener="#{to_bean.sameAsCurrentAddressListener}"  update="paddress" partialSubmit="true"/>
+                                                </p:selectBooleanCheckbox>
+                                                <h:outputText value="#{language.same_as_currAdd}" />                                         
+                                            </f:facet>
+
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_p_add1" value="#{language.address1}"/>
+                                                    </label>
+                                                    <p:inputText  id="tf_p_add1" value="#{to_bean.to_dobj.p_add1}" size="50" required="true" styleClass="text-uppercase"
+                                                                  requiredMessage=" #{language.blank} #{language.permanent_add}" maxlength="35" autocomplete="off" converter="toUpperCaseConverter">
+                                                        <f:validateRequired for="tf_p_add1"/>
+                                                        <f:validateLength maximum="35" for="tf_p_add1"/>                                                       
+                                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/> 
+                                                    </p:inputText>
+                                                </div>
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_p_add2" value="#{language.address2}"/>
+                                                    </label>
+                                                    <p:inputText id="tf_p_add2" value="#{to_bean.to_dobj.p_add2}" size="50" maxlength="35" required="true" requiredMessage="#{language.blank} #{language.address2}"
+                                                                 autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                                        <f:validateLength maximum="35" for="tf_p_add2"/>  
+                                                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/> 
+                                                    </p:inputText>
+                                                </div>
+                                            </div>
+                                            <div class="ui-grid-row">            
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_p_add3" value="#{language.address3}"/>
+                                                    </label>
+                                                    <p:inputText  id="tf_p_add3" value="#{to_bean.to_dobj.p_add3}" 
+                                                                  maxlength="35" autocomplete="off" converter="toUpperCaseConverter" 
+                                                                  styleClass="text-uppercase">                                                   
+                                                        <f:validateLength maximum="35" for="tf_p_add3"/>                                                  
+                                                    </p:inputText>
+                                                </div>
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_p_state" value="#{language.state}"/>
+                                                    </label>
+                                                    <p:selectOneMenu id="tf_p_state" value="#{to_bean.to_dobj.p_state}" filter="true" required="true">
+                                                        <f:selectItem itemLabel="--Select State--" itemValue="-1"/>
+                                                        <f:selectItems value="#{to_bean.list_p_state}" />
+                                                        <f:validator validatorId="selectOneValidator" for="tf_p_state"/>   
+                                                        <p:ajax event="change" listener="#{to_bean.pStateListener}" update="tf_p_district" partialSubmit="true"/>
+                                                    </p:selectOneMenu>
+                                                </div>    
+                                            </div>
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_p_district" value="#{language.district}"/>
+                                                    </label>
+                                                    <p:selectOneMenu id="tf_p_district" value="#{to_bean.to_dobj.p_district}" filter="true" required="true">
+                                                        <f:selectItem itemLabel="--Select District--" itemValue="-1"/>
+                                                        <f:selectItems value="#{to_bean.list_p_district}"/>
+                                                        <f:validator validatorId="selectOneValidator" for="tf_p_district"/>     
+                                                    </p:selectOneMenu> 
+                                                </div>
+                                                <div class="ui-grid-col-6">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="tf_p_pincode" value="#{language.pin}"/>
+                                                    </label>
+                                                    <p:inputText id="tf_p_pincode" value="#{to_bean.to_dobj.p_pincode}" size="10" required="true" 
+                                                                 requiredMessage="#{language.blank} #{language.pin}" maxlength="6" autocomplete="off">                                                       
+                                                        <f:validateRequired for="tf_p_pincode"/>
+                                                        <f:validateLength maximum="6" for="tf_p_pincode"/>  
+                                                        <f:validator validatorId="pinCodeValidator" for="tf_p_pincode"/>
+                                                        <p:ajax event="blur" partialSubmit="true"/>                                                        
+                                                    </p:inputText>
+                                                    <p:keyFilter mask="pint" for="tf_p_pincode"/>
+
+                                                </div>
+                                            </div>                                            
+                                        </p:panel>
+                                    </div>
+                                </div>
+                            </p:tab>               
+                        </p:tabView>
+
+                        <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+                        <p:keyFilter mask="pint" for="tf_sale_amt"/>
+                        <!--#############################################################################################-->
+
+
+                        <p:panel id="changedByPrevUser" rendered="#{to_bean.prevChangedDataList.size()>0}"
+                                 toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                            <p:dataTable value="#{to_bean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="#{language.change_by_employee}" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+                                <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+                                <p:column headerText="#{language.changed_on}" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+                        <p:outputPanel id="outputpanel_appdisapp" rendered="#{!to_bean.render}">          
+                            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                <ui:param name="app_disapp" value="#{to_bean}"/>
+                            </ui:include>            
+                        </p:outputPanel>
+
+
+                        <p:dialog id="pd_choice_no" widgetVar="wd_choiceno" modal="true" visible="#{to_bean.advRegnCheckDialogue}"
+                                  draggable="false" closable="false" header="#{language.choice_no_details}" dynamic="true">
+                            <p:panel id="pn_adv_app_dtl" header="#{language.advance_no_details}" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:messages id="choiceMsg" closable="true"/>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_recp_no" value="#{language.rcpt_no}"/>
+                                        </label>
+                                        <p:inputText  id="tf_recp_no" value="#{to_bean.advRegnNoDobj.recp_no}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase">
+                                            <p:ajax listener="#{to_bean.advanceRcptListener}" update="pn_adv_app_dtl pn_adv_cur_add ret_expr"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_adv_regn_no" value="#{language.advance_no}"/>
+                                        </label>
+                                        <p:inputText  id="tf_adv_regn_no" value="#{to_bean.advRegnNoDobj.regn_no}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_adv_owner_name" value="#{language.owner_name}"/>
+                                        </label>
+                                        <p:inputText  id="tf_adv_owner_name" value="#{to_bean.advRegnNoDobj.owner_name}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_adv_mob_no" value="#{language.user_mobileNo}"/>
+                                        </label>
+                                        <p:inputText  id="tf_adv_mob_no" value="#{to_bean.advRegnNoDobj.mobile_no}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </p:panel>
+
+                            <p:panel id="pn_adv_cur_add" header="#{language.current_add}" styleClass="top-space bottom-space">
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="add1" value="#{language.address1}"/>
+                                        </label>
+                                        <p:inputText  id="add1" value="#{to_bean.advRegnNoDobj.c_add1}"
+                                                      maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="add2" value="#{language.address2}"/>
+                                        </label>
+                                        <p:inputText id="add2" value="#{to_bean.advRegnNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                                     maxlength="35"   autocomplete="off" style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="add3" value="#{language.address3}"/>
+                                        </label>
+                                        <p:inputText  id="add3" value="#{to_bean.advRegnNoDobj.c_add3}"
+                                                      maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="state" value="#{language.state}"/>
+                                        </label>
+                                        <p:selectOneMenu id="state" value="#{to_bean.advRegnNoDobj.c_state}" filter="true"
+                                                         disabled="true">
+                                            <f:selectItems value="#{to_bean.list_c_state}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="district" value="#{language.district}"/>
+                                        </label>
+                                        <p:selectOneMenu id="district"  value="#{to_bean.advRegnNoDobj.c_district}"  filter="true" disabled="true">
+                                            <f:selectItems value="#{to_bean.list_adv_district}"/>
+                                            <f:ajax/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pincode" value="#{language.pin}"/>
+                                        </label>
+                                        <p:inputText id="pincode" value="#{to_bean.advRegnNoDobj.c_pincode}" size="10"
+                                                     requiredMessage="#{language.blank} #{language.pin}" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <div class="ui-grid-row center-position bottom-space">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton id="tf_button_save" value="Save" immediate="true"  oncomplete="PF('wd_choiceno').hide();">
+                                        <p:ajax listener="#{to_bean.advanceSaveListener}" update="adv_regn"/>
+                                    </p:commandButton>
+
+                                    <p:commandButton value="Exit" immediate="true" oncomplete="PF('wd_choiceno').hide();">
+                                        <p:ajax listener="#{to_bean.advanceExitListener}" update="adv_regn"/>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:dialog>
+                        <p:dialog id="ret_panel" widgetVar="ret_no" modal="true" visible="#{to_bean.advRetCheckDialogue}"
+                                  draggable="false" closable="false" header="#{language.retention_no_details}" dynamic="true">                
+                            <p:panel id="pn_adv_ret_app_dtl" header="#{language.retention_details}" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:messages id="choiceMsgRet" closable="true" />
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_recp_no_ret" value="#{language.rcpt_no}"/>
+                                        </label>
+                                        <p:inputText  id="tf_recp_no_ret" value="#{to_bean.retenRegNoDobj.recp_no}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase">
+                                            <p:ajax event="blur" listener="#{to_bean.advanceRcptListener}" update="pn_adv_ret_app_dtl pn_adv_ret_cur_add ret_expr"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_adv_regn_no_ret" value="#{language.retention_no}"/>
+                                        </label>
+                                        <p:inputText  id="tf_adv_regn_no_ret" value="#{to_bean.retenRegNoDobj.regn_no}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_adv_owner_name_ret" value="#{language.owner_name}"/>
+                                        </label>
+                                        <p:inputText  id="tf_adv_owner_name_ret" value="#{to_bean.retenRegNoDobj.owner_name}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_adv_mob_no_ret" value="#{language.user_mobileNo}"/>
+                                        </label>
+                                        <p:inputText  id="tf_adv_mob_no_ret" value="#{to_bean.retenRegNoDobj.mobile_no}"
+                                                      maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <p:panel id="pn_adv_ret_cur_add" header="#{language.current_add_retention}" styleClass="top-space bottom-space">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="add1_ret" value="#{language.address1}"/>
+                                        </label>
+                                        <p:inputText  id="add1_ret" value="#{to_bean.retenRegNoDobj.c_add1}"
+                                                      maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="add2_ret" value="#{language.address2}"/>
+                                        </label>
+                                        <p:inputText id="add2_ret" value="#{to_bean.retenRegNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                                     maxlength="35" autocomplete="off" style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="add3_ret" value="#{language.address3}"/>
+                                        </label>
+                                        <p:inputText  id="add3_ret" value="#{to_bean.retenRegNoDobj.c_add3}"
+                                                      maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                      style="text-transform: uppercase" disabled="true">
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="state_ret" value="#{language.state}"/>
+                                        </label>
+                                        <p:selectOneMenu id="state_ret" value="#{to_bean.retenRegNoDobj.c_state}" filter="true"
+                                                         disabled="true">
+                                            <f:selectItems value="#{to_bean.list_c_state}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="district_ret" value="#{language.district}"/>
+                                        </label>
+                                        <p:selectOneMenu id="district_ret"  value="#{to_bean.retenRegNoDobj.c_district}"  filter="true" disabled="true">
+                                            <f:selectItems value="#{to_bean.list_adv_district}"/>
+                                            <f:ajax/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pincode_ret" value="#{language.pin}"/>
+                                        </label>
+                                        <p:inputText id="pincode_ret" value="#{to_bean.retenRegNoDobj.c_pincode}" size="10"
+                                                     requiredMessage="#{language.blank} #{language.pin}" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </p:panel>
+                            <div class="ui-grid-row center-position bottom-space">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton id="tf_button_ret_save" value="Save" immediate="true" oncomplete="PF('ret_no').hide();">
+                                        <p:ajax listener="#{to_bean.advanceSaveListener}" update="adv_ret"/>
+                                    </p:commandButton>
+
+                                    <p:commandButton value="Exit" immediate="true" oncomplete="PF('ret_no').hide();">
+                                        <p:ajax listener="#{to_bean.advanceExitListener}" update="adv_ret"/>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:dialog>
+                        <p:dialog id="ret_expr" widgetVar="retExpire" modal="true"
+                                  draggable="false" closable="false" header="Retention Receipt Expire Information">
+
+                            <div class="ui-grid-col-12 center-position">
+                                <h:outputText value="#{to_bean.retRcptMsg}"  escape="false" styleClass="red font-bold"/>
+                            </div>
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Do you Want Continue ?"  immediate="true" oncomplete="PF('retExpire').hide();"/>
+                                <p:commandButton value="Cancel" immediate="true" oncomplete="PF('retExpire').hide();" >
+                                    <p:ajax listener="#{to_bean.advanceExitListener}" update="pd_choice_no adv_ret_panel ret_panel" />
+                                </p:commandButton>
+                            </div>
+                        </p:dialog>
+                        <vcomponent:vahanMessages messages="#{to_bean.vahanMessages}"  rendered="#{to_bean.vahanMessages ne null}"/>
+                    </h:form> 
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

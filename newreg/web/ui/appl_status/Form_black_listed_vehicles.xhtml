@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="content22">
+        <h:form id="formblacklist" prependId="false">   
+            <div class="ui-grid ui-grid-responsive"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Black list Vehicle</h1>
+                    </div>
+                </div>
+                <div class="top-space bottom-space report-subheader red"> <span class="font-bold">Note:</span> Seperate Menu/Action has been provided to Release of Black Listed Vehicles. Please contact Office Admin to give the permission for this.</div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:growl id="glbmsg" showDetail="false">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:tabView id="regn_no_tab">
+                    <p:tab id="ent_Black_Dtls" title="Add to Black List">
+                        <p:outputPanel id="addblkpanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:selectOneRadio id="tf_chasi_regno" value="#{blacklistvehicle.chasiRegnRadiobtn}">                               
+                                        <f:selectItem itemLabel="Registration No" itemValue="R" />
+                                        <f:selectItem itemLabel="Chassis No" itemValue="C" />
+                                        <p:ajax event="change" listener="#{blacklistvehicle.radioBtnListener()}" update=":formblacklist"/> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4 bottom-space">
+                                    <p:commandButton value="Add to BlackList" actionListener="#{blacklistvehicle.addToBlackList()}" immediate="true" update=":formblacklist msgdlg" >
+                                    </p:commandButton>
+                                    <p:commandButton value="Print BlackList Reports" onclick="PF('printblacklist').show()" immediate="true">
+                                    </p:commandButton>
+                                </div>
+                            </div>   
+                        </p:outputPanel>
+                        <p:outputPanel id="msgdlg">                            
+                            <p:dialog  widgetVar="saveAndReleaseVehicle" modal="true" closable="false" width="800">
+                                <p:panel id="new_comp2" header="#{blacklistvehicle.header}">  
+                                    <p:focus for="btn_cancel"/>
+                                    <div class="ui-grid-row bottom-space">
+                                        <div class="ui-grid-col-6">                                            
+                                            <p:outputPanel id="tf_regn_pnl" rendered="#{blacklistvehicle.add_by_regn_no}">
+                                                <label class="field-label resp-label-section">
+                                                    <h:outputText value="Registration No" styleClass="field-label-mandate"/>                                                                                                
+                                                </label>
+                                                <p:inputText id="tf_regn" disabled="#{blacklistvehicle.disableUnblockPanel}" value="#{blacklistvehicle.regin_no}" maxlength="10" styleClass="text-uppercase">
+                                                    <p:ajax event="blur" listener="#{blacklistvehicle.fetchRegnNo()}" update="new_comp2 tf_regn"/> 
+                                                </p:inputText>
+                                            </p:outputPanel>
+                                            <p:outputPanel id="tf_chs_pnl" rendered="#{!blacklistvehicle.add_by_regn_no}">
+                                                <label class="field-label resp-label-section">
+                                                    <h:outputText value="Chassis No" styleClass="field-label-mandate"/>
+                                                </label>
+                                                <p:inputText id="tf_chasino" disabled="#{blacklistvehicle.disableUnblockPanel}" value="#{blacklistvehicle.chasi_no}" maxlength="30" styleClass="text-uppercase" >
+                                                    <p:ajax event="blur" listener="#{blacklistvehicle.fetchChassisNo()}"  update="new_comp2 tf_chasino"/> 
+                                                </p:inputText>
+                                            </p:outputPanel>
+
+                                        </div>
+
+                                        <div class="ui-grid-col-6">
+                                            <p:outputPanel id="cb_complaintype">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel value="Complain Type:"/>
+                                                </label>
+                                                <p:selectOneMenu id="cb_complain_type" disabled="#{blacklistvehicle.disableUnblockPanel}" value="#{blacklistvehicle.complain_type}"  >
+                                                    <f:selectItems value="#{blacklistvehicle.listTheftDetails}" /> 
+                                                    <p:ajax  event="change" listener="#{blacklistvehicle.fillFirDetailsPanel}" update="new_comp2 tf_complain_dt tf_fir_details txtArea tf_fir_dt out_firdt tf_com_details"/>
+                                                </p:selectOneMenu>
+                                            </p:outputPanel>
+
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <p:outputPanel id="tf_complain_dt">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel value="Complain Date:" for="tf_complaindt" styleClass="field-label-mandate"/>
+                                                </label>
+                                                <p:calendar id="tf_complaindt" value="#{blacklistvehicle.complain_dt}" disabled="#{blacklistvehicle.disableUnblockPanel}" maxdate="#{blacklistvehicle.today}" readonlyInput="true" navigator="true" autocomplete="off" pattern="dd-MMM-yyyy HH:mm:ss">
+                                                    <p:ajax event="dateSelect" process="tf_complaindt" listener="#{blacklistvehicle.onComplaineDateSelect()}" update="tf_regn "/>
+                                                </p:calendar>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <p:outputPanel  id="txtArea" rendered="#{blacklistvehicle.renderTxtArea}" styleClass="datatable-panel top"> 
+                                                <label class="field-label resp-label-section datatable-panel">
+                                                    <p:outputLabel value="Complain:" styleClass="field-label-mandate" />
+                                                </label>
+                                                <p:inputTextarea id="tf_cm" disabled="#{blacklistvehicle.disableUnblockPanel}" value="#{blacklistvehicle.complain}" autoResize="false" maxlength="300" styleClass="text-uppercase" >
+                                                    <p:ajax event="blur" process="tf_cm" listener="#{blacklistvehicle.onComplaineSelect()}"  update="tf_complain_dt"/>
+                                                </p:inputTextarea>
+                                            </p:outputPanel>
+                                            <div class="datatable-panel right-space">
+                                                <p:panel header="FIR Details" id="tf_fir_details" styleClass="top" rendered="#{blacklistvehicle.renderfir}">
+                                                    <div class="ui-grid-row">
+                                                        <div class="ui-grid-col-6">
+                                                            <label class="field-label resp-label-section">
+                                                                <h:outputText value="FIR No"  styleClass="field-label-mandate"/>
+                                                            </label>
+                                                            <p:inputText id="tf_fno" value="#{blacklistvehicle.firNo}"  maxlength="20" disabled="#{blacklistvehicle.disableUnblockPanel}" styleClass="text-uppercase"  >
+                                                                <p:ajax event="blur" process="tf_fno" listener="#{blacklistvehicle.onSelectFirNo()}"  update="tf_fno"/>
+                                                            </p:inputText>
+                                                        </div>
+                                                        <div class="ui-grid-col-6">
+                                                            <label class="field-label resp-label-section">
+                                                                <p:outputLabel  value="FIR Date:" styleClass="field-label-mandate"/>
+                                                            </label>
+                                                            <p:outputPanel id="out_firdt">
+                                                                <p:calendar id="tf_fir_dt" value="#{blacklistvehicle.firDate}" autocomplete="off" binding="#{blacklistvehicle.fromFirDate}" pattern="dd-MMM-yyyy" maxdate="#{blacklistvehicle.today}" disabled="#{blacklistvehicle.disableUnblockPanel}"  >
+                                                                    <p:ajax event="dateSelect" process="tf_fir_dt" listener="#{blacklistvehicle.onFirDateSelect()}" update="tf_fir_dt  tf_regn  "/>
+                                                                </p:calendar>
+                                                            </p:outputPanel>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ui-grid-row">
+                                                        <div class="ui-grid-col-12">
+                                                            <label class="field-label resp-label-section">
+                                                                <h:outputText value="Police Station" styleClass="field-label-mandate"/>
+                                                            </label>
+                                                            <p:inputText id="tf_police" value="#{blacklistvehicle.policeStation}" autocomplete="off" maxlength="30" disabled="#{blacklistvehicle.disableUnblockPanel}" styleClass="text-uppercase">
+                                                                <p:ajax event="blur" process="tf_police" listener="#{blacklistvehicle.onSelectPS()}"  update="tf_police"/>
+                                                            </p:inputText> 
+                                                        </div>
+                                                    </div>
+                                                </p:panel>
+                                                <p:panel header="Compounding Details" id="tf_com_details" styleClass="top" rendered="#{blacklistvehicle.rendercompundingdetails}">
+                                                    <div class="ui-grid-row">
+                                                        <div class="ui-grid-col-6">
+                                                            <label class="field-label resp-label-section">
+                                                                <h:outputText value="File Number"  styleClass="field-label-mandate"/>
+                                                            </label>
+                                                            <p:inputText id="tf_file_no" autocomplete="off"  value="#{blacklistvehicle.firNo}"  maxlength="20" disabled="#{blacklistvehicle.disableUnblockPanel}" styleClass="text-uppercase"  >
+                                                                <p:ajax event="blur" process="tf_file_no" listener="#{blacklistvehicle.onBlurOfFileNo()}"  update="tf_file_no"/>
+                                                            </p:inputText>
+                                                        </div>
+                                                        <div class="ui-grid-col-6">
+                                                            <label class="field-label resp-label-section">
+                                                                <h:outputText value="Compounding Amount"  styleClass="field-label-mandate"/>
+                                                            </label>
+                                                            <p:inputText id="tf_comp_amt" autocomplete="off"  value="#{blacklistvehicle.compoundingamount}"  maxlength="8" disabled="#{blacklistvehicle.disableUnblockPanel}" >
+                                                                <p:ajax event="blur" process="tf_comp_amt" listener="#{blacklistvehicle.onBlurOfCompAmt()}"  update="tf_comp_amt"/>
+                                                            </p:inputText>
+                                                        </div>
+                                                    </div>
+                                                </p:panel>
+                                            </div>
+
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <p:outputPanel rendered="#{blacklistvehicle.showunblockpanel}">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel value="Action Taken" styleClass="field-label-mandate" />
+                                                </label>
+                                                <p:inputTextarea id="act_tak" value="#{blacklistvehicle.actiontaken}" autoResize="false" maxlength="100" counter="display" counterTemplate="{0} characters remaining." styleClass="text-uppercase">
+
+                                                    <f:validateLength maximum="100" for="act_tak"/>
+                                                </p:inputTextarea>
+                                                <p:outputLabel id="display"/>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+
+                                    <p:outputPanel id="unblkaction" rendered="#{blacklistvehicle.showunblockpanel}">
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 center-position">
+                                                <p:outputLabel id="releaseRegnNo" value="#{app.regin_no}" />
+                                                <p:commandButton  value="Release Vehicle" action="#{blacklistvehicle.SaveAction}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" 
+                                                                  update=":formblacklist:glbmsg">
+                                                    <f:param name="releaseRegn" value="#{blacklistvehicle.regin_no}" />
+                                                    <f:param name="releaseChassis" value="#{blacklistvehicle.chasi_no}" />
+                                                    <f:param name="releaseDate" value="#{blacklistvehicle.deletecomplaindt}"/>
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                </p:commandButton> 
+                                                <p:commandButton value="Cancel" onsuccess="PF('saveAndReleaseVehicle').hide();" immediate="true"/>
+                                            </div>
+                                        </div>
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                                        </p:confirmDialog> 
+                                    </p:outputPanel>
+
+                                </p:panel>
+                                <div class="ui-grid-row center-position">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton value="#{blacklistvehicle.saveButton}" rendered="#{blacklistvehicle.bt_save}"
+                                                         actionListener="#{blacklistvehicle.saveApplication()}" immediate="true"  update="tf_regn_pnl cb_complain_type tf_chs_pnl new_comp2"
+                                                         onclick="PF('saveAndReleaseVehicle').show();" >
+                                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        </p:commandButton>
+                                        <p:commandButton id="btn_cancel" value="Cancel" rendered="#{blacklistvehicle.bt_cancel}"  onsuccess="PF('saveAndReleaseVehicle').hide();" action="#{blacklistvehicle.cancel()}"  update=":formblacklist" />
+                                    </div>
+                                </div>
+                            </p:dialog>
+                        </p:outputPanel>
+                    </p:tab>
+                    <p:tab id="ent_untraced_Black_Dtls" title="Untraced Report">
+                        <p:outputPanel id="untracedpanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <p:selectOneRadio id="tf_untraced" value="#{blacklistvehicle.untracedRadiobtn}">                               
+                                        <f:selectItem itemLabel="Entry Untraced Report" itemValue="E" />
+                                        <f:selectItem itemLabel="View Untraced Report" itemValue="V" />
+                                        <p:ajax event="change" listener="#{blacklistvehicle.radioUntracedTabListener()}" update="untracedEntry untracedpanel printdobjpanel printdobjdatatable untracedReport tf_repregno regn_chasi_no_untraced_radio_btn"/> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                            <p:outputPanel  id="regn_chasi_no_untraced_radio_btn" rendered="#{blacklistvehicle.render_regn_chasi_no_untraced_radio_btn}" styleClass="datatable-panel top"> 
+                                <br/>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <p:selectOneRadio id="tf_regn_chasi_no_untraced" value="#{blacklistvehicle.untracedRegnChasiNoRadiobtn}">                               
+                                            <f:selectItem itemLabel="By Registration No" itemValue="REGNNO" />
+                                            <f:selectItem itemLabel="By Chassis No" itemValue="CHASINO" />
+                                            <p:ajax event="change" listener="#{blacklistvehicle.radioUntracedRegnChasiNoListener()}" update="untracedEntry printdobjpanel printdobjdatatable untracedReport tf_undregnno tf_repregno"/> 
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                            <p:outputPanel  id="untracedEntry"  styleClass="datatable-panel top">
+                                <p:outputPanel  rendered="#{blacklistvehicle.renderUntracedEntry}"> 
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="Registration No"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:inputText id="tf_undregnno" autocomplete="off"  value="#{blacklistvehicle.regn_no}"  maxlength="10" disabled="#{blacklistvehicle.disableUntracedRegnno}" styleClass="text-uppercase"  >
+                                                <p:ajax event="blur" listener="#{blacklistvehicle.fetchUntracedRegnNo}" update="tf_undregnno "/> 
+                                            </p:inputText>                                        
+                                        </div> 
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_undchasino" value="#{label.chasi_no}"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:inputText id="tf_undchasino" autocomplete="off"  value="#{blacklistvehicle.untracedChasiNo}"  maxlength="30"  styleClass="text-uppercase"  >
+                                                <p:ajax event="blur" listener="#{blacklistvehicle.fetchUntracedChassisNo}" update="tf_undchasino "/> 
+                                            </p:inputText>                                        
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  value="Court Order Date" styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:calendar id="tf_order_dt" value="#{blacklistvehicle.order_dt}" readonlyInput="true"  autocomplete="off" pattern="dd-MMM-yyyy" navigator="true" maxdate="#{blacklistvehicle.today}">
+                                                <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                                <p:ajax event="dateSelect" process="tf_order_dt" listener="#{blacklistvehicle.onUntracedFirDateSelect()}" update="tf_order_dt"/>
+                                            </p:calendar>
+                                        </div>
+
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="Case FIR No"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:inputText id="tf_frno" autocomplete="off"  value="#{blacklistvehicle.untracedFirNo}"  maxlength="20" styleClass="text-uppercase"  >
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="Police Station"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:inputText id="tf_undPS" autocomplete="off"  value="#{blacklistvehicle.untracedPoliceStation}"  maxlength="150"  styleClass="text-uppercase"  >
+                                            </p:inputText>                                        
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="U/S"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:inputText id="tf_undSec" autocomplete="off"  value="#{blacklistvehicle.underSection}"  maxlength="10"  styleClass="text-uppercase"  >
+                                            </p:inputText>                                        
+                                        </div> 
+
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="vh_district" value="#{label.district}"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:selectOneMenu id="vh_district" value="#{blacklistvehicle.district}"
+                                                             filter="true" required="true">
+                                                <f:selectItems value="#{blacklistvehicle.list_district}"/>
+                                                <p:ajax event="change" partialSubmit="true" listener="#{blacklistvehicle.vehClassListener}"/>
+                                            </p:selectOneMenu>                                       
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="Colour"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:inputText id="tf_undcolour" autocomplete="off"  value="#{blacklistvehicle.colour}"  maxlength="20" disabled="#{blacklistvehicle.disableUnblockPanel}" styleClass="text-uppercase"  >
+                                            </p:inputText>                                        
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="vh_class"
+                                                               value="#{label.vh_class}"/>
+                                            </label>
+                                            <p:selectOneMenu id="vh_class" value="#{blacklistvehicle.vh_class}"
+                                                             filter="true" required="true">
+                                                <f:selectItems value="#{blacklistvehicle.list_vh_class}"/>
+                                                <p:ajax event="change" partialSubmit="true" listener="#{blacklistvehicle.vehClassListener}" />
+                                            </p:selectOneMenu>                                        
+                                        </div>                                    
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <h:outputText value="Court Order No"  styleClass="field-label-mandate"/>
+                                            </label>
+                                            <p:inputTextarea id="tf_ordno" value="#{blacklistvehicle.court_order_no}" autoResize="false" maxlength="200" counter="displayOrderNo" counterTemplate="{0} characters remaining.">
+
+                                                <f:validateLength maximum="200" for="tf_ordno"/>
+                                            </p:inputTextarea>
+                                            <p:outputLabel id="displayOrderNo"/>
+
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position bottom-space">
+                                            <p:commandButton value="Save" action="#{blacklistvehicle.saveUntracedVehicleDetail()}" update=":formblacklist"
+                                                             onclick="PF('saveAndReleaseVehicle').show();" >
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                            </p:commandButton>                                     
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>
+
+                            <p:outputPanel  id="untracedReport" rendered="#{blacklistvehicle.renderUntracedReport}" styleClass="datatable-panel top"> 
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="#{blacklistvehicle.viewReportbyLabel}"  styleClass="field-label-mandate"/>
+                                        </label>
+                                        <p:inputText id="tf_repregno" autocomplete="off"  value="#{blacklistvehicle.regn_no}"  maxlength="#{blacklistvehicle.maxlenght}" styleClass="text-uppercase"  >
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position bottom-space">
+                                        <p:commandButton value="Get Detail" action="#{blacklistvehicle.getUntracedRCDetail()}" update=":formblacklist"
+                                                         onclick="PF('saveAndReleaseVehicle').show();" >
+                                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        </p:commandButton>                                       
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                            <p:outputPanel id="printdobjpanel" styleClass="datatable-panel top">
+                                <p:dataTable id="printdobjdatatable" rowKey="#{blacklistvehicle.regn_no}"  value="#{blacklistvehicle.untracedVehicleList}" var="printDobj" rows="10"  paginatorPosition="bottom"
+                                             paginator="true" rowIndexVar="rowkey" rendered="#{blacklistvehicle.renderUntracedReport and blacklistvehicle.untracedVehicleList.size()>0 ? true : flase}">
+                                    <f:facet name="header">
+                                        <div class="left-position">
+                                            <p:outputLabel value="Print Untraced report Panel" />
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                        <h:outputText value="#{rowkey+1}" />                                
+                                    </p:column>
+                                    <p:column headerText="Registration No">#{printDobj.regn_no}</p:column>
+                                    <p:column headerText="Chassis No"><h:outputText value="#{printDobj.chasi_no}" /></p:column> 
+                                    <p:column headerText="Vehicle Type"><h:outputText value="#{printDobj.vh_class_descr}" /></p:column> 
+                                    <p:column headerText="Court Order Date"><h:outputText value="#{printDobj.display_order_dt}" /></p:column> 
+                                    <p:column headerText="Court Order No"><h:outputText value="#{printDobj.court_order_no}" /></p:column> 
+                                    <p:column headerText="Police Station"><h:outputText value="#{printDobj.policeStation}" /></p:column> 
+                                    <p:column  headerText="Entered On"> <h:outputText value="#{printDobj.entered_on}" />  </p:column>
+                                    <p:column headerText="Entered By"><h:outputText value="#{printDobj.entered_by}" /></p:column>                                  
+                                    <!--                                    <p:column headerText="Print Untraced Repoer" styleClass="center-position">
+                                                                            <p:commandButton icon="ui-icon-print" value="Print" onclick="PF('bui').show();
+                                                                                        this.style.display = 'none';" action="#{blacklistvehicle.printUntracedVehicleReportRC(printDobj)}"  oncomplete="PF('bui').hide();"/>         
+                                                                        </p:column>       -->
+                                </p:dataTable>                                
+                            </p:outputPanel>
+                        </p:outputPanel>
+
+                    </p:tab>                    
+                </p:tabView>
+
+
+
+                <p:dialog  id="printConfirmationPopup"  
+                           style="text-align:center" widgetVar="printblacklist"
+                           modal="true" draggable="false" closable="false" hideEffect="explode"
+                           header="Print History Panel"> 
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Do you want to continue"/>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <p:commandButton  value="Confirm Print" onclick="PF('bui').show();
+                                    PF('printblacklist').hide();" oncomplete="PF('bui').hide();"                                   
+                                              action="#{blacklistvehicle.printBlackListReports}"
+                                              icon="ui-icon-check" ajax="false">                                
+                            </p:commandButton>
+                            <p:commandButton value="Cancel" onsuccess="PF('printblacklist').hide();" icon="ui-icon-close" />
+                        </div>
+                    </div>
+                </p:dialog>
+                <p:blockUI block=":formblacklist" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

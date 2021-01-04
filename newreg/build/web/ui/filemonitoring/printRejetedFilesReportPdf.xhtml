@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+    </h:head>
+    <h:body>
+        <h:form prependId="false">
+            <div class="position-relative">
+                <div class="center-position">
+                    <p:commandButton id="btnBack" value="Back" action="#{rejectedfilepdf.backtoApplication()}" immediate="true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                    <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{rejectedfilepdf.mainHeading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{rejectedfilepdf.subHeading}" styleClass="font-bold report-subheader"/>
+                </div>
+                <div class="center-position bottom-space">
+                    <h:outputText value="#{rejectedfilepdf.rto_name}" styleClass="font-bold report-subheader"/>
+                </div>
+            </div>
+            <div class="center-position top-space bottom-space">
+                <h:outputText value="Rejected File(s) Report" styleClass="font-bold report-subheader bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position top-space bottom-space">
+                <h:outputText value="Dealer Name: - #{rejectedfilepdf.dealerName}" styleClass="report-subheader text-uppercase"/>
+            </div>
+            <p:outputPanel styleClass="datatable-panel" style="margin: 0 auto !important;">
+                <p:dataTable  var="rejectedfiles" styleClass="top-space" id="bidwiserevenuenn" rendered="#{rejectedfilepdf.filelist.size()>0}"  value="#{rejectedfilepdf.filelist}" >
+                    <p:column headerText="Sr. No." styleClass="center-position collumn-width">
+                        <h:outputText value="#{rejectedfiles.srNo}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="File &lt;br /&gt; Number" escape="false" /></f:facet>
+                        <h:outputText value="#{rejectedfiles.fileNo}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Application &lt;br /&gt; Number" escape="false" /></f:facet>
+                        <h:outputText value="#{rejectedfiles.appl_no}"/>
+                    </p:column>
+                    <p:column headerText="Status" >
+                        <h:outputText value="#{rejectedfiles.status}"/>
+                    </p:column>
+                    <p:column headerText="Remarks" >
+                        <h:outputText value="#{rejectedfiles.statusDesc}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Rejection &lt;br /&gt; Date" escape="false" /></f:facet>
+                        <h:outputText value="#{rejectedfiles.rejectedDate}"/>
+                    </p:column>
+                </p:dataTable> 
+            </p:outputPanel>
+            <br/>
+            <br/>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,73 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:composition>
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true" globalOnly="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <p:outputPanel id="userBlockUnBlockPanel" styleClass="datatable-panel-100" >
+                <p:panel header="#{language.user_unblockList}" styleClass="bottom-space" id="unblck_list">
+                    <p:dataTable  id="unblckuserDataTable" value="#{userBlckUnblckBean.userUnBlkedList}" var="unBlock"  rowIndexVar="index" rows="10" paginator="true" paginatorPosition="bottom">
+                        <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}"/></p:column>
+                        <p:column headerText="#{language.user_username}" styleClass="center-position">
+                            <p:outputLabel value="#{unBlock.user_name}"/>
+                        </p:column>
+                        <p:column headerText="#{language.reason}">
+                            <p:inputText value="#{unBlock.reason}"/>
+                            <p:keyFilter regEx="/[a-zA-Z ]/i"/>
+                        </p:column>
+                        <p:column headerText="#{language.user_blockUser}" styleClass="center-position">
+                            <p:selectBooleanCheckbox value="#{unBlock.blockUnBlockStatus}"/>
+                        </p:column>
+                    </p:dataTable> 
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton  value="#{language.block}" action="#{userBlckUnblckBean.blkUserDtls()}" update="userBlockUnBlockPanel">
+                                <p:confirm header="#{language.home_confirm}" message="#{language.user_blockConfirmationMsg}?" icon="ui-icon-alert"/>    
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:panel header="#{language.user_blockList}" styleClass="bottom-space" id="blck_list">
+                    <p:dataTable id="BlckdealerDataTable" value="#{userBlckUnblckBean.userBlkedList}" var="blck" rowIndexVar="index" rows="10" paginator="true"  paginatorPosition="bottom">
+                        <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}"/></p:column>
+                        <p:column headerText="#{language.user_username}" styleClass="center-position">
+                            <p:outputLabel value="#{blck.user_name}"/>
+                        </p:column>
+
+                        <p:column headerText="#{language.reason}">
+                            <p:inputText value="#{blck.reason}" disabled="true"/>
+                            <p:keyFilter regEx="/[a-zA-Z ]/i"/>
+                        </p:column>
+                        <p:column headerText="#{language.user_unblockUser}">
+                            <p:selectBooleanCheckbox  value="#{blck.blockUnBlockStatus}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton  value="#{language.unblock}" action="#{userBlckUnblckBean.unBlkUserDetails()}"  update="userBlockUnBlockPanel" >
+                                <p:confirm header="#{language.home_confirm}" message="#{language.user_unblockConfirmationMsg}?" icon="ui-icon-alert"/>    
+                            </p:commandButton>
+                            <p:button  id="bck" value="#{language.login_back}" outcome="/ui/user_mgmt/form_emp_mgmt.xhtml" icon="ui-icon-arrowreturnthick-1-w"/> 
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+            <p:blockUI block="empform" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </div>
+    </ui:composition>
+</html>

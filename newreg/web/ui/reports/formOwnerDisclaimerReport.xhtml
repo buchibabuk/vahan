@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false" id="ownerDisclaimerId">
+
+            <div class="center-position bottom-space">
+                <p:button id="dlrRpt" value="Back" outcome="/ui/dealer/form_printDealerReports.xhtml?faces-redirect=true" rendered="#{ownerDiclaimerBean.dlrRptBackBtn}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show();"/>
+                <p:button id="owDscRpt" value="Back" outcome="/ui/reports/formOwnerDisclaimer.xhtml?faces-redirect=true" rendered="#{ownerDiclaimerBean.ownerDiscBackBtn}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show();"/>
+                <p:button id="provRcRpt" value="Back" outcome="/ui/print/form_print.xhtml?faces-redirect=true" rendered="#{ownerDiclaimerBean.provRcRtoBackBtn}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show();"/>
+                <p:button id="newAppRcRpt" value="Back" outcome="home" rendered="#{ownerDiclaimerBean.newAppDiscBackBtn}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show();"/>
+                <p:commandButton action="#{ownerDiclaimerBean.printReports('form20')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Form20" styleClass="display-none" rendered="#{ownerDiclaimerBean.dlrRptBackBtn}"/>
+                <p:commandButton action="#{ownerDiclaimerBean.printReports('form21')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Form21" styleClass="display-none" rendered="#{ownerDiclaimerBean.dlrRptBackBtn}"/>
+                <p:commandButton action="#{ownerDiclaimerBean.printReports('inspCertificate')}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" value="Print Inspection-Certificate" styleClass="display-none" rendered="#{ownerDiclaimerBean.dlrRptBackBtn}" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" rendered="#{ownerDiclaimerBean.errorMessage == null}"/>
+            </div>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{ownerDiclaimerBean.dobj.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{ownerDiclaimerBean.dobj.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <div class="center-position left-space">
+                <h:outputText value="#{ownerDiclaimerBean.errorMessage}" styleClass="font-bold red dialogTitle-text" escape="false"/>
+            </div> 
+            <p:outputPanel rendered="#{ownerDiclaimerBean.pendingTrans}" styleClass="position-relative">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position" style="width: 70px;">
+                            <div class="inline-section vehicle-type">                                    
+                                <p:outputPanel styleClass="inline-section" > 
+                                    <p:graphicImage name="#{ownerDiclaimerBean.dobj.image_logo}" library="images" style="width: 100px;" rendered="#{ownerDiclaimerBean.dobj.show_image_logo}"/>
+                                </p:outputPanel>
+                            </div>
+                        </td>
+                        <td class="center-position">
+                            <div class="center-position">
+                                <h:outputText value="#{ownerDiclaimerBean.dobj.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                            </div>
+                            <div class="center-position">
+                                <span class="font-bold report-subheader"> [ <h:outputText value="#{ownerDiclaimerBean.dobj.offName}"/> ]</span>
+                            </div>
+                            <div class="center-position">
+                                <span class="font-bold report-subheader bottom-line text-uppercase"> <h:outputText value="#{ownerDiclaimerBean.printTypeMainHeading}"/> </span>
+                            </div>
+                            <div class="center-position left-space">
+                                <h:outputText value="#{ownerDiclaimerBean.printTypeSubHeading} "  styleClass="font-bold text-uppercase" escape="false"/>
+                                <h:outputText value="#{ownerDiclaimerBean.dobj.regnNO}"  styleClass="font-bold"/>
+                            </div> 
+                            <div class="center-position left-space">
+                                <h:outputText rendered="#{ownerDiclaimerBean.dobj.advanceRegnNo != 'FANCY NO NOT ASSIGN'}" value="CHOICE/FANCY REGN NO TAKEN :" styleClass="right-space font-bold" />
+                                <h:outputText rendered="#{ownerDiclaimerBean.dobj.advanceRegnNo != 'FANCY NO NOT ASSIGN'}" value="#{ownerDiclaimerBean.dobj.advanceRegnNo}"  styleClass="right-space font-bold"/>
+                            </div>
+                            <div class="center-position left-space">
+                                <h:outputText rendered="#{ownerDiclaimerBean.dobj.retenRegnNo != 'RETEN NO NOT ASSIGN'}"  value="RETEN REGN NO TAKEN :" styleClass="right-space font-bold" />
+                                <h:outputText rendered="#{ownerDiclaimerBean.dobj.retenRegnNo != 'RETEN NO NOT ASSIGN'}" value="#{ownerDiclaimerBean.dobj.retenRegnNo}"  styleClass="right-space font-bold"/>
+                            </div> 
+                            <div class="center-position left-space">
+                                <span class="font-bold">
+                                    <h:outputLabel rendered="#{ownerDiclaimerBean.dobj.isAdvanceRegnNoAssign and ownerDiclaimerBean.printType  != 'provisionalRCAtRtoLevel' and ownerDiclaimerBean.renderRegnSeriesMsg}" value="VEHICLE REGN NO WILL BE GENERATED FROM THE RUNNING SERIES" styleClass="right-space font-bold"/></span>
+                            </div> 
+                        </td>
+                        <td class="right-position" style="width: 70px;">
+                            <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                <ui:param name="qrcodevalue" value="#{ownerDiclaimerBean.text}"/>   
+                                <ui:param name="renderqrCode" value="#{ownerDiclaimerBean.renderqrCode}"/>   
+                            </ui:include>
+                        </td>
+
+                    </tr>
+                </table>
+                <div class="right-position">
+                    <h:outputText value="Printed Date: #{ownerDiclaimerBean.printedDate}" styleClass="font-bold" />
+                </div>
+                <div class="datatable-panel" style="font-size: 11px ; margin: 0px auto;"> 
+                    <div class="table-width-oneforth">
+                        <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                            <h:outputLabel value="Application No: " styleClass="right-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.applNO}"  />
+
+                            <h:outputLabel value="#{ownerDiclaimerBean.category  == 'registeredVehicles' ? 'Owner Name:' : ' Applicant Name:'} " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.ownerName}"  />
+
+                            <h:outputLabel value="Son/wife/daughter of: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.fname}"  />
+                        </h:panelGrid>
+                    </div>
+                    <div class="table-width-four">
+                        <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                            <h:outputLabel value="Ownership Type: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.ownerDesc}"  />
+                            <h:outputLabel value = "#{ownerDiclaimerBean.category  == 'registeredVehicles' ? 'Date of Registration:' : ''} " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.category  == 'registeredVehicles' ? ownerDiclaimerBean.dobj.regnDT : ''} "/>
+
+                            <h:outputLabel value="Purchase Date: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.puechaseDT}"  />
+                            <h:outputLabel value="Chassis No: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.chassiNO}"  />
+
+                            <h:outputLabel value="Motor No: " styleClass="right-space bottom-space"  rendered="#{ownerDiclaimerBean.dobj.fuel == '4'}"/>
+                            <h:outputLabel value="Engine No: " styleClass="right-space bottom-space"  rendered="#{ownerDiclaimerBean.dobj.fuel != '4'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.engNO}"  />
+                            <h:outputLabel value="Passport No: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.passportNo}"  />
+
+                            <h:outputLabel value="Pan No: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.panNo}"  />
+                            <h:outputLabel value="Aadhar No: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.aadharNo}"  />
+
+                            <h:outputLabel value="Voter Id: " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.voterId}"  />
+                        </h:panelGrid>
+                    </div>
+                    <div class="table-width-oneforth">
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Full Address (Permanent): "/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.perAddress} " />
+                            <h:outputText value="Full Address (Temporary): "/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.currAddress} " />
+                            <h:outputText value="Dealer's Name and Address: "/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.dealerAddress} " />
+                            <h:outputText value="Maker's Name: "  />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.makerName} " />
+                            <h:outputText value="Maker's Classification: "  />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.modelName}" />
+                        </h:panelGrid>
+                    </div>
+                    <div class="table-width-four">
+                        <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">  
+                            <h:outputLabel value="Sale Amount: " styleClass="right-space bottom-space" />
+                            <h:outputText value="Rs. #{ownerDiclaimerBean.dobj.saleAmt}/-"  />
+                            <h:outputLabel value="Registration Type:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.regnType ne ''}" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.regnType}" rendered="#{ownerDiclaimerBean.dobj.regnType ne ''}" />
+                            <h:outputLabel value="Norms:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.normsDesc}"  />
+                            <h:outputLabel value="Month/Year of Manuf:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.manuMnt}/#{ownerDiclaimerBean.dobj.manuYrs}"  />
+                            <h:outputLabel value="Seating Cap(inc. driver):  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.seatCap}"  />
+                            <h:outputLabel value="Standing Cap:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.standCap}"  />
+                            <h:outputLabel value="Horse Power(BHP):  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel != '4'}"/>
+                            <h:outputLabel value="Motor Wattage(kw): " styleClass="right-space bottom-space"  rendered="#{ownerDiclaimerBean.dobj.fuel == '4'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.horsepwr}" />
+                            <h:outputLabel value="Cubic Capacity:  " styleClass="right-space bottom-space"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.cubCap}" />
+                            <h:outputLabel value="No of Cylinders:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.noOfCyl}"  />
+                            <h:outputLabel value="Wheel base:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.wheelBase}"  />
+                            <h:outputLabel value="Class of Vehicle:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.vchDescr}"  />
+                            <h:outputLabel value="Type of Body:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.bodyType}"  />
+                            <h:outputLabel value="Fuel used in engine:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.fuelDesc}"  />
+                            <h:outputLabel value="Colour:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.color}"  />
+                            <h:outputLabel value="Unladen Weight(in kgs):  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.unLdWt}"  />
+                            <h:outputLabel value="GVW(in kgs):  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.ldWt}"  />
+                            <h:outputLabel value="AC Fitted:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.acFitted}"  />
+                            <h:outputLabel value="Audio Fitted:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.audioFitted}"  />
+                            <h:outputLabel value="Video Fitted:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.videoFitted}"  />
+                            <h:outputLabel value="Length (in mm):  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.length}"  />
+                            <h:outputLabel value="Width (in mm):  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.width}"  />
+                            <h:outputLabel value="Height (in mm):  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.height}"  />
+                            <h:outputLabel value="Kit Manufacturer:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.kitManuf}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Kit Type:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.kitType}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Kit Serial No:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.kitSrNo}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Workshop Name:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.workShop}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Hydro Validity:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.hydroTestDate}" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Installation Date:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.fitmentDate}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Approval Date:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.approvalDate}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Cylinder Serial No:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.cylSrNo}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Approval Letter No:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.approvalNo}"  rendered="#{ownerDiclaimerBean.dobj.fuel == '8' or ownerDiclaimerBean.dobj.fuel == '6' or ownerDiclaimerBean.dobj.fuel == '3' or ownerDiclaimerBean.dobj.fuel == '5'}"/>
+                            <h:outputLabel value="Owner Serial No:  " styleClass="right-space bottom-space" />
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.ownerSrNO}"  />
+                            <h:outputLabel value="Fitness Valid Upto:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.printType  == 'provisionalRCAtRtoLevel'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.fitUpto}"  rendered="#{ownerDiclaimerBean.printType  == 'provisionalRCAtRtoLevel'}"/>
+                            <h:outputLabel value="Tax Paid Upto:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.printType  == 'provisionalRCAtRtoLevel'}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.taxUpto}"  rendered="#{ownerDiclaimerBean.printType  == 'provisionalRCAtRtoLevel'}"/>
+
+
+                            <h:outputLabel value="Permit Type:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.ispmt_type}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.pmt_type}"  />
+                            <h:outputLabel value="Permit Category:  " styleClass="right-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.ispmt_catg}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.pmt_catg}"/>
+                        </h:panelGrid>
+                    </div>
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.category  == 'registeredVehicles' and not empty ownerDiclaimerBean.dobj.caWef}">
+                        <h:outputText value="Change of Address: " styleClass="font-bold bottom-line right-space" />
+                        <h:outputText value="W.e.f. " styleClass="font-bold" />
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.caWef}" styleClass="right-space" />
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.category  == 'registeredVehicles' and not empty ownerDiclaimerBean.dobj.toReason}">
+                        <h:outputText value="Transfer of Ownership:  " styleClass="font-bold bottom-line right-space" />
+                        <h:outputText value="Reason " styleClass="font-bold" />
+                        <h:outputText value=" #{ownerDiclaimerBean.dobj.toReason}" styleClass="right-space" />
+                        <h:outputText value="W.e.f." styleClass="font-bold" />
+                        <h:outputText value=" #{ownerDiclaimerBean.dobj.toWef}" />
+                    </p:outputPanel>
+
+                    <div>
+                        <h:outputText value="Hypothecation Details:" styleClass="font-bold bottom-line" rendered="#{not empty ownerDiclaimerBean.dobj.fncrAddress}"/>
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.fncrAddress}" rendered="#{not empty ownerDiclaimerBean.dobj.fncrAddress}"/>
+                    </div>
+                    <div>
+                        <h:outputText value="Hypothecation Addition Details:" styleClass="font-bold bottom-line" rendered="#{ownerDiclaimerBean.category == 'registeredVehicles' and not empty ownerDiclaimerBean.dobj.fncrAddressAddition}"/>
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.fncrAddressAddition}" rendered="#{ownerDiclaimerBean.category == 'registeredVehicles' and not empty ownerDiclaimerBean.dobj.fncrAddressAddition}"/>
+                    </div>
+                    <div>
+                        <h:outputText value="Hypothecation Termination Details:" styleClass="font-bold bottom-line" rendered="#{ownerDiclaimerBean.category  == 'registeredVehicles' and not empty ownerDiclaimerBean.dobj.fncrAddressTermination}"/>
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.fncrAddressTermination}" rendered="#{ownerDiclaimerBean.category  == 'registeredVehicles' and not empty ownerDiclaimerBean.dobj.fncrAddressTermination}"/>
+                    </div>
+                    <div>
+                        <h:outputText value="Axle Details:" styleClass="font-bold bottom-line left-space" rendered="#{ownerDiclaimerBean.dobj.vehType == 'Transport'}"/>
+                        <h:outputText value="Maximum axle weight and number and description of types (In case of Transport vehicle)" styleClass="font-bold" rendered="#{ownerDiclaimerBean.dobj.vehType == 'Transport'}"/>
+                    </div> 
+                    <div class="table-width-three">
+                        <h:panelGrid columns="3" styleClass="left-position datatable-panel-100" rendered="#{ownerDiclaimerBean.dobj.vehType == 'Transport'}">
+                            <h:outputLabel value=" " styleClass="right-space" />
+                            <h:outputLabel value="Description: " styleClass="right-space" />
+                            <h:outputLabel value="Weight(in kgs): " styleClass="right-space" />
+
+                            <h:outputLabel value="a) Front: "  styleClass="right-space bottom-space"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.faxlDesc}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.faxlWeight}"/>
+
+                            <h:outputLabel value="b) Rear: "  styleClass="right-space bottom-space"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.raxlDesc}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.raxlWeight}"/>
+
+                            <h:outputLabel value="c) Other: "  styleClass="right-space bottom-space"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.oaxlWeight}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.oaxlDesc}"/>
+
+                            <h:outputLabel value="d) Tandem: "  styleClass="right-space bottom-space"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.taxlDesc}"/>
+                            <h:outputText value="#{ownerDiclaimerBean.dobj.taxlWeight}"/>
+                        </h:panelGrid>
+                    </div>
+                    <div>
+                        <span class="font-bold bottom-line">Insurance Details: </span>
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.insType} Insurance From #{ownerDiclaimerBean.dobj.insCompany} vide policy certificate/covernote no #{ownerDiclaimerBean.dobj.policyNO} is valid from #{ownerDiclaimerBean.dobj.insFrom} to #{ownerDiclaimerBean.dobj.insUpto}."/>
+                    </div>
+                    <div>
+                        <h:outputText value="Valid up to the date with effect from :" styleClass="font-bold bottom-line"  rendered="#{ownerDiclaimerBean.printType  == 'provisionalRC'}"/>
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.regnDT} To #{ownerDiclaimerBean.dobj.regnNextMonthDate}" rendered="#{ownerDiclaimerBean.printType  == 'provisionalRC'}"/>
+                    </div>
+                    <div>
+                        <h:outputText value="Valid up to the date with effect from :" styleClass="font-bold bottom-line"  rendered="#{ownerDiclaimerBean.printType  == 'provisionalRCAtRtoLevel'}"/>
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.validityDate} To #{ownerDiclaimerBean.dobj.regnNextMonthDate}" rendered="#{ownerDiclaimerBean.printType  == 'provisionalRCAtRtoLevel'}"/>
+                    </div>
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.dobj.renderAttachedTrailerDetails}">
+                        <div>
+                            <span class="font-bold bottom-line">Attached Semi-Trailer Details:</span>
+                        </div>
+                        <div class="table-width-four">
+                            <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                                <h:outputText value="Chassis No:" />
+                                <h:outputText value=" #{ownerDiclaimerBean.dobj.trChasiNO} " />
+                                <h:outputText value="Body Type:"  />
+                                <h:outputText value=" #{ownerDiclaimerBean.dobj.trBodyType} " />
+                                <h:outputText value="Unladen Weight(in kgs):" />
+                                <h:outputText value=" #{ownerDiclaimerBean.dobj.trUnldWt} " />
+                                <h:outputText value="GVW(in kgs):" />
+                                <h:outputText value=" #{ownerDiclaimerBean.dobj.trLdWt} " />
+                            </h:panelGrid>
+                        </div>
+                    </p:outputPanel>
+                    <h:outputText styleClass="font-bold" rendered="#{ownerDiclaimerBean.dobj.bsIVRegnReason ne null}" value="BS-IV Note:- #{ownerDiclaimerBean.dobj.bsIVRegnReason}" />
+                    <div>
+                        <h:outputText value="Taxation / Fees Particulars:" styleClass="font-bold bottom-line"  rendered="#{ownerDiclaimerBean.category  == 'newRegisteredVehicles' and ownerDiclaimerBean.printType  != 'provisionalRC' and ownerDiclaimerBean.printTaxAndFee and ownerDiclaimerBean.printType  != 'provisionalRCAtRtoLevel'}"/>
+                        <p:dataTable value="#{ownerDiclaimerBean.feeAndTaxList}" var="feeAndTax" 
+                                     styleClass="border-transparent 
+                                     datatable-first-column-left  datatable-first-column-header-left
+                                     datatable-second-column-left  datatable-second-column-header-left
+                                     datatable-third-column-right  datatable-third-column-header-right 
+                                     datatable-fourth-column-right  datatable-fourth-column-header-right
+                                     datatable-fifth-column-right  datatable-fifth-column-header-right 
+                                     datatable-six-column-right datatable-six-column-header-right
+                                     datatable-seven-column-right datatable-seven-column-header-right
+                                     datatable-eight-column-right datatable-eight-column-header-right"
+                                     rendered="#{ownerDiclaimerBean.category  == 'newRegisteredVehicles' and ownerDiclaimerBean.printType  != 'provisionalRC' and ownerDiclaimerBean.printTaxAndFee and ownerDiclaimerBean.printType  != 'provisionalRCAtRtoLevel'}">
+                            <p:column headerText="Sr.No">
+                                <h:outputText value="#{feeAndTax.slNo}" />
+                            </p:column>
+                            <p:column headerText="Description">
+                                <h:outputText value="#{feeAndTax.head}" styleClass="left-space" />
+                            </p:column>
+                            <p:column headerText="Amount">
+                                <h:outputText value="#{feeAndTax.amount} " styleClass="right-space" />
+                            </p:column>
+                            <p:column headerText="Surcharge" rendered="#{ownerDiclaimerBean.showSurcharge}">
+                                <h:outputText value="#{feeAndTax.surcharge} " styleClass="right-space" />
+                            </p:column>
+                            <p:column headerText="Interest" rendered="#{ownerDiclaimerBean.showInterest}">
+                                <h:outputText value="#{feeAndTax.interest} " styleClass="right-space" />
+                            </p:column>
+                            <p:column headerText="Rebate" rendered="#{ownerDiclaimerBean.showRebate}">
+                                <h:outputText value="#{feeAndTax.rebate} " styleClass="right-space" />
+                            </p:column>
+                            <p:column headerText="Fine">
+                                <h:outputText value="#{feeAndTax.fine} " styleClass="right-space" />
+                            </p:column>
+                            <p:column headerText="#{ownerDiclaimerBean.tax1Label}"  rendered="#{ownerDiclaimerBean.showTax1}" >
+                                <h:outputText value="#{feeAndTax.tax1}" styleClass="right-space" />
+                            </p:column>
+                            <p:column headerText="#{ownerDiclaimerBean.tax2Label}"  rendered="#{ownerDiclaimerBean.showTax2}" >
+                                <h:outputText value="#{feeAndTax.tax2}" styleClass="right-space" />
+                            </p:column>
+                            <p:column headerText="Total">
+                                <h:outputText value="#{feeAndTax.totalAmount} " styleClass="right-space" />
+                            </p:column>
+                        </p:dataTable>
+                    </div> 
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.category  == 'newRegisteredVehicles' and ownerDiclaimerBean.printType  != 'provisionalRC' and ownerDiclaimerBean.printTaxAndFee and ownerDiclaimerBean.printType  != 'provisionalRCAtRtoLevel'}">
+                        <hr />
+                    </p:outputPanel>
+                    <h:panelGrid columns="1" styleClass="right-position datatable-panel-100" rendered="#{ownerDiclaimerBean.category  == 'newRegisteredVehicles' and ownerDiclaimerBean.printType  != 'provisionalRC' and ownerDiclaimerBean.printTaxAndFee and ownerDiclaimerBean.printType  != 'provisionalRCAtRtoLevel'}">
+                        <h:outputText value="Grand Total Rs: #{ownerDiclaimerBean.grandTotal}/- "  styleClass="font-bold right-position"/>
+                    </h:panelGrid>
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.printType  != 'provisionalRC' and ownerDiclaimerBean.printType  != 'provisionalRCAtRtoLevel'}">
+                        <table class="bottom-space datatable-panel-100">
+                            <tr>
+                                <td class="left-position">
+                                    <br />
+                                    <br />
+                                    Date:
+                                </td>
+                                <td class="right-position">
+                                    <br />
+                                    <br />
+                                    Signature of Acceptor After Particulars Verification
+                                </td>
+                            </tr>
+                        </table>
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.printType  == 'provisionalRCAtRtoLevel'}">
+                        <table class="bottom-space datatable-panel-100">
+                            <tr>
+                                <td class="left-position">
+                                    <br />
+                                    <br />
+                                    Date:
+                                </td>
+                                <td class="right-position">
+                                    <br />
+                                    <br />
+                                    (Registering Authority)
+                                </td>
+                            </tr>
+                        </table>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.printType  == 'provisionalRC'}">
+                        <table class="bottom-space datatable-panel-100">
+                            <tr>
+                                <td class="left-position">
+                                    <br />
+                                    <br />
+                                    Place
+                                </td>
+                                <td class="right-position">
+                                    <br />
+
+                                    <br />
+                                    (Registering Authority)
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="bottom-space center-position">
+                            <br />
+                            FOIL 'B'.
+                        </div>
+                        <div class="bottom-space">
+                            <h:outputText value="Copy in duplicate is forwarded to the Registering Authority #{ownerDiclaimerBean.dobj.offName} for information and necessary action."/>                       
+                        </div>
+
+
+                        <table class="bottom-space datatable-panel-100">
+                            <tr>
+                                <td class="left-position">
+                                    <br />
+                                    <br />
+                                    Dated
+                                </td>
+                                <td class="right-position">
+                                    <br />
+                                    <br />
+                                    (Registering Authority)
+                                </td>
+                            </tr>
+                        </table>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.printType  != 'provisionalRC' and ownerDiclaimerBean.printType  != 'provisionalRCAtRtoLevel'}">
+                        <table class="bottom-space datatable-panel-100">
+                            <tr>
+                                <td>
+                                    <br />
+                                    <br />
+                                    Note: The Registration is subject to Registering Authority Approval. In case of disapproval, Vehicle Registration Mark will not be valid.
+                                </td>
+                            </tr>
+                        </table>
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{ownerDiclaimerBean.renderNote}">
+                        <table class="bottom-space datatable-panel-100">
+                            <tr>
+                                <td>
+                                    Note: The Trade Tax, Trade Fee and all penalties shall be payable by the Dealer, not by the vehicle purchaser.
+                                </td>
+                            </tr>
+                        </table>
+                    </p:outputPanel>
+                </div>
+            </p:outputPanel>
+            <p:blockUI block="ownerDisclaimerId" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+            <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{ownerDiclaimerBean.dobj.showRoadSafetySlogan}">
+                <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                    <div class="center-position" style="display: inline-block;">
+                        <br />
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.roadSafetySloganDobj.english_lang}" /><br/>
+                        <h:outputText value="#{ownerDiclaimerBean.dobj.roadSafetySloganDobj.state_lang}" />
+
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

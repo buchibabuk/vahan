@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon"
+              href="#{resource['images/vahan_icon.ico']}" />
+        <h:outputStylesheet library="css" name="layout.min.css" />
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/reports/formAdvertisementOnVehicle.xhtml?faces-redirect=true" styleClass="display-none" />
+                <p:button onclick="window.print();" value="Print"
+                          styleClass="display-none" target="_blank" />
+            </div>
+
+            <!--            <div class="center-position">
+                            <h:outputText value="# {advOnVehicleReportBean.dobj.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position">
+                            <span class="font-bold report-subheader"> <h:outputText value="# {advOnVehicleReportBean.dobj.subHeader} # {advOnVehicleReportBean.dobj.offName}" escape="false"/> </span>
+                        </div>-->
+            <div class="center-position">
+                <span class="report-subheader"> <h:outputText
+                        value="Office of the Secretary, Regional
+                        Transport Authority and Regional Transport Officer,#{advOnVehicleReportBean.dobj.offName}." />
+                </span>
+            </div>
+
+            <table class="datatable-panel" style="margin: 0 auto !important">
+                <tr>
+                    <td class="left-position">
+                        <div class="left-space">
+                            <h:outputText value="Serial No: #{advOnVehicleReportBean.dobj.appl_no}" />
+                        </div>
+                    </td>
+                    <td class="right-position">
+                        <div class="right-space">
+                            <h:outputText value="Date: #{advOnVehicleReportBean.dobj.printedOn}" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <div class="center-position">
+                <span class="font-bold text-uppercase"> <h:outputText
+                        value="FORM PDA" />
+                </span>
+            </div>
+            <br />
+            <div class="datatable-panel" style="margin: 0 auto !important">
+                <h:outputText value="#{advOnVehicleReportBean.dobj.regn_no}" />
+                is permitted to display advertisement on the vehicle from
+                <h:outputText value="#{advOnVehicleReportBean.dobj.fron_date}" />
+                upto
+                <h:outputText value="#{advOnVehicleReportBean.dobj.upto_date}" />
+                <div>Enclosed-Terms and Conditions</div>
+            </div>
+            <table class="datatable-panel" style="margin: 0 auto !important">
+                <tr>
+
+                    <td class="right-position">
+                        <div class="right-space">
+                            Secretary <br />Regional Transport Authority<br /> <h:outputText value="#{advOnVehicleReportBean.dobj.offName}" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <div class="report-subheader bottom-line center-position bottom-space">Terms and Conditions</div>
+            <div class="datatable-panel" style="margin: 0 auto !important">
+                <ol>
+                    <li>Any rule and regulations imposed by District Election
+                        Officer shall be observed.</li>
+                    <li>Any rule and regulations imposed by District Administration
+                        shall be observed</li>
+                    <li>Any rule and regulations imposed by Municipal
+                        Corporation/NIT shall be observed</li>
+                    <li>Any rule and regulations regarding Noise Pollution shall be
+                        observed</li>
+                    <li>Any rule and regulations imposed by Police
+                        Department/Traffic Department shall be observed.</li>
+                    <li>The vehicle shall be used as per directions issued by
+                        District Election Officer and carry all valid documents with the
+                        vehicle.</li>
+                </ol>
+
+            </div>
+            <br/><br/>
+            <div class="right-position right-space">Regional Transport Authority<br/> <h:outputText value="#{advOnVehicleReportBean.dobj.offName}" /></div>
+
+        </h:form>
+    </h:body>
+</html>

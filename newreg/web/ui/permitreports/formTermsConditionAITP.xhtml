@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'AS'}">
+            <br/>
+            <br/>
+            <br/>
+            
+
+            <div class="center-position">
+                <h:outputText value="Additional Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>            
+            <br/>
+            <br/>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="(1). The permit holder shall cause to be prepared respect of each trip a list in triplicate of tourist passengers to be carried in the vehicle, duly attested by the Executive Magistrate or a Sub Inspector of Police or a Gazetted Officer of the State Transport Authority / Regional Transport Authority in this regard, if the area from which the tour emanates giving full particulars as under:- " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  (a)	Name of the Passengers" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  (b)	Address of the Passengers" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  (c) Age of the Passengers" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  (d)	Starting point and the point of destination." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(2). The copy of the list shall be sent by Registered A/D post to the Authority which issued the permit for record, the second copy shall be carried in the Tourist Vehicle and shall be produced on demand by the officers authorized to demand production of documents by or under the Act and the third copy shall be preserved by the permit holder.  " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(3). The Tourist shall either commence its journey, or end its journey of otherwise, in the home State, subject to the condition that the vehicle shall not be remain  outside the home State  for a period of more than two months. The permit holder shall see that every return of the Tourist Vehicle to the home state is reported to the authority which issued the permit.
+                                   Provided that where the contracted journey end outside the home state, the vehicle shall not be offered for hire within that state from that state to any other State expect for the return journey to any point in the home state.
+                                   " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(4). The Tourist vehicle may operate circular tours of places lying exclusively in home state and outside the state if such circular tours are in the list approved by Tourist department of the home state to visit places of Tourist historical of religion importance’s and the tour is duly advertised before hand." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(5). The permit holder of his authorized agent shall issue a receipt to the hirer and the counterfoil of the same shall be kept available with him and produced on demand to the Officers empowered to demand documents by or under the Act. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(6). The Tourist Vehicle shall not parked in any bus stand used by Stage-Carriage and shall not operate from such bus stand. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(7). The Tourist Vehicle shall be painted in white colour with blue ribbon of five centimeters with at the center of the exterior of the body and the word Tourist shall be inserted on two sides of the vehicle within a circular of sixty centimeters diameter" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(8). The permit holder display in the front top of the tourist vehicle a board in yellow with letter in block with inscription “Tourist permit” valid in the State(S) which are mentioned in the permit in English and Hindi and also if he so prefers in original language of the home state. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(9). The permit holder shall not operate the tourist vehicle as a stage carriage." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(10).The permit holder shall maintain a day to day logbook indicating the name and address of the permit holder and the registration mark of the vehicle name and address of the driver with the particulars of his driving license and the starting and destination points of the journey with the time of departure and arrival and the name and address of the driver. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(11).The permit holder shall furnish every 3 months the information contains in condition. (10) to the State Transport Authority which granted the permit and the logbook shall be preserved for a period of 3 years and shall made available to the said authority on demand alongside the records referred to in conditions (2) and (4). " styleClass="right-space bottom-space" />  
+                    <h:outputLabel value="(12).Driver must wear uniforms and Conductor Navy blue uniform namely trousers and full shirt with photo identity card issued by the Licensing Authority." styleClass="right-space bottom-space" /> 
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <h:outputLabel value="(13).The Driver and Conductor must wear covered shoes." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(14).The Conductors Badge number should be displayed on the left side breast pocket of the shirt  " styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(15).The Transport Vehicle Owner must notify the names of the Drivers and Conductors engaged against each permitted vehicle separately and notify in advance in case of any change desired with prior approval from the secretary, State/ Regional Transport Authority concerned " styleClass="right-space bottom-space" /> 
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Secretary <br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd},#{printDocXHTML.passPmtDobj.state_cd}"/>  
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>   
+        <!--        for CG-->
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'CG'}">
+
+
+            <br/>
+            <br/>
+            <br/>
+            
+
+            <div class="center-position">
+                <h:outputText value="Additional Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>            
+            <br/>
+            <br/>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="In addition to the condition specified under Section 84 and under sub-section (11) of Section 88 of the Motor Vehicles Act, 1988 the permit is subject lo the following further conditions, namely :- " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="The permit holder shall cause to be prepared in respect of each trip a list in triplicate of tourist passengers to be carried in the vehicle, duly attested by the Executive Magistrate or Sub-Inspector of Police or A Gazetted Officer of the State Transport Authority or Regional Transport Authority authorised in this regard of the area from which the tour originates giving full particulars as under :-" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (a) Name of the passengers " styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (b) Address of the passengers." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (c) Age of the passengers." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (d)Starting point and the point of destination." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (2) One copy of the list shall be sent by Registered A.D. Post to the Authority which issued the permit for record,l be carried in the tourist vehicle and shall be produced on demand by the officers authorised to demand production of documents by or under the Motor Vehicles Act 1988 and the third copy shall be preserved by the permit holder." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (3) The tourist vehicle shall either commerce its journey or end its journey, circular or otherwise in the home State, subject to the condition that vehicle shall not remain outside the home State for a period of more than 2 months. The permit holder shall see that every return of the tourist vehicle to the home State is reported to the authority which issued the permit :Provided that where the contract journey ends outside the home State, the vehicle shall not be offered for hire within that State or from the State to any State except for the return journey to any point in the home State" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (4) The tourist vehicle may operate circular tours of places lying exclusively in home State or in the home State and outside the State if such circular tours are in the list approved by the tourist department of the home State to visit place of tourist historical or religious importance and the tour is duly advertised before hand. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (5) The permit holder or his authorised agent shall issue a receipt to the hirer of the amount and the counterfoil of the same shall be kept available with him and produced on demand to the officer empowered to demand Act." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (6) The tourist vehicle shall not be parked on any bus stand used by stage carriage and shall not operate from such bus stand. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (7) The tourist vehicle shall be painted in white colour with blue ribbon of five centimetres width at the centre of the exterior of the body and the word Tourist shall be inscribed on two sides of the vehicle within a circle of sixty centimetres diameter." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (8) The permit holder shall display in the front lop of the tourist vehicle a board in yellow with letters in black with inscription Tourist permit valid in State(s) of... in English and Hindi. The letters shall not be less than 75 mm. in height and twelve mm in the thickness. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (9) The permit holder shall not operate the tourist vehicle as a stage carriage." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (10) The permit holder shall maintain a day to day log book indicating the name and address of the permit holder and the registration mark of the vehicle, name and address of the driver with particulars of his driving licence and the starting and destination points of the journey with the time of departure and arrival and the name and address of the hirer." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (11) The permit holder shall furnish every 3 months the information contained in condition (10) to the State Transport Authority which granted the permit and the log book shall be preserved for a period of 3 years and shall be made available to the said authority on demand alongwith the records referred to in conditions (2) and (4)" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (12) No advertisement shall be exhibited on any part of the vehicle either inside or outside or on any glass thereof. " styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (13) The contract carriage shall not be used for exclusively carrying goods." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (14) The permit holder shall not cause or permit transport of contraband luggage nor shall be used in connection with any cognizable offence." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (15) All taxes payable for operation of the vehicle shall be paid regularly" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (16) That the State Transport Authority may after giving notice of not less than one month-" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (a) Vary the conditions of the permit." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (b) Attach to the permit further conditions." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (17) That the vehicle shall be used only in the area or State for which the permit is granted." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (18) That motor vehicle in respect of which all India Tourist Permit is granted shall conform lo such description, requirement regarding the seating capacity, standards of comforts, amenities and other matters as has been specified under Rule 128 of the Central Motor Vehicles Rules, 1989." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (19) The permit holder shall ensure that the driver of the tourist vehicle shall comply with the following :- A driver of a tourist vehicle shall possess the following qualifications, namely :-" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (a) A driver's licence with atleast two years' experience." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (b) Elementary knowledge of the mechanism and maintenance of tourist vehicle he drives." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (c) Knowledge of the topography of the route or area of region in which the tourist vehicle is proposed to be used." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (d) Working knowledge of English and Hindi or any language of the region where he works." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (c) Age of the passengers." styleClass="right-space bottom-space" />                    
+                    <br/>
+
+                    <div class="center-position">
+                        <h:outputText value="Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+                    </div>      
+                    <h:outputLabel value=" A driver of a tourist vehicle shall satisfy the following conditions, namely :-" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (A) In summer months he shall wear white uniform of the following descriptions, namely :-" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (i) Loose trousers." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (ii) Bushshirt or coat with two pockets and the letter T sewn on the left-hand pocket of the bushshirt or coat in red thread." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (B) In winter months he shall wear a blue or gray uniform of the following descriptions, namely ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (i) Loose trousers." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (ii) Buttoned up coat with two pockets and the letter T sewn on the left hand pocket in red thread or open coat with two pockets and the letter T sewn in left hand pocket in red thread, white full sleeved shirts and blue tie." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (iii) The driver of the tourist vehicle shall behave in a civil and quiet manner to the passengers and intending passengers and shall not while on duly be in the state of intoxication or in a state in which by reason of his having taken or used any sedative, narcotic or stimul of preparation in his capacity to drive the vehicle is impaired.." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (20) This permit shall always be used for the sole purpose for which it is being issued and permit of which shall not cease to operate or shall not be kept for non-use at any time, without prior permission of the Secretary, State Madhya Pradesh, Gwalior" styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (21) Any other conditions provided in the Act or prescribed by the Rules." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (22) The following shall be additional conditions of every tourist permit in respect of Motor cabs ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (i) The words Tourist Vehicle shall be painted on both the sides of the vehicle within a circle of twenty-five centimetres diameter." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (ii) A Board with the inscription Tourist permit valid in the State(s) of in black letters in yellow background shall be displayed in front of the vehicle above the registration number plates." styleClass="right-space bottom-space" />
+                    <h:outputLabel value=" (23) According to the provisions of Rule 84 of the Central Motor Vehicles Rules, 1989, no tourist permit shall be deemed to confer the right of operation in any State not included in the authorisation referred to in Rule 83 of the said rules, nor shall it exempt the owner of a vehicle from the payment of tax or fee, if any, leviable in any State." styleClass="right-space bottom-space" />
+                    <br>
+                        <br>
+                            <br>
+                                <h:outputLabel value=" NOT TO USE IN RESIDENTIAL AREAS BETWEEN 10 P.M. AND 6 A.M.EXCEPT UNDER EXCEPTIONAL CIRCUMTANCES" styleClass="right-space bottom-space" />                                     
+                            </br></br></br>
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>  
+    </body>
+</html>

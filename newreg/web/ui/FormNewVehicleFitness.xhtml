@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent"
+    >
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="preRegFitness">
+
+                <p:blockUI block="@form" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closable="false" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+                        <div class="center-position">
+                            <p:commandButton value="#{language.close}" immediate="true">
+                                <p:resetInput target="@form"/>
+                            </p:commandButton>
+                        </div>
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>  
+
+
+
+                <p:outputLabel id="op_showGenApplNo">
+                    <p:dialog widgetVar="successDialog" 
+                              modal="true" closable="false" resizable="false" draggable="false" header="Generated Application No">
+                        <p:outputLabel value="#{preregfit.appl_no_massage}" />
+                        <div class="center-position">
+                            <p:button value="Ok" onclick="PF('successDialog').hide();"                                              
+                                      outcome="home" icon="ui-icon-check"/>
+                        </div>
+                    </p:dialog>
+                </p:outputLabel>
+
+
+                <p:panel id="panelEngChassNo" header="Chassis/Engine No">
+                    <p:outputPanel rendered="#{preregfit.renderFitnessType}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4"></div>
+                            <div class="ui-grid-col-8 center-position">
+                                <p:selectOneRadio id="selRadio" value="#{preregfit.rb_value}" disabled="#{preregfit.disableChassisNo}" >                                       
+                                    <f:selectItem itemLabel="#{language.newVehicle}" itemValue="newVeh"/>  
+                                    <f:selectItem itemLabel="#{language.registered_vehicle_OS}" itemValue="regVeh"/>  
+                                    <p:ajax event="change"  update="panelEngChassNo" listener="#{preregfit.fitnessTypeListener()}" />
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="regn_panel" rendered="#{preregfit.renderRegisteredVehFitness}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no1" value="#{language.home_rightpanelregno}" />
+                                </label>
+                                <p:inputText id="regn_no1"   
+                                             value="#{preregfit.regn_no}" 
+                                             disabled="#{preregfit.disableChassisNo}" 
+                                             styleClass="input" 
+                                             maxlength="10"
+                                             converter="toUpperCaseConverter" 
+                                             required="true" 
+                                             requiredMessage="#{language.Regn_num_empty_msg}"                                 
+                                             validatorMessage="#{language.Invalid_Regn_No}">
+                                </p:inputText>
+                            </div> 
+                        </div>    
+                    </p:outputPanel>
+                    <p:outputPanel id="OutputPanelEngChassNo"  rendered="#{!preregfit.renderRegisteredVehFitness}" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="chasi_no1" value="#{language.chasi_no}"/>
+                                </label>
+                                <p:inputText id="chasi_no1" 
+                                             value="#{preregfit.chassis_no}" 
+                                             disabled="#{preregfit.disableChassisNo}" 
+
+                                             styleClass="input" 
+                                             maxlength="30" 
+                                             converter="toUpperCaseConverter" 
+                                             required="true" 
+                                             requiredMessage="#{language.chassis_blank_msg}"
+                                             validatorMessage="#{language.chassis_valid_msg}">
+
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="eng_no1" value="#{language.engine_MotorNo}"/>
+                                </label>
+                                <p:inputText id="eng_no1"
+
+                                             value="#{preregfit.eng_no}" 
+                                             disabled="#{preregfit.disableChassisNo}"
+                                             styleClass="input" 
+                                             maxlength="5" 
+                                             converter="toUpperCaseConverter" 
+                                             required="true" 
+                                             requiredMessage="#{language.engine_Motor_BlankMsg}">
+
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <div class="ui-grid-row top-space bottom-space center-position">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+
+                        <div class="ui-grid-col-6">
+                            <p:commandButton id="get_dtls_btn" value="#{language.homologation_btn}" 
+                                             action="#{preregfit.showDetails()}" rendered="#{!preregfit.renderRegisteredVehFitness}"
+                                             disabled="#{preregfit.disableChassisNo}"
+                                             onclick="PF('ajax_status').show()" 
+                                             oncomplete="PF('ajax_status').hide()"
+                                             update="panelVehicleDetails panelEngChassNo multipleTempRegDtls"/>
+                            <p:commandButton id="get_dtls" value="#{language.getDetails}" update="preRegFitness" 
+                                             action="#{preregfit.showDetailsForRegisteredVehicle()}" disabled="#{preregfit.disableChassisNo}"
+                                             onclick="PF('ajax_status').show()" rendered="#{preregfit.renderRegisteredVehFitness}"
+                                             oncomplete="PF('ajax_status').hide()" />
+                            <p:button id="reset_dtls" value="#{language.reset}" outcome="/ui/FormNewVehicleFitness.xhtml" rendered="#{preregfit.renderRegisteredVehFitness}"/>
+                        </div>                        
+                    </div>
+                </p:panel>
+
+
+                <p:outputPanel id="multipleTempRegDtls">
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable  value="#{preregfit.tempRegnDetailsList}" var="mulTempRegDtls"
+                                          rowIndexVar="index" rendered="#{preregfit.tempRegnDetailsList ne null and preregfit.tempRegnDetailsList.size()>0}">
+                                <f:facet name="header">
+                                    <h:outputText value="Temporary Registration is  done on CHASI No [#{preregfit.tempRegnDetailsList.get(0).chasi_no}] and more details are listed below:"
+                                                  styleClass="report-header font-bold red"/>
+                                </f:facet>
+                                <p:column headerText="#{language.user_srno}" width="5%">#{index +1}.</p:column>
+                                <p:column headerText="#{language.temporary_registration_no}">#{mulTempRegDtls.regn_no}</p:column>
+                                <p:column headerText="#{language.owner_name}">#{mulTempRegDtls.owner_name}</p:column>
+                                <p:column headerText="#{language.origin_state_office}">#{mulTempRegDtls.state_name} / #{mulTempRegDtls.off_name}</p:column>
+                                <p:column headerText="#{language.destination_state_office}">#{mulTempRegDtls.ownerTempDobj.state_cd_to_descr} / #{mulTempRegDtls.ownerTempDobj.off_cd_to_descr}</p:column>
+                                <p:column headerText="#{language.purpose_s}">#{mulTempRegDtls.ownerTempDobj.purposeDescr}</p:column>
+                                <p:column>
+                                    <f:facet name="header">#{language.login_tmp_regn} <br/> #{language.validUpto}</f:facet>
+                                        #{mulTempRegDtls.regnUptoDescr}
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">#{language.login_tmp_regn} <br/> #{language.done_on} </f:facet>
+                                        #{mulTempRegDtls.op_dt}
+                                </p:column>
+                            </p:dataTable> 
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+
+
+
+                <p:outputPanel  id="panelVehicleDetails" >
+                    <p:panel rendered="#{preregfit.renderVehicleDetails}">
+                        <p:tabView id="work_bench">
+                            <p:tab title="#{language.owner_information}" rendered="#{preregfit.renderRegisteredVehFitness}">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml" >
+                                    <ui:param name="ownerDetail" value="#{preregfit.ownerDetailsDobj}"/>
+                                </ui:include>
+                            </p:tab>
+                            <p:tab title="#{language.vehicleDetails}">
+                                <ui:include src="form_vehicle_dtls.xhtml"/>
+                            </p:tab>
+
+                            <p:tab id="HypothecationOwner" rendered="#{preregfit.renderInsuranceDetails}" title="#{language.hypothecation_InsuranceInformation}" >
+                                <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                            </p:tab>  
+                            <p:tab id="tabOtherStateDetails" title="#{language.noc_details}" rendered="#{preregfit.renderRegisteredVehFitness}" >
+                                <ui:include src="/ui/form_noc_details_display.xhtml">
+                                    <ui:param name="owner_bean" value="#{preregfit.owner_bean}"/>
+                                    <ui:param name="new_fit_bean" value="#{preregfit}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+                        <p:outputPanel   rendered="#{preregfit.appl_details.current_action_cd ne 12204}">
+                            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                <ui:param name="app_disapp" value="#{preregfit}"/>
+                            </ui:include>
+                        </p:outputPanel>
+
+                        <p:panel  styleClass="top-space bottom-space" rendered="#{preregfit.appl_details.current_action_cd eq 12204}">
+                            <div class="ui-grid-row center-position bottom-space">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton id="bt_save"    value="#{language.save}"
+                                                     action="#{preregfit.saveNewVehicleFitnessDeatils()}"
+                                                     onclick="PF('ajax_status').show()" 
+                                                     oncomplete="PF('ajax_status').hide()" 
+                                                     update="op_showGenApplNo"
+
+                                                     >
+                                    </p:commandButton>
+                                    <p:commandButton value="#{language.login_back}" action="home" ></p:commandButton>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:panel>
+
+                </p:outputPanel>
+                <vcomponent:vahanMessages messages="#{preregfit.vahanMessages}"  rendered="#{preregfit.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+
+    </ui:define>
+</ui:composition>
+

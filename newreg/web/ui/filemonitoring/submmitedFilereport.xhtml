@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <p:dialog id="popup" visible="#{not empty facesContext.messageList}"
+                      styleClass="center-position"
+                      widgetVar="dlg1"
+                      modal="true" draggable="false" closable="false">  
+                <p:messages/>
+                <p:commandButton value="OK" oncomplete="PF('dlg1').hide();" />
+            </p:dialog> 
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Submitted File(s) Report</h1>
+                </div>
+            </div>
+            <p:outputPanel>
+                <p:autoUpdate/>
+                <p:outputPanel id="pnlsucessfullfilereport">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel  value="Select Dealer" styleClass="field-label-mandate"/>
+                            <p:selectOneMenu  id="selectDealer" filter="true" value="#{submmitedfilereport.dealerName}">
+                                <f:selectItem itemLabel="---Select Dealer---"  itemValue="-1"/>
+                                <f:selectItems  value="#{submmitedfilereport.dearlist}"/>
+                                <p:ajax event="change" listener="#{submmitedfilereport.getRnderCalender()}" update="tblreceivefile popup bt_submit toDateC toDate fromDate fromDateC btnReport datatablepanel" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" partialSubmit="true"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-3 center-position resp-blank-height"></div>
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel value="From Date:" rendered="#{submmitedfilereport.enableCalender}" id="fromDate"/>
+                            <p:calendar rendered="#{submmitedfilereport.enableCalender}" id="fromDateC" pattern="dd/MM/yyyy" value="#{submmitedfilereport.fromdate}" maxdate="#{submmitedfilereport.today}" 
+                                        navigator="true" readonlyInput="true"  effect="fold" >
+                            </p:calendar>
+                        </div>
+                        <div class="ui-grid-col-3">
+                            <p:outputLabel value="To Date:" rendered="#{submmitedfilereport.enableCalender}" id="toDate"/>
+                            <p:calendar rendered="#{submmitedfilereport.enableCalender}" id="toDateC" pattern="dd/MM/yyyy" value="#{submmitedfilereport.toDate}"  maxdate="#{submmitedfilereport.today}" 
+                                        navigator="true" readonlyInput="true"  effect="fold" >
+                            </p:calendar>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Report" rendered="#{submmitedfilereport.enableCalender}" id="btnReport"  action="#{submmitedfilereport.getSuccessfullFiles()}" update="tblreceivefile popup bt_submit toDateC toDate fromDate fromDateC btnReport datatablepanel" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" />
+                            <p:commandButton rendered="#{submmitedfilereport.enablePrint}" id="bt_submit" value="Print" action="#{submmitedfilereport.reDirectToPrint()}"   icon="ui-icon-disk"   styleClass="top-m" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" />
+                        </div>
+                    </div>
+                    <p:outputPanel id="datatablepanel" >
+                        <p:dataTable  var="submittfiles" styleClass="top-space"  rendered="#{submmitedfilereport.enablePrint}"  id="tblreceivefile"  value="#{submmitedfilereport.filelist}" >
+                            <p:column headerText="Sr. No." styleClass="center-position collumn-width">
+                                <h:outputText value="#{submittfiles.srNo}"/>
+                            </p:column>
+                            <p:column headerText="File Number" >
+                                <h:outputText value="#{submittfiles.appl_no}"/>
+                            </p:column>
+                            <p:column headerText="Status" >
+                                <h:outputText value="#{submittfiles.status}"/>
+                            </p:column>
+                            <p:column headerText="Pending Days" styleClass="center-position" >
+                                <h:outputText value="#{submittfiles.pendingDays}"/>
+                            </p:column>
+                            <p:column headerText="Submission Date" >
+                                <h:outputText value="#{submittfiles.submmitDate}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:outputPanel> 
+            </p:outputPanel>
+        </div>
+        <p:blockUI block="pnlsucessfullfilereport" widgetVar="bui">
+            <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+    </ui:define>
+</ui:composition>

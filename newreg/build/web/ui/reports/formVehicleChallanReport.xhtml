@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body>
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="#{echallanReport.redirect()}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <p:outputPanel>
+                <div class="center-position">
+                    <h:outputText value="Form No:XLV " styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{echallanReport.reportHeading} " styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="center-position">
+                    <div class="center-position">
+                        <h:outputText value="#{echallanReport.dobj.rcpt_heading}" styleClass="font-bold report-header text-uppercase" escape="false"/>
+                    </div>
+                </div>
+                <div class="center-position">
+                    <div class="center-position">
+                        <h:outputText value="#{echallanReport.dobj.rcpt_sub_heading}" styleClass="font-bold report-header text-uppercase"/> 
+                    </div>
+                </div>
+                <div class="center-position">
+                    <div class="center-position">
+                        RTO :  <h:outputText value="#{echallanReport.dobj.rto_name}" styleClass="font-bold report-header text-uppercase"/>
+                    </div>
+                </div>
+                <div class="center-position">
+                    <span class="font-bold report-subheader"> See Rule 176 (2) O.M.V Rules 1993,  </span>
+                </div>
+                <div class="inline-section qrcode-position-absolute">
+                    <pe:qrCode 
+                        rendered="#{echallanReport.renderQr}"
+                        renderMethod = "canvas"
+                        text="#{echallanReport.dobj.vcr_no}"
+                        label="#{echallanReport.dobj.vehicle_no}"
+                        size="110"
+                        ecLevel="H"       
+                        radius="0.5"
+                        fillColor="#000000"/>
+                </div>
+                <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                        <h:outputLabel value=" VCR NO / APPL NO" styleClass="right-space bottom-space "  />
+                        <h:outputText value="#{echallanReport.dobj.vcr_no} / #{echallanReport.dobj.appl_no}" />
+                        <h:outputLabel value=" Date of Check With Time " styleClass="right-space bottom-space " />
+                        <h:outputText value="#{echallanReport.dobj.chal_date}::#{echallanReport.dobj.chal_time}" />
+                        <h:outputLabel value=" Place Of Checking " styleClass="right-space bottom-space " />
+                        <h:outputText value="#{echallanReport.dobj.chal_place}" />
+                        <h:outputLabel value=" Vehicle Registration/Chasis No " styleClass="right-space bottom-space " />
+                        <h:outputText value="#{echallanReport.dobj.vehicle_no}/#{echallanReport.dobj.chasi_no}" />
+                        <h:outputLabel value=" Vehicle Class : " styleClass="right-space bottom-space " />
+                        <h:outputText value="#{echallanReport.dobj.vh_class}" />
+                        <h:outputLabel value=" Name Of Owner and Address and Mobile No." styleClass="right-space bottom-space "  />
+                        <h:outputText value="#{echallanReport.dobj.owner_name}/#{echallanReport.dobj.owner_address}"  />
+                        <h:outputLabel value=" Name Of Driver with address" styleClass="right-space bottom-space "  rendered="#{not empty echallanReport.dobj.driver_address}"/>
+                        <h:outputText value="#{echallanReport.dobj.driver_name}/#{echallanReport.dobj.driver_address}" rendered="#{not empty echallanReport.dobj.driver_address}"/>
+                        <h:outputLabel value=" Name Of Conductor with address" styleClass="right-space bottom-space" rendered="#{not empty echallanReport.dobj.conductor_name}"/>
+                        <h:outputText value="#{echallanReport.dobj.conductor_name}/#{echallanReport.dobj.conductor_address}" rendered="#{not empty echallanReport.dobj.conductor_name}"/>
+                        <h:outputLabel value=" Name of Witness" styleClass="right-space bottom-space "   rendered="#{not empty echallanReport.dobj.witness_name}"/>
+                        <h:outputText value="#{echallanReport.dobj.witness_name}" rendered="#{not empty echallanReport.dobj.witness_name}"/>
+                        <h:outputLabel value="  Address of Witness" styleClass="right-space bottom-space "  rendered="#{not empty echallanReport.dobj.witness_address}"/>
+                        <h:outputText value="#{echallanReport.dobj.witness_address}"  rendered="#{not empty echallanReport.dobj.witness_address}"/>
+                        <h:outputLabel value=" Permit Number and Validity" styleClass="right-space bottom-space "  rendered="#{not empty echallanReport.dobj.permit_no}"/>
+                        <h:outputText value="#{echallanReport.dobj.permit_no}/#{echallanReport.dobj.permit_validity}"  rendered="#{not empty echallanReport.dobj.permit_no}" />
+                        <h:outputLabel value=" Tax Paid Upto " styleClass="right-space bottom-space " rendered="#{not empty echallanReport.dobj.tax_paid_upto}"/>
+                        <h:outputText value="#{echallanReport.dobj.tax_paid_upto}" rendered="#{not empty echallanReport.dobj.tax_paid_upto}"/>
+                        <h:outputLabel value=" Insurance Validity" styleClass="right-space bottom-space " rendered="#{not empty echallanReport.dobj.insurance_validity}"/>
+                        <h:outputText value="#{echallanReport.dobj.insurance_validity}" rendered="#{not empty echallanReport.dobj.insurance_validity}" />
+                        <h:outputLabel value=" Fitness Validity" styleClass="right-space bottom-space " rendered="#{not empty echallanReport.dobj.fitness_validity}"/>
+                        <h:outputText value="#{echallanReport.dobj.fitness_validity}" rendered="#{not empty echallanReport.dobj.fitness_validity}"/>
+                        <h:outputLabel value=" Driving Licence Number" styleClass="right-space bottom-space " />
+                        <h:outputText value="#{echallanReport.dobj.driving_licence_no}"/>
+                        <h:outputLabel value=" Irregularities Noticed" styleClass="right-space bottom-space " />
+                        <h:outputText value="#{echallanReport.dobj.remark}"/>
+                        <h:outputLabel value=" Hearing Date:" styleClass="right-space bottom-space " rendered="#{not empty echallanReport.dobj.hearing_date}"/>
+                        <h:outputText value="#{echallanReport.dobj.hearing_date}" rendered="#{not empty echallanReport.dobj.hearing_date}" />
+                        <h:outputLabel value=" Court Name:" styleClass="right-space bottom-space " rendered="#{not empty echallanReport.dobj.referCourt}"/>
+                        <h:outputText value="#{echallanReport.dobj.referCourt}" rendered="#{not empty echallanReport.dobj.referCourt}"/>
+                        <h:outputLabel value=" Magistrate Name:" styleClass="right-space bottom-space " rendered="#{not empty echallanReport.dobj.magistrateName}"/>
+                        <h:outputText value="#{echallanReport.dobj.magistrateName}" rendered="#{not empty echallanReport.dobj.magistrateName}"/>
+                    </h:panelGrid>
+                </div>
+                <div class="datatable-panel" style="margin: 0px auto;">
+                    <p:dataTable value="#{echallanReport.accusedOffenceList}" styleClass="border-transparent" rowIndexVar="rowIndex"
+                                 var="list" rendered="#{echallanReport.accusedOffenceList.size()>0?true:false}"  >
+                        <f:facet name="header"> 
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6 left-position">
+                                    <h:outputText value=" Accused And Offence Details" styleClass="inline-section top-space font-bold" /></div>
+
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Sr No." styleClass="collumn-width center-position">  
+                            #{rowIndex+1}  
+                        </p:column>  
+                        <p:column headerText="Offence" >
+                            <h:outputText value="#{list.offence}"/>
+                        </p:column>
+                        <p:column headerText="Offence Applied on " styleClass="center-position">
+                            <h:outputText value="#{list.accused}" />
+                        </p:column>
+                        <p:column styleClass="center-position">
+                            <f:facet name="header"><h:outputText value="Offence &lt;br /&gt; Amount" escape="false" /></f:facet>
+                            <h:outputText value="#{list.offence_amnt}" />
+                        </p:column>
+                        <p:column styleClass="center-position">
+                            <f:facet name="header"><h:outputText value="Section &lt;br /&gt; Name" escape="false" /></f:facet>
+                            <h:outputText value="#{list.section}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="table-width-three bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                    <br />
+                    <h:panelGrid columns="3" styleClass="left-position datatable-panel-100" style="margin: 0 auto;">
+                        <h:outputLabel value=""  styleClass="left-position bottom-space"/>
+                        <h:outputLabel value=" "  styleClass="center-position bottom-space"/>
+                        <h:outputLabel value="#{echallanReport.dobj.chal_officer}"  styleClass="right-position bottom-space"/>
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-three bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                    <br />
+                    <h:panelGrid columns="3" styleClass="left-position datatable-panel-100" style="margin: 0 auto;">
+                        <h:outputLabel value="Signature Of Driver/Conductor"  styleClass="left-position bottom-space"/>
+                        <h:outputLabel value="Signature Of Witness "  styleClass="center-position bottom-space"/>
+                        <h:outputLabel value="Signature &amp;Designation Of VCR issuing Officer"  styleClass="right-position bottom-space"/>
+                    </h:panelGrid>
+                </div>
+                <div class="bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                    <br />
+                    <br />
+                    <span>Copy to the owner/driver/person in posession control of motor vehicle to compound the offence on payment 
+                        of prescribed fine of Rs. <h:outputText value="#{echallanReport.dobj.compFee}" />/- or produce the demanded documents within 15 days before RTO -
+                        <h:outputText value="#{echallanReport.dobj.rto_name}" />, or appear before the court of SDJM/JMFC/Transport Magistrate- <h:outputText value="#{echallanReport.dobj.rto_name}" /> for adjudication of the case.</span>
+                </div>
+                <div class="table-width-two bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                    <br />
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100" style="margin: 0 auto;">
+                        <h:outputLabel value=""  styleClass="left-position left-space bottom-space"/>
+                        <h:outputLabel value="#{echallanReport.dobj.chal_officer} "  styleClass="right-position right-space bottom-space"/>
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-two bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                    <br />
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100" style="margin: 0 auto;">
+                        <h:outputLabel value="Signature of Driver/Owner" styleClass="left-position bottom-space"/>
+                        <h:outputLabel value="Signature of VCR issuing Officer"  styleClass="right-position bottom-space"/>
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <div class="page-break"></div>
+            <p:outputPanel rendered="#{echallanReport.dobj.adCompFee ne null and echallanReport.dobj.adCompFee ne 0}">
+
+                <div class="position-relative bottom-space right-space" >
+                    <div class="center-position">
+                        <h:outputText value="#{echallanReport.dobj.rcpt_heading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                    </div>
+                    <div class="center-position">
+                        <h:outputText value="#{echallanReport.dobj.rcpt_sub_heading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                    </div>
+
+                    <div class="center-position bottom-space">
+                        <span class="font-bold report-subheader"> <h:outputText value="Cash Receipt"/> </span>
+                    </div>
+
+                </div>
+
+                <div class="inline-section qrcode-position-absolute">
+                    <pe:qrCode 
+                        rendered="#{echallanReport.renderQr}"
+                        renderMethod = "canvas"
+                        text="#{echallanReport.dobj.vcr_no}"
+                        label="#{echallanReport.dobj.vehicle_no}"
+                        size="110"
+                        ecLevel="H"       
+                        radius="0.5"
+                        fillColor="#000000"/>
+                </div>
+                <br />
+                <br />
+
+                <div class="table-width-four bottom-space top-space">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputLabel value="Receipt No:" styleClass="right-space bottom-space" />
+                        <h:outputText value="#{echallanReport.dobj.reciept_no}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Challan Date:" styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{echallanReport.dobj.chal_date}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Received From:" styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{echallanReport.dobj.owner_name}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Receipt Date:" styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{echallanReport.dobj.chal_date}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Vehicle No:" styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{echallanReport.dobj.vehicle_no}" styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="Challan No:" styleClass="right-space bottom-space"/>
+                        <h:outputText value="#{echallanReport.dobj.vcr_no}" styleClass="right-space bottom-space" />
+                        <h:outputLabel value="Coming From:" styleClass="right-space bottom-space" rendered="#{not empty cashReportBean.coming_from}"/>
+                        <h:outputText value="#{echallanReport.dobj.commingFrom}" styleClass="right-space bottom-space" rendered="#{not empty cashReportBean.coming_from}" /> 
+                        <h:outputLabel value="Going To:" styleClass="right-space bottom-space" rendered="#{not empty cashReportBean.going_to}"/>
+                        <h:outputText value="#{echallanReport.dobj.goingTo}" styleClass="right-space bottom-space" rendered="#{not empty cashReportBean.going_to}" />
+                    </h:panelGrid>
+                </div>
+
+
+
+                <p:dataTable value="#{echallanReport.accusedOffenceList}" styleClass="border-transparent" rowIndexVar="rowIndex"
+                             var="list" rendered="#{echallanReport.accusedOffenceList.size()>0?true:false}"  >
+                    <f:facet name="header"> 
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6 left-position">
+                                <h:outputText value=" Accused And Offence Details" styleClass="inline-section top-space font-bold" /></div>
+
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Sr No." styleClass="collumn-width center-position">  
+                        #{rowIndex+1}  
+                    </p:column>  
+                    <p:column headerText="Offence" >
+                        <h:outputText value="#{list.offence}"/>
+                    </p:column>
+                    <p:column headerText="Offence Applied on " styleClass="center-position">
+                        <h:outputText value="#{list.accused}" />
+                    </p:column>
+                    <p:column styleClass="center-position">
+                        <f:facet name="header"><h:outputText value="Offence &lt;br /&gt; Amount" escape="false" /></f:facet>
+                        <h:outputText value="#{list.offence_amnt}" />
+                    </p:column>
+                    <p:column styleClass="center-position">
+                        <f:facet name="header"><h:outputText value="Section &lt;br /&gt; Name" escape="false" /></f:facet>
+                        <h:outputText value="#{list.section}" />
+                    </p:column>
+                </p:dataTable>
+
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <hr />
+                </div>
+                <div class="table-width-three">
+                    <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value=" Compounding Fess Rs. #{echallanReport.dobj.compFee}" rendered="#{not empty cashReportBean.cmpd_amt}"/>                      
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="Advance Compounding Fess Rs. #{echallanReport.dobj.adCompFee}" rendered="#{not empty cashReportBean.cmpd_amt}"/>                      
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="Balance Compounding Fess Rs. #{echallanReport.dobj.totalFee}" rendered="#{not empty cashReportBean.cmpd_amt}"/>                      
+                    </h:panelGrid>
+                </div>
+
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="left-position datatable-panel-100">
+                        <h:outputText value="GRAND TOTAL (in Rs): #{echallanReport.dobj.totalFee}" styleClass=" font-bold" />
+                        <h:outputText value="GRAND TOTAL (in Words): #{echallanReport.numToWord}" styleClass=" font-bold "  />
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-two bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                    <br />
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100" style="margin: 0 auto;">
+                        <h:outputLabel value=""  styleClass="left-position left-space bottom-space"/>
+                        <h:outputLabel value="#{echallanReport.dobj.chal_officer} "  styleClass="right-position right-space bottom-space"/>
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-two bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                    <br />
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100" style="margin: 0 auto;">
+
+                        <h:outputLabel value="Signature of VCR issuing Officer"  styleClass="right-position bottom-space"/>
+                    </h:panelGrid>
+                </div>
+
+
+
+
+
+
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

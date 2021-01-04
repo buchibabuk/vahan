@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="#{printtaxdfltrRegnNowise.returnURL}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="tax" value="#{printtaxdfltrRegnNowise.taxDemandNoticeReportlist}" >
+                <!--                <div class="center-position">
+                                    <h:outputText value="BOOK POST"  styleClass="font-bold report-header text-uppercase bottom-line"/>
+                                </div>-->
+                <div class="center-position">
+                    <h:outputText value="#{tax.rcpt_heading}"  styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{tax.rcpt_subheading}" styleClass="font-bold report-header text-uppercase " escape="false"/>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{tax.offName}" styleClass="font-bold report-header text-uppercase "/>
+                </div>
+                <div class="top-space datatable-panel" style="margin: 0 auto;">
+                    <table class="table-width-two datatable-panel-100 bottom-space">
+                        <tr>
+                            <td class="left-position">
+                                <br/>
+                                <h:outputText value="Memo No: _______________________" styleClass="font-bold"/>
+                            </td>
+                            <td class="right-position">
+                                <br/>
+                                <h:outputText value="Dated: #{tax.printDate}" styleClass="font-bold"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="left-position">
+                                <br/>
+                                <div class="font-bold">From:</div>
+                                <div class="">TAXING OFFICER</div>
+                                <div><h:outputText value="#{tax.offName}"/></div>
+                            </td>                            
+                        </tr>
+                        <tr>                            
+                            <td class="left-position">
+                                <br/>
+                                <div class="font-bold">To:</div>
+                                <div><h:outputText value="#{tax.owner_name}"/></div>
+                                <div><h:outputText value="#{tax.address}"/></div>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div class="top-space font-bold">
+                        Sub: Tax demand notice for motor vehicle no. <h:outputText value="#{tax.regn_no}"/>
+                    </div>
+                    <p class="top-space">
+                        <h:outputText value="#{tax.taxNoticeHead4}" escape="false"/> 
+                        <h:outputText value="#{tax.tax_cleared_upto}" class="font-bold"/> 
+                        Against the aforementioned vehicle.
+                    </p>
+                    <p class="top-space">  
+                        <h:outputText value="#{tax.taxNoticeHead5}" escape="false"/> 
+                    </p>
+                    <p class="top-space">
+                        Treat this is URGENT.
+                    </p>
+                    <div class="right-position">
+                        <br/>
+                        Taxing Officer
+                        <br/>
+                        <h:outputText value="#{tax.offName} #{tax.stateName}"/>
+                    </div>
+                    <p>NOTE: this being computer generated notice - requires no signature.</p>                    
+                </div>
+                <div class="page-break"></div>
+            </ui:repeat>
+        </h:form>
+    </h:body>
+</html>

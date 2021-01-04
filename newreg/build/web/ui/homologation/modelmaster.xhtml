@@ -1,0 +1,549 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Model Master</h1>
+                </div>
+            </div>
+            <p:panel id="actionPanel" styleClass="datatable-panel bottom-space" header="Add/Remove Models">     
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">&nbsp;</div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="manufacturer_cd" value="Manufacturer" />
+                        </label>
+                        <p:selectOneMenu id="manufacturer_cd" value="#{modeldetails.cb_maker}"  filter="true"> 
+                            <f:selectItem itemLabel="Select Manufacturer"  itemValue="-1" noSelectionOption="true"  />                                        
+                            <f:selectItems value="#{modeldetails.makerList}" />    
+                        </p:selectOneMenu>
+                    </div>
+                </div>                            
+                <div class="ui-grid-row  center-position">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton id="bt_search" value="Search"   oncomplete="PF('blockUIWidget').unblock()" onstart="PF('blockUIWidget').block();" action="#{modeldetails.searchModelDetails}"  update="recordpanel" />
+                        <p:commandButton id="cmd_maker_reset" value="Reset" 
+                                         process="@this" >
+                            <p:ajax update="recordpanel,manufacturer_cd totalModelistTable"  listener="#{modeldetails.reset}" resetValues="true" />
+                        </p:commandButton>
+                        <p:blockUI widgetVar="blockUIWidget"> 
+                            <div class="center-position">
+                                <p:graphicImage name="ajax_loader_blue.gif" library="images" height="100px" width="100px"/>
+                            </div>
+                        </p:blockUI>
+                    </div>
+
+                </div>
+                <p:outputPanel id="recordpanel" >
+                    <div class="ui-grid-row">
+                        <!--                        <div class="ui-grid-col-4 resp-blank-height"></div>-->
+                        <div class="ui-grid-col-6 scroll-panel-overflow">
+                            <!--                            <table class="picklist-label">
+                                                            <tr>
+                                                                <td><p:outputLabel value="Available Models Approved By TAA" rendered="#{modeldetails.panelflag}"/></td>
+                                                                <td>&#160;</td>
+                                                                <td><p:outputLabel value="#{modeldetails.savelabel}" rendered="#{modeldetails.panelflag}" /></td>
+                                                            </tr>
+                                                        </table>
+                                                        <p:pickList  widgetVar="pickListVar" showSourceFilter="true" showTargetFilter="true" id="model_picklist"  rendered="#{modeldetails.panelflag}" value="#{modeldetails.modelNameList}" var="action" itemLabel="#{action}" itemValue="#{action}">
+                            
+                                                            <p:ajax event="transfer" listener="# {modeldetails.onTransferEvent}"/>
+                            
+                                                        </p:pickList>-->
+
+                            <p:dataTable id="totalModelistTable" var="modelListVar" rendered="#{modeldetails.panelflag}" value="#{modeldetails.sourceList}" selection="#{modeldetails.selectedSourceList}"
+                                         rowIndexVar="index" style="margin-bottom:0"  rowKey="#{modelListVar.maker_wmi_code}"
+                                         paginator="true" paginatorPosition="bottom" paginatorAlwaysVisible="fasle" rows="12">
+                                <f:facet name="header">
+                                    Available Models Approved By TAA
+
+                                    <p:commandButton   value="Save" action="#{modeldetails.saveModelDetails}" rendered="#{modeldetails.panelflag}" update=":masterLayout:selectedModelistTable  :masterLayout:totalModelistTable" >
+                                        <p:confirm header="Confirmation" message="Do you Want to Save"  icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                </f:facet>
+
+
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                <p:column headerText="S.No" style="width:30px"> <p:outputLabel value="#{index +1}"/></p:column>
+                                <p:column headerText="Model Name">
+                                    <h:outputText value="#{modelListVar.model_name}" />
+                                </p:column>
+                                <p:column headerText="Model Code">
+                                    <h:outputText value="#{modelListVar.maker_wmi_code}" />
+                                </p:column>
+
+                                <p:column style="width:16px">
+                                    <p:rowToggler />
+                                </p:column>
+
+                                <p:rowExpansion>
+
+                                    <p:outputPanel id="carDetail" >
+                                        <div class="table-width-oneforth bottom-space ">
+                                            <h:panelGrid columns="2" styleClass="left-position datatable-panel" style="border-color: #ffffff !important;">
+                                                <h:outputLabel value="UMRN/Model Code:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.maker_wmi_code}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Maker Name:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.maker_descr}" styleClass="right-space" />
+                                                <h:outputLabel value="Model Name:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.model_name}" styleClass="right-space" />
+                                                <h:outputLabel value="Vehicle Class:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.vch_class}(#{modelListVar.vch_catg})" styleClass="right-space" /> 
+                                            </h:panelGrid>
+                                        </div>
+                                        <div class="table-width-four  bottom-space">
+                                            <h:panelGrid columns="4" styleClass="left-position datatable-panel border-none" style="border-color: #ffffff !important;">
+                                                <h:outputLabel value="Emission Norms:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.norms_descr}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Fuel:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.fuelDescr}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Unladen Weight(kg):" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.unld_weight}" styleClass="right-space" />
+                                                <h:outputLabel value="GVW(kg):" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.gvw}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Engine/ &lt;br /&gt; Motor Power(kw):" styleClass="right-space font-bold" escape="false" />
+                                                <h:outputLabel value="#{modelListVar.engine_power}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Bi Fuel Engine/&lt;br /&gt; Motor Power(kw):" styleClass="right-space font-bold" escape="false" />
+                                                <h:outputLabel value="#{modelListVar.engine_power_bifuel}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Cubic Capacity:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.cubic_cap}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Seating Capacity &lt;br /&gt;(Including Driver):" styleClass="right-space font-bold" escape="false" />
+                                                <h:outputLabel value="#{modelListVar.seat_cap}" styleClass="right-space" /> 
+                                                <h:outputLabel value="No of Cylinder:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.no_of_cyl}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Vehicle Make As:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.vch_make_as}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Body Type:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.body_type}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Wheel Base(mm):" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{modelListVar.wheelbase}" styleClass="right-space" /> 
+                                            </h:panelGrid>
+                                        </div>
+
+                                        <p:panel id="pnl_tra" header="Transport Details"  collapsed="2" >
+
+                                            <p:panel header="Axle Details (Size and Ply rating of tyre)">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Front :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.f_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Rear :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.r_axle_descp}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Tandem :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.t_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other1 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o1_axle_descp}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other2 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o2_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other3 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o3_axle_descp}" />
+                                                    </div>
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other4 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o4_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other5 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o5_axle_descp}" />
+                                                    </div>
+                                                </div>
+                                            </p:panel>
+                                            <p:panel header="Axle Weight (kgs)" >
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Front :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.f_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Rear :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.r_axle_weight}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Tandem :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.t_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other1 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o1_axle_weight}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other2 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o2_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other3 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o3_axle_weight}" />
+                                                    </div>
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other4 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o4_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other5 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.o5_axle_weight}" />
+                                                    </div>
+                                                </div>
+                                            </p:panel>
+
+
+                                            <p:panel header="in (mm)">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Overall Length :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.length}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Overall Width :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.width}" />
+                                                    </div>
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Overall Height" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.height}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Front Over Hang :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.f_overhang}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-12">
+                                                        <h:outputText value="Rear Over Hang" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{modelListVar.r_overhang}" />  
+                                                    </div>
+
+                                                </div>
+
+                                            </p:panel>
+
+                                        </p:panel>
+
+
+                                    </p:outputPanel>
+
+
+                                </p:rowExpansion>
+
+                            </p:dataTable>
+
+
+                        </div>
+
+                        <div class="ui-grid-col-6 resp-blank-height">
+                            <p:dataTable id="selectedModelistTable" var="targetListVar" paginator="true" rows="12" paginatorPosition="bottom" rendered="#{modeldetails.panelflag}" 
+                                         paginatorAlwaysVisible="false" value="#{modeldetails.targetList}" selection="#{modeldetails.selectedTargetList}" 
+                                         rowIndexVar="index" style="margin-bottom:0" rowKey="#{targetListVar.maker_wmi_code}">
+                                <f:facet name="header">
+                                    Saved Models For Registration
+
+                                    <p:commandButton   value="Remove" action="#{modeldetails.removeModelDetails}" rendered="#{modeldetails.panelflag}" update=":masterLayout:selectedModelistTable  :masterLayout:totalModelistTable" >
+                                        <p:confirm header="Confirmation" message="Do you Want to Save"  icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                </f:facet>
+                                <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                <p:column headerText="S.No" style="width:30px" > <p:outputLabel value="#{index +1}"/></p:column>
+                                <p:column headerText="Model Name">
+                                    <h:outputText value="#{targetListVar.model_name}" />
+                                </p:column>
+                                <p:column headerText="Model Code">
+                                    <h:outputText value="#{targetListVar.maker_wmi_code}" />
+                                </p:column>
+
+                                <p:column style="width:16px">
+                                    <p:rowToggler />
+                                </p:column>
+
+                                <p:rowExpansion>
+
+                                    <p:outputPanel id="carDetail" >
+                                        <div class="table-width-oneforth bottom-space ">
+                                            <h:panelGrid columns="2" styleClass="left-position datatable-panel" style="border-color: #ffffff !important;">
+                                                <h:outputLabel value="UMRN/Model Code:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.maker_wmi_code}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Maker Name:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.maker_descr}" styleClass="right-space" />
+                                                <h:outputLabel value="Model Name:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.model_name}" styleClass="right-space" />
+                                                <h:outputLabel value="Vehicle Class:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.vch_class}(#{targetListVar.vch_catg})" styleClass="right-space" /> 
+                                            </h:panelGrid>
+                                        </div>
+                                        <div class="table-width-four  bottom-space">
+                                            <h:panelGrid columns="4" styleClass="left-position datatable-panel border-none" style="border-color: #ffffff !important;">
+                                                <h:outputLabel value="Emission Norms:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.norms_descr}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Fuel:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.fuelDescr}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Unladen Weight(kg):" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.unld_weight}" styleClass="right-space" />
+                                                <h:outputLabel value="GVW(kg):" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.gvw}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Engine/ &lt;br /&gt; Motor Power(kw):" styleClass="right-space font-bold" escape="false" />
+                                                <h:outputLabel value="#{targetListVar.engine_power}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Bi Fuel Engine/&lt;br /&gt; Motor Power(kw):" styleClass="right-space font-bold" escape="false" />
+                                                <h:outputLabel value="#{targetListVar.engine_power_bifuel}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Cubic Capacity:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.cubic_cap}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Seating Capacity &lt;br /&gt;(Including Driver):" styleClass="right-space font-bold" escape="false" />
+                                                <h:outputLabel value="#{targetListVar.seat_cap}" styleClass="right-space" /> 
+                                                <h:outputLabel value="No of Cylinder:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.no_of_cyl}" styleClass="right-space" /> 
+
+                                                <h:outputLabel value="Vehicle Make As:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.vch_make_as}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Body Type:" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.body_type}" styleClass="right-space" /> 
+                                                <h:outputLabel value="Wheel Base(mm):" styleClass="right-space font-bold" />
+                                                <h:outputLabel value="#{targetListVar.wheelbase}" styleClass="right-space" /> 
+                                            </h:panelGrid>
+                                        </div>
+
+                                        <p:panel id="pnl_tra" header="Transport Details"  collapsed="2" >
+
+                                            <p:panel header="Axle Details (Size and Ply rating of tyre)">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Front :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.f_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Rear :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.r_axle_descp}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Tandem :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.t_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other1 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o1_axle_descp}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other2 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o2_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other3 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o3_axle_descp}" />
+                                                    </div>
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other4 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o4_axle_descp}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other5 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o5_axle_descp}" />
+                                                    </div>
+                                                </div>
+                                            </p:panel>
+                                            <p:panel header="Axle Weight (kgs)" >
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Front :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.f_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Rear :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.r_axle_weight}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Tandem :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.t_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other1 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o1_axle_weight}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other2 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o2_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other3 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o3_axle_weight}" />
+                                                    </div>
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other4 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o4_axle_weight}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Other5 :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.o5_axle_weight}" />
+                                                    </div>
+                                                </div>
+                                            </p:panel>
+
+
+                                            <p:panel header="in (mm)">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Overall Length :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.length}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Overall Width :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.width}" />
+                                                    </div>
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Overall Height" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.height}" />
+                                                    </div>
+                                                    <div class="ui-grid-col-6">
+                                                        <h:outputText value="Front Over Hang :" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.f_overhang}" />
+                                                    </div>
+
+                                                </div>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-12">
+                                                        <h:outputText value="Rear Over Hang" />
+                                                        <p:spacer height="20px" width="20px"></p:spacer>
+                                                        <h:outputText value="#{targetListVar.r_overhang}" />  
+                                                    </div>
+
+                                                </div>
+
+                                            </p:panel>
+
+                                        </p:panel>
+
+
+                                    </p:outputPanel>
+
+
+                                </p:rowExpansion>>
+
+                            </p:dataTable>
+
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+                <div class="ui-grid-row red">
+                    <div class="ui-grid-col-12">
+                        <span class="font-bold">TAA:</span>Type Approval Agency
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <span class="font-bold">Note: </span>This option is for registering the models approved by the various type approval agencies on the Homologation Portal. Only these models will be available for new Registration.
+                    </div>
+                </div>
+
+            </p:panel>  
+
+        </div>
+    </ui:define>    
+</ui:composition>
+

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body  onload="window.print();">
+        <h:form id="RcDispReturnHOInfo" prependId="false">
+            <div class="center-position">
+                <p:button id="back" value="Back" outcome="/ui/reports/formReturnRCDispatchByHand.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{RtnRCDispByHandReportBean.image_logo}" style="width: 100px;" rendered="#{RtnRCDispByHandReportBean.show_image_logo}" />
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position">
+                            <h:outputText value="#{RtnRCDispByHandReportBean.rcpt_heading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                        <div class="center-position bottom-space">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{RtnRCDispByHandReportBean.rcpt_subheading} [ #{RtnRCDispByHandReportBean.officeName} ]" escape="false"/> </span>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{RtnRCDispByHandReportBean.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{RtnRCDispByHandReportBean.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <p:outputPanel id="rptSrchByDateLblHO" rendered="#{RtnRCDispByHandReportBean.retDtWiseReport}">
+                <table class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <tr>
+                        <td class="left-position top-align">
+                            <span class="font-bold"> From Date:  </span> <h:outputText value="#{RtnRCDispByHandReportBean.fromDateStr}"/>
+                            <span class="font-bold"> To Date:  </span> <h:outputText value="#{RtnRCDispByHandReportBean.fromDateTo}"/>
+                        </td>
+                        <td class="right-position top-align">
+                            <span class="font-bold"> Printed On:  </span> <h:outputText value="#{RtnRCDispByHandReportBean.printed_on}"/>
+                        </td>
+                    </tr>
+                </table>
+            </p:outputPanel>
+            <p:outputPanel id="rptSrchByApplOrRegnLblHO" rendered="#{RtnRCDispByHandReportBean.applOrRegnWiseReport}">
+                <table class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <tr>
+                        <td class="left-position top-align">
+                            <span class="font-bold"> <h:outputText value="#{RtnRCDispByHandReportBean.rptSearchLabel}"/>:  </span> <h:outputText value="#{RtnRCDispByHandReportBean.enterNo}"/>
+                        </td>
+                        <td class="right-position top-align">
+                            <span class="font-bold"> Printed On:  </span> <h:outputText value="#{RtnRCDispByHandReportBean.printed_on}"/>
+                        </td>
+                    </tr>
+                </table>
+            </p:outputPanel>
+
+
+            <div class="ui-grid-row top-space position-relative">
+                <div class="ui-grid-col-12">
+                    <p:dataTable id="dt_rcRetInfoHO" value="#{RtnRCDispByHandReportBean.returnRCDispatchByHandReportDobjList}" 
+                                 var="returnList" styleClass="border-transparent" style="font-size: 11px ;"
+                                 rowIndexVar="index">        
+                        <p:column headerText="Sr. No" styleClass="collumn-width center-position">                            
+                            <h:outputText value="#{index+1}" />
+                        </p:column>
+                        <p:column headerText="Owner Name">                            
+                            <h:outputLabel value="#{returnList.ownerName}" />
+                        </p:column>
+                        <p:column headerText="Regn No" style="width: 55px;">                            
+                            <h:outputLabel value="#{returnList.regnNo}" />
+                        </p:column>
+                        <p:column headerText="Barcode" style="width: 55px;">                            
+                            <h:outputLabel value="#{returnList.dispatch_ref_no}" />
+                        </p:column> 
+                        <p:column headerText="Address">                            
+                            <h:outputLabel value="#{returnList.caddress}" />
+                        </p:column>
+                        <p:column headerText="Reason" >                            
+                            <h:outputLabel value="#{returnList.returnReason}" />
+                        </p:column>
+                        <p:column headerText="Remark">                            
+                            <h:outputLabel value="#{returnList.remark}" />
+                        </p:column>
+                        <p:column headerText="Handed Over on" style="width: 80px;">                            
+                            <h:outputLabel value="#{returnList.dispatch_rc_handed_on}"/>
+                        </p:column>  
+                        <p:column headerText="Handed Over By" style="width: 80px;">                            
+                            <h:outputLabel value="#{returnList.dispatch_rc_handed_by}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </h:body>
+</html>

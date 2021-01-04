@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <div class="ui-grid ui-grid-responsive">
+        <f:subview id="app_disapp_form">
+            <p:outputPanel id="panelExemptionDtls">
+                <p:panel id="pnlExemption" header="Exemption Order Details" rendered="#{workBench.renderExemptionOD}">
+                    <div class="ui-grid-row">   
+                        <div class="ui-grid-col-12 left-position">
+                            <h:outputText escape="false" value="#{workBench.exemptionOD}"/>
+                        </div>
+                    </div> 
+                </p:panel>
+            </p:outputPanel>
+            <p:panel id="panelMoveCancel" styleClass="top-space bottom-space" binding="#{approveImpl.panelMoveCancel}">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel rendered="#{workBench.main_panal_visibililty}">
+                            <p:menuButton value="Save-Options" rendered="#{workBench.main_panal_visibililty}">
+                                <p:menuitem id="fileMove" value="File Movement" onclick="PF('panelAppDisapp').show();" icon="ui-icon-transferthick-e-w" immediate="true">
+                                </p:menuitem>
+                                <p:menuitem>
+                                    <p:commandLink styleClass="ui-menuitem-link"  action="#{comparisonBean.saveChangedData(true)}" ajax="false"
+                                                   onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();">
+                                        <h:outputText styleClass="ui-menuitem-icon ui-icon ui-icon-disk"/>
+                                        <h:outputText styleClass="ui-menuitem-text" value="Save" />
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandLink>
+                                </p:menuitem>
+                                <p:separator />
+                                <p:menuitem value="Homepage" url="/vahan/home.xhtml" icon="ui-icon-home" />
+                            </p:menuButton>
+                            <p:button value="Back" outcome="home" onclick="PF('block_panel').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel rendered="#{!workBench.main_panal_visibililty}">
+<!--                           <p:commandButton value="Save" actionListener="#{comparisonBean.save_ActionListener}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" icon="ui-icon-disk">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>-->
+                            <p:commandButton value="Save And File Movement" actionListener="#{comparisonBean.showPartialSavedDetails()}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" icon="ui-icon-disk">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:button value="Back" outcome="home" onclick="PF('block_panel').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:dialog id="entryDetailsId" widgetVar="entryDetails_dlg1" header="Entry Details" dynamic="true" modal="true" width="50%">
+                <p:outputPanel id="entryDetailsDialogPanel">
+                    <p:dataTable id="detailTableId" value="#{comparisonBean.entryDetails}" var="getDetail" rowIndexVar="index">
+                        <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}."/></p:column>  
+                        <p:column headerText="Category">#{getDetail.key}</p:column>
+                        <p:column headerText="Value">#{getDetail.value}</p:column>
+                    </p:dataTable>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton id = "submitBtn" widgetVar="submitBtn" value="Are You Sure?"  actionListener="#{comparisonBean.save_ActionListener}" onclick="PF('block_dialog').show();" 
+                                             oncomplete="PF('block_dialog').hide();PF('entryDetails_dlg1').hide();" icon="ui-icon-disk">
+                                <f:param name="saveType" value="complete" />
+                            </p:commandButton>
+                        </div>
+                        <!--   submitBtn.disable();submitBtn.enable();-->
+                    </div>
+                    <p:blockUI block="entryDetailsDialogPanel" widgetVar="block_dialog">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+            </p:dialog>
+
+            <p:blockUI block="panelMoveCancel" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+
+
+            <p:dialog header="File Movement" widgetVar="panelAppDisapp" modal="true" dynamic="true" closeOnEscape="true">
+                <p:panel id="panelAppDisapp">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-6">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Office Remarks " for="off_remark"/>
+                            </label>
+                            <p:inputTextarea id="off_remark" binding="#{approveImpl.office_remark}" maxlength="100"
+                                             cols="40" rows="1" placeholder="Office Remark ?" style="text-transform: uppercase" converter="toUpperCaseConverter"/>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:selectOneRadio id="bt_status"  binding="#{approveImpl.newStatus}" onchange="return showSeatList();" 
+                                              required="false" requiredMessage="You have to select atleast one option while Save"  layout="grid" columns="1">
+
+                                <f:selectItem itemLabel="Proceed to Next Seat" itemValue="#{constant.STATUS_COMPLETE}"/>   <!-- Constant values comes from properties file -->
+                                <f:selectItem itemLabel="Hold Due to Incomplete Application" itemValue="#{constant.STATUS_DISPATCH_PENDING}"/>
+                                <f:selectItem itemLabel="Revert Back for Rectification" itemValue="#{constant.STATUS_REVERT}" binding="#{approveImpl.revertBack}"/>
+                                <p:ajax event="click" listener="#{approveImpl.reverBackListener}" update="panelAppDisapp"/>
+                            </p:selectOneRadio>
+
+                            <h:outputText/>
+                            <p:selectOneMenu id="prevAction" binding="#{approveImpl.prevAction}">
+                                <f:selectItems value="#{workBench.prevRoleLabelVale}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                    <p:separator style="color: green"/>
+
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:spacer height="30"/>
+                            <p:commandLink value="Save" action="#{workBench.approveActionPerformed}" ajax="false"
+                                           style="padding: .3em 1em;"
+                                           styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-button-text ui-c"
+                                           onclick="PF('bui').show();" oncomplete="PF('panelAppDisapp').hide();PF('bui').hide();">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandLink>
+                            <p:blockUI block="panelAppDisapp" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                            <p:commandButton value="Compare Changes"  oncomplete="PF('compChangesDlg').show();" update="compChangesDlgId" ajax="true" immediate="false" icon="ui-icon-newwin" action="#{comparisonBean.compareChanges()}" />
+                        </div>
+                    </div>
+
+
+
+                </p:panel>
+            </p:dialog>
+
+
+            <p:dialog  id="compChangesDlgId" header="File Movement" widgetVar="compChangesDlg" modal="true" dynamic="true" closeOnEscape="true">
+                <p:dataTable var="comp" value="#{comparisonBean.compareChagnesList}"  paginator="true" rows="10" emptyMessage="No Changes Made by you">
+                    <p:column headerText="Field Name(s)">
+                        <h:outputText value="#{comp.fields}" />
+                    </p:column>
+
+                    <p:column headerText="Old Value(s)">
+                        <h:outputText value="#{comp.old_value}"/>
+                    </p:column>
+
+                    <p:column headerText="New Value(s)">
+                        <h:outputText value="#{comp.new_value}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:dialog>
+
+            <p:dialog id="reasonDialog" header="Add Reasons" widgetVar="reasonDlg" modal="true" dynamic="true" closeOnEscape="true">
+                <p:selectManyMenu id="reasons" value="#{approveImpl.selectedReasonList}" style="height: 150px;"
+                                  showCheckbox="true">
+                    <f:selectItems value="#{approveImpl.reasonList}" />
+                </p:selectManyMenu>
+                <p:commandButton  value="Save" action="#{approveImpl.saveWithReason()}" 
+                                  ajax="true" oncomplete="PF('reasonDlg').hide();" icon="ui-icon-disk">
+                </p:commandButton>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+        </f:subview>
+    </div>
+</html>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="bootstrap-3.3.1" name="css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <script>
+            var formSubmitted = false;
+            function onSubmitButton() {
+                if (!formSubmitted) {
+                    formSubmitted = true;
+                } else {
+                    // disable event propagation if form is already submitted
+                    event.preventDefault();
+                }
+            }
+        </script>
+    </h:head>
+    <h:body>
+        <h:form id="formtaxEndDtlsPrint" prependId="false">
+            <div class="center-position">
+                <p:commandButton value="Back" action="/ui/reports/formTaxEndorsementReport.xhtml?faces-redirect=true" onclick="PF('bui').show();" 
+                                 icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none"/>      
+                <p:commandButton onclick="window.print();" icon="ui-icon-print" value="Print" styleClass="display-none" />
+            </div>
+            <p:outputPanel  styleClass="bottom-space">
+                <div class="position-relative">
+                     <div class="position-relative">
+                            <p:outputPanel  rendered="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+                        </div>
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position" style="width: 70px;">
+                                <p:graphicImage library="images" name="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.image_logo}" style="width: 100px;" rendered="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.show_image_logo}" />
+                            </td>
+                            <td class="center-position">
+                                <div class="center-position">
+                                    <span class="font-bold report-header bottom-line text-uppercase report-subheader"> Tax Endorsement Certificate </span>
+                                </div>
+                                <div class="center-position">
+                                    <h:outputText value="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+                                <div class="center-position">
+                                    <h:outputText value="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.subHeader}" styleClass="font-bold report-header bottom-line text-uppercase" escape="false"/>
+                                </div>
+                                <div class="center-position">
+                                    <h:outputText value="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.off_name}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+
+                            </td>
+                            <td class="right-position" style="width: 70px;">
+                                <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                    <ui:param name="qrcodevalue" value="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.qrtext}"/>   
+                                    <ui:param name="renderqrCode" value="true"/>   
+                                </ui:include>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel  value="Vehicle Number #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.regn_no} Class of Vehicle #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.vch_class_desc}"  styleClass="right-space bottom-space" />
+                </div>
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel  value="Tax at the rate  #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.tax_rate} shall be payable for every  
+                                    #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.noofqtr} (quarter/ year/ 2 year/ 5 year)  with effect from #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.with_effect_from}
+                                    . The Tax shall be paid at any of the Regional Transport offices in the state or can be paid in online using the website parivahan.gov.in. Failure of payment of tax shall attract action under section 11/13 of the Kerala Motor Vehicles Taxation Act 1976."  styleClass="right-space bottom-space" />
+                </div>
+                <div class="datatable-panel" style="margin: 0px auto;">
+                    <table class="datatable-panel-100" style="margin: 0 auto;">
+                        <tr>
+                            <td class="left-position top-align">
+                                <br />
+                                <br /> <h:outputText value="Date of Endorsement : #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.endorsement_date}"  styleClass="right-space "/>
+                            </td>
+                            <td class="right-position top-align">
+                                <div class="left-position inline-section">
+                                    <br />
+                                    <br />Taxation officer
+                                    <br /> Regional Transport office
+                                    <br /> #{taxEndrosmentCertDtlsBean.taxEndrCertDobj.off_name}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </p:outputPanel>
+            
+            <p:outputPanel id="sloganpanel" styleClass="top-space bottom-space" rendered="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.showRoadSafetySlogan}">
+                <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                    <div class="center-position" style="display: inline-block;">
+                        <br />
+                        <h:outputText value="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.roadSafetySloganDobj.english_lang}" /><br/>
+                        <h:outputText value="#{taxEndrosmentCertDtlsBean.taxEndrCertDobj.roadSafetySloganDobj.state_lang}" />
+
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

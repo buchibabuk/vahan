@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <body>        
+        <p:outputPanel rendered="#{printDocXHTML.renderWBPrint}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Offer/Memo No :  " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value=""  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No: " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">                  
+                    <h:outputLabel value="(a) The vehicle should be registered and manufactured as per BS norms." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(b) Seating Capacity should be as per applicable norms." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(c) The vehicle is not covered by any permit of RTA/STA' has to be furnished through affidavit or through concerned authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(d) Certificate of insurance of the proposed vehicle to be produced." styleClass="right-space bottom-space" />                    
+                    <h:outputLabel value="(e) The receipt showing payment of the current Road Tax and Additional Tax in respect of the proposed vehicle to be ." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(f) Copy of Form-22 from the manufacturer of the vehicle for initial certificate of compliance with the pollution standards/safety standards of components and roadworthiness under rule 115(6) read with Rule 115(11)/115(14) of Central Motor Vehicle Rules, 1989." styleClass="right-space bottom-space" />  
+                    <h:outputLabel value="(g) Professional Tax clearance to be produced." styleClass="right-space bottom-space" />  
+                    <h:outputLabel value="(h) Income Tax Certificate to be produced." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(i) Photograph of the bus have to be furnished." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(j) The detail alignment of the route shall be as below with the location of stoppages on the route. The bus terminal points and the certificate of the bus stand for both starting and terminating point from concerned D.M./S.D.O/R.T.O.has to be given." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(k) The following inscriptions shall be written in the Black letters in the yellow band portion on two sides of the bus:-" styleClass="right-space bottom-space" />
+                        <h:outputLabel value="(i) Under STA,West Bengal Permit No. P.St.P. No…….. Valid upto……..." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="(ii) Detailed alignment of the route permit No. is to be written on the bus after obtaining the permit from S.T.A. West Bengal." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(l) Name of the Driver and the Conductor to be employed in the bus along with the  attested copy of the Driver's Driving Licence and the conductor's licence are to be submitted." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(m) Name and address of the garage including the name of the owner of the garage and also the attested copy of the agreement between the grantee of Permit Holder and the Garage owner are required to be furnished." styleClass="right-space bottom-space" />
+                     <h:outputLabel value="(n) Certified copy of the Judgment, if any, passed by the Hon’ble High Court, Kolkata to be submitted." styleClass="right-space bottom-space" />
+                     <h:outputLabel value="(o) Detailed fare chart of the existing approved rate showing stage-wise distance therein and proposed time table has to be furnished during the acceptance of this offer letter." styleClass="right-space bottom-space" />
+                     <h:outputLabel value="(p) All original documents are to be produced before issuing the permit for the said route as and when asked to by the Authority, for usual checking and verifying the documents as furnished to this Authority." styleClass="right-space bottom-space" />                     
+                     <h:outputLabel value="Please note that failing to submit relevant document as aforesaid within the stipulated period of 180 days from the issue of this Offer Letter, will automatically lead to the offer letter liable to be stand cancelled and no further correspondence will be made to you on this matter." styleClass="right-space bottom-space" />                          
+                </h:panelGrid>
+                <h:panelGrid>
+                    <h:outputLabel value="Please note that failing to submit relevant document as aforesaid within the stipulated period of 180 days from the issue of this Offer Letter, will automatically lead to the offer letter liable to be stand cancelled and no further correspondence will be made to you on this matter." styleClass=" font-bold right-space bottom-space" />                         
+                </h:panelGrid>
+
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Secretary .<br/>
+                                State Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> 
+        
+    </body>
+</html>

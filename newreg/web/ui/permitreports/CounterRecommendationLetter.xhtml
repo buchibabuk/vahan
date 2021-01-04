@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/permit/form_newPermit_Print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <br/>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position">
+                        <p:graphicImage library="images" name="#{printDocXHTML.image_logo}" width="80"  rendered="#{printDocXHTML.show_image_logo}" />
+                    </td>
+                    <td>
+                        <div class="center-position ">
+                            <span class="font-bold report-subheader"> <h:outputText value="GOVERNMENT OF #{printDocXHTML.counterDobj.state_cd_from}" rendered="#{!printDocXHTML.renderWbCGAuthPrintCond}"/> </span>
+                            <span class="font-bold report-subheader"> <h:outputText value="STATE TRANSPORT AUTHORITY " rendered="#{printDocXHTML.renderWbCGAuthPrintCond}"/> </span><br/>
+                            <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd} , #{printDocXHTML.counterDobj.state_cd_from}" rendered="#{printDocXHTML.renderWbCGAuthPrintCond}"/> </span>
+                        </div>
+                        <div class="center-position ">
+                            <span class="font-bold report-subheader">
+                                <h:outputText value="#{printDocXHTML.formName}"/><br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}" rendered="#{!printDocXHTML.renderWbCGAuthPrintCond}"/><br/>
+
+                            </span>
+                        </div> 
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <div class="inline-section qrcode-position-absolute">
+                            <pe:qrCode rendered="true"
+                                       renderMethod="canvas" 
+                                       renderMode="0" 
+                                       text="#{printDocXHTML.textQRcode}"
+                                       label="QR Code"
+                                       size="110"
+                                       fillColor="000000" 
+                                       ecLevel="H" 
+                                       radius="0.5"/>
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{printDocXHTML.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{printDocXHTML.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div> 
+            <br/>
+            <br/><br/><br/>
+            <div class="datatable-panel table-width-two" style="margin: 0 auto !important;">
+                <p:outputPanel rendered="#{!printDocXHTML.renderWbCGAuthPrintCond}">
+                <table>
+                    <tr>
+                        <td> </td>
+                        <td>
+                            <div>Authorization No:  <h:outputText value="#{printDocXHTML.passPmtDobj.offer_no}"/></div>
+                            <div>Transport Commissioner’s Office<br/>
+                                <h:outputText value="State :#{printDocXHTML.counterDobj.state_cd_from}"/><br/>
+                                <div>Date:- <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" /></div>
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+                </p:outputPanel>
+                <p:outputPanel rendered="#{printDocXHTML.renderWbCGAuthPrintCond}">
+                    <table><tr>
+                            <td class="left-position left-space"></td>
+                            <td class="right-position" styleClass="font-bold">File No: </td>
+                            
+                        </tr>
+                        <tr>
+                        <td class="left-position left-space">
+                            Authorization No:  <h:outputText value="#{printDocXHTML.passPmtDobj.offer_no}"/></td>
+                            <td class="right-position">
+                            Date:- <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />                            
+                        </td>
+                    </tr> 
+                </table>
+                </p:outputPanel>
+            </div><br/>            
+            <div class="datatable-panel" style="margin: 0 auto !important;">
+                To,<br/>
+                The Secretary,<br/>
+                State Transport Authority,<br/>
+                <h:outputText value="#{printDocXHTML.counterDobj.state_to} / " rendered="#{printDocXHTML.renderWbCGAuthPrintCond}" styleClass="font-bold"/>
+
+            </div><br/><br/><br/> 
+            <!--            madhurendra on 20-11-19-->
+            <div class="position-relative">
+                <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd  eq 'MH'}">
+                    <div class="datatable-panel" style="margin: 0 auto !important;">
+                        Subject :- Recommendation of P.GD.C. in respect of M.V. No. <h:outputText value="#{printDocXHTML.passPmtDobj.regnNo }"/>
+                        for Countersignature of <h:outputText value="#{printDocXHTML.counterDobj.state_to}"/> State.
+                    </div><br/><br/>
+                    <div class="datatable-panel" style="margin: 0 auto !important;">
+                        The Goods Carriage Permit No.  <h:outputText value="#{printDocXHTML.passPmtDobj.offer_no}"/> valid upto  <h:outputText value="#{printDocXHTML.passPmtDobj.validUptoInString}"/> issued by
+                        the Regional Transport Authority,  <h:outputText value="------------"/> in respect of Motor Vehicle No.
+                        <h:outputText value="#{printDocXHTML.passPmtDobj.regnNo}"/> is recommended for countersignature for operation in your state, as per Reciprocal
+                        Trasnsport Agreement between the state of Maharashtra and  <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd_to}"/><br/>
+                        The permit holder is directed to produce the relevant documents at your office on or before
+                        <h:outputText value="------------"/> accompanied by a copy of this letter for obtain ning endorsement of
+                        countersignature.<br/>
+                        The recommendation is against fresh Quota/ Lapsed/ Cancelled Vacancy of Motor Vehicle
+                        No.  <h:outputText value="#{printDocXHTML.passPmtDobj.regnNo }"/> covered by your countersignature No. <h:outputText value="#{printDocXHTML.passPmtDobj.offer_no}"/> lapsed on  <h:outputText value="#{printDocXHTML.passPmtDobj.validUptoInString}"/> or
+                        cancelled vide letter No.  <h:outputText value="------------"/> or any lapsed vacancy.
+                        <br/>
+                        <br/>
+                        <div class="left-position left-space font-bold">
+                            For Secretary,<br/>
+                            State Transport Authority,<br/>
+                            Maharashtra State Mumbai.
+                        </div>
+                        <br/>
+                        <div>
+                            Copy to Shri/ Smt./ <h:outputText value="------------"/> with a
+                            request to produce before the secretary, State Transport Authority, <h:outputText value="------------"/> Goods Carriage
+                            Permit, Registration Certificate, Taxation Certificate and other relevant documents in respect of the
+                            above vehicle on or before <h:outputText value="------------"/> for endorsement of countersignature, failing which the
+                            recommendation will stand revoked. 
+                        </div>
+                        <br/>
+                        <br/>
+                        <div>
+                            For Secretary,<br/>
+                            The Tax due for <h:outputText value="------------"/> State Transport Authority,<br/>
+                            Is payable for one year in advance Maharashtra State Mumbai.
+                        </div>
+                        <div>
+                            TO BE RETURNED TO THE OFFICE OF ISSUED WITHIN 7 DAYS FROM GRANT OF C.S. NO <h:outputText value="------------"/> 2000
+                            <br/>
+                            Returned with compliment to the Secretary, State Transport Authority, Maharashtra state, Mumbai
+                            400 051.<br/>
+                            In accordance with his letter No. /Desk-V/New C/s/ /ON- Dated  <h:outputText value="------------"/>
+                            the owner Shri. <h:outputText value="------------"/>
+                            approached this authority on   <h:outputText value="------------"/> as per recommendation letter referred to
+                            above. The countersignature has been granted to M.V. No. <h:outputText value="------------"/> under C. S. No.
+                            <h:outputText value="------------"/> for the period from  <h:outputText value="------------"/> to  <h:outputText value="------------"/>
+                        </div>
+                    </div>
+                </p:outputPanel>   
+            </div>
+
+            <div class="position-relative">
+                <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd  eq 'WB'}">
+                    <div class="datatable-panel" style="margin: 0 auto !important;">
+                        Subject :- Grant Of Counter Signature of permanent Stage Carriage permit bearing P.St.P no <h:outputText value="Pst.Pno: #{printDocXHTML.passPmtDobj.pmt_no}"/> on the Inter-state route 
+                        from <h:outputText value="#{printDocXHTML.passPmtDobj.floc}" styleClass="font-bold"/>  TO  <h:outputText value="#{printDocXHTML.passPmtDobj.tloc}" styleClass="font-bold"/> Via <h:outputText value="#{printDocXHTML.passPmtDobj.via}" styleClass="font-bold"/>
+                    </div><br/><br/>
+                    <div>
+                        Sir,<br/><br/>
+                        With reference to the subject cited above, I am directed to inform you that a permanent <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_type}"/> bearing Pst.Pno. <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}"/> on the route 
+                        from <h:outputText value="#{printDocXHTML.passPmtDobj.floc}" styleClass="font-bold"/>  TO  <h:outputText value="#{printDocXHTML.passPmtDobj.tloc}" styleClass="font-bold"/> Via <h:outputText value="#{printDocXHTML.passPmtDobj.via}" styleClass="font-bold"/>
+                        has been issued in favour of <h:outputText value="#{printDocXHTML.ownerPmtDobj.owner_name}" styleClass="font-bold"/> for five years w.e.f <h:outputText value="#{printDocXHTML.passPmtDobj.validFromInString}"/> 
+                        to enable him to ply his vehicle no <h:outputText value="#{printDocXHTML.passPmtDobj.regnNo}" styleClass="font-bold"/> for the route mention above. <br/><br/>
+
+                        The permit holder is advised to approach your authority with all required documents for obtaining Counter Signature. You are requested to allow Counter Signature
+                        of the above noted permit up to <h:outputText value="#{printDocXHTML.passPmtDobj.validUptoInString}"/> subject to realization of M.V .Taxes and fees as applicable. 
+                    </div>
+                </p:outputPanel>
+            </div>
+            <div> 
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space"></td>
+                        <td class="right-position"> 
+                            <div class="center-position inline-section"><br/><br/>
+                                <p:graphicImage id="showSignImgOff2" value="#{printDocXHTML.viewSignFileOff1}" rendered="#{printDocXHTML.viewSignFileOff1 ne null}" cache="false" style="height: 50px !important; width: auto;"/>
+                                <br/><br/><br/>
+                                <h:outputText value="Secretary"/><br/>            
+                                <h:outputText value="State Transport Authority"/><br/>                                                            
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd} , #{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>                
+                            Authorization No:  <h:outputText value="#{printDocXHTML.passPmtDobj.offer_no}"/>                           
+                        </td>
+                        <td class="right-position">                          
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="position-relative">
+                <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd  eq 'WB'}">
+                  
+                    Copy forwarded for information to: <br/><br/>
+
+                    Shri <h:outputText value="#{printDocXHTML.ownerPmtDobj.owner_name}"/> <br/>
+                    S/o <h:outputText value="#{printDocXHTML.ownerPmtDobj.f_name}"/> <br/>
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add1}"/><br/>
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add2}"/><br/>
+                    <h:outputText value="#{printDocXHTML.ownerPmtDobj.c_add3}"/><br/>
+                    Dist:<h:outputText value="#{printDocXHTML.ownerPmtDobj.districtInString}"/>,Pin:<h:outputText value="#{printDocXHTML.ownerPmtDobj.c_pincode}"/>   <br/><br/>
+
+                    <div> 
+                        <table class="datatable-panel-100">
+                            <tr>
+                                <td class="right-position">
+                                    <div class="center-position inline-section">
+                                        <p:graphicImage id="showSignImgOff1" value="#{printDocXHTML.viewSignFileOff1}" rendered="#{printDocXHTML.viewSignFileOff1 ne null}" cache="false" style="height: 50px !important; width: auto;"/>
+                                        <br/>
+                                        <h:outputText value="Secretary"/><br/>            
+                                        <h:outputText value=" State/Regional Transport Authority/RTO" rendered="#{!printDocXHTML.renderWbCGAuthPrintCond}"/><br/>
+                                        <h:outputText value=" State Transport Authority" rendered="#{printDocXHTML.renderWbCGAuthPrintCond}"/><br/>
+                                        <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd} , #{printDocXHTML.passPmtDobj.state_cd}"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </p:outputPanel>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

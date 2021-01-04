@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content22">
+        <h:form prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1><p:outputLabel value="#{conSignAuth.header}" styleClass="header-main"/></h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages  showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                </div>
+            </div>            
+            <p:outputPanel id="mainPanel" rendered="#{conSignAuth.panelHideShow}">
+                <!--                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"/>
+                                    <div class="ui-grid-col-4">
+                                        <p:selectOneRadio id="select_task" value="#{conSignAuth.selectOneRadio}" >
+                                            <f:selectItem itemLabel="By Registration No." itemValue="1"/>
+                                                                        <f:selectItem itemLabel="By Permit No." itemValue="2"/>
+                                            <f:ajax event="click" render="mainPanel All_detail:counterSignAuth"/>
+                                        </p:selectOneRadio>
+                                    </div>
+                                </div>-->
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="lb_regnNo" value="#{label.regn_no}" rendered="#{conSignAuth.selectOneRadio eq '1'}"/>
+                        </label>
+                        <p:inputText id="regno" required="true" styleClass="text-uppercase" disabled="#{conSignAuth.regnNoDisable}"
+                                     value="#{conSignAuth.countDobj.regn_no}" autocomplete="off"
+                                     maxlength="10" size="28" rendered="#{conSignAuth.selectOneRadio eq '1'}">
+                            <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>                                                             
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="lb_pmtNo" value="#{pmtLabel.pmt_no}" rendered="#{conSignAuth.selectOneRadio eq '2'}"/>
+                        </label>
+                        <p:inputText id="pmtNo" required="true" styleClass="text-uppercase" disabled="#{conSignAuth.regnNoDisable}"
+                                     value="#{conSignAuth.countDobj.pmt_no}" autocomplete="off"
+                                     maxlength="25" size="28" rendered="#{conSignAuth.selectOneRadio eq '2'}">
+                            <p:keyFilter regEx="/[/a-zA-Z0-9_]/i"/>                                                             
+                        </p:inputText>
+                    </div>
+
+                </div>
+
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Get Details" action="#{conSignAuth.get_details()}" onclick="PF('bui').show();"
+                                         oncomplete="PF('bui').hide();" update=" mainPanel  All_detail "/>
+                    </div>
+                </div>
+            </p:outputPanel>         
+            <p:panel rendered="#{!conSignAuth.panelHideShow}">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"/>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{label.appl_no}"/>
+                        </label>
+                        <p:inputText id="appl_no" required="true" styleClass="text-uppercase" disabled="true" value="#{conSignAuth.countDobj.appl_no}" />                                                             
+                    </div>
+                </div>
+            </p:panel>
+            <p:tabView id="All_detail" dynamic="true" styleClass="top-space bottom-space" activeIndex="#{PasPermitDtls.tabIndex}">
+                <p:ajax event="tabChange" listener="#{PasPermitDtls.onTabChange}" partialSubmit="true"
+                        update=" " onstart="PF('bui').show();" onsuccess="PF('bui').hide();"/>
+                <p:tab id="Owner_Details" title="Owner Detail">
+                    <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml"/>                              
+                </p:tab>
+                <p:tab title="Counter Signature Auth Detail">
+
+                    <p:panel id="pmtDtls"  header="Permit Details" styleClass="top-space bottom-space">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pmt_type" value="Permit Type" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="pmt_type"  value="#{conSignAuth.countDobj.pmt_type}" filter="true" disabled="true">
+                                    <f:selectItem itemValue="-1" itemLabel="Select Any Permit"/>
+                                    <f:selectItems value="#{conSignAuth.pmtTypeList}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pmtDtlsPmtNo" value="Permit No." styleClass="field-label-mandate" rendered="#{conSignAuth.selectOneRadio eq '1'}"/>
+                                </label>
+                                <p:inputText id="pmtDtlsPmtNo" styleClass="text-uppercase" 
+                                             value="#{conSignAuth.countDobj.pmt_no}" maxlength="24" autocomplete="off" readonly="true"  rendered="#{conSignAuth.selectOneRadio eq '1'}"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pmtValidForm" value="Permit Valid From" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar id="pmtValidForm"  navigator="true"  pattern="dd-MMM-yyyy" value="#{conSignAuth.countDobj.valid_from}" disabled ="true"  />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pmtValidUpto" value="Permit Valid UpTo" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar id="pmtValidUpto" navigator="true"  pattern="dd-MMM-yyyy" value="#{conSignAuth.countDobj.valid_upto}" disabled="true"  />
+                            </div>
+
+
+                            <!--                            <div class="ui-grid-col-4">
+                                                            <label class="field-label resp-label-section">
+                                                                <p:outputLabel for="pmtArea" value="Area Details" rendered="# {conSignAuth.renderArea}"/>
+                                                            </label>
+                                                            <p:selectOneMenu id="pmtArea" filter="true" value="# {conSignAuth.countDobj.region}" rendered="# {conSignAuth.renderArea}" disabled="# {conSignAuth.counterSignatureDtls || conSignAuth.disableRoutDtls}" required="true" requiredMessage="Please Select any Area !">
+                                                                <f:selectItems value="# {conSignAuth.areaTypeList}" rendered="# {conSignAuth.renderArea}"/>
+                                                            </p:selectOneMenu>
+                                                        </div>-->
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="purpose" value="Purpose" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="purpose" filter="true" value="#{conSignAuth.countDobj.pur_cd}"  disabled="true">
+                                    <f:selectItem itemLabel="Counter Signature Autharisation" itemValue="412"/>
+
+                                </p:selectOneMenu>
+                            </div>
+
+                        </div>
+                        <p:outputPanel id="RouteDetails">
+                            <p:panel  header="Permit Route Details"  styleClass="top-space bottom-space" rendered="#{conSignAuth.prv_route_list ne null and conSignAuth.prv_route_list.size() > 0}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:dataTable value="#{conSignAuth.prv_route_list}" var="routeDtls" styleClass="panelRowHeight">
+                                            <p:column headerText="Route Code">
+                                                <h:outputText value="#{routeDtls.rout_code}"/>
+                                            </p:column>
+                                            <p:column headerText="From" >
+                                                <h:outputText value="#{routeDtls.floc}"/>
+                                            </p:column>
+                                            <p:column headerText="To">
+                                                <h:outputText value="#{routeDtls.tloc}"/>
+                                            </p:column>
+                                            <p:column headerText="Via">
+                                                <h:outputText value="#{routeDtls.start_POINT}"/>
+                                            </p:column>
+                                            <p:column headerText="No. of Trips" >
+                                                <h:outputText value="#{routeDtls.numberOfTrips}"/>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                    </p:panel>
+                    <!--                    <p:outputPanel >
+                                            <p:dataTable id="PreviousPmtDtls" var="PreRecorde" value="# {tmp_pmt.priviousTempDataTable}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Previous Counter Sign Autharisation"/>
+                                                </f:facet>
+                                                <p:columnGroup type="header">
+                                                    <p:row>
+                                                        <p:column headerText="Route From" />
+                                                        <p:column headerText="Route To" />
+                                                        <p:column headerText="Valid From" />
+                                                        <p:column headerText="Valid Upto" />                               
+                                                        <p:column headerText="Diffrence Days" />
+                                                        <p:column headerText="Issue Date" />
+                                                    </p:row>
+                                                </p:columnGroup>
+                    
+                                                <p:subTable var="tempDtls" value="# {PreRecorde.dtlsList}">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="# {PreRecorde.headerName}" />
+                                                    </f:facet>
+                                                    <p:column>
+                                                        <h:outputText value="# {tempDtls.route_fr}" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="# {tempDtls.route_to}" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="# {tempDtls.valid_from}" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="# {tempDtls.valid_upto}" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="# {tempDtls.days}" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="# {tempDtls.issue_dt}" />
+                                                    </p:column>
+                    
+                                                </p:subTable>
+                                            </p:dataTable>
+                                        </p:outputPanel>-->
+                    <p:panel id="counterSignAuth"  header="Counter Signature Auth Detail" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="state_from" value="State To" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="state_from"  value="#{conSignAuth.countDobj.state_to}" filter="true" disabled="#{conSignAuth.counterSignatureDtls}">
+                                    <f:selectItem itemValue="-1" itemLabel="Select Any State"/>
+                                    <f:selectItems value="#{conSignAuth.stateList}"/>
+                                    <p:ajax event="change" listener="#{conSignAuth.onSelectState()}" update="off_from" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="off_from" value="Office To" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="off_from"  value="#{conSignAuth.countDobj.off_cd_to}" filter="true" disabled="#{conSignAuth.counterSignatureDtls}">
+                                    <f:selectItem itemValue="-1" itemLabel="Select Any Office"/>
+                                    <f:selectItems value="#{conSignAuth.offList}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="periodMode" value="Period Mode" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="periodMode"  value="#{conSignAuth.countDobj.period_mode}" filter="true" disabled="#{conSignAuth.counterSignatureDtls}">
+                                    <f:selectItems value="#{conSignAuth.periodModeList}"/>
+                                    <p:ajax event="change" listener="#{conSignAuth.changePeriodMode()}" update="period countValidUpto"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="period" value="Period" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:inputText id="period" value="#{conSignAuth.countDobj.period}" maxlength="2" autocomplete="off" disabled="#{conSignAuth.counterSignatureDtls}" >
+                                    <p:keyFilter regEx="/[0-9\s_]/i"/>
+                                    <p:ajax event="blur" listener="#{conSignAuth.blurActionPeriod()}" process="period" update="countValidUpto" />
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="countValidUpto" value="Maximum Valid Upto" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar id="countValidUpto" required="true" requiredMessage="Please Select Maximum Valid Upto Date" navigator="true"  pattern="dd-MMM-yyyy" value="#{conSignAuth.countDobj.count_valid_upto}" mindate="#{conSignAuth.minDate}" maxdate="#{conSignAuth.maxDate}" readonlyInput="true" disabled="#{conSignAuth.counterSignatureDtls || conSignAuth.disableCountValidUpto }"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:tab>
+                <p:tab id="Other_Details" title="Other Vehicle Information">
+                    <ui:include src="/ui/permit/form_permit_check_Details.xhtml"/>                              
+                </p:tab>
+
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:panel id="changedByPrevUser" rendered="#{conSignAuth.prevChangedDataList.size()>0}"
+                                 toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                            <p:dataTable value="#{conSignAuth.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="Changed by Employee" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="Changed on" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel> 
+                    </div>
+                </div>
+            </p:tabView>
+
+
+            <p:outputPanel id="bt_function" rendered="#{conSignAuth.panelHideShow}" styleClass="top-space bottom-space center-position">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton value="Save" action="#{conSignAuth.save_details()}" onclick="PF('bui').show();" onsuccess="PF('bui').hide();" update="app_num_id" >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:button value="Reset" outcome="/ui/permit/formCounterSignatureAuth.xhtml?faces-redirect=true"  onclick="PF('bui').show();" icon="ui-icon-arrowrefresh-1-w"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel rendered="#{!conSignAuth.panelHideShow}" styleClass="top-space bottom-space">
+                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                    <ui:param name="app_disapp" value="#{conSignAuth}"/>
+                </ui:include>
+            </p:outputPanel>
+
+            <p:dialog id="app_num_id" header="Application Number" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <h:outputLabel  escape="false"  value="#{conSignAuth.app_no_msg}"/>
+                        <f:facet name="footer">
+                            <p:button value="Exit for Another Application" outcome="/ui/permit/formCounterSignatureAuth.xhtml?faces-redirect=true" icon="ui-icon-arrowrefresh-1-w"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

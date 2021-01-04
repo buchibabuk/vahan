@@ -1,0 +1,260 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{hpa_entrybean.appl_details}"/>            
+            </ui:include>  
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">  
+        <h:form id="formHpa" prependId="false">
+            <p:messages id="hpaErrorMsg"  closable="true"/>
+
+            <p:dataTable  id="datatable_hpat" value="#{hpa_entrybean.listHypoDetails}" var="hpat" rowIndexVar="index" styleClass="panelRowHeight top-space bottom-space">
+                <f:facet name="header">
+                    Hypothecation Details
+                </f:facet>
+
+                <p:column headerText="S.No."  styleClass="collumn-width center-position">
+                    <p:outputLabel value="#{index +1}."/>
+                </p:column>
+
+                <p:column headerText="Type" width="10%">                           
+                    <h:outputText value="#{hpat.hp_type_descr}"/>
+                </p:column>
+
+                <p:column headerText="Financer Name" width="15%">
+                    <h:outputText value="#{hpat.fncr_name}"/>
+                </p:column>
+
+                <p:column headerText="Address:" width="50%">
+                    <h:outputText value="#{hpat.fncr_add1} &#44; 
+                                  #{hpat.fncr_add2} &#44;
+                                  #{hpat.fncr_add3} &#44;
+                                  #{hpat.fncr_district_descr} &#44;                                  
+                                  #{hpat.fncr_state_name} &#45;
+                                  #{hpat.fncr_pincode}"/>
+                </p:column>
+
+                <p:column headerText="From Date" width="10%">  
+                    <h:outputText value="#{hpat.from_dt_descr}"/>
+                </p:column>
+
+                <p:column headerText="Update" width="20%">
+                    <p:commandButton value="Edit" action="#{hpa_entrybean.fillHpaDetails(hpat,index)}" 
+                                     oncomplete="PF('hpaDlg').show();" immediate="true" update=":openHpaDlg">
+                        <f:param name="key" value="edit"/>
+                    </p:commandButton>
+                    <p:row rendered="#{hpa_entrybean.renderDelete}">
+                        <p:commandButton value="Delete" action="#{hpa_entrybean.deleteHpaDetails(hpat)}" 
+                                         immediate="true" update="formHpa">
+                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            <f:param name="key1" value="delete"/>
+                        </p:commandButton>
+                    </p:row>
+                </p:column>
+
+                <f:facet name="footer">
+                    <p:row rendered="#{hpa_entrybean.renderFooter}">
+                        <p:column>
+                            <p:commandButton id="add" oncomplete="PF('hpaDlg').show();" icon="ui-icon-plusthick">
+                                <f:param name="key" value="add"/>
+                                <p:ajax listener="#{hpa_entrybean.addHypoRecordListener}" update=":openHpaDlg" />
+                            </p:commandButton>
+                            <p:tooltip id="toolTipGrow1" for="add" value="Add New Details"
+                                       showEffect="clip" hideEffect="clip"  />
+                        </p:column>            
+                    </p:row>
+                </f:facet>
+            </p:dataTable>
+
+
+            <p:panel id="changedByPrevUser" rendered="#{hpa_entrybean.prevChangedDataList.size()>0}">
+                <p:dataTable value="#{hpa_entrybean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                    <p:column headerText="Changed by Employee" width="15%">
+                        <h:outputText value="#{data.userName}" />
+                    </p:column>
+
+                    <p:column headerText="Changed Data by Previous Employee" width="70%">
+                        <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                    </p:column>
+
+                    <p:column headerText="Changed on" width="15%">
+                        <h:outputText value="#{data.op_dt}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                <ui:param name="app_disapp" value="#{hpa_entrybean}"/>
+            </ui:include>
+
+            <vahan:vahanMessages messages="#{hpa_entrybean.vahanMessages}"  rendered="#{hpa_entrybean.vahanMessages ne null}"/>
+
+        </h:form>  
+        <p:dialog  id="openHpaDlg" header="Add New Record" widgetVar="hpaDlg" modal="true" closeOnEscape="true" height="400" width="800"> 
+            <div class="ui-grid ui-grid-responsive">
+                <h:form id="formHpaUpdate" prependId="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages id="formHpaUpdateMessage" closable="true">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </div>
+                    </div>
+                    <p:outputPanel  id="hpapanel_entry">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <p:outputLabel for="hpa_hp_type_entry" value="Hypothecation Type:"/> 
+                                    </label>
+                                    <p:selectOneMenu id="hpa_hp_type_entry" value="#{hpa_entrybean.hpa_entry_dobj.hp_type}" filter="true">
+                                        <f:selectItems value="#{hpa_entrybean.list_hp_type}"/>               
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section"> 
+                                        <p:outputLabel for="hpa_fncr_name_entry" value="Financer Name:"/>
+                                    </label>
+                                    <p:inputText  id="hpa_fncr_name_entry" value="#{hpa_entrybean.hpa_entry_dobj.fncr_name}" 
+                                                  converter="toUpperCaseConverter" size="30" 
+                                                  maxlength="35" autocomplete="off" 
+                                                  required="true"
+                                                  requiredMessage="Blank : Financer Name"
+                                                  styleClass="input">
+                                        <f:validateRequired/>
+                                        <f:validateLength maximum="35" minimum="3"/> 
+                                        <f:ajax event="blur" execute="@this" render="@this"/>
+                                    </p:inputText>
+
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">  
+                                        <p:outputLabel for="hpa_from_dt_entry" value="From Date#{label.datePattern}:"/>
+                                    </label>
+                                    <p:calendar  id="hpa_from_dt_entry" value="#{hpa_entrybean.hpa_entry_dobj.from_dt}"  
+                                                 navigator="true" pattern="dd-MMM-yyyy" required="true"
+                                                 mindate="#{hpa_entrybean.minDate}" maxdate="#{hpa_entrybean.maxDate}" 
+                                                 requiredMessage="Blank : From Date" autocomplete="off" readonlyInput="true">
+                                        <f:validateRequired/>                                
+                                    </p:calendar>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <h2>Financer Address</h2>
+                            </div>
+                        </div>
+
+                        <p:separator/>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hpa_fncr_add1_entry" value="#{label.address1}"/>
+                                </label>
+                                <p:inputText  id="hpa_fncr_add1_entry" value="#{hpa_entrybean.hpa_entry_dobj.fncr_add1}" 
+                                              converter="toUpperCaseConverter" size="36" maxlength="35" autocomplete="off"
+                                              required="true" requiredMessage="Blank : Financer Address Line 1" styleClass="input">
+                                    <f:validateRequired/>
+                                    <f:validateLength maximum="35"/>
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hpa_fncr_add2_entry" value="#{label.address2}"/>
+                                </label>
+                                <p:inputText id="hpa_fncr_add2_entry" value="#{hpa_entrybean.hpa_entry_dobj.fncr_add2}" 
+                                             converter="toUpperCaseConverter" size="36" maxlength="35" autocomplete="off"
+                                             required="true" requiredMessage="Blank : Financer Address Line 2" styleClass="input">
+                                    <f:validateRequired/>
+                                    <f:validateLength maximum="35"/>              
+                                    <f:ajax event="blur" execute="@this" render="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hpa_fncr_add3_entry" value="#{label.address3}"/>
+                                </label>
+                                <p:inputText id="hpa_fncr_add3_entry" value="#{hpa_entrybean.hpa_entry_dobj.fncr_add3}" 
+                                             converter="toUpperCaseConverter" size="36" maxlength="35" autocomplete="off"
+                                             styleClass="input">                                    
+                                    <f:validateLength maximum="35"/>              
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_fncr_state_entry" value="#{label.state}"/>
+                                    </label>
+                                    <p:selectOneMenu id="hpa_fncr_state_entry" value="#{hpa_entrybean.hpa_entry_dobj.fncr_state}" required="true" filter="true">
+                                        <f:selectItems value="#{hpa_entrybean.list_state}"/>
+                                        <p:ajax event="change" listener="#{hpa_entrybean.stateChangeListener}" update="hpa_fncr_district_entry"/>
+                                    </p:selectOneMenu>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_fncr_district_entry" value="#{label.district}"/>
+                                    </label>
+                                    <p:selectOneMenu id="hpa_fncr_district_entry"  value="#{hpa_entrybean.hpa_entry_dobj.fncr_district}"  required="true" filter="true">
+                                        <f:selectItems value="#{hpa_entrybean.list_district}"/>
+                                    </p:selectOneMenu>
+                                </div>              
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="hpa_fncr_pincode_entry" value="#{label.pin_cd}"/>
+                                    </label>
+                                    <p:inputText id="hpa_fncr_pincode_entry" value="#{hpa_entrybean.hpa_entry_dobj.fncr_pincode}" 
+                                                 maxlength="6" required="true" requiredMessage="Blank : Pincode" autocomplete="off">
+                                        <f:validateRequired/>
+                                        <f:validateLength maximum="6"/>
+                                        <f:validator validatorId="pinCodeValidator" for="hpa_fncr_pincode_entry"/>
+                                        <f:ajax event="blur" execute="@this" render="@this"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Save" 
+                                                 action="#{hpa_entrybean.saveHypothecationRecord}"
+                                                 update=":formHpa:datatable_hpat">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </div>
+                        </div>
+
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog> 
+                    </p:outputPanel>
+
+                    <p:keyFilter mask="pint" for="hpa_fncr_pincode_entry"/>
+                </h:form>
+            </div>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

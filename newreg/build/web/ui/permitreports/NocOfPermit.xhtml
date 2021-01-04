@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/permit/form_newPermit_Print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <table class="datatable-panel">
+                <tr>
+                    <td class="left-position">
+                        <div class="center-position inline-section">
+                            <h:outputText value="[#{printDocXHTML.purCdDescr}]"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left-position">
+                        <div class="center-position inline-section">
+                            <h:outputText value="[Reason : #{printDocXHTML.dupReason}]" rendered="#{printDocXHTML.dupReasonRender}"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position">
+                        <p:graphicImage library="images" name="#{printDocXHTML.image_logo}" rendered="#{printDocXHTML.show_image_logo}" width="80" />
+                    </td>
+                    <td>
+                        <div class="center-position ">
+                            <span class="font-bold report-subheader"> <h:outputText value="GOVERNMENT OF #{printDocXHTML.passPmtDobj.state_cd}"/> </span>
+                        </div>
+                        <div class="center-position ">
+                            <span class="font-bold report-subheader"> <h:outputText value="OFFICE OF THE SECRETARY,"/> </span>
+                        </div>
+                        <div class="center-position ">
+                            <span class="font-bold report-subheader"> <h:outputText value="STATE/REGIONAL TRANSPORT AUTHORITY"/> </span>
+                        </div>
+                        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}">
+                            <div class="center-position bottom-space">
+                                <span class="font-bold report-subheader"> <h:outputText value="TRIPURA :: AGARTALA "/> </span>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{!printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}">
+                            <div class="center-position bottom-space">
+                                <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}"/> </span>
+                            </div>
+                        </p:outputPanel>
+
+
+                        <div class="center-position">
+                            <h:outputText value="TO WHOM IT MAY CONCERN" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                        <pe:qrCode rendered="true"
+                                   renderMethod="canvas" 
+                                   renderMode="0" 
+                                   text="#{printDocXHTML.textQRcode}"
+                                   label="QR Code"
+                                   size="110"
+                                   fillColor="000000" 
+                                   ecLevel="H" 
+                                   radius="0.5"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{printDocXHTML.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{printDocXHTML.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <!--        madhurendra on 8-8-2019-->
+            <p:outputPanel rendered="#{!printDocXHTML.sepratePrintOfNocSurrenderSlip}">
+                <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                        <h:outputLabel value="In so far as this Authority is concerned, if there is no violation cases, there is no objection to 
+                                       allow #{printDocXHTML.passPmtDobj.paction} of Registration No.#{printDocXHTML.passPmtDobj.regnNo},
+                                       holding Permit No. : #{printDocXHTML.passPmtDobj.pmt_no},
+                                       From Shri/Smti #{printDocXHTML.ownerPmtDobj.owner_name},provided all taxes and dues are upto date."/>
+                    </h:panelGrid>
+                </div> 
+            </p:outputPanel>
+            <!-- end-->
+            <p:outputPanel rendered="#{printDocXHTML.renderNocPrintCondRV}">
+                <div class="datatable-panel news_w" style="margin: 0 auto;">
+                    <p> So far this Authority is concerned; there is no objection to allow Replacement of vehicle No:#{printDocXHTML.passPmtDobj.regnNo} 
+                        , holding Permit No. <strong>: #{printDocXHTML.passPmtDobj.pmt_no}</strong> by another new vehicle of the same nature against the existing Permit before <strong>:#{printDocXHTML.passPmtDobj.validUptoInString} </strong>
+
+                    </p>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{printDocXHTML.renderNocPrintCondTR}">
+                <div class="datatable-panel news_w" style="margin: 0 auto;">
+                    <p> So far this Authority is concerned; there is no objection to allow transfer of ownership of vehicle No:#{printDocXHTML.passPmtDobj.regnNo} 
+                        , holding Permit No. <strong>: #{printDocXHTML.passPmtDobj.pmt_no} </strong> and also to replace the said vehicle number by another new vehicle of the same nature against the existing permit before <strong>:#{printDocXHTML.passPmtDobj.validUptoInString} </strong>
+                        provided that all taxes, arrears and dues are cleared upto date.
+                    </p>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{printDocXHTML.renderNocPrintCondTP}">
+                <div class="datatable-panel news_w" style="margin: 0 auto;">
+                    <p> So far this Authority is concerned; there is no objection to allow transfer of ownership of vehicle No<strong>:#{printDocXHTML.passPmtDobj.regnNo} </strong>
+                        , holding Permit No.<strong>: #{printDocXHTML.passPmtDobj.pmt_no} </strong> to_________________ provided that all taxes, arrears and dues are cleared upto date.
+                    </p>
+                </div> 
+            </p:outputPanel>
+            <br/>
+            <div class="top-space bottom-space datatable-panel position-relative"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            Memo No <strong>: #{printDocXHTML.passPmtDobj.pmt_no} </strong>
+                        </td>
+                        <td class="right-position">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel position-relative" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                    <div class="datatable-panel news_w" style="margin: 0 auto;">
+                        <p> Copy to :</p>
+                    </div>
+                    <p:outputPanel rendered="#{!printDocXHTML.sepratePrintOfNocSurrenderSlip}">
+                        <p:outputLabel value="1- The Joint Transport Commissioner,#{printDocXHTML.passPmtDobj.state_cd}."/>
+                        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}">
+                            <p:outputLabel value="2- The District Transport Officer,North/Unakoti/Dhalai/Khowai/Sepahijala/Gomati/South."/>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{!printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}">
+                            <p:outputLabel value="2- The District Transport Officer,#{printDocXHTML.passPmtDobj.off_cd}."/>
+                        </p:outputPanel>
+                        <p:outputLabel value="3- Shri/Smti #{printDocXHTML.ownerPmtDobj.owner_name}"/>
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{printDocXHTML.renderNocPrintCondRV }">
+                        <h:outputText escape="false" value="1. The District Transport Officer &lt;span class='font-bold'&gt; #{printDocXHTML.passPmtDobj.registered_off_name} &lt;/span&gt; for information and necessary action."/>                        
+                        <p:outputLabel value="2. The Superintendent of Taxes, _________________, for information and necessary action."/>                        
+                        <p:outputLabel value="3. Shri/Smt. #{printDocXHTML.ownerPmtDobj.owner_name}"/>
+                        <p:outputLabel value="Address: #{printDocXHTML.ownerPmtDobj.c_add1} #{printDocXHTML.ownerPmtDobj.c_add2}
+                                       #{printDocXHTML.ownerPmtDobj.c_add3} #{printDocXHTML.ownerPmtDobj.c_pincode}"/>
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{(printDocXHTML.renderNocPrintCondTR  or printDocXHTML.renderNocPrintCondTP )}"><br/>
+                        <h:outputText escape="false" value="1. The District Transport Officer &lt;span class='font-bold'&gt; #{printDocXHTML.passPmtDobj.registered_off_name} &lt;/span&gt; for information and necessary action."/>
+                        <p:outputLabel value="2. The Superintendent of Taxes, _________________, for information and necessary action."/>
+                        <p:outputLabel value="3. Shri/Smt. #{printDocXHTML.ownerPmtDobj.owner_name} "/>
+                        <p:outputLabel value="Address: #{printDocXHTML.ownerPmtDobj.c_add1} #{printDocXHTML.ownerPmtDobj.c_add2}
+                                       #{printDocXHTML.ownerPmtDobj.c_add3} #{printDocXHTML.ownerPmtDobj.c_pincode}"/>
+                    </p:outputPanel>
+                </h:panelGrid>
+            </div> 
+
+            <div class="top-space bottom-space datatable-panel position-relative"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                Secretary<br/>
+                                State/Regional Transport Authority<br/>
+                                #{printDocXHTML.passPmtDobj.off_cd},#{printDocXHTML.passPmtDobj.state_cd}.<br/>
+                                Dated :- #{printDocXHTML.ownerPmtDobj.currentDateInString} <br/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <p:outputPanel rendered="#{!printDocXHTML.sepratePrintOfNocSurrenderSlip}">
+                <div class="center-position ">
+                    --------------------------------------------------------------------------------------------------------------------------------
+                </div> <br/>
+
+                <table class="datatable-panel">
+                    <tr>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <h:outputText value="[#{printDocXHTML.purCdDescr}]"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="center-position ">
+                    <span class="font-bold report-subheader"> <h:outputText value="GOVERNMENT OF #{printDocXHTML.passPmtDobj.state_cd}"/> </span>
+                </div>
+                <div class="center-position ">
+
+                    <span class="font-bold report-subheader"> <h:outputText value="STATE/REGIONAL TRANSPORT AUTHORITY"/> </span>
+                </div>
+                <div class="center-position bottom-space">
+                    <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}"/> </span>
+                </div>
+                <div class="center-position">
+                    <h:outputText value="TO WHOM IT MAY CONCERN" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+
+                <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                        <h:outputLabel value="In so far as this Authority is concerned, if there is no violation cases, there is no objection to 
+                                       allow #{printDocXHTML.passPmtDobj.paction} of Registration No.#{printDocXHTML.passPmtDobj.regnNo},
+                                       holding Permit No. : #{printDocXHTML.passPmtDobj.pmt_no},
+                                       From Shri/Smti #{printDocXHTML.ownerPmtDobj.owner_name},provided all taxes and dues are upto date."/>
+                    </h:panelGrid>
+                </div> 
+                <br/>
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position">
+                                Memo No. #{printDocXHTML.passPmtDobj.pmt_no}
+                            </td>
+                            <td class="right-position">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <br/>
+                <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                        <p:outputLabel value="Copy to :-"/>
+                        <p:outputLabel value="1- The Joint Transport Commissioner,#{printDocXHTML.passPmtDobj.state_cd}."/>
+                        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}">
+                            <p:outputLabel value="2- The District Transport Officer,North/Unakoti/Dhalai/Khowai/Sepahijala/Gomati/South."/>
+                        </p:outputPanel>
+                        <p:outputPanel rendered="#{!printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}">
+                            <p:outputLabel value="2- The District Transport Officer,#{printDocXHTML.passPmtDobj.off_cd}."/>
+                        </p:outputPanel>
+                        <p:outputLabel value="3- Shri/Smti #{printDocXHTML.ownerPmtDobj.owner_name}"/>
+                    </h:panelGrid>
+                </div> 
+
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <br/>
+                                    <br/>
+                                    Secretary<br/>
+                                    State/Regional Transport Authority<br/>
+                                    #{printDocXHTML.passPmtDobj.off_cd},#{printDocXHTML.passPmtDobj.state_cd}.<br/>
+                                    Dated :- #{printDocXHTML.ownerPmtDobj.currentDateInString} <br/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </p:outputPanel>
+            <br/>          
+            <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'TR'}">
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+                <div class="center-position ">
+                    <span class="font-bold report-subheader"> <h:outputText value="GOVERNMENT OF #{printDocXHTML.passPmtDobj.state_cd}"/> </span>
+                </div>
+                <div class="center-position ">
+                    <span class="font-bold report-subheader"> <h:outputText value="OFFICE OF THE SECRETARY REGIONAL TRANSPORT"/> </span>
+                </div>
+                <div class="center-position bottom-space">
+                    <span class="font-bold report-subheader"> <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd}"/> </span>
+                </div>
+                <br/>
+
+                <h:panelGrid columns="1" styleClass="datatable-panel-100">
+                    <h:outputLabel value="Terms and Conditions : " styleClass="right-space bottom-space"/>
+                </h:panelGrid>
+                <br/>
+
+                <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                        <h:outputLabel value="1. All categories of vehicle should be latest model." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="2. The vehicle should be placed at the respective transport office for registration and issue of route permit within 180 days from the date of issue of this offer of permit." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="3. On acceptance of offer of permit same should be intimate to this office or respective DTO office as the case may be within 3 days failing which the offer shall  be stand automatically cancelled. No petition shall" styleClass="right-space bottom-space" /> be entertained for change of route within 3 years.
+                        <h:outputLabel value="4. Attested copies of the following Certificates should be furnished along with the acceptance letter : citizenship certificate/ Permanent resident Certificate/Insurance certificate/OBC Certificate/ITC/PTC/SC/ST/Ex-Servicemen etc." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="5. For Auto rickshaw :- Right side door be with iron grill for safety of the passengers." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="6. School Bus must be prominently written on the back and front portion every Bus carrying school children." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="7. If it is a hired Bus, ‘on school Duty should be prominently displayed." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="8. No Bus belonging to en Educational Institution should carry children in excess of its permitted seating capacity." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="9. Bus must have a First Aid Box." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="10. Windows of the Bus must be fitted with horizontal rod." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="11. There must be a fire extinguisher in every Bus." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="12. School name and telephone number must be written on the Bus." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="13. Doors of the Bus should be fitted with reliable locks." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="14. Every driver of a school bus must have a minimum 5 years of experience of driving heavy passenger vehicles, and must not have any previous record of traffic offences/ road accident. " styleClass="right-space bottom-space" />
+                        <h:outputLabel value="15. To keep school bags safely, there should be space provided under the seat." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="16. Conductors must have the list of students along with their blood group." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="17. Speed limit of the busses should be restricted to  40 KM with the help of an in built mechanism." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="18. There must be safety doors and sufficient moving spaces in all busses." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="19. There should be an escort from the school in the bus preferably a teacher to ensure the safety norms." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="20. The colour of the school bus should by yellow so that people as well as driver of other vehicles can identify  the buses carrying  school children and school take special care." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="21. All categories of vehicle should obtain pollution certificate after 6 months interval and carry valid registration certificate, fitness certificate, tax token, insurance certificate driver and conductor license plying on the road." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="22. One attendant must be present in buses and female attendant for ferrying girl student." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="23. This offer – letter will be treated as cancelled, if no vehicle, as per specification given above, is placed within the Period, unless the offer letter is extended by STA under certain conditions approved by the Chairman." styleClass="right-space bottom-space" />
+                        <h:outputLabel value="24. Fare chart should be displayed on the vehicle as per notification issued by Transport Department  time to time." styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div> 
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+                <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position left-space">
+                                <br/>
+                                Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                            </td>
+                            <td class="right-position">
+                                <div class="center-position inline-section">
+                                    <br/>
+                                    Yours faithfully.<br/>
+                                    Secretary<br/>
+                                    State/Regional Transport Authority/RTO <br/>
+                                    <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

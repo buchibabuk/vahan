@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="userTransfer">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.user_transferMgmt}</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>                
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <p:dataTable id="basicDT" var="dt" value="#{userTransferBean.userDetailList}"
+                                     paginator="true" paginatorPosition="bottom" filterDelay="100" filteredValue="#{userTransferBean.filterList}"
+                                     rows="7">
+                            <f:facet name="header">#{language.user_userList}</f:facet>
+                            <p:column headerText="#{language.user_userID}" width="30%"  filterBy="#{dt.userID}">
+                                <h:outputText value="#{dt.userID}"  />
+                            </p:column>
+                            <p:column headerText="#{language.user_username}(#{language.user_designation})" filterBy="#{dt.userName}">
+                                <h:outputText value="#{dt.userName}" /><br/>
+                                (<h:outputText value="#{dt.designation}" styleClass="font-bold green" />)
+                            </p:column>
+                            <p:column headerText="#{language.user_modify}" styleClass="center-position" width="17%" >
+                                <p:commandButton title="Edit"  icon="ui-icon-pencil" immediate="true">
+                                    <p:ajax event="click" listener="#{userTransferBean.updateListner(dt.userCode)}" 
+                                            update=":userTransfer:emp_panel" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div class="ui-grid-col-8">
+                        <p:panel id="emp_panel" header="#{language.user_userInfo}" styleClass="bottom-space">
+                            <p:panel id="userDetails" style="border:0px !important;">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="off_cd" value="#{language.user_office}" />
+                                        </label>
+                                        <p:selectOneMenu id="off_cd" value="#{userTransferBean.dobj.offCode}" 
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItem itemValue="0" itemLabel="-SELECT-"/>
+                                            <f:selectItems value="#{userTransferBean.officeList}" />
+                                            <f:validator validatorId="selectOneValidator_0" for="off_cd" />                                        
+                                        </p:selectOneMenu>
+
+                                    </div>
+
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="emp_name" value="#{language.user_username}"/>
+                                        </label>
+                                        <p:inputText id="emp_name" value="#{userTransferBean.dobj.userName}" style="text-transform: uppercase;" disabled="true" />                                                                                    
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="userCatg" value="#{language.user_usercategory}" />
+                                        </label>
+                                        <p:inputText id="userCatg" value="#{userTransferBean.dobj.userCatg}" style="text-transform: uppercase" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="email" value="#{language.user_email}"/>
+                                        </label>
+                                        <p:inputText id="email" value="#{userTransferBean.dobj.emailID}" disabled="true" />
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="desig_cd" value="#{language.user_designation}"/>
+                                        </label>
+                                        <p:inputText id="desig_cd" value="#{userTransferBean.dobj.designation}" disabled="true" />
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="mob_no" value="#{language.user_mobileNo}"/>
+                                        </label>
+                                        <p:inputText id="mob_no" value="#{userTransferBean.dobj.mobileNo}" disabled="true"/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="user_id" value="#{language.user_userID}"/>
+                                        </label>
+                                        <p:inputText id="user_id" value="#{userTransferBean.dobj.userID}" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="off_ph" value="#{language.user_offcphn}"/>
+                                        </label>
+                                        <p:inputText id="off_ph" value="#{userTransferBean.dobj.officePh}" disabled="true"/>                                            
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_aadhar" value="#{language.user_aadhar}"/>
+                                        </label>
+                                        <p:inputText id="tf_aadhar" value="#{userTransferBean.dobj.adhaarNo}" styleClass="input" disabled="true"/>
+                                    </div>
+                                </div>
+                            </p:panel>                            
+                        </p:panel>
+                        <p:panel styleClass="bottom-space">
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton id="submitBtn" value="#{language.save}" icon="ui-icon-disk" action="#{userTransferBean.transferUser}"
+                                                     update="emp_panel basicDT" ajax="true" title="Save/Update User">
+                                        <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                                    </p:commandButton>
+
+                                    <p:button  id="back" value="#{language.login_back}" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                    <p:commandButton id="resetBtn" value="#{language.reset}" icon="ui-icon-refresh" action="#{userTransferBean.reset}"
+                                                     update="emp_panel basicDT" title="Reset Form">                                        
+                                    </p:commandButton>
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                    </p:confirmDialog>                                    
+                                </div>
+                            </div>
+                        </p:panel>
+                    </div>
+                </div>
+
+                <p:dataTable styleClass="top-space" var="dob"  value="#{userTransferBean.userTransferList}" 
+                             paginator="true" paginatorPosition="bottom" filteredValue="#{userTransferBean.filterList}"
+                             rows="3">
+                    <f:facet name="header">#{language.user_transferedDtls}</f:facet>
+                    <p:column headerText="#{language.user_userID}" filterBy="#{dob.userID}" >
+                        <h:outputText value="#{dob.userID}"  />
+                    </p:column>
+                    <p:column headerText="#{language.user_username}"  >
+                        <h:outputText value="#{dob.userName}" />
+
+                    </p:column>
+                    <p:column headerText="#{language.user_transferFrom}"  >
+                        <h:outputText value="#{dob.stateCode}" />
+                        (<h:outputText value="#{dob.oldOffCode}" styleClass="font-bold green" />)
+                    </p:column>
+                    <p:column headerText="#{language.user_transferTo}"  >
+                        <h:outputText value="#{dob.stateCode}" />
+                        (<h:outputText value="#{dob.offCode}" styleClass="font-bold green" />)
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

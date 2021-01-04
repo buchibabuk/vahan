@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="contentCommonInformation">
+        <h:form>           
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{noc_bean.appl_details}"/>            
+            </ui:include>   
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_noc" prependId="false">
+
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:tabView id="details" styleClass="top-space bottom-space" >
+                    <!--################################# NOC Details ########################################## -->
+                    <p:tab id="Noc_Details_tab" title="NOC Details">
+                        <p:panel id ="nocDetailsPanel"  styleClass="top-space bottom-space">
+
+                            <f:facet name="header">
+                                <h:outputText value="#{language.hypth_header}: &lt;span class='red font-bold' &gt; #{noc_bean.nocHPCDetails}&lt;/span&gt;" 
+                                              styleClass="report-header font-bold  inline-section datatable-panel-100" rendered="#{noc_bean.isNOCInwardwithHPC}" escape="false"/> 
+                                <h:outputText value="#{noc_bean.header}"/>
+                            </f:facet>  
+
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <h:panelGroup rendered="#{noc_bean.fancyRetention}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="fancyRetention" value="#{language.Fancy_No_Retention}" styleClass="font-bold red" />
+                                        </label>
+                                        <p:selectOneMenu id="fancyRetention" value="#{noc_bean.selectedFancyRetnetion}" required="true" requiredMessage="">
+                                            <f:selectItem itemLabel="--SELECT--" itemValue="-1"/>
+                                            <f:selectItem itemLabel="YES" itemValue="YES"/>
+                                            <f:selectItem itemLabel="NO" itemValue="NO"/>
+                                            <f:validator validatorId="selectOneValidator" for="fancyDetention"/>  
+                                        </p:selectOneMenu>
+                                    </h:panelGroup>
+                                </div>
+                            </div>
+
+                            <p:outputPanel id="noc_subview_panelgrid">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="state_to" value="#{language.stateTo}:"/>
+                                        </label>
+                                        <p:selectOneMenu id="state_to" value="#{noc_bean.noc_dobj.state_to}" filter="true" filterMatchMode="contains" disabled="#{noc_bean.comp_disable}">
+                                            <f:selectItems value="#{noc_bean.state_list}"/>
+                                            <p:ajax event="change" listener="#{noc_bean.updateRtoFromStateListener}" update="auth_to nocDetailsPanel pur_to"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="auth_to" value="#{language.authorityTo}:"/>
+                                        </label>
+                                        <p:selectOneMenu id="auth_to" value="#{noc_bean.noc_dobj.off_to}" filter="true" filterMatchMode="contains" required="true" 
+                                                         disabled="#{noc_bean.comp_disable}" requiredMessage="Authority To Can not Be Empty">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                            <f:selectItems value="#{noc_bean.office_list}"/>
+                                            <f:validator for="auth_to" validatorId="selectOneValidator_0"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="rto_disp_no" value="#{language.rtoDispatchNo}:"/>
+                                        </label>
+                                        <p:inputText id="rto_disp_no" value="#{noc_bean.noc_dobj.dispatch_no}" converter="toUpperCaseConverter" required="true"
+                                                     disabled="#{noc_bean.comp_disable}" requiredMessage="Blank: RTO Dispatch No" maxlength="15" autocomplete="off" styleClass="input">
+                                            <f:validateRequired for="rto_disp_no"/>
+                                            <f:validateLength maximum="15" for="rto_disp_no"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="ncrb_clear_no" value="#{language.ncrbClearanceNo}:"/>
+                                        </label>
+                                        <p:inputText id="ncrb_clear_no" value="#{noc_bean.noc_dobj.ncrb_ref}" required="true" converter="toUpperCaseConverter"
+                                                     disabled="#{noc_bean.comp_disable}" requiredMessage="Blank N.C.R.B. Clearance No" maxlength="20" autocomplete="off" styleClass="input">
+                                            <f:validateRequired for="ncrb_clear_no"/>
+                                            <f:validateLength maximum="20" for="ncrb_clear_no"/>
+                                            <f:validateRegex pattern="([a-zA-Z0-9-/]+)" for="ncrb_clear_no"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="noc_date" value="#{language.issueDate}:"/>
+                                        </label>
+                                        <p:calendar id="noc_date" value="#{noc_bean.noc_dobj.noc_dt}" navigator="true" disabled="#{noc_bean.comp_disable}"
+                                                    required="true" requiredMessage="Blank NOC Issue Date" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                                    mindate="#{noc_bean.noc_dobj.min_dt}" maxdate="#{noc_bean.noc_dobj.noc_dt}" autocomplete="off">
+                                            <f:validateRequired for="noc_date"/>
+                                            <f:convertDateTime pattern="dd-MMM-yyyy" for="noc_date"/>
+                                        </p:calendar>    
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+
+                                            <p:outputLabel for="pur_to" value="#{language.reasonfortakingtheNOC}:" />
+                                        </label>
+                                        <p:selectOneMenu id="pur_to" value="#{noc_bean.noc_dobj.pur_cd_to}"  required="true" requiredMessage="Reason for taking the NOC" 
+                                                         disabled="#{noc_bean.comp_disable}">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                            <f:selectItems value="#{noc_bean.purposeCodeList}"/>
+                                            <p:ajax event="change" listener="#{noc_bean.update_purpuse}" update="own_name_id"/>
+                                            <f:validator for="pur_to" validatorId="selectOneValidator_0"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row" >
+                                    <div class="ui-grid-col-4">
+                                        <p:outputPanel id="own_name_id">
+                                            <label class="field-label">
+                                                <p:outputLabel for="owner_name_id" value="#{language.transfereeName}:" rendered="#{noc_bean.rendered_own_name}"/>
+                                            </label>
+                                            <p:inputText  id="owner_name_id" value="#{noc_bean.noc_dobj.new_own_name }"  rendered="#{noc_bean.rendered_own_name}" disabled="#{noc_bean.comp_disable}" 
+                                                          required="true" requiredMessage="New Owner Name can not be empty" maxlength="35"   converter="toUpperCaseConverter" styleClass="input">
+                                            </p:inputText>
+                                        </p:outputPanel>
+                                    </div>
+                                </div>
+
+                                <!--##################### KeyFilter for Allowing Particular value in Textbox #####################-->
+                                <p:keyFilter regEx="/[a-zA-Z0-9-/ ]/i" for="auth_to"/>
+                                <p:keyFilter regEx="/[a-zA-Z0-9-/]/i" for="ncrb_clear_no"/>     
+                                <!--#############################################################################################-->
+                            </p:outputPanel>
+                        </p:panel>
+
+                        <p:panel header="#{language.cancellationDetails}" rendered="#{noc_bean.cancellation_panel_visibility}" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="file_ref_no" value="#{language.fileReferenceNo}: "/>
+                                    </label>
+                                    <p:inputText id="file_ref_no" value="#{noc_bean.noc_dobj.file_ref_no}" required="true" converter="toUpperCaseConverter"
+                                                 styleClass="text-uppercase" requiredMessage="Blank File Reference No:" maxlength="15" autocomplete="off">
+                                        <f:validateRequired for="file_ref_no"/>
+                                        <f:validateLength maximum="15" for="file_ref_no"/>
+                                        <f:validateRegex pattern="([a-zA-Z0-9-/]+)" for="file_ref_no"/>
+                                        <f:ajax event="blur" render="@this" execute="@this"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="approved_by" value="#{language.approvedBy}: "/>
+                                    </label>
+                                    <p:selectOneMenu id="approved_by" value="#{noc_bean.noc_dobj.app_by}" required="true" requiredMessage="Blank Approved By">
+                                        <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                        <f:selectItem itemLabel="RTO" itemValue="RTO"/>
+                                        <f:selectItem itemLabel="DTO" itemValue="DTO"/>
+                                        <f:selectItem itemLabel="OTHERS" itemValue="OTHERS"/>
+                                        <f:validator validatorId="selectOneValidator_0" for="approved_by"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_reason" value="#{language.reason}:"/>
+                                    </label>
+                                    <p:inputTextarea id="tf_reason" value="#{noc_bean.noc_dobj.reason}" required="true" requiredMessage="Blank Reason"
+                                                     rows="1" converter="toUpperCaseConverter" 
+                                                     maxlength="100" styleClass="text-uppercase">      
+                                        <f:ajax event="blur" render="@this" execute="@this"/>
+                                    </p:inputTextarea>
+                                </div>
+                            </div>                    
+                        </p:panel>
+                    </p:tab>
+                    <!--################################# Insurance Details ########################################## -->
+                    <p:tab  id="ins_details_tab" title="Insurance Details" rendered="#{noc_bean.renderInsPanel}">
+                        <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                    </p:tab>
+
+                    <!--################################# Owner Details ########################################## -->
+                    <p:tab  id="owner_details_tab" title="Owner Details">
+                        <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                            <ui:param name="ownerDetail" value="#{noc_bean.ownerDetail}"/>
+                        </ui:include>
+                    </p:tab>
+
+                    <!--################################# Vehicle Details ######################################## -->
+                    <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                        <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                            <ui:param name="ownerDetail" value="#{noc_bean.ownerDetail}"/>
+                        </ui:include>
+                    </p:tab>
+                </p:tabView>
+
+                <p:panel id="changedByPrevUser" styleClass="top-space bottom-space"
+                         rendered="#{noc_bean.prevChangedDataList.size()>0}" >
+                    <p:dataTable value="#{noc_bean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="#{language.change_by_employee}" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+
+                        <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="#{language.changed_on}" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <p:outputPanel id="outputpanel_appdisapp" rendered="#{!noc_bean.render}">       
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{noc_bean}"/>
+                    </ui:include>  
+                </p:outputPanel>
+
+                <vahan:vahanMessages messages="#{noc_bean.vahanMessages}"  rendered="#{noc_bean.vahanMessages ne null}"/>
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,1105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content22">
+        <h:form id="downloadExportDataForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Download Dispatch List for Printed RC</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:tabView id="regn_no_tab">
+                    <p:tab id="speed_post_Dtls" title="Speed Post Number Entry Form" rendered="#{rcDownloadBean.isSpeedPostSeries}">
+                        <p:outputPanel id="speedpostpanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="current_start_no" value="Current Start No" />
+                                    </label>
+                                    <p:inputText id="current_start_no" value="#{rcDownloadBean.currentStartNo}" maxlength="8" autocomplete="off" styleClass="text-uppercase" >
+                                        <p:keyFilter regEx="/[0-9]/" for="current_start_no"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="end_no" value="End No" />
+                                    </label>
+                                    <p:inputText id="end_no" value="#{rcDownloadBean.endNo}" maxlength="8" autocomplete="off" styleClass="text-uppercase" >
+                                        <p:keyFilter regEx="/[0-9]/" for="end_no"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="prefix" value="Prefix" />
+                                    </label>
+                                    <p:inputText id="prefix" value="#{rcDownloadBean.prefix}" maxlength="2" autocomplete="off" styleClass="text-uppercase" />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="saveDtls" value="Save" action="#{rcDownloadBean.SaveSpeedPostSeriesGetails}" update=":downloadExportDataForm">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:tab>
+                    <p:tab id="show_pen_Dtls" title="RC Dispatch Pending Work" rendered="#{rcDownloadBean.isShowingAllPendingWork}">
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <h:outputText  value="Pending as on" styleClass="font-bold field-label-mandate" />
+                                </label>
+                                <p:calendar id="pendt_cal" value="#{rcDownloadBean.oldDate}" readonlyInput="true"  autocomplete="off" pattern="dd-MMM-yyyy" navigator="true">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                    <p:ajax event="dateSelect"  listener="#{rcDownloadBean.onDateSelect}" update="btnPenGetDtls penddtlstable"/>   
+                                </p:calendar>
+                            </div>
+                        </div>
+                        <p:outputPanel id ="btnPenGetDtls" >
+                            <div class="ui-grid-row bottom-space center-position">
+                                <div class="ui-grid-col-12">  
+                                    <p:commandButton id="btnGetDtls"  value="Get Details" update="penddtlstable btnPenGetDtls" action="#{rcDownloadBean.showAllPendingWork}" disabled="#{rcDownloadBean.isdisapble}"> 
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel id="penddtlstable">
+
+                            <p:outputPanel rendered="#{rcDownloadBean.downloadFileCommon}">
+                                <p:dataTable id="tbmsg_file_download" value="#{rcDownloadBean.downloadPenWorkDtls.listFileExport}" 
+                                             var="dwlList" paginator="#{rcDownloadBean.isExceedPage}" rows="50" filteredValue="#{rcDownloadBean.filteredSeat}"
+                                             paginatorPosition="bottom"
+                                             rowIndexVar="index" editMode="row" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">   
+                                    <f:facet name="header">
+                                        <div class="left-position"> 
+                                            <h:outputText value="#{rcDownloadBean.downLoadLabel}" />  
+                                        </div>
+                                    </f:facet>
+                                    <p:column styleClass="collumn-width center-position">
+                                        <f:facet name="header">
+                                            <h:outputText value="SR.No." styleClass="font-bold" />
+                                        </f:facet>                            
+                                        <h:outputText value="#{index +1}"/>
+                                    </p:column>
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="OWNER NAME" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.ownerName}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="FATHER NAME" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.fname}" />
+                                    </p:column>                        
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD1" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add1}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD2" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add2}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD3" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add3}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="CITY" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.city}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="PINCODE" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.pincode}" />
+                                    </p:column>
+                                    <p:column filterBy="#{dwlList.regnNo}" filterMatchMode="contains" width="110">
+                                        <f:facet name="header">
+                                            <h:outputText value="REGN NO" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.regnNo}" />
+                                    </p:column>
+                                    <p:column exportable="false" rendered="#{!rcDownloadBean.is_edit_on_all_pending_records}">
+                                        <f:facet name="header">
+                                            <h:outputText value="BARCODE" styleClass="font-bold" escape="false"/>
+                                        </f:facet>
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{dwlList.dispatch_ref_no}" styleClass="text-uppercase" /></f:facet>
+                                            <f:facet name="input"><p:inputText id="editbarcode" value="#{dwlList.dispatch_ref_no}" styleClass="text-uppercase" maxlength="15"/></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column exportable="false" rendered="#{rcDownloadBean.is_edit_on_all_pending_records}">
+                                        <f:facet name="header">
+                                            <h:outputText value="BARCODE" styleClass="font-bold" escape="false"/>
+                                        </f:facet>                                
+                                        <p:inputText id="tf_barcode" value="#{dwlList.dispatch_ref_no}" styleClass="text-uppercase" maxlength="15" placeholder="Enter Barcode" autocomplete="off">
+                                            <p:ajax event="blur" listener="#{rcDownloadBean.onBlurBarcode()}"/>    
+                                            <p:keyFilter preventPaste="false" regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter>
+                                            <f:param name="appl_no" value="#{dwlList.appl_no}" />
+                                            <f:param name="ID" value="#{index}" />
+                                        </p:inputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </p:tab>
+                    <p:tab id="regn_no_Dtls" title="Update Dispatch Detail" rendered="#{rcDownloadBean.is_search_by_regn_no}">
+                        <p:outputPanel id="radioOutputpanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_regn_no" value="Enter Registration No" />
+                                    </label>
+                                    <p:inputText id="tf_regn_no" value="#{rcDownloadBean.regn_no}" maxlength="20" autocomplete="off" styleClass="text-uppercase" />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtls" value="Get Details" action="#{rcDownloadBean.updateDispatchDetails}" update=":downloadExportDataForm regnnopanel radioOutputpanel" onclick="PF('buiShow').show()" oncomplete="PF('buiShow').hide()">
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:dataTable id="tbmsg_filedownload" value="#{rcDownloadBean.regnNoDetails.listFileExport}" editable="true" rendered="#{rcDownloadBean.showUpdateDispatchPanel}"
+                                     var="dwlList" paginator="#{rcDownloadBean.isExceedPage}" rows="50" filteredValue="#{rcDownloadBean.filteredSeat}"
+                                     paginatorPosition="bottom"
+                                     rowIndexVar="index" editMode="row"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+                            <p:ajax event="rowEdit" partialSubmit="true" listener="#{rcDownloadBean.onRowEdit}" />
+                            <f:facet name="header">
+                                <div class="left-position"> 
+                                    <h:outputText value="#{rcDownloadBean.downLoadLabel}" />  
+                                </div>
+                            </f:facet>
+                            <p:column styleClass="collumn-width center-position">
+                                <f:facet name="header">
+                                    <h:outputText value="SR.No." styleClass="font-bold" />
+                                </f:facet>                            
+                                <h:outputText value="#{index +1}"/>
+                            </p:column>
+                            <p:column >
+                                <f:facet name="header">
+                                    <h:outputText value="OWNER NAME" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{dwlList.ownerName}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="FATHER NAME" styleClass="font-bold"/>
+                                </f:facet>
+                                <h:outputText value="#{dwlList.fname}" />
+                            </p:column>                        
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ADD1" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{dwlList.add1}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ADD2" styleClass="font-bold"/>
+                                </f:facet>
+                                <h:outputText value="#{dwlList.add2}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ADD3" styleClass="font-bold"/>
+                                </f:facet>
+                                <h:outputText value="#{dwlList.add3}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="CITY" styleClass="font-bold"/>
+                                </f:facet>
+                                <h:outputText value="#{dwlList.city}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="PINCODE" styleClass="font-bold"/>
+                                </f:facet>
+                                <h:outputText value="#{dwlList.pincode}" />
+                            </p:column>
+                            <p:column width="110">
+                                <f:facet name="header">
+                                    <h:outputText value="REGN NO" styleClass="font-bold"/>
+                                </f:facet>
+                                <h:outputText value="#{dwlList.regnNo}" />
+                            </p:column>
+                            <p:column  exportable="false">
+                                <f:facet name="header">
+                                    <h:outputText value="BARCODE" styleClass="font-bold" escape="false"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{dwlList.dispatch_ref_no}" styleClass="text-uppercase" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="edit_barcode" value="#{dwlList.dispatch_ref_no}" styleClass="text-uppercase" maxlength="15" placeholder="Enter Barcode">
+                                            <p:keyFilter preventPaste="false" regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter> 
+                                        </p:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column exportable="false" rendered="#{rcDownloadBean.btnEdit}" width="8%">
+                                <f:facet name="header">
+                                    <h:outputText value="EDIT" styleClass="font-bold"/>
+                                </f:facet>
+                                <p:rowEditor />
+                            </p:column>
+
+                            <p:column style="display:none;" rendered="#{rcDownloadBean.regnNoDetails.listFileExport.size()>0 and rcDownloadBean.btnPrint}">
+                                <f:facet name="header">
+                                    <h:outputText value="BARCODE" styleClass="font-bold"/>
+                                </f:facet>
+                                <h:outputText value="#{dwlList.dispatch_ref_no_for_display}"/>
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:tab>
+                    <p:tab id="regn_no_Dtls1" title="Show Pending Details"  >
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <h:outputText value="Pending as on" styleClass="font-bold field-label-mandate" />
+                                </label>
+                                <p:calendar value="#{rcDownloadBean.oldDate}" pattern="dd-MMM-yyyy" readonlyInput="true" navigator="true" autocomplete="off">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                    <p:ajax event="dateSelect" partialSubmit="true"/>   
+                                </p:calendar>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row bottom-space center-position">
+                            <div class="ui-grid-col-12">                        
+                                <p:commandButton  value="Show Pending Records as on Date" action="#{rcDownloadBean.showPendingRecords}" 
+                                                  update=":downloadExportDataForm" onclick="PF('bui').show();" oncomplete="PF('bui').hide()">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                    </p:blockUI>
+                                </p:commandButton>
+                                <p:commandButton value="Show Old Generated Files" immediate="true" update=":downloadExportDataForm" onclick="PF('oldbui').show();" oncomplete="PF('oldbui').hide()">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    <p:blockUI block=":downloadExportDataForm" widgetVar="oldbui">
+                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                    </p:blockUI>
+                                    <p:ajax event="click" partialSubmit="true" listener="#{rcDownloadBean.oldDateListener}"/>
+                                </p:commandButton>
+                                <p:commandButton value="Downloaded Dispatched Records" action="#{rcDownloadBean.showAllOldGeneratedRecordByDateListener}" immediate="true" update=":downloadExportDataForm"
+                                                 onclick="PF('oldbui').show();" oncomplete="PF('oldbui').hide()">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    <p:blockUI block=":downloadExportDataForm" widgetVar="oldbui">
+                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                    </p:blockUI>                            
+                                </p:commandButton>
+                                <p:button id="back_to_home_from_dwl_disp"  value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">   
+                            <div class="ui-grid-col-12 bottom-space">
+                                <p:dataTable id="tb_old_lis"  value="#{rcDownloadBean.oldRecords}" rendered="#{rcDownloadBean.oldRecords.size()>0 ? true : false}" paginator="true" rows="10"  paginatorPosition="bottom"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                             var="ol" rowIndexVar="index" styleClass="datatable-panel ">     
+                                    <div class="ui-grid-col-6 left-position">
+                                        <div class="top-space">
+                                            <h:outputText value="#{rcDownloadBean.downLoadLabel}" />  
+                                        </div>
+                                    </div>
+                                    <p:column width="20%" styleClass="collumn-width center-position"> 
+                                        <f:facet name="header">
+                                            <h:outputText value="SR.No." styleClass="font-bold" />
+                                        </f:facet>   
+                                        <h:outputText value="#{index +1}" styleClass="font-bold" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="File Name(Click to see the details)" styleClass="font-bold" />
+
+                                        </f:facet>  
+                                        <h:commandLink value="#{ol.downloadFileName}" action="#{rcDownloadBean.oldSelectDwlListener()}"> 
+                                            <f:setPropertyActionListener target="#{rcDownloadBean.selectedOldDownload}" value="#{ol}" />
+                                        </h:commandLink>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">   
+                            <div class="ui-grid-col-12">
+                                <p:dataTable id="tb_filedownload" value="#{rcDownloadBean.download.listFileExport}" editable="true" rendered="#{rcDownloadBean.downloadFileWhereBarcodeIsOptional}"
+                                             var="dwlList" paginator="#{rcDownloadBean.isExceedPage}" rows="50" filteredValue="#{rcDownloadBean.filteredSeat}"
+                                             paginatorPosition="bottom"
+                                             rowIndexVar="index" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">                        
+                                    <f:facet name="header">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6 left-position">
+                                                <div class="top-space">
+                                                    <h:outputText value="#{rcDownloadBean.downLoadLabel}" />  
+                                                </div>
+                                            </div>
+                                            <div class="ui-grid-col-6 right-position">
+                                                <p:commandButton  value="Print" action="#{rcDownloadBean.printDispatchInfoReport}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="buttonDownloadFilelbl" value="#{rcDownloadBean.downloadLabelForLblFile}" action="#{rcDownloadBean.updatelblFile()}" onclick="PF('downloadRCDataDialog').show();" update=":formDispatchExport" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}"/>
+                                                <p:commandButton id="buttonDownloadFilemgh" value="#{rcDownloadBean.downloadLabelForMghFile}" action="#{rcDownloadBean.updatemghFile()}" onclick="PF('downloadRCDataDialog').show();" update=":formDispatchExport" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}"/>
+                                                <p:commandButton id="buttonGenFile"  value="Generate Dispatch File" action="#{rcDownloadBean.updateVHdownloadStatus()}"
+                                                                 update=":downloadExportDataForm" onclick="PF('bui').show();" 
+                                                                 oncomplete="PF('bui').hide()" rendered="#{rcDownloadBean.btnGenRc}"> 
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                    <p:ajax event="rowEdit" partialSubmit="true" listener="#{rcDownloadBean.onRowEdit}"/>
+                                    <p:column styleClass="collumn-width center-position">
+                                        <f:facet name="header">
+                                            <h:outputText value="SR.No." styleClass="font-bold" />
+                                        </f:facet>                            
+                                        <h:outputText value="#{index +1}"/>
+                                    </p:column>
+                                    <p:column exportable="false">
+                                        <f:facet name="header">
+                                            <h:outputText value="Barcode" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <p:cellEditor >
+                                            <f:facet name="output" ><h:outputText value="#{dwlList.dispatch_ref_no}" styleClass="text-uppercase" /></f:facet>
+                                            <f:facet name="input">
+                                                <p:inputText id="edit_barcode" value="#{dwlList.dispatch_ref_no}" styleClass="text-uppercase" maxlength="15">
+                                                    <p:keyFilter preventPaste="false" regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter>  
+                                                </p:inputText>
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column style="display:none;">
+                                        <f:facet name="header">
+                                            <h:outputText value="Barcode" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.dispatch_ref_no_for_display}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{dwlList.regnNo}" filterMatchMode="contains" width="110">
+                                        <f:facet name="header">
+                                            <h:outputText value="Reference No" styleClass="font-bold resp-label-section left-position" escape="false"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.regnNo}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="CITY" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.city}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="PINCODE" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.pincode}" />
+                                    </p:column>
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="full Name" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.ownerName}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="FName" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.fname}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD1" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add1}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD2" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add2}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD3" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add3}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Addresee e-mail ID" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.email_id}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Addresee Mobile NO" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.mobile_no}" />
+                                    </p:column>
+                                    <p:column rendered="#{rcDownloadBean.btnEdit}" exportable="false" width="8%">
+                                        <f:facet name="header">
+                                            <h:outputText value="Edit"  styleClass="font-bold"/>
+                                        </f:facet>
+                                        <p:rowEditor />
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:dataTable id="tb_msg_filedownload" value="#{rcDownloadBean.download.listFileExport}" editable="true" rendered="#{rcDownloadBean.downloadFileCommon}"
+                                             var="dwlList" paginator="#{rcDownloadBean.isExceedPage}" rows="50" filteredValue="#{rcDownloadBean.filteredSeat}"
+                                             paginatorPosition="bottom"
+                                             rowIndexVar="index" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">                        
+                                    <f:facet name="header">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6 left-position">
+                                                <div class="top-space">
+                                                    <h:outputText value="#{rcDownloadBean.downLoadLabel}" />  
+                                                </div>
+                                            </div>
+                                            <div class="ui-grid-col-6 right-position">
+
+                                                <p:commandButton id="btnprintcvrpg"  value="Print Cover Page" action="#{rcDownloadBean.printDispatchInfoReportCoverPage}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.isprintCoverPage}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintenvpg"  value="#{rcDownloadBean.printEnvelopStickerLabel}" action="#{rcDownloadBean.printDispatchInfoReportEnvelop}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.btnEitherStickerOREnvelopPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintletter"  value="Print Letter" action="#{rcDownloadBean.printDispatchLetter}" rendered="#{rcDownloadBean.is_rcdispatch_letter and rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprint" value="Print" action="#{rcDownloadBean.printDispatchInfoReport}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintAdd" value="Print Address" action="#{rcDownloadBean.printDispatchAddressInfoReport}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.isDispatchAddress}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="buttonDownloadFile" value="Download Dispatch File" action="#{rcDownloadBean.updatelblFile()}" onclick="PF('downloadRCDataDialogForGJ').show();" update=":formDispatchExport" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}"/>
+                                                <p:commandButton id="buttonGenFile1"  value="Generate Dispatch File" action="#{rcDownloadBean.saveAndMoveInHistory()}"
+                                                                 update=":downloadExportDataForm" onclick="PF('bui').show();" 
+                                                                 oncomplete="PF('bui').hide()" rendered="#{rcDownloadBean.btnGenRc}"> 
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                    <p:column styleClass="collumn-width center-position">
+                                        <f:facet name="header">
+                                            <h:outputText value="SR.No." styleClass="font-bold" />
+                                        </f:facet>                            
+                                        <h:outputText value="#{index +1}"/>
+                                    </p:column>
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="OWNER NAME" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.ownerName}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="FATHER NAME" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.fname}" />
+                                    </p:column>                        
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD1" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add1}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD2" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add2}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD3" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add3}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="CITY" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.city}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="PINCODE" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.pincode}" />
+                                    </p:column>
+                                    <p:column filterBy="#{dwlList.regnNo}" filterMatchMode="contains" width="110">
+                                        <f:facet name="header">
+                                            <h:outputText value="REGN NO" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.regnNo}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="BARCODE" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.dispatch_ref_no}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="MOBILE NO" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.mobile_no}"/>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:dataTable id="tb_msg_filedownload_br" value="#{rcDownloadBean.download.listFileExport}" editable="true" rendered="#{rcDownloadBean.downloadFileAsPerBRstateRequirement}"
+                                             var="dwlList" paginator="#{rcDownloadBean.isExceedPage}" rows="50" filteredValue="#{rcDownloadBean.filteredSeat}"
+                                             paginatorPosition="bottom"
+                                             rowIndexVar="index" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">                        
+                                    <f:facet name="header">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6 left-position">
+                                                <div class="top-space">
+                                                    <h:outputText value="#{rcDownloadBean.downLoadLabel}" />  
+                                                </div>
+                                            </div>
+                                            <div class="ui-grid-col-6 right-position">
+                                                <p:commandButton id="btnprintcvrpg"  value="Print Cover Page" action="#{rcDownloadBean.printDispatchInfoReportCoverPage}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.isprintCoverPage}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintenvpg"  value="#{rcDownloadBean.printEnvelopStickerLabel}" action="#{rcDownloadBean.printDispatchInfoReportEnvelop}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.btnEitherStickerOREnvelopPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintletter"  value="Print Letter" action="#{rcDownloadBean.printDispatchLetter}" rendered="#{rcDownloadBean.is_rcdispatch_letter and rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprint" value="Print" action="#{rcDownloadBean.printDispatchInfoReport}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintAdd" value="Print Address" action="#{rcDownloadBean.printDispatchAddressInfoReport}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.isDispatchAddress}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="buttonDownloadFile" value="Download Dispatch File" action="#{rcDownloadBean.updatelblFile()}" onclick="PF('downloadDataDialogForBR').show();" update=":formDispatchExport" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}"/>
+                                                <p:commandButton id="buttonGenFile1"  value="Generate Dispatch File" action="#{rcDownloadBean.saveAndMoveInHistory()}"
+                                                                 update=":downloadExportDataForm" onclick="PF('bui').show();" 
+                                                                 oncomplete="PF('bui').hide()" rendered="#{rcDownloadBean.btnGenRc}"> 
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                    <p:column styleClass="collumn-width center-position">
+                                        <f:facet name="header">
+                                            <h:outputText value="SL" styleClass="font-bold" />
+                                        </f:facet>                            
+                                        <h:outputText value="#{index +1}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Barcode" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.dispatch_ref_no}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{dwlList.regnNo}" filterMatchMode="contains" width="110">
+                                        <f:facet name="header">
+                                            <h:outputText value="REF" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.regnNo}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="City" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.city}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Pincode" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.pincode}" />
+                                    </p:column>
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="Name" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.ownerName}" />
+                                    </p:column>                                                        
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD1" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add1}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD2" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add2}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ADD3" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add3}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="MOBILE NO" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.mobile_no}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="FATHER NAME" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.fname}" />
+                                    </p:column>    
+                                </p:dataTable>
+
+                                <p:dataTable id="tb_msg_filedownload_rj" value="#{rcDownloadBean.download.listFileExport}" editable="true" rendered="#{rcDownloadBean.downloadFileAsPerRJstateRequirement}"
+                                             var="dwlList" paginator="#{rcDownloadBean.isExceedPage}" rows="50" filteredValue="#{rcDownloadBean.filteredSeat}"
+                                             paginatorPosition="bottom"
+                                             rowIndexVar="index" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">                        
+                                    <f:facet name="header">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6 left-position">
+                                                <div class="top-space">
+                                                    <h:outputText value="#{rcDownloadBean.downLoadLabel}" />  
+                                                </div>
+                                            </div>
+                                            <div class="ui-grid-col-6 right-position">
+                                                <p:commandButton id="btnprintcvrpg"  value="Print Cover Page" action="#{rcDownloadBean.printDispatchInfoReportCoverPage}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.isprintCoverPage}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintenvpg"  value="#{rcDownloadBean.printEnvelopStickerLabel}" action="#{rcDownloadBean.printDispatchInfoReportEnvelop}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.btnEitherStickerOREnvelopPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintletter"  value="Print Letter" action="#{rcDownloadBean.printDispatchLetter}" rendered="#{rcDownloadBean.is_rcdispatch_letter and rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprint" value="Print" action="#{rcDownloadBean.printDispatchInfoReport}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="btnprintAdd" value="Print Address" action="#{rcDownloadBean.printDispatchAddressInfoReport}" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint and rcDownloadBean.isDispatchAddress}" immediate="true">                                     
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                                <p:commandButton id="buttonDownloadFile" value="Download Dispatch File" action="#{rcDownloadBean.updatelblFile()}" onclick="PF('downloadDataDialogForRJ').show();" update=":formDispatchExport" rendered="#{rcDownloadBean.download.listFileExport.size()>0 and rcDownloadBean.btnPrint}"/>
+                                                <p:commandButton id="buttonGenFile1"  value="Generate Dispatch File" action="#{rcDownloadBean.saveAndMoveInHistory()}"
+                                                                 update=":downloadExportDataForm" onclick="PF('bui').show();" 
+                                                                 oncomplete="PF('bui').hide()" rendered="#{rcDownloadBean.btnGenRc}"> 
+                                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                                    <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                                    </p:blockUI>
+                                                </p:commandButton>
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                    <p:column styleClass="collumn-width center-position">
+                                        <f:facet name="header">
+                                            <h:outputText value="Sl.No" styleClass="font-bold" />
+                                        </f:facet>                            
+                                        <h:outputText value="#{index +1}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Barcode" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.dispatch_ref_no}"/>
+                                    </p:column>
+                                    <p:column filterBy="#{dwlList.regnNo}" filterMatchMode="contains" width="110">
+                                        <f:facet name="header">
+                                            <h:outputText value="Reference" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.regnNo}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="City" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.city}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Pincode" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.pincode}" />
+                                    </p:column>
+                                    <p:column >
+                                        <f:facet name="header">
+                                            <h:outputText value="Name" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.ownerName}" />
+                                    </p:column>                                                        
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Address1" styleClass="font-bold" />
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add1}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Address2" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add2}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Address3" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.add3}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Address email" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.email_id}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Address mobile" styleClass="font-bold"/>
+                                        </f:facet>
+                                        <h:outputText value="#{dwlList.mobile_no}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="sender mobile" styleClass="font-bold"/>
+                                        </f:facet>                                        
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="weight" styleClass="font-bold"/>
+                                        </f:facet>                                        
+                                    </p:column>    
+                                </p:dataTable>
+                            </div>
+
+                        </div>
+                    </p:tab>
+
+                    <p:tab id="regnno_Dtls" title="RC Dispatch By Hand" rendered="#{rcDownloadBean.is_rc_dispatch_by_hand}">
+                        <p:outputPanel id="regnnopanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_regn_no_by_hand" value="Enter Registration No" />
+                                    </label>
+                                    <p:inputText id="tf_regn_no_by_hand" value="#{rcDownloadBean.regn_no_by_hand}" maxlength="20" autocomplete="off" styleClass="text-uppercase" />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getHandOverDtls" value="Get Details" action="#{rcDownloadBean.getDispatchGetailsByHand}" update=":downloadExportDataForm regnnopanel radioOutputpanel regnNowiseRCRtnDisppanel" onclick="PF('buiShow').show()" oncomplete="PF('buiShow').hide()">
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <p:panel id="regnNowiseRCRtnDisppanel" header="RC dispatch By Hand"  styleClass="top-space bottom-space datatable-panel" rendered="#{rcDownloadBean.showRCDispatchByHandPanel}">
+                            <ui:repeat id="regnDetls" var="dobj" value="#{rcDownloadBean.byHandRegnNoDetails.listFileExport}" rendered="#{rcDownloadBean.byHandRegnNoDetails.listFileExport.size()>0}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="Application No: " styleClass="font-bold" />
+                                            <h:outputText value="#{dobj.appl_no}"/>
+                                        </label>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="REGN NO: " styleClass="font-bold" />
+                                            <h:outputText value="#{dobj.regnNo}"/>
+                                        </label> 
+                                    </div>                                    
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="Father Name: " styleClass="font-bold" />
+                                            <h:outputText value="#{dobj.fname}"/>
+                                        </label>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="Owner Name: " styleClass="font-bold" />
+                                            <h:outputText value="#{dobj.ownerName}"/>
+                                        </label>                                             
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                                    <div class="ui-grid-col-8">
+                                        <label class="field-label resp-label-section">
+                                            <h:outputText value="Current Address: " styleClass="font-bold" />
+                                            <h:outputText value="#{dobj.currentAddress}"/>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row"> 
+                                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_dt_hand_over" value="Date of Hand Over" styleClass="font-bold field-label-mandate" />
+                                        </label>
+                                        <p:calendar id="tf_dt_hand_over" value="#{rcDownloadBean.dt_hand_over}" maxdate="#{rcDownloadBean.today}" pattern="dd-MMM-yyyy HH:mm:ss" readonlyInput="true" navigator="true" autocomplete="off">
+                                            <f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss"/> 
+                                        </p:calendar>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_remark" value="Remarks" styleClass="font-bold field-label-mandate" />
+                                        </label>
+                                        <p:inputText id="tf_remark" value="#{rcDownloadBean.remark}" maxlength="16" autocomplete="off" styleClass="text-uppercase" />
+                                    </div>
+                                </div> 
+
+                            </ui:repeat>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="btnGenFile"  value="Generate Dispatch File" action="#{rcDownloadBean.dispatchRCByHand()}"
+                                                     update=":downloadExportDataForm regnDetls" onclick="PF('bui').show();" 
+                                                     oncomplete="PF('bui').hide()" rendered="#{rcDownloadBean.btnGenRc}"> 
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab>
+                    <p:tab id="remove_genfile_Dtls" title="Revert Generated RC Dispatch List">
+                        <p:panel id="revertOutputpanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="flat_file" value="Enter Flat file" />
+                                    </label>
+                                    <p:inputText id="flat_file" value="#{rcDownloadBean.flatFileName}" maxlength="40" converter="toUpperCaseConverter"
+                                                 autocomplete="off"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="revertDtls" value="Revert" action="#{rcDownloadBean.revertGetails()}" update=":downloadExportDataForm">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block=":downloadExportDataForm" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab>
+
+                </p:tabView>
+            </div>
+            <vcomponent:vahanMessages messages="#{rcDownloadBean.vahanMessages}"  rendered="#{rcDownloadBean.vahanMessages ne null}"/>
+        </h:form>
+        <p:dialog id="downloadDataDialog" header="Different File Format" dynamic="true" closable="true" modal="true" widgetVar="downloadRCDataDialog">
+            <h:form id="formDispatchExport" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('downloadRCDataDialog').hide();" >
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":downloadExportDataForm:regn_no_tab:tb_filedownload" fileName="#{rcDownloadBean.downloadFileName}"  />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink action="#{rcDownloadBean.downloadCSV}" onclick="PF('downloadRCDataDialog').hide();">
+                        <p:graphicImage name="csv.png" width="24" library="images"/>
+                    </h:commandLink>
+
+                    <h:outputText value="XML FILE"/>
+                    <h:commandLink onclick="PF('downloadRCDataDialog').hide();">
+                        <p:graphicImage name="xml.png" width="24" library="images"/>
+                        <p:dataExporter type="xml" target=":downloadExportDataForm:regn_no_tab:tb_filedownload" fileName="#{rcDownloadBean.downloadFileName}" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="downloadDataDialogForGJ" header="Different File Format" dynamic="true" closable="true" modal="true" widgetVar="downloadRCDataDialogForGJ">
+            <h:form id="formDispatchExportForGJ" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('downloadRCDataDialogForGJ').hide();" >
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":downloadExportDataForm:regn_no_tab:tb_msg_filedownload" fileName="#{rcDownloadBean.downloadFileName}"  />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink action="#{rcDownloadBean.downloadCSV}" onclick="PF('downloadRCDataDialogForGJ').hide();">
+                        <p:graphicImage name="csv.png" width="24" library="images"/>
+                    </h:commandLink>
+
+                    <h:outputText value="XML FILE"/>
+                    <h:commandLink onclick="PF('downloadRCDataDialogForGJ').hide();">
+                        <p:graphicImage name="xml.png" width="24" library="images"/>
+                        <p:dataExporter type="xml" target=":downloadExportDataForm:regn_no_tab:tb_msg_filedownload" fileName="#{rcDownloadBean.downloadFileName}" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="downloadDataDialogForBR" header="Different File Format" dynamic="true" closable="true" modal="true" widgetVar="downloadDataDialogForBR">
+            <h:form id="formDispatchExportForBR" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('downloadDataDialogForBR').hide();" >
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":downloadExportDataForm:regn_no_tab:tb_msg_filedownload_br" fileName="#{rcDownloadBean.downloadFileName}"  />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink action="#{rcDownloadBean.downloadCSV}" onclick="PF('downloadDataDialogForBR').hide();">
+                        <p:graphicImage name="csv.png" width="24" library="images"/>
+                    </h:commandLink>
+
+                    <h:outputText value="XML FILE"/>
+                    <h:commandLink onclick="PF('downloadDataDialogForBR').hide();">
+                        <p:graphicImage name="xml.png" width="24" library="images"/>
+                        <p:dataExporter type="xml" target=":downloadExportDataForm:regn_no_tab:tb_msg_filedownload_br" fileName="#{rcDownloadBean.downloadFileName}" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="downloadDataDialogForRJ" header="Different File Format" dynamic="true" closable="true" modal="true" widgetVar="downloadDataDialogForRJ">
+            <h:form id="formDispatchExportForRJ" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('downloadDataDialogForRJ').hide();" >
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":downloadExportDataForm:regn_no_tab:tb_msg_filedownload_br" fileName="#{rcDownloadBean.downloadFileName}"  />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink action="#{rcDownloadBean.downloadCSV}" onclick="PF('downloadDataDialogForRJ').hide();">
+                        <p:graphicImage name="csv.png" width="24" library="images"/>
+                        <!--<p:dataExporter type="csv" target=":downloadExportDataForm:regn_no_tab:tb_msg_filedownload_br" fileName="# {rcDownloadBean.downloadFileName}" />-->
+                    </h:commandLink>
+
+                    <h:outputText value="XML FILE"/>
+                    <h:commandLink onclick="PF('downloadDataDialogForRJ').hide();">
+                        <p:graphicImage name="xml.png" width="24" library="images"/>
+                        <p:dataExporter type="xml" target=":downloadExportDataForm:regn_no_tab:tb_msg_filedownload_br" fileName="#{rcDownloadBean.downloadFileName}" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:blockUI block=":downloadExportDataForm" widgetVar="buiShow">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI> 
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,159 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formTaxExemption" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Tax Exemption Cancel</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel id="outerPanel">
+                    <p:outputPanel id="vehregn" rendered="#{taxExemptionCancelBean.appl_details.ownerDobj eq null}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRegNo" value="Vehicle Registration No."/>
+                                </label>
+                                <p:inputText  id="tfRegNo" value="#{taxExemptionCancelBean.taxExemDobj.regn_no}"
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="Please Enter Registration No."
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="text-uppercase"/>
+                                <p:keyFilter mask="alphanum" for="tfRegNo"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{taxExemptionCancelBean.showDetailAction()}"
+                                                 update="ownerInformationPanel" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="ownerInformationPanelrender" rendered="#{taxExemptionCancelBean.appl_details.ownerDobj ne null}">
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">
+                                <div class="report-header font-bold bottom-line">Tax Exemption for Vehicle Registration No. #{taxExemptionCancelBean.taxExemDobj.regn_no} </div>
+                            </div>                            
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="ownerInformationPanel">
+                        <p:panel id="innerPanel" rendered="#{taxExemptionCancelBean.rendern}" styleClass="top-space bottom-space">
+                            <p:tabView >
+                                <p:tab  id="owner_details_tab" title="Owner Details">
+                                    <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{taxExemptionCancelBean.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                    <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                        <ui:param name="ownerDetail" value="#{taxExemptionCancelBean.ownerDetail}"/>
+                                    </ui:include>
+                                </p:tab>
+                            </p:tabView>
+                            <p:panel id="taxExemList" rendered="#{taxExemptionCancelBean.taxExemList.size()>0}"
+                                     toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                                <p:dataTable value="#{taxExemptionCancelBean.taxExemList}" var="data" rowIndexVar="rowIndex" styleClass="panelRowHeight" rowKey="#{data.exemFromDt}" reflow="true" disabledTextSelection="true" selection="#{taxExemptionCancelBean.selectedtaxExemdobj}" >
+                                    <!--                                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>-->
+                                    <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                                    <p:column headerText="Sr No." styleClass="center-position collumn-width">
+                                        <h:outputText  value="#{rowIndex+1}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tax Exem. From">
+                                        <h:outputText value="#{data.exemFromDt}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tax Exem. To">
+                                        <h:outputText value="#{data.exemTo}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tax Exem. By">
+                                        <h:outputText value="#{data.authBy}" />
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-1">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="tfperpose" value="Reason:" style="background: transparent !important"/>
+                                                </label>
+                                            </div>
+                                            <div class="ui-grid-col-2">
+                                                <p:inputText  id="tfperpose" value="#{taxExemptionCancelBean.taxExemDobj.perpose}"
+                                                              maxlength="30"
+                                                              requiredMessage="Please Enter Reason"
+                                                              converter="toUpperCaseConverter"
+                                                              autocomplete="off"
+                                                              styleClass="text-uppercase"
+                                                              required="true"
+                                                              placeholder="Reason:"/>
+
+                                            </div>
+                                            <div class="ui-grid-col-6 center-position">
+                                                <c:if test="#{taxExemptionCancelBean.appl_details.ownerDobj eq null}">
+                                                    <p:commandButton value="Delete" action="#{taxExemptionCancelBean.deleteTaxExemptData()}"
+                                                                     update="outerPanel" style="margin: 3px !important">
+                                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                                    </p:commandButton>  
+                                                </c:if>
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                </p:dataTable>
+                            </p:panel>
+                            <p:panel id="changedByPrevUser" rendered="#{taxExemptionCancelBean.prevChangedDataList.size()>0}"
+                                     toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                                <p:dataTable value="#{taxExemptionCancelBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                    <p:column headerText="Changed by Employee" width="15%">
+                                        <h:outputText value="#{data.userName}" />
+                                    </p:column>
+                                    <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                        <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                    </p:column>
+                                    <p:column headerText="Changed on" width="15%">
+                                        <h:outputText value="#{data.op_dt}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <p:outputPanel id="outputpanel_appdisapp" rendered="#{taxExemptionCancelBean.appl_details.ownerDobj ne null}">    
+                                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                    <ui:param name="app_disapp" value="#{taxExemptionCancelBean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <p:blockUI block="formTaxExemption" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

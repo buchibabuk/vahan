@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/masterLayoutPage.xhtml">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">
+        <h:body>
+            <h:form id="tempRcCancel" prependId="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msgId"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row center-position">
+                    <span class=" header-main">Temporary RC Cancellation</span>
+                </div>
+
+
+
+                <p:panel styleClass="top-space" >
+                    <p:outputPanel rendered="#{tempRcCancelBean.showOnlyRegnNo}" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no1" value="Temporary Registration No." />
+                                </label>
+                                <p:inputText id="regn_no1" value="#{tempRcCancelBean.tempRegnNo}" styleClass="text-uppercase"  converter="toUpperCaseConverter"
+                                             size="20" tabindex="1" maxlength="20" required="true" requiredMessage="Please Enter Registration Number."
+                                             >
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="btn_getdetails" value="Get Details"  icon="ui-icon-check"  
+                                                 action="#{tempRcCancelBean.fetchOwnerDeatils()}"
+                                                 update="tempRcCancel msgId abc123" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()">                                    
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                </p:commandButton>  
+                                <p:commandButton value="Back"  process="@this"  action="home"
+                                                 update="tempRcCancel" immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{tempRcCancelBean.showRegnNoAndApplNo}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfapplNO" value="Application No.:" rendered="#{tempRcCancelBean.dobj.appl_no.length()>1}"/>
+                                </label>
+                                <p:inputText id="tfapplNO" value="#{tempRcCancelBean.dobj.appl_no}" disabled="true" styleClass="text-uppercase" rendered="#{tempRcCancelBean.dobj.appl_no.length()>1}" />
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no" value="Temporary Registration No." />
+                                </label>
+                                <p:inputText id="regn_no" value="#{tempRcCancelBean.tempRegnNo}"  maxlength="20" disabled="true"
+                                             >
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                </p:panel>
+                <p:outputPanel id="abc123">
+                    <p:panel id="vehicleDetails" header="Vehicle Details"  styleClass="bottom-space" rendered="#{tempRcCancelBean.ownerPanel}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfOwnerName" value="Owner Name:"/>
+                                </label>
+                                <p:inputText id="tfOwnerName" value="#{tempRcCancelBean.dobj.ownerName}" disabled="true" styleClass="text-uppercase" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfState" value="State:"/>
+                                </label>
+                                <p:inputText id="tfState" value="#{tempRcCancelBean.dobj.state}" disabled="true" styleClass="text-uppercase" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfChasisNo" value="Chassis No:"/>
+                                </label>
+                                <p:inputText id="tfChasisNo" value="#{tempRcCancelBean.dobj.chassisNo}" disabled="true"/>
+                            </div>
+
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfFName" value=" Father Name:"/>
+                                </label>
+                                <p:inputText id="tfFName" value="#{tempRcCancelBean.dobj.fatherName}" disabled="true" styleClass="text-uppercase" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfAddress" value=" Permanent Address:"/>
+                                </label>
+                                <p:inputText id="tfAddress" value="#{tempRcCancelBean.dobj.address}" disabled="true" styleClass="text-uppercase" />
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="purchasedt" value="Purchase Date:"/>
+                                </label>
+                                <p:calendar id="purchasedt" pattern="dd-MMM-yyyy" value="#{tempRcCancelBean.dobj.purchaseDt}" disabled="true">
+                                    <f:convertDateTime   pattern="dd-MMM-yyyy "  />
+                                </p:calendar>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfValidFrom" value=" Valid From:"/>
+                                </label>
+                                <p:calendar id="tfValidFrom" pattern="dd-MMM-yyyy"   value="#{tempRcCancelBean.dobj.validFrom}" disabled="true">
+                                    <f:convertDateTime   pattern="dd-MMM-yyyy "  />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfvalidUpto" value=" Valid Upto:"/>
+                                </label>
+                                <p:calendar id="tfvalidUpto" pattern="dd-MMM-yyyy "  value="#{tempRcCancelBean.dobj.validUpto}" disabled="true">
+                                    <f:convertDateTime   pattern="dd-MMM-yyyy " timeZone="GMT+5"  />
+                                </p:calendar>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="bodyType" value="Body Type:"/>
+                                </label>
+                                <p:inputText id="bodyType" value="#{tempRcCancelBean.dobj.bodyType}" disabled="true"></p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfvhClass" value=" Vehicle Class:"/>
+                                </label>
+                                <p:inputText id="tfvhClass" value="#{tempRcCancelBean.dobj.vhClass}" disabled="true" styleClass="text-uppercase" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfEngineNo" value=" Engine No.:"/>
+                                </label>
+                                <p:inputText id="tfEngineNo" value="#{tempRcCancelBean.dobj.engineNo}" disabled="true" styleClass="text-uppercase" />
+                            </div>
+
+                        </div>
+                    </p:panel>
+                    <p:panel id="cancelRc" rendered="#{tempRcCancelBean.ownerPanel}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="reason" value=" Reason To Cancel:"/>
+                                </label>
+                                <p:inputText id="reason" value="#{tempRcCancelBean.dobj.reasonToCancel}" converter="toUpperCaseConverter"  styleClass="text-uppercase" required="true" size="100" maxlength="100"
+                                             requiredMessage="Please Enter Reason." />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="cancelDate" value=" Cancel Date :"/>
+                                </label>
+                                <p:calendar id="cancelDate" pattern="dd-MMM-yyyy"  value="#{tempRcCancelBean.dobj.cancelDate}" required="true"
+                                            disabled="true"        maxdate="#{tempRcCancelBean.minDate}"          requiredMessage="Please Select Cancel Date."></p:calendar>
+                            </div> 
+                        </div>
+                    </p:panel>
+
+                    <p:panel id="changedByPrevUser" rendered="#{tempRcCancelBean.prevChangedDataList.size()>0}" 
+                             styleClass="top-space bottom-space" >
+                        <p:dataTable value="#{tempRcCancelBean.prevChangedDataList}" var="PrevUserdata" styleClass="panelRowHeight">
+                            <p:column headerText="Changed by Employee" width="15%">
+                                <h:outputText value="#{PrevUserdata.userName}" />
+                            </p:column>
+
+                            <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                <h:outputText value="#{PrevUserdata.changed_data}" styleClass="panelTextColor" escape="false"/>
+                            </p:column>
+
+                            <p:column headerText="Changed on" width="15%">
+                                <h:outputText value="#{PrevUserdata.op_dt}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+
+
+                    <p:panel style="margin-top:10px;"  rendered="#{tempRcCancelBean.showApproveDisApprovePanelForSave}">
+                        <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                            <ui:param name="app_disapp" value="#{tempRcCancelBean}"/>
+                        </ui:include>
+                    </p:panel>
+                    <p:panel   rendered="#{tempRcCancelBean.showPanelForSaveOnly}">
+                        <div class="ui-grid-row center-position top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton id="btn_save" value="Cancel RC"  icon="ui-icon-check"  
+                                                 action="#{tempRcCancelBean.cancelTempRC()}"
+                                                 update="tempRcCancel msgId" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()">                                    
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                </p:commandButton>    
+                                <p:commandButton value="Reset"  process="@this" action="#{tempRcCancelBean.reset()}"
+                                                 update="tempRcCancel" immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()"/>
+                                <p:commandButton value="Back"  process="@this"  action="home"
+                                                 update="tempRcCancel" immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                </p:outputPanel>
+
+
+
+
+                <p:blockUI block="tempRcCancel" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>    
+        </h:body>
+    </ui:define>
+
+
+</ui:composition>

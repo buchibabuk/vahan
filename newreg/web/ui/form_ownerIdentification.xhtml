@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"     
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <div class="ui-grid ui-grid-responsive">
+        <p:panel id ="pn_own_identity" header="#{language.o_identification}" styleClass="top-space bottom-space">
+            <div class="red font-bold report-header center-position">
+                #{language.owner_identification_msg}  
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p:outputPanel rendered="#{listOwnerCategory != null}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="ownerCatg" value="#{language.owner_catg}"/>
+                        </label>
+                        <p:selectOneMenu id="ownerCatg" value="#{owner_identification.ownerCatg}" 
+                                         filter="true" disabled="#{owner_identification.ownerCatgEditable}" required="true">
+                            <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                            <f:selectItems value="#{listOwnerCategory}" />
+                            <f:validator validatorId="selectOneValidator" for="ownerCatg"/>
+                            <p:ajax process="@this" update="@this" partialSubmit="true"/>
+                        </p:selectOneMenu>
+                    </p:outputPanel>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_mobNo" value="#{language.user_mobileNo}"/>
+                    </label>
+                    <p:inputText id="tf_mobNo" value="#{owner_identification.mobile_no}" readonly="#{owner_identification.mobileNoEditable}" maxlength="10" required="true" requiredMessage="#{language.blank} #{language.user_mobileNo}" autocomplete="off">
+                        <f:validator validatorId="mobileNoValidator"/>
+                        <p:ajax event="blur" process="@this" update="@this"  partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_email" value="#{language.user_email}"/>
+                    </label>
+                    <p:inputText id="tf_email" value="#{owner_identification.email_id}" readonly="#{owner_identification.flag}"  maxlength="100" autocomplete="off">
+                        <f:validator validatorId="emailValidator"/>
+                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_pan" value="#{language.pan_no}"/>
+                    </label>
+                    <p:inputText id="tf_pan" value="#{owner_identification.pan_no}" readonly="#{owner_identification.flag}" required="#{owner_identification.pan_card_mandatory}" requiredMessage="#{language.pan_no} #{language.is_mandatory}" converter="toUpperCaseConverter" styleClass="input" maxlength="10" autocomplete="off">
+                        <f:validator validatorId="panValidator"/>
+                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel  value="#{language.user_aadhar}"/>
+                    </label>
+                    <p:inputText id="tf_aadhar" value="#{owner_identification.aadhar_no}" rendered="#{owner_identification.mask_aadhar_no eq null}" converter="toUpperCaseConverter" readonly="#{owner_identification.flag}" styleClass="input" maxlength="12" autocomplete="off" disabled="#{owner_identification.disableAdhaar}">
+                        <f:validator validatorId="aadharValidator"/>
+                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                    </p:inputText>
+
+                    <p:inputText id="tf_aadhar_mask" value="#{owner_identification.mask_aadhar_no}" rendered="#{owner_identification.mask_aadhar_no ne null}" converter="toUpperCaseConverter" readonly="#{owner_identification.flag}" styleClass="input" maxlength="12" autocomplete="off" disabled="true">
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_passport" value="#{language.passport}"/>
+                    </label>
+                    <p:inputText id="tf_passport" value="#{owner_identification.passport_no}" readonly="#{owner_identification.flag}" converter="toUpperCaseConverter" styleClass="input" maxlength="15" autocomplete="off">
+                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_rationCard" value="#{language.ration_card}"/>
+                    </label>
+                    <p:inputText id="tf_rationCard" value="#{owner_identification.ration_card_no}" readonly="#{owner_identification.flag}" converter="toUpperCaseConverter" styleClass="input" maxlength="15" autocomplete="off">
+                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_voterId" value="#{language.voter_id}"/>
+                    </label>
+                    <p:inputText id="tf_voterId" value="#{owner_identification.voter_id}" converter="toUpperCaseConverter" readonly="#{owner_identification.flag}" styleClass="input" maxlength="15" autocomplete="off">
+                        <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="tf_dl" value="#{language.dl}"/>
+                    </label>
+                    <p:inputText id="tf_dl" value="#{owner_identification.dl_no}" converter="toUpperCaseConverter" readonly="#{owner_identification.flag}" disabled="#{owner_identification.dlDisabled}"
+                                 required="#{owner_identification.dlRequired}"	requiredMessage="#{language.blank} #{language.dl}"
+                                 styleClass="input" maxlength="25" autocomplete="off">
+                        <p:ajax event="blur" process="@this" update="tf_dl" partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p:outputPanel rendered="#{listOwnerCdDept != null}">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="ownerCdDept" value="#{language.owner_cd_department}"/>
+                        </label>
+                        <p:selectOneMenu id="ownerCdDept" value="#{owner_identification.ownerCdDept}" 
+                                         filter="true"  required="true">
+                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                            <f:selectItems value="#{listOwnerCdDept}" />
+                            <f:validator validatorId="selectOneValidator" for="ownerCdDept"/>
+                            <p:ajax process="@this" update="@this" partialSubmit="true"/>
+                        </p:selectOneMenu>
+                    </p:outputPanel>
+                </div>
+
+            </div>
+
+
+        </p:panel>
+
+        <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+        <p:keyFilter mask="pint" for="tf_aadhar"/>
+        <p:keyFilter mask="pint" for="tf_mobNo "/>
+        <p:keyFilter regEx="/[a-zA-Z0-9]/" for="tf_pan"/>
+        <p:keyFilter mask="email" for="tf_email"/>
+        <!--#############################################################################################-->
+
+    </div>
+</html>

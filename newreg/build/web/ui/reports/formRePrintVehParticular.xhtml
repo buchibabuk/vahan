@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <f:subview id="frm_vehpar_reprint">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_reprintVP">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main">RE PRINT VEHICLE PARTICULAR </h1>
+                        </div>
+                    </div>
+                    <p:outputPanel id="radioOutputpanel" >
+                        <p:panel id="regnpanel" header="Re Print Today Printed Vehicle Particular by Registration No" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regn_no" value="Enter Registration No" />
+                                    </label>
+                                    <p:inputText id="regn_no" value="#{printVehParBean.regn_no}" maxlength="10" autocomplete="off" styleClass="text-uppercase" >
+                                    </p:inputText>
+                                </div>
+                            </div>                    
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getPrint" value="Print" action="#{printVehParBean.confirmPrintVP}"/>  
+                                </div>
+                            </div>
+                        </p:panel>
+                        <p:dataTable id="printVehParticular" value="#{printVehParBean.printVchParDobj}" var="printCert" rows="10"  paginatorPosition="bottom"
+                                     widgetVar="seatWorkList" filteredValue="#{printCerts.filteredSeat}" paginator="true" rowIndexVar="rowkey" rendered="#{printVehParBean.printVchParDobj.size()>0 ? true : flase}">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    <p:outputLabel value="Today Printed Vehicle Particular Details" />
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                <h:outputText value="#{rowkey+1}" />                                
+                            </p:column>
+                            <p:column headerText="Application No">#{printCert.appl_no}</p:column>                        
+                            <p:column headerText="Registration No" filterBy="#{printCert.regn_no}" filterMatchMode="contains" sortBy="#{printCert.regn_no}">#{printCert.regn_no}</p:column>
+                            <p:column  headerText="Printed On"> <h:outputText value="#{printCert.printed_on}" />  </p:column>
+                            <p:column headerText="Printed By"><h:outputText value="#{printCert.printed_by}" /></p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+                    <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printVP" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" 
+                                                  onclick="PF('blockPrintVP').show();"  oncomplete="PF('printVP').hide(); PF('blockPrintVP').hide();"                                 
+                                                  action="#{printVehParBean.printVehicleParticular()}"
+                                                  icon="ui-icon-check"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('printVP').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                    <p:blockUI block="frm_reprintVP" widgetVar="blockPrintVP">
+                        <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </p:outputPanel>
+            </div>
+        </f:subview>
+    </ui:define>
+</ui:composition>

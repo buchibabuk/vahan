@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <f:subview id="subview_permit_owner_dtls">
+        <ui:composition>
+            <div class="ui-grid ui-grid-responsive">
+                <p:panel id="owner_details"  header="#{language.owner_information}">
+                    <p:outputPanel id="reg" styleClass="bottom-space" >
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section ">
+                                    <p:outputLabel for="tf_owner_name" value="#{language.owner_name}"/>
+                                </label>
+                                <p:inputText id="tf_owner_name" value="#{pmt_owner_dtls.owner_name}" styleClass="text-uppercase"
+                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}" 
+                                             required="true" requiredMessage="Please Fill the Owner Name"
+                                             maxlength="35" autocomplete="off" >
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_f_name" value="#{language.f_name}" />
+                                </label>
+                                <p:inputText id="tf_f_name" value="#{pmt_owner_dtls.f_name}" styleClass="text-uppercase"
+                                             required="true" requiredMessage="Please Fill the Father Name"
+                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}" 
+                                             maxlength="35" autocomplete="off">
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_vh_class" value="#{language.user_vehClass}" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:selectOneMenu id="tf_vh_class" value="#{pmt_owner_dtls.vh_class}" filter="true" disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:selectItems value="#{pmt_owner_dtls.vh_class_array}"/>
+                                    <p:ajax event="change" listener="#{pmt_owner_dtls.vehClassListener}" partialSubmit="true" update="tf_vch_catg"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_seat_cap" value="#{language.seating_capacity}"/>
+                                </label>
+                                <p:inputText id="tf_seat_cap" value="#{pmt_owner_dtls.seat_cap}" styleClass="text-uppercase"
+                                             required="true" requiredMessage="Seating Capacity is not Blank"
+                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                             maxlength="3" autocomplete="off" >
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_ul_weight" value="#{language.unladen_weignt}"/>
+                                </label>
+                                <p:inputText id="tf_ul_weight" value="#{pmt_owner_dtls.unld_wt}" styleClass="text-uppercase"
+                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                             maxlength="6" autocomplete="off">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_l_weight" value="#{language.laden_weight}"/>
+                                </label>
+                                <p:inputText id="tf_l_weight" value="#{pmt_owner_dtls.ld_wt}" styleClass="text-uppercase"
+                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                             maxlength="6" autocomplete="off">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_mobile_no" value="#{language.user_mobileNo}" styleClass="field-label-mandate"/>
+                                </label>
+                                <p:inputText id="tf_mobile_no" value="#{pmt_owner_dtls.mobile_no}" 
+                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                             maxlength="10" autocomplete="off">
+                                    <f:validator validatorId="mobileNoValidator" for="tf_mobile_no"/>
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_email" value="#{language.user_email}"/>
+                                </label>
+                                <p:inputText id="tf_email" value="#{pmt_owner_dtls.email_id}" 
+                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                             maxlength="100" autocomplete="off" size="20">
+                                    <f:validator validatorId="emailValidator" for="tf_email"/>
+                                    <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_own_catg" value="#{language.owner_catg}"/>
+                                </label>
+                                <p:selectOneMenu id="tf_own_catg" value="#{pmt_owner_dtls.owner_catg}" filter="true" disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:selectItems value="#{pmt_owner_dtls.own_catg_array}"/>
+                                    <p:ajax event="change" partialSubmit="true" update="tf_own_catg"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_fuel_type" value="#{language.fuel}" />
+                                </label>
+                                <p:selectOneMenu id="tf_fuel_type" value="#{pmt_owner_dtls.fuel_type}" disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                    <f:selectItem itemLabel="-SELECT FUEL-" itemValue="-1"/>
+                                    <f:selectItems value="#{pmt_owner_dtls.vm_fuel_list}"/>
+                                    <p:ajax event="change" partialSubmit="true" update="tf_fuel_type"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_vch_catg" value="#{language.veh_category}" />
+                                </label>
+                                <p:selectOneMenu id="tf_vch_catg" value="#{pmt_owner_dtls.vch_catg}" disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                    <f:selectItem itemValue="-1" itemLabel="-----SELECT-----"/>
+                                    <f:selectItems value="#{pmt_owner_dtls.vh_catg_array}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_regn_dt" value="#{language.regn_dt}" rendered="#{pmt_owner_dtls.pmt_dobj.flage}"/>
+                                </label>
+                                <p:inputText id="tf_regn_dt" value="#{pmt_owner_dtls.regn_dt}" 
+                                             disabled="true" rendered="#{pmt_owner_dtls.pmt_dobj.flage}"/>
+                            </div>
+
+                        </div>
+
+                    </p:outputPanel>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">  
+                            <p:panel header="#{language.new_curr_addr}">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_c_add1" value="#{language.address1}" />
+                                        </label>
+                                        <p:inputText  id="tf_c_add1" value="#{pmt_owner_dtls.c_add1}" 
+                                                      disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                      required="true" requiredMessage="Blank Current House No"
+                                                      maxlength="35" autocomplete="off"  converter="toUpperCaseConverter" 
+                                                      styleClass="text-uppercase">  
+                                            <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_c_add2" value="#{language.address2}" />
+                                        </label>
+                                        <p:inputText id="tf_c_add2" value="#{pmt_owner_dtls.c_add2}" converter="toUpperCaseConverter"
+                                                     required="true" requiredMessage="Blank Current Village/Town/City"
+                                                     disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                     maxlength="35" autocomplete="off" styleClass="text-uppercase">
+                                            <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_c_add3" value="#{language.address3}"/>
+                                        </label>
+                                        <p:inputText  id="tf_c_add3" value="#{pmt_owner_dtls.c_add3}" 
+                                                      disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                      maxlength="35" autocomplete="off" converter="toUpperCaseConverter" 
+                                                      styleClass="text-uppercase"> 
+                                            <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_c_state" value="#{language.state}"/>
+                                        </label>
+                                        <p:selectOneMenu id="tf_c_state" value="#{pmt_owner_dtls.c_state}" filter="true"
+                                                         disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                            <f:selectItems value="#{pmt_owner_dtls.list_c_state}"/>
+                                            <p:ajax event="change" listener="#{pmt_owner_dtls.cStateListener}" partialSubmit="true" update="tf_c_district"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_c_district" value="#{language.district}"/>
+                                        </label>
+                                        <p:selectOneMenu id="tf_c_district"  value="#{pmt_owner_dtls.c_district}"  filter="true"
+                                                         disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                            <f:selectItems value="#{pmt_owner_dtls.list_c_district}"/>
+                                            <p:ajax partialSubmit="true"/>
+                                        </p:selectOneMenu>
+                                    </div>                                      
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_c_pincode" value="#{language.pin}"/>
+                                        </label>
+                                        <p:inputText id="tf_c_pincode" value="#{pmt_owner_dtls.c_pincode}" size="10"
+                                                     required="true" requiredMessage="Blank Current PinCode"
+                                                     disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                     autocomplete="off" maxlength="6" styleClass="text-uppercase">                                                
+                                            <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </div>
+                        <p:spacer width="10px"/>
+                        <div class="ui-grid-col-6">
+                            <p:panel>
+                                <f:facet name="header">                                        
+                                    #{language.new_perm_addr} 
+                                    <span class="float-right">
+                                        <p:selectBooleanCheckbox id="sameAsCurrAdd" value="#{pmt_owner_dtls.sameAsCurrAddress}" disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                            <p:ajax event="change" listener="#{pmt_owner_dtls.sameAsCurrentAddressListener}" partialSubmit="true" update="npaddress"/>
+                                        </p:selectBooleanCheckbox>
+                                        <h:outputText value=" #{language.same_as_currAdd}" />
+                                    </span>
+                                </f:facet>
+
+                                <p:outputPanel id="npaddress" styleClass="capital">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add1" value="#{language.address1}"/>
+                                            </label>
+                                            <p:inputText  id="tf_p_add1" value="#{pmt_owner_dtls.p_add1}" size="35"
+                                                          required="true" requiredMessage="Blank Permanent House No."
+                                                          maxlength="35" disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                          autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                                <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add2" value="#{language.address2}" />
+                                            </label>
+                                            <p:inputText id="tf_p_add2" value="#{pmt_owner_dtls.p_add2}" size="35" 
+                                                         required="true" requiredMessage="Blank Permanent Village/Town/City"
+                                                         disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                         maxlength="35" autocomplete="off" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                                <f:validateLength maximum="35" for="tf_p_add2"/>
+                                                <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>                             
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_add3" value="#{language.address3}"/>
+                                            </label>
+                                            <p:inputText  id="tf_p_add3" value="#{pmt_owner_dtls.p_add3}" 
+                                                          disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                          maxlength="35" autocomplete="off" converter="toUpperCaseConverter" 
+                                                          styleClass="text-uppercase">                                                   
+                                                <f:validateLength maximum="35" for="tf_p_add3"/>                                                  
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_state" value="#{language.state}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_p_state" value="#{pmt_owner_dtls.p_state}" filter="true"
+                                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                                <f:selectItems value="#{pmt_owner_dtls.list_p_state}" />
+                                                <p:ajax event="change" listener="#{pmt_owner_dtls.pStateListener}" partialSubmit="true" update="tf_p_district"/>
+                                            </p:selectOneMenu>
+                                        </div>                                           
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_district" value="#{language.district}"/>
+                                            </label>
+                                            <p:selectOneMenu id="tf_p_district" value="#{pmt_owner_dtls.p_district}" filter="true" 
+                                                             disabled="#{pmt_owner_dtls.pmt_dobj.flage}">
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                <f:selectItems value="#{pmt_owner_dtls.list_p_district}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="tf_p_pincode" value="#{language.pin}"/>
+                                            </label>
+                                            <p:inputText id="tf_p_pincode" value="#{pmt_owner_dtls.p_pincode}" size="10"
+                                                         required="true" requiredMessage="Blank Permanent PinCode"
+                                                         disabled="#{pmt_owner_dtls.pmt_dobj.flage}"
+                                                         maxlength="6"  autocomplete="off">
+                                                <p:ajax event="blur" partialSubmit="true" process="@this" update="@this"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>  
+                            </p:panel> 
+                        </div>
+                    </div>
+                    <p:spacer height="5"/>
+                    <p:keyFilter mask="pint" for="tf_c_pincode"/>
+                    <p:keyFilter mask="pint" for="tf_p_pincode"/>
+                    <p:keyFilter mask="pint" for="tf_mobile_no"/>
+                    <p:keyFilter mask="pint" for="tf_l_weight"/>
+                    <p:keyFilter mask="pint" for="tf_ul_weight"/>
+                    <p:keyFilter mask="pint" for="tf_seat_cap"/>
+                    <p:keyFilter regEx="/[a-zA-Z0-9@._]/" for="tf_email"/>
+                    <!--                Nitin Kumar 21-01-2016 Begin-->
+
+                    <p:dialog id="dialogDupRegNo" header="Application Can't be Inward!" widgetVar="varDupRegNo" 
+                              closable="true" modal="true" dynamic="true" height="200" width="800">
+                        <h:form id="dupRegNo">       
+
+                            <p:dataTable id="duplicateRegn" value="#{pmt_owner_dtls.dupRegnList}" var="dupRegn"
+                                         rowIndexVar="index" rendered="#{pmt_owner_dtls.dupRegnList.size()>1}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="Duplicate Record Found for Registration No"/>
+                                </f:facet>
+
+                                <p:column headerText="Sr.No" width="5%">#{index +1}.</p:column>
+
+                                <p:column headerText="#{label.regn_no}">#{dupRegn.regn_no}</p:column>
+
+                                <p:column headerText="#{label.owner_name}">#{dupRegn.owner_name}</p:column>
+
+                                <p:column headerText="#{label.f_name}">#{dupRegn.f_name}</p:column>
+
+                                <p:column headerText="#{label.state}">#{dupRegn.state_name}</p:column>                                   
+
+                                <p:column headerText="#{label.office}">#{dupRegn.off_name}</p:column>
+
+                            </p:dataTable>
+                        </h:form>
+                    </p:dialog>
+
+                    <!--Nitin Kumar 21-01-2016 End--> 
+
+
+                </p:panel>
+            </div>
+        </ui:composition>
+    </f:subview>
+</html>

@@ -1,0 +1,136 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"  
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">  
+    <ui:define name="content">  
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="spare_permit_subview">                
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <h1 class="header-main">UPDATE MISSING PERMIT DETAILS</h1>
+                        <div class="red font-bold report-header center-position">
+                            (REQUIRED FOR TAX CALCULATION)  
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position"> 
+                        <h:outputText value="REGISTRATION NO: " class="report-header font-bold" rendered="#{updatemissingpermitinfo.renderRegnno}" /> 
+                        <h:outputText value="(#{updatemissingpermitinfo.regn_no})" rendered="#{updatemissingpermitinfo.renderRegnno}" class="report-header font-bold red" />
+                    </div>                   
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 bottom-space">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:panel header="Update Missing Permit Details">
+                    <p:outputPanel id="feePanelGrid" styleClass="bottom-space" rendered="#{updatemissingpermitinfo.rendervehiclenumber}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 ">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_veh_no" value="Registration No:" styleClass="font-bold" />
+                                </label>
+                                <p:inputText id="tf_veh_no" autocomplete="off" value="#{updatemissingpermitinfo.regn_no}"  maxlength="10" styleClass="text-uppercase" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 center-position">
+                                <p:commandButton value="Get Details" actionListener="#{updatemissingpermitinfo.showPermitDetails()}"
+                                                 onclick="PF('buii').show();" oncomplete="PF('buii').hide();" update="permitOutputPanel,sparePemitOutputPanel"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:outputPanel id="sparePemitOutputPanel">
+                    <p:tabView rendered="#{updatemissingpermitinfo.renderPermitOutputPanel}" id="permitOutputPanel">
+                        <p:tab title="Permit details">
+                            <ui:include src="/ui/permit/form_permit_panel.xhtml" >
+                                <ui:param name="permitFormPanel" value="#{updatemissingpermitinfo.permitPanelBean}"/>
+                            </ui:include>
+                        </p:tab> 
+                        <p:tab  title="Owner Information">
+                            <ui:include src="/ui/commonUI/form_owner_dtls_common.xhtml" >
+                                <ui:param name="containerBean" value="#{updatemissingpermitinfo}"/>
+                            </ui:include>
+                        </p:tab>
+                    </p:tabView>
+
+                    <p:panel id="changedByPrevUser" rendered="#{updatemissingpermitinfo.listPreviousChanges.size()>0}" >
+                        <p:dataTable value="#{updatemissingpermitinfo.listPreviousChanges}" var="data" styleClass="panelRowHeight">
+                            <p:column headerText="Changed by" width="15%">
+                                <h:outputText value="#{data.userName}" />
+                            </p:column>
+                            <p:column headerText="Changed Data" width="70%">
+                                <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                            </p:column>
+                            <p:column headerText="Changed on" width="15%">
+                                <h:outputText value="#{data.op_dt}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                    <p:outputPanel id="save_info" styleClass="top-space" rendered="#{updatemissingpermitinfo.renderSaveBtn}" >
+                        <p:panel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Save" onclick="PF('buii').show();" oncomplete="PF('buii').hide();" action="#{updatemissingpermitinfo.savePermitMissingInfo()}"  >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                    <p:button value="Back" outcome="home"/>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:blockUI block="@form" widgetVar="buii">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                    <p:outputPanel id="outputpanel_appdisapp" rendered="#{updatemissingpermitinfo.renderSaveAndFileMoveBtn}">    
+                        <ui:include src="/ui/role/app_disapp_new.xhtml"  >
+                            <ui:param name="app_disapp" value="#{updatemissingpermitinfo}"/>
+                        </ui:include>
+                    </p:outputPanel>
+
+                </p:outputPanel>
+                <p:outputPanel id="db_reopened" >
+                    <p:dialog  dynamic="true" widgetVar="rec_confrm"
+                               modal="true" draggable="false" closable="false" header="Info">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <h:outputText value="Record Saved Successfully, Please Verify And Approve. " styleClass="font-bold"/>
+                                </label>    
+                                <p:button value="Ok" outcome="/home.xhtml" styleClass="top-space bottom-space" />
+                            </div>
+                        </div>
+                    </p:dialog>  
+                    <p:dialog  id="dialog_id1" dynamic="true" widgetVar="rec_alert"
+                               modal="true" draggable="false" closable="false" header="Alert" style="border: 1px solid red">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <h:outputText value="Permit Details Already Found In Database  " styleClass="font-bold red"/>
+                                </label>    
+                                <p:button value="Ok" outcome="/home.xhtml" styleClass="top-space bottom-space" />
+                            </div>
+                        </div>
+                    </p:dialog>  
+                </p:outputPanel>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>   
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>

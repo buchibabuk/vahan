@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head> 
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:commandButton value="Back" action="#{vchblklistreport.doAction}" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value= "#{vchblklistreport.printCertDobj.size()>0 ? vchblklistreport.printCertDobj.get(0).header : ''}"  styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+
+
+            <div class="center-position">
+                <h:outputText value= "#{vchblklistreport.printCertDobj.size()>0 ? vchblklistreport.printCertDobj.get(0).subHeader : ''}"  styleClass="font-bold report-subheader text-uppercase"/>
+                <h:outputText value= " [#{vchblklistreport.printCertDobj.size()>0 ? vchblklistreport.printCertDobj.get(0).offName : ''}]"  styleClass="font-bold report-subheader text-uppercase"/>
+            </div>
+            <div class="datatable-panel" style="margin: 0px auto;">
+                <p:dataTable value="#{vchblklistreport.printCertDobj}" var="blklist" style="font-size: 10px !important;"   rowIndexVar="rowkey" styleClass="border-transparent">
+                    <p:column headerText="Sr.No" >
+                        <h:outputText value="#{rowkey+1}" />                                
+                    </p:column> 
+                    <p:column headerText="Regn / Chasi No">
+                        <h:outputText value="#{blklist.regn_no}" />
+                    </p:column>
+                    <p:column headerText="Blocked  Date">
+                        <h:outputText value="#{blklist.blocked_date}"/>
+                    </p:column>
+
+                    <p:column headerText="Action Taken" rendered="#{vchblklistreport.showActionTaken}" >
+                        <h:outputText value="#{blklist.action_taken}" rendered="#{vchblklistreport.showActionTaken}"/>
+                    </p:column>
+                    <p:column headerText="Action Date" rendered="#{vchblklistreport.showActionTaken}" >
+                        <h:outputText value="#{blklist.action_date}" rendered="#{vchblklistreport.showActionTaken}"/>
+                    </p:column>
+
+                    <p:column headerText="Blocked By" >
+                        <h:outputText value="#{blklist.blocked_by}"/>
+                    </p:column>
+                    <p:column headerText="Reason" rendered="#{!vchblklistreport.showActionTaken}">
+                        <h:outputText  value="#{blklist.reason}" rendered="#{!vchblklistreport.showActionTaken}"/>
+                    </p:column>
+                    <p:column headerText="Released By" rendered="#{vchblklistreport.showActionTaken}" >
+                        <h:outputText value="#{blklist.released_by}" rendered="#{vchblklistreport.showActionTaken}"/>
+                    </p:column>
+                    
+
+                </p:dataTable>
+            </div>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style>
+            @page {
+                size: A4;
+
+            }
+
+            @media print {
+                *{
+                    font-size: 15px !important;
+                    margin-top: 20px;
+                    line-height: 1.7em;
+                }                
+            }
+        </style>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form id="psvPermitForm" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+
+            <div class="center-position">
+                <span class="font-bold report-subheader text-uppercase bottom-line"> 
+                    <h:outputText value="REGIONAL TRANSPORT OFFICE, #{rcSurrender.getOffCdDesr()} "/> </span>
+            </div>
+
+            <table class="datatable-panel-100" style="margin: 0 auto !important;">
+                <tr>
+                    <td class="left-position left-space">
+                        <br/>
+                        No.  <h:outputText value="---------------" />
+                    </td>
+                    <td class="right-position right-space">
+                        <div>
+                            Dated, <h:outputText value=" #{rcSurrender.currentDate} " />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="center-position top-space">
+                ORDER U/S 55(5) of MV Act,1988
+            </div>
+            <div class="datatable-panel-100" style="margin: 0 auto !important;">
+                Whereas, it appears to the undersigned that, the Registration of vehicle No. <h:outputText value=" #{rcSurrender.vehicleNo} " /> has been done on the basis
+                of production of fake document/punched chassis number/punched engine number and due opportunity has been given to you for hearing.
+                <br/>
+                <br/>
+                Thus, in exercise of the powers conferred under section 55 (5) of the MV Act, 1988, the Regional
+                Transport Officer &amp; Registering Authority, MV Department, <h:outputText value=" #{rcSurrender.getOffCdDesr()} " />do hereby cancel the Registration
+                certificate of the vehicle bearing Regn. No. <h:outputText value=" #{rcSurrender.vehicleNo} " /> with the following particulars w.e.f.<h:outputText value=" #{rcSurrender.surrenderDate}" />
+
+            </div>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td>Vehicle No.</td>
+                        <td><h:outputText value="#{rcSurrender.vehicleNo}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Chassis No.</td>
+                        <td><h:outputText value="#{rcSurrender.chassisNo}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Engine No.</td>
+                        <td><h:outputText value="#{rcSurrender.engNo}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Month of Manufacture</td>
+                        <td><h:outputText value="#{rcSurrender.manuMonth}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Year of Manufacture</td>
+                        <td><h:outputText value="##{rcSurrender.manuYear}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Vehicle class</td>
+                        <td><h:outputText value="#{rcSurrender.vhClassDescr}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Vehicle category</td>
+                        <td><h:outputText value="#{rcSurrender.vhCatg}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Body type</td>
+                        <td><h:outputText value="#{rcSurrender.bdType}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Date of Registration</td>
+                        <td><h:outputText value="#{rcSurrender.regnDt}" /></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                <br/>
+
+                                Regional Transport Officer &amp;<br/>
+                                Registering Authority, MV Dept,
+                                <h:outputText value=" #{rcSurrender.getOffCdDesr()} "/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

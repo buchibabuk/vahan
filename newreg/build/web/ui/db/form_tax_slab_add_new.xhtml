@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title><ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert></title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+    </h:head>
+    <h:body>
+        <h:form id="id_tax_slab_add_new" prependId="false">   
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <input type="hidden" id="task" value='#{request.getParameter("task")}' />
+                        #{taxSlab_bean.flahFormLoad(request.getParameter("task"))}
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <div class="datatable-panel">
+                            <p:panelGrid styleClass="center-position datatable-panel-100">
+                                <f:facet name="header">
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="Slab code"/>
+                                        </p:column>                   
+                                        <p:column>
+                                            <h:outputText value="Sr.No"/>
+                                        </p:column>
+                                    </p:row> 
+                                </f:facet>
+                                <p:row>
+                                    <p:column>  
+                                        <h:outputText value="#{session.getAttribute('slab_code')}"/>
+                                    </p:column>          
+                                    <p:column>
+                                        <h:outputText value="#{taxSlab_bean.add_code eq 0 ? 'NEW' : taxSlab_bean.add_code}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="4">
+                                        <h:outputText value="#{session.getAttribute('slab_descr')}"/>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid> 
+                            <p:panel styleClass="top-space bottom-space">
+                                <f:event listener="#{taxSlab_bean.formulaeValidator}" type="postValidate" />
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="condition_formula" value="If" styleClass="conditional-format"/>
+                                        </label>
+                                        <p:inputTextarea id="condition_formula"
+                                                         binding="#{taxSlab_bean.condition_fromula}"
+                                                         required="true"
+                                                         requiredMessage="Condition Formula Can't be Empty">  
+                                            <f:ajax event="blur" execute="condition_formula" render="if_formula"/>
+                                        </p:inputTextarea>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="type_flag" value="Then" styleClass="conditional-format"/>
+                                        </label>
+                                        <p:selectOneMenu id="type_flag" binding="#{taxSlab_bean.type_flag}">
+                                            <f:selectItem itemLabel="Amount" itemValue="T"/>
+                                            <f:selectItem itemLabel="Addl.Amount1" itemValue="A"/>
+                                            <f:selectItem itemLabel="Addl.Amount2" itemValue="B"/>
+                                            <f:selectItem itemLabel="Surcharge" itemValue="S"/>
+                                            <f:selectItem itemLabel="Rebate" itemValue="R"/>
+                                            <f:selectItem itemLabel="Minimum" itemValue="M"/>
+                                            <f:selectItem itemLabel="Maximum" itemValue="X"/>
+                                        </p:selectOneMenu> 
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="rate_formula" value="is" styleClass="conditional-format"/>
+                                        </label>
+                                        <p:inputTextarea id="rate_formula"
+                                                         binding="#{taxSlab_bean.rate_fromula}"
+                                                         required="true"
+                                                         requiredMessage="Rate Formula Can't be empty">                     
+                                        </p:inputTextarea>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row center-position top-space bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton value="Save" action="#{taxSlab_bean.saveTaxSlabAddNewRecord()}" update="errorInfo if_formula">
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:commandButton action="#{taxSlab_bean.closeDialog()}" value="Back" immediate="true"/>
+                                    </div>
+                                </div>
+                                <p:panel id="if_formula" styleClass="top-space bottom-space">
+                                    <h:outputText value="#{taxSlab_bean.makeIfCondition}" escape="false" />                        
+                                </p:panel>
+                                <p:messages id="errorInfo" closable="true" showDetail="true" showSummary="false"/>
+                            </p:panel>
+                        </div>
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <div id="fee_details" style="">
+                            <p:dataList value="#{taxSlab_bean.tagFieldsList}" var="help">
+                                <f:facet name="header">
+                                    Help
+                                </f:facet>
+                                #{help.key} = #{help.value}
+                            </p:dataList> 
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+            </p:confirmDialog>
+
+        </h:form>
+    </h:body>
+</html>

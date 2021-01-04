@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid-row"> 
+        <div class="ui-grid-col-12">         
+            <p:outputPanel id="carouselId">             
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3">
+                        <p:outputPanel styleClass="datatable-panel">
+                            <p:outputLabel value="#{docDigitalSignDobj.ownerDetails}" escape="false"/> 
+                        </p:outputPanel>
+                    </div>
+                    <div class="ui-grid-col-9">
+                        <div class="ui-grid-row bottom-space"> 
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <h:outputText value="Document "/>
+                                    <h:outputText value="(#{docDigitalSignDobj.printImageNo})"/>
+                                    <h:outputText value="*" rendered="#{docDigitalSignDobj.selectedDoc.mandatory == 'Y'}" styleClass="red" />
+                                    <p:graphicImage library="images" name="digitally-signed-checked.png" styleClass="inline-section" style="margin: 0px 2px; width: auto; height: 16px;" rendered="#{docDigitalSignDobj.selectedDoc.digitallySigned and documentUploadBean.digitalSignAllowStateWise}"/>
+                                    <p:graphicImage library="images" name="digitally-signed-cross.png" styleClass="inline-section" style="margin: 0px 2px; width: auto; height: 16px;" rendered="#{!docDigitalSignDobj.selectedDoc.digitallySigned and documentUploadBean.digitalSignAllowStateWise}"/>
+                                    <h:outputText value="Digitally Signed" rendered="#{documentUploadBean.digitalSignAllowStateWise}" styleClass="#{docDigitalSignDobj.selectedDoc.digitallySigned ? 'green' : 'red'}"/>                                    
+                                </label>
+                                <p:inputText  id="catgId" styleClass="input" value="#{docDigitalSignDobj.selectedDoc.catName}"  disabled ="true"/>     
+                            </div>
+
+                            <div class="ui-grid-col-4"> 
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="subCatgId" value="Sub Category" />
+                                </label>
+                                <p:selectOneMenu id="subCatgId" value="#{docDigitalSignDobj.selectedDoc.subCatg}" filter="true" styleClass="bottom-space" disabled="#{docDigitalSignDobj.selectedDoc.disableSubCatg}" required="true">
+                                    <f:selectItem itemLabel="---------------SELECT---------------" itemValue="-1"/>                                                                                    
+                                    <f:selectItems value="#{docDigitalSignDobj.selectedDoc.subcategoryMasterDataList}" var="subcatg" itemValue="#{subcatg.sub_cat_id}" itemLabel="#{subcatg.sub_cat_name}" />
+                                    <p:ajax partialSubmit="true"/>
+                                    <f:validator validatorId="selectOneValidator_0" for="subCatgId"/>                                 
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <p:fileUpload id="selectAndUploadFile" value="#{docDigitalSignDobj.selectedDoc.file}"  label="Upload Document" fileUploadListener="#{docDigitalSignDobj.handleFileUpload}"  mode="advanced"  dragDropSupport="false" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" auto="true"  sizeLimit="400000" invalidSizeMessage="File Size 400Kb allowed" rendered="#{docDigitalSignDobj.selectedDoc.renderUploadButton}"/>
+                                <p:fileUpload id="selectAndModifyFile" value="#{docDigitalSignDobj.selectedDoc.file}"  label="Modify Document" fileUploadListener="#{docDigitalSignDobj.handleFileUpload}"  mode="advanced"  dragDropSupport="false" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" auto="true"  sizeLimit="400000" invalidSizeMessage="File Size 400Kb allowed" rendered="#{docDigitalSignDobj.selectedDoc.renderModifyButton}"/>                                     
+                            </div>
+                        </div>
+
+
+                        <div class="ui-grid-row bottom-space"> 
+                            <div class="ui-grid-col-12">
+                                <div class="position-relative">
+                                    <div id="imageWrapper" class="center-position position-relative" style="height:500px; overflow: scroll;">
+                                        <p:graphicImage id="showImgId"  url="#{docDigitalSignDobj.selectedDoc.showImage}" style="width: 100%; height: auto;" rendered="#{docDigitalSignDobj.selectedDoc.imageExtension}"/>
+<!--                                        <pe:documentViewer id="showPdfId" height="500" width="1000" url="#{docDigitalSignDobj.selectedDoc.showImage}" rendered="#{docDigitalSignDobj.selectedDoc.pdfExtension}"/>-->
+                                        <p:media id="showPdfId" height="500" width="1000" value="#{docDigitalSignDobj.selectedDoc.showImage}" rendered="#{docDigitalSignDobj.selectedDoc.pdfExtension}" player="pdf"/>
+                                    </div>
+                                    <p:commandLink id="prevBtn" action="#{docDigitalSignDobj.getPrevObjectToDisplay}" rendered="#{docDigitalSignDobj.showPrevBtn}"
+                                                   onclick="PF('bui').show();" oncomplete="PF('bui').hide();" style="left: 10px; " styleClass="arrow">
+                                        <p:graphicImage name="prev-arrow.gif" library="images" />
+                                    </p:commandLink>
+
+                                    <p:commandLink id="nextBtn" action="#{docDigitalSignDobj.getNextObjectToDisplay}"  rendered="#{docDigitalSignDobj.showNextBtn}"
+                                                   onclick="PF('bui').show();" oncomplete="PF('bui').hide();" style="right: 20px;" styleClass="arrow">
+                                        <p:graphicImage name="next-arrow.gif" library="images" />
+                                    </p:commandLink>
+
+                                    <p:commandLink  onclick="PF('rotateAndResizeWidget').scale(1.05);
+                                                           return false;" styleClass="zoomin-zoomout" style="left: 51%;" rendered="#{docDigitalSignDobj.selectedDoc.imageExtension}">
+                                        <p:graphicImage name="zoom-out.gif" library="images" style="width: 30px; height: auto;"/>
+                                    </p:commandLink>
+                                    <p:commandLink  onclick="PF('rotateAndResizeWidget').scale(0.95);
+                                                           return false;" styleClass="zoomin-zoomout" style="left: 44%;" rendered="#{docDigitalSignDobj.selectedDoc.imageExtension}">
+                                        <p:graphicImage name="zoom-in.gif" library="images"  style="width: 30px; height: auto;"/>
+                                    </p:commandLink>
+                                </div>
+
+                                <pe:imageRotateAndResize id="rotateAndResize" for="showImgId" widgetVar="rotateAndResizeWidget">
+                                    <pe:javascript event="resize" />
+                                </pe:imageRotateAndResize>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 right-position">
+                                <h:outputText value="Verified Document "  rendered="#{not empty docDigitalSignDobj.displayVerifyBtnText}" styleClass="inline-section right-space report-header font-bold red"/>
+                                <p:selectBooleanCheckbox value="#{docDigitalSignDobj.selectedDoc.docVerified}" rendered="#{not empty docDigitalSignDobj.displayVerifyBtnText}">
+                                    <p:ajax listener="#{docDigitalSignDobj.verifyDocument}" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                                </p:selectBooleanCheckbox>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </p:outputPanel>
+
+        </div>
+    </div>     
+    <p:blockUI block=":masterLayout" widgetVar="bui">
+        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+    </p:blockUI>
+</html>

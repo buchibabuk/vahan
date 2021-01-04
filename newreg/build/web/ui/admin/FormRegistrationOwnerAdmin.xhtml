@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content">
+        <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+        <p:outputPanel>
+            <p:autoUpdate/>
+            <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+                <div class="center-position">
+                    <p:commandButton value="Close" immediate="true">
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+                </div>
+                <p:messages>
+                    <p:autoUpdate/>
+                </p:messages>
+            </p:dialog>
+        </p:outputPanel>
+        <div class="ui-grid ui-grid-responsive">
+            <p:panel id="regn_no_details" header="#{language.regnTmpVeh}">
+
+                <p:keyFilter regEx="/[a-zA-Z0-9/-]/i" for="regnNo"/>
+                <p:focus for="regnNo"/>
+
+                <div class="ui-grid-row">
+
+                    <div class="ui-grid-col-4 center-position">                     
+                        <p:selectOneRadio value="#{ownerAdmin.regVehType}" disabled="#{ownerAdmin.disableRegnNo}">
+                            <f:selectItem itemLabel="#{language.registerVeh}" itemValue="1"/>
+                            <f:selectItem itemLabel="#{language.tmpVeh}" itemValue="18"/>
+                            <f:ajax listener="#{ownerAdmin.regVehTypeChangeListener}" render="regVehTypeLabel regnNo"/>
+                        </p:selectOneRadio> 
+                    </div>
+
+                    <div class="ui-grid-col-4">              
+
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="regVehTypeLabel" for="regnNo" value="#{ownerAdmin.regVehTypeDescr}"/>
+                        </label>
+                        <p:inputText id="regnNo" value="#{ownerAdmin.ownerBean.ownerDobj.regn_no}" autocomplete="off"
+                                     styleClass="input" 
+                                     converter="toUpperCaseConverter" required="true" maxlength="20" 
+                                     requiredMessage="#{language.regn_noblank}" 
+                                     disabled="#{ownerAdmin.disableRegnNo}" >
+                            <p:ajax event="blur"/>
+                        </p:inputText>
+
+                    </div>
+                    <div class="ui-grid-col-4">              
+
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel id="appl_no_id" for="applno_id" value="#{language.home_rightpanelApplno}" rendered="#{ownerAdmin.APPL_NO !=null}"/>
+                        </label>
+                        <p:inputText id="applno_id" value="#{ownerAdmin.APPL_NO}" autocomplete="off"
+                                     styleClass="input" 
+                                     converter="toUpperCaseConverter" required="true" maxlength="20" 
+                                     requiredMessage="#{language.regn_noblank}" 
+                                     disabled="true" rendered="#{ownerAdmin.APPL_NO !=null}" >
+                        </p:inputText>
+
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="#{language.show}" 
+                                         onclick="PF('ajax_status').show()" 
+                                         oncomplete="PF('ajax_status').hide()" 
+                                         update="tabviewRender regn_no_details" action="#{ownerAdmin.showDetails}" 
+                                         rendered="#{ownerAdmin.render_vehicle_type}"  />
+                        <p:button value="#{language.reset}" icon="ui-icon-refresh" onclick="PF('ajax_status').show()" rendered="#{ownerAdmin.render_vehicle_type}"/>
+
+                        <!--                        <p:button value="Reset" icon="ui-icon-refresh" onclick="PF('ajax_status').show()"/>-->
+                    </div>
+                </div>
+                <p:outputPanel rendered="#{ownerAdmin.ownerBean.disablePurchaseDt}" id="showmsgid">
+                    <div class="red font-bold  center-position">
+                        Vehicle technical data is disabled due to Vehicle Registration done in Vahan4 to change the same use the action Modify-Vehicle Details-State-Admin by state admin..
+                    </div>
+                </p:outputPanel>
+            </p:panel>
+        </div>
+
+        <p:dialog id="smartCardPendingMsgDialog" header="Alert!" widgetVar="smartCardDialog" 
+                  modal="true" closeOnEscape="false" visible="false" closable="false" dynamic="true">
+            <div class="center-position">
+                <h:outputText value="#{language.smartPending} - #{ownerAdmin.smartCardDobj.appl_no}. &lt;br /&gt;#{language.smartUpdate}" styleClass="report-header font-bold red" escape="false"/>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:commandButton value="#{language.yes}" onclick="PF('smartCardDialog').hide()" immediate="true">
+                        <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:button id="noButton" value="#{language.no}" icon="ui-icon-refresh"/>                  
+                </div>
+            </div>
+        </p:dialog>
+
+
+
+        <p:outputPanel id="tabviewRender">
+
+            <p:tabView id="workbench_tabview" styleClass="top-space bottom-space" rendered="#{ownerAdmin.renderTab}">
+
+                <!--################################# Owner Details ########################################## -->
+                <p:tab  id="owner_details_tab" title="#{language.ownerDetails}" >
+                    <ui:include src="/ui/form_owner_dtls.xhtml" >
+
+                    </ui:include>
+                </p:tab>
+                <!--########################################################################################## -->
+
+                <!--################################# Temp Vehicle Details ######################################## -->
+                <p:tab  id="tmp_veh_info_tab" title="#{language.tmpRegnDetails}"   rendered="#{ownerAdmin.ownerBean.blnRegnTypeTemp}">
+                    <ui:include src="/ui/formTempRegnDtls.xhtml">
+                    </ui:include>
+                </p:tab>
+                <!--########################################################################################## -->
+
+                <!--################################# Vehicle Details ######################################## -->
+                <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}"  >
+                    <ui:include src="/ui/form_vehicle_dtls.xhtml">
+                        <ui:param name="importedVehicle_Bean" value="#{ownerAdmin.importedVehicle_Bean}"/>   
+                    </ui:include>
+                </p:tab>
+                <!--########################################################################################## -->
+
+
+
+                <!--###################### Hypothecation and Insurance Details ############################### -->
+                <p:tab id="HypothecationOwner"  title="#{language.hypothecation_InsuranceInformation}">
+                    <ui:include src="/ui/form_ins_dtls.xhtml">
+                        <ui:param name="ins_bean" value="#{ownerAdmin.insBean}"/>                        
+                    </ui:include>
+                    <p:outputPanel id="renderHypth" >
+                        <div class="ui-grid-row bottom-space">
+                            <div class="ui-grid-col-12">
+                                <h:outputText value="#{language.vehHypoth}" styleClass="red" />
+                                <p:selectBooleanCheckbox id="isHypo" value="#{ownerAdmin.isHypth}">
+                                    <p:ajax process="@this" update="hpa" />
+                                </p:selectBooleanCheckbox>
+                            </div>
+                        </div>
+                        <p:outputPanel id="hpa">
+                            <p:outputPanel rendered="#{ownerAdmin.isHypth}">
+                                <ui:include src="/form_hpa.xhtml">
+                                    <ui:param name="hpa_bean" value="#{ownerAdmin.hpaBean}"/>                        
+                                </ui:include>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </p:tab>
+                <!--########################################################################################## -->
+
+                <!--################################# Remarks Details ######################################## -->
+                <p:tab  id="veh_remarks_tab" title="#{language.remarks}" rendered="#{ownerAdmin.remarksFlag}">
+                    <ui:include src="/ui/form_admin_remarks.xhtml">                        
+                    </ui:include>
+                </p:tab>
+                <!--###################### Other State Details ######################################## -->
+                <p:tab id="tabOtherStateDetails" title="#{language.otherStateDtls}" rendered="#{ownerAdmin.otherStateVehicle}">
+                    <ui:include src="/ui/formOtherState.xhtml">
+                        <ui:param name="workBench" value="#{ownerAdmin}"/>    
+                        <ui:param name="owner_bean" value="#{ownerAdmin.ownerBean}"/>    
+                    </ui:include>
+                </p:tab>
+                <!--###################### Commercial Trailer Details ######################################## -->
+                <p:tab id="CommercialTrailerDetails"  title="#{language.attchedTrailerDtls}" rendered="#{ownerAdmin.trailer_tab}">
+                    <ui:include src="/ui/form_commercial_trailer_dtls.xhtml"/>
+                </p:tab>
+                <p:tab id="viewDoc" rendered="#{ownerAdmin.documentUploadShow}" title="Documents Uploaded">
+                    <ui:include src="/ui/form_doc_upload.xhtml">
+                        <ui:param name="docUpload" value="#{ownerAdmin.documentUploadBean}"/>  
+                    </ui:include>        
+                </p:tab>
+            </p:tabView>
+            <p:outputPanel id="reason_id" rendered="#{ownerAdmin.renderTab}">
+                <div class="ui-grid-row bottom-space">
+                    <div class="ui-grid-col-6 top-align right-position">
+                        <p:outputLabel for="adminRemarks" value="#{language.reason}" styleClass="inline-section right-space top-align"/>
+                        <p:inputTextarea id="adminRemarks" value="#{ownerAdmin.remarks}" styleClass="input"
+                                         required="true" cols="50" rows="1" placeholder="#{language.enter_reason}..."
+                                         maxlength="200" requiredMessage="#{language.rmk_empty}"
+                                         converter="toUpperCaseConverter" style="width:50% !important;">                            
+                        </p:inputTextarea>
+                    </div>
+
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel id="pn_save_back" rendered="#{ownerAdmin.render_btm}">
+                <div class="ui-grid-row bottom-space">
+                    <div class="center-position">
+                        <p:commandButton value="#{language.save}" action="#{ownerAdmin.save}" 
+                                         onclick="PF('ajax_status').show()" 
+                                         oncomplete="PF('ajax_status').hide()" 
+                                         icon="ui-icon-disk" update="tabviewRender regn_no_details showmsgid" 
+                                         style="margin: 0px 20px !important;">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()"  icon="ui-icon-arrowreturnthick-1-w" style="margin: 0px 0px !important;"/>
+                    </div>
+                </div>
+                <p:outputPanel rendered="#{ownerAdmin.forwardApplNoChckRender}">
+                    <div class="red font-bold report-header center-position">
+                        <p:selectBooleanCheckbox value="#{ownerAdmin.forwardToApplNo}" itemLabel="#{ownerAdmin.msgforStateAdmin}" required="true" requiredMessage=" Please select checkbox."/>
+                    </div>
+                </p:outputPanel>
+            </p:outputPanel>
+            <!--            add for otp end-->
+            <p:outputPanel id="pn_back"  rendered="#{!ownerAdmin.renderTab}">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel >
+                            <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()" 
+                                      icon="ui-icon-arrowreturnthick-1-w"/>
+                        </p:outputPanel>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel id="outputpanel_appdisapp" rendered="#{ownerAdmin.render_file_move}">       
+                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                    <ui:param name="app_disapp" value="#{ownerAdmin}"/>
+                </ui:include>  
+                <p:outputPanel rendered="#{ownerAdmin.forwardApplNoChckRender}">
+                    <div class="red font-bold report-header center-position">
+                        <p:selectBooleanCheckbox value="#{ownerAdmin.forwardToApplNo}" itemLabel="#{ownerAdmin.msgforStateAdmin}" required="true" requiredMessage=" Please select checkbox."/>
+                    </div>
+                </p:outputPanel>
+            </p:outputPanel>
+            <p:panel id="changedByPrevUser" rendered="#{ownerAdmin.listPreviousChanges.size()>0}" >
+                <p:dataTable value="#{ownerAdmin.listPreviousChanges}" var="data" styleClass="panelRowHeight">
+                    <p:column headerText="#{language.changeBy}" width="15%">
+                        <h:outputText value="#{data.userName}" />
+                    </p:column>
+
+                    <p:column headerText="#{language.changeDate}" width="70%">
+                        <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                    </p:column>
+
+                    <p:column headerText="#{language.changeOn}" width="15%">
+                        <h:outputText value="#{data.op_dt}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+
+        </p:outputPanel>
+        <!--OTP-->
+        <p:outputPanel id="otp_confirmation">
+            <p:dialog  widgetVar="otp_confrm" header="#{language.otpForApproval}"  closable="false" dynamic="true" modal="true" resizable="false" >
+                <p:messages showDetail="true" showSummary="false">
+                    <p:autoUpdate/>
+                </p:messages>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 red">
+                        #{language.OTPSentMsg}
+                    </div> 
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3">
+                        <label>
+                            <p:outputLabel value="#{language.login_enter_otp}:"/>
+                        </label>  
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <p:inputText value="#{ownerAdmin.enterRcptOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                    </div>
+                    <div class="ui-grid-col-5">
+                        <p:commandLink value="#{language.login_resend_otp}" action="#{ownerAdmin.sendOtpMailForApproval('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                       onsuccess="PF('ajax_status').hide()"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position" >
+                        <p:commandButton value="#{language.confirmApproval} "  action="#{ownerAdmin.sendOtpMailForApproval('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                         onsuccess="PF('ajax_status').hide();" >
+                            <p:confirm header="#{language.home_confirm}" message="#{language.sureApprovalTrans}" icon="ui-icon-alert"/>   
+                        </p:commandButton>
+                        <p:commandButton value="#{language.login_back}" action="seatwork"
+                                         process="@this"  immediate="true" onclick="PF('ajax_status').show()"
+                                         onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                    </div>
+                </div>
+
+            </p:dialog>
+        </p:outputPanel>
+        <vahan:vahanMessages messages="#{ownerAdmin.vahanMessages}"  rendered="#{ownerAdmin.vahanMessages ne null}"/>
+    </ui:define>
+</ui:composition>

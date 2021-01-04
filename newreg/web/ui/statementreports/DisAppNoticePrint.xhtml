@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Disapproval Notice</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <body onload="window.print()">
+        <h:form id="disAppNoticeForm" prependId="false">
+            <p:outputPanel id="Notice">
+                <div class="center-position clearfix">
+                    <p:commandButton id="printer" value="Print" styleClass="display-none" type="button" icon="ui-icon-print">
+                        <p:printer target=":disAppNoticeForm:Notice" />
+                    </p:commandButton>
+                    <p:commandButton id="back" value="Home" action="home" styleClass="display-none" />
+                </div>
+                <div class="center-position">
+                    <h:outputText value="#{disAppNoticeBean.dobj.rcptheading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <div class="center-position">
+                    <span  class="font-bold report-subheader">
+                        <h:outputText value="#{disAppNoticeBean.dobj.offName}"/>,<h:outputText value="#{disAppNoticeBean.dobj.stateName}"/>
+                    </span>
+                </div>
+                <div class="top-space bottom-space">
+                <table class="datatable-panel">
+                        <tr>
+                            <td class="left-position">
+                                <div class="left-space">
+                                    Application No:-  <h:outputText value="#{disAppNoticeBean.dobj.applNo}" />
+                                </div>
+                            </td>
+                            <td class="right-position">
+                                <div class="right-space">
+                                    Date:- <h:outputText value="#{disAppNoticeBean.currentDate}"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="center-position">
+                   <h:outputText value="Notice" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                </div>
+                <div class="left-space right-space bottom-space">
+                    <div>
+                        To,
+                    </div>
+                    <br />
+                    <div>
+                        <h:outputText value="#{disAppNoticeBean.dobj.ownerName}" />
+                    </div>
+                    <div class="bottom-space">
+                        <h:outputText value="#{disAppNoticeBean.dobj.address}" />
+                    </div>
+                    <div class="bottom-space">
+                        <span class="font-bold">Subject:- </span><span class="underline-text">Disapproval Notice For <h:outputText value="#{disAppNoticeBean.dobj.purpose}"/> Of Vehicle No.  <h:outputText value="#{disAppNoticeBean.dobj.regnNo}"/></span>
+                    </div>
+                    <div  class="bottom-space">
+                        Sir/Madam,
+                    </div>
+                    <div class="bottom-space">
+                        In connection with documents submitted on dated <h:outputText value="#{disAppNoticeBean.dobj.entryDate}"/>
+                        for Vehicle no: <h:outputText value="#{disAppNoticeBean.dobj.regnNo}"/>,
+                        for <h:outputText value="#{disAppNoticeBean.dobj.purpose}"/>,
+                        there are certain discrepancies have been observed such as :
+                    </div>
+
+                    <p:dataList id="listofreason" value="#{disAppNoticeBean.dobj.reasonList}" var="reason" styleClass="bottom-space">
+                        <f:facet name="header">
+                            List Of Reasons
+                        </f:facet>
+                        #{reason}
+                    </p:dataList>
+                    <div class="bottom-space">
+                        You are, therefore , advised to fulfill the above mentioned discrepancies by submitting the appropriate document/or confirm the aforesaid transaction within
+                        seven days of issue of this communication by your physical appearance along with your identification to /before the undersigned office hour of any working
+                        days , so that the pending case could be finalized at earliest.
+                    </div>
+                    <div class="bottom-space right-position">
+                        <div class="center-position font-bold" style="display: inline-block;">
+                            <br />
+                            <br />
+                            <br />
+                            MLO<br />
+                            <h:outputText value="#{disAppNoticeBean.dobj.offName}" />
+
+                        </div>
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </body>
+</html>

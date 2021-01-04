@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="form_registered_vehicle_fee">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Fee - Registered Vehicle</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <ui:include src="/ui/recpt/form_current_rcpt_no.xhtml" />                       
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:dialog id="popup" widgetVar="confDlgFee" modal="true"
+                                  draggable="false" resizable="false" closable="false" 
+                                  header="Do You Want to Continue?">  
+                            <p:panel id="popupPanel">
+                                <div class="center-position bottom-space top-space">
+                                    <h:outputText value="Total Amount to paid in Cash"/>
+                                </div>
+                                <div class="font-bold center-position bottom-space">
+                                    <h:outputText value="In Rupees: #{feeRegisteredvehicle.paymentBean.isCashSelected?feeRegisteredvehicle.totalAmountPayable:feeRegisteredvehicle.paymentBean.balanceAmount}"/>
+                                </div>
+                                <div class="center-position bottom-space">
+                                    <p:commandButton value="Yes" onclick="PF('bui').show();"
+                                                     oncomplete="PF('confDlgFee').hide();"  
+                                                     icon="ui-icon-check"
+                                                     action="#{feeRegisteredvehicle.saveFeeDetails}" update="vehicleDetailsPanel payAndFeePanel tf_veh_no
+                                                     form_registered_vehicle_fee:tf_current_rcptno form_registered_vehicle_fee:tf_running_rcpt_no vehNoPanelGrid"/>
+                                    <p:commandButton value="No" onclick="PF('confDlgFee').hide();" icon="ui-icon-close"/>
+                                </div>
+                            </p:panel>
+                            <p:blockUI block="popupPanel" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:dialog>                       
+                        <p:dialog id="rcptNoPopup" visible="#{not empty feeRegisteredvehicle.rcptNoPopup}" widgetVar="dlgRcptNoPopup" 
+                                  modal="true" draggable="false" resizable="false" closable="false" hideEffect="explode">  
+
+                            <f:facet name="header">
+                                <h3 style="color: #000000">Alert!</h3>
+                            </f:facet>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">                                   
+                                    <p:separator/>
+                                    <h2 style="color: red">#{feeRegisteredvehicle.rcptNoPopup}"</h2>
+                                    <p:separator/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">                            
+                                    <p:button id="back_to_home_from_registered_veh_fee_dlg_rcptNoPopup" value="Ok" onclick="PF('dlgRcptNoPopup').hide();" 
+                                              outcome ="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                                </div>
+                            </div>
+                        </p:dialog>
+
+                        <p:dialog id="nodataPopupforRegnNo" visible="#{not empty feeRegisteredvehicle.regnNonodataPopup}" widgetVar="dlgNodataPopupforRegnNo" 
+                                  modal="true" draggable="false" resizable="false" closable="false" hideEffect="explode">  
+
+                            <f:facet name="header">
+                                <h3 style="color: #000000">Alert!</h3>
+                            </f:facet>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">                                   
+                                    <p:separator/>
+                                    <h2 style="color: red">"#{feeRegisteredvehicle.regnNonodataPopup}"</h2>
+                                    <p:separator/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">                            
+                                    <p:button id="back_to_home_from_registered_veh_fee_dlg_nodataPopupforRegnNo" value="Ok" onclick="PF('dlgNodataPopupforRegnNo').hide();" 
+                                              outcome ="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                                </div>
+                            </div>
+                        </p:dialog>
+
+                        <p:outputPanel id="vehNoPanelGrid" styleClass="bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-2 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_veh_no" value="Vehicle No:"/>
+                                    </label>
+                                    <p:inputText id="tf_veh_no" value="#{feeRegisteredvehicle.veh_no}"  maxlength="10" styleClass="text-uppercase" disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_appl_no" value="Application No:"/>
+                                    </label>
+                                    <p:inputText id="tf_appl_no" value="#{feeRegisteredvehicle.appl_no}" size="20" maxlength="16" disabled="true"
+                                                 autocomplete="off" styleClass="text-uppercase" />
+                                </div>
+                            </div>
+                        </p:outputPanel>           
+                        <p:panel header="Vehicle Details" id="vehicleDetailsPanel">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="#{label.chasi_no}:"/>
+                                    </label>
+                                    <p:inputText id="tf_chasi_no" value="#{feeRegisteredvehicle.chasi_no}" maxlength="30"  readonly="true" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Registration Date:"/>
+                                    </label>
+                                    <p:calendar id="cal_regn_dt" value="#{feeRegisteredvehicle.regn_date}" pattern="dd-MMM-yyyy" readonly="true" disabled="true"/>   
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Owner Name:"/>
+                                    </label>
+                                    <p:inputText id="tf_owner_name" value="#{feeRegisteredvehicle.owner_name}" maxlength="35"  readonly="true" disabled="true"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Fitness Validity:"/>
+                                    </label>
+                                    <p:calendar id="cal_fit_dt" value="#{feeRegisteredvehicle.fitness_val}" pattern="dd-MMM-yyyy" readonly="true" disabled="true"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Vehicle Class:"/> 
+                                    </label>
+                                    <p:selectOneMenu id="sm_vhClass" value="#{feeRegisteredvehicle.veh_class}" filter="true" disabled="#{feeRegisteredvehicle.isdisable}" >
+                                        <f:selectItems value="#{feeRegisteredvehicle.vhClass_list}" />                         
+                                    </p:selectOneMenu>  
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Vehicle Category:"/> 
+                                    </label>
+                                    <p:inputText value="#{feeRegisteredvehicle.ownerDobj.vch_catg}" readonly="true" disabled="true"/> 
+                                </div>
+                            </div>
+                        </p:panel>  
+
+                        <div class="center-position right-space top-space">
+                            <h:outputText value="Fitness/Inspection (Form-38A) done at #{feeRegisteredvehicle.tempFitnessDetails.off_name}, #{feeRegisteredvehicle.tempFitnessDetails.state_name}" rendered="#{feeRegisteredvehicle.tempFitnessDetails!=null}"  styleClass="font-bold red header-subheader"/>
+                        </div>
+
+                        <p:panel id="tempFitDetailsTab"  header="Fitness/Inspection done in Other State" rendered="#{feeRegisteredvehicle.tempFitnessDetails!=null}" styleClass="top-space bottom-space">
+                            <ui:include src="/ui/registration/tempFitnessDetails.xhtml">
+                                <ui:param name="fitnessDobj" value="#{feeRegisteredvehicle.tempFitnessDetails}"/>
+                            </ui:include>
+                        </p:panel>
+                        <p:outputPanel rendered="#{feeRegisteredvehicle.renderPanelReasonForFitness}">
+                            <p:panel header="Reason For Fitness">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">  
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="som_fitness_reason"  value="Reason For Fitness"/>
+                                        </label>
+                                        <p:selectOneMenu  id="som_fitness_reason" value="#{feeRegisteredvehicle.reasonForFitness}"
+                                                          required="true" requiredMessage="Please Select Fitness Officer 2" >
+                                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                            <f:selectItem itemLabel="Fitness Renewal for NOC/Conversion (One Month Parking Charges)" itemValue="FITNESS RENEWAL FOR NOC/CONVERSION (ONE MONTH PARKING CHARGES)"/>
+                                            <f:selectItem itemLabel="Fitness Renewal (Normal Case)" itemValue="FITNESS RENEWAL (NORMAL CASE)"/>
+                                            <f:validator validatorId="selectOneValidator" for="som_fitness_reason"/> 
+                                            <p:ajax process="som_fitness_reason" event="change" listener="#{feeRegisteredvehicle.resonForFitnessListner()}" update="renderPanelForm"></p:ajax>
+                                        </p:selectOneMenu>  
+                                    </div> 
+                                    <div class="ui-grid-col-4">  
+                                        <p:commandButton value="Get Fee Details" id="btn_get_fee_details" action="#{feeRegisteredvehicle.getFeeDetailsWithParkingValidity()}" update="renderPanelForm"  onclick="PF('blockVar').show();"
+                                                         oncomplete="PF('blockVar').hide();"/>
+                                    </div> 
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                        <p:outputPanel id="renderPanelForm" >
+                            <p:panel rendered="#{feeRegisteredvehicle.renderPanelForm}">
+                                <p:outputLabel id="payAndFeePanel">
+                                    <div class="ui-grid-row top-space">
+                                        <div class="ui-grid-col-12">
+                                            <ui:include src="form_fee_panel.xhtml">
+                                                <ui:param name="containerBean" value="#{feeRegisteredvehicle}"/>
+                                                <ui:param name="vehCatg" value="#{feeRegisteredvehicle.ownerDobj.vch_catg}"/>
+                                                <ui:param name="vehClass" value="#{feeRegisteredvehicle.ownerDobj.vh_class}"/>
+                                                <ui:param name="parentTotalPayableAmount" value=":masterLayout:form_registered_vehicle_fee:totalAmount :masterLayout:form_registered_vehicle_fee:userChargesPaybaleAmountPanel"/>
+                                            </ui:include>
+                                        </div>
+                                    </div>
+                                    <p:outputPanel  id="permitpanel" styleClass="top-space" rendered="#{feeRegisteredvehicle.renderPermitPanel}">
+                                        <div class="ui-grid-row top-space">
+                                            <div class="ui-grid-col-12">
+                                                <ui:include src="/ui/permit/form_permit_panel.xhtml" >
+                                                    <ui:param name="permitFormPanel" value="#{feeRegisteredvehicle.permitPanelBean}"/>                                
+                                                </ui:include>
+                                            </div>
+                                        </div>
+                                    </p:outputPanel>
+                                    <p:outputPanel id="taxpanelOutput">
+                                        <p:outputPanel rendered="#{feeRegisteredvehicle.renderTaxInstallment}">
+                                            <p:outputLabel value="Tax Installment:" ></p:outputLabel>
+                                            <p:selectBooleanCheckbox value="#{feeRegisteredvehicle.taxInstallment}" >
+                                                <p:ajax update="taxpanelOutput :masterLayout:form_registered_vehicle_fee:totalAmount" listener="#{feeRegisteredvehicle.taxInstallListener}" />
+                                            </p:selectBooleanCheckbox>
+                                        </p:outputPanel>
+
+                                        <p:outputPanel rendered="#{feeRegisteredvehicle.renderTaxExemption}">
+                                            <p:outputLabel value="Tax Exemption:" ></p:outputLabel>
+                                            <p:selectBooleanCheckbox value="#{feeRegisteredvehicle.taxExemption}" >
+                                                <p:ajax update="taxpanelOutput :masterLayout:form_registered_vehicle_fee:totalAmount" listener="#{feeRegisteredvehicle.taxExemptionListener}" />
+                                            </p:selectBooleanCheckbox>
+                                        </p:outputPanel>
+                                        <p:outputPanel  id="taxpanel" rendered="#{feeRegisteredvehicle.renderTaxPanel}">
+                                            <div class="ui-grid-row top-space">
+                                                <div class="ui-grid-col-12">
+                                                    <ui:include src="/ui/tax/form_tax_details.xhtml" >
+                                                        <ui:param name="taxContainerBean" value="#{feeRegisteredvehicle}"/>       
+                                                        <ui:param name="parentTotalPayableAmount" value=":masterLayout:form_registered_vehicle_fee:totalAmount :masterLayout:form_registered_vehicle_fee:userChargesPaybaleAmountPanel"/>
+                                                    </ui:include>
+                                                </div>
+                                            </div>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                    <hr class="top-space bottom-space" />
+                                    <div class="ui-grid-row h5">
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel id="userChargesPaybaleAmountPanel" rendered="#{feeRegisteredvehicle.renderUserChargesAmountPanel}">
+                                                <h:outputText value="User/Service Charges: " styleClass="font-bold text-uppercase"/>
+                                                <h:outputText  id="totalUserAmt" value="Rs. #{feeRegisteredvehicle.totalUserChrg}/-" styleClass="font-bold"/>
+                                            </p:outputPanel>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel id="userSmartCardPanel" rendered="#{feeRegisteredvehicle.renderSmartCardFeePanel}">
+                                                <h:outputText value="Smart Card Fee: " styleClass="font-bold text-uppercase"/>
+                                                <h:outputText  id="totalSmartCardAmt" value="Rs. #{feeRegisteredvehicle.smartCardFee}/-" styleClass="font-bold"/>
+                                            </p:outputPanel>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <p:outputPanel>
+                                                <h:outputText value="Total Payable Amount: " styleClass="font-bold text-uppercase"/>
+                                                <h:outputText  id="totalAmount" value="Rs. #{feeRegisteredvehicle.totalAmountPayable}/-" styleClass="font-bold"/>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div> 
+                                    <hr class="top-space bottom-space" />
+                                    <div class="ui-grid-row h6">
+                                        <p:outputPanel rendered="#{feeRegisteredvehicle.fitnessInspectionFeeMessage ne ''}">
+                                            <h:outputText value="Note : #{feeRegisteredvehicle.fitnessInspectionFeeMessage}" styleClass="font-bold text-uppercase"/>
+                                        </p:outputPanel>
+                                    </div>
+                                    <hr class="top-space bottom-space" />
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <ui:include src="form_payment_collection.xhtml">
+                                                <ui:param name="paymentBean" value="#{feeRegisteredvehicle.paymentBean}"/>
+                                                <ui:param name="headerName" value="payment"/>
+                                                <ui:param name="totalPayableAmount" value="#{feeRegisteredvehicle.feePanelBean.totalAmount}"/>
+                                            </ui:include> 
+                                        </div>
+                                    </div>                      
+                                </p:outputLabel>
+
+                                <p:outputPanel id="pg_button" styleClass="center-position">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <p:commandButton value="Save" id="btn_save" action="#{feeRegisteredvehicle.validateForm('RtoPayment')}" rendered="#{feeRegisteredvehicle.btn_save}" 
+                                                             update="form_registered_vehicle_fee:tf_current_rcptno form_registered_vehicle_fee:tf_running_rcpt_no"/>
+                                            <p:button value="Back" id="btn_cancel" onclick="PF('blockVar').show();" outcome ="/home.xhtml?faces-redirect=true"/>   
+
+                                            <p:commandButton id="btnRevertBack" value="Revert Back For Rectification" onclick="PF('dlgRevertBack').show();" immediate="true" styleClass="button" rendered="#{feeRegisteredvehicle.btn_save}"/>
+                                            <p:commandButton styleClass="button" value="Online Payment" id="btn_online" action="#{feeRegisteredvehicle.validateForm('OnlinePayment')}" rendered="#{feeRegisteredvehicle.renderOnlinePayBtn}"/>
+                                            <p:commandButton value="Cancel Online Payment" onclick="PF('blockVar').show();" oncomplete="PF('blockVar').hide();" action ="#{feeRegisteredvehicle.getCancelPayment()}"  rendered="#{feeRegisteredvehicle.renderCancelPayment}" update="form_registered_vehicle_fee:pg_button">
+                                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                            </p:commandButton>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <h:outputText value="#{feeRegisteredvehicle.onlineUserCredentialmsg}"  rendered="#{feeRegisteredvehicle.renderUserAndPasswored}" class="red font-bold bottom-space right-position"/>
+                                            <br/>
+                                            <h:outputText value="Note:" class="font-bold top-space right-position" rendered="#{feeRegisteredvehicle.renderOnlinePayBtn}"/>
+                                            <h:outputText value=" If Vehicle Owner wants to pay through ONLINE Payment Gateway / DEBIT Card then Cashier can opt for that option. 
+                                                          The Owner will get the Credentials on his Registered Mobile No for Online Payment." rendered="#{feeRegisteredvehicle.renderOnlinePayBtn}"  class="red font-bold top-space right-position"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>  
+                            </p:panel>
+                        </p:outputPanel>
+                        <p:dialog id="popupRevertBack" widgetVar="dlgRevertBack" modal="true"
+                                  draggable="false" resizable="false" closable="false" 
+                                  header="Revert Back for Rectification">  
+                            <p:panel id="panelRevertBack">
+                                <div class="center-position bottom-space top-space">
+                                    <div class="font-bold report-header">    
+                                        <span class="red font-bold"> Please Select Checkbox for Revert Back</span>
+                                    </div>                                    
+                                </div>
+                                <div class="font-bold center-position bottom-space">
+                                    <p:selectManyMenu id="requestForRevertBack"                                                      
+                                                      value="#{feeRegisteredvehicle.selectedPurCdForRevertBack}"
+                                                      showCheckbox="true">
+                                        <f:selectItems value="#{feeRegisteredvehicle.purCodeList}"/> 
+                                    </p:selectManyMenu>
+                                </div>
+                                <div class="center-position bottom-space">
+                                    <p:commandButton value="Yes" 
+                                                     icon="ui-icon-check"
+                                                     onclick="PF('bui').show();"
+                                                     oncomplete="PF('bui').hide();"
+                                                     action="#{feeRegisteredvehicle.revertBackForRectificationRegVeh()}">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:commandButton value="No" onclick="PF('dlgRevertBack').hide();" immediate="true" icon="ui-icon-close"/>
+                                </div>
+                            </p:panel>
+                            <p:blockUI block="panelRevertBack" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:dialog> 
+                        <p:dialog id="onlinePaymentdialog" draggable="false" closable="false" resizable="false" widgetVar="onlinePaymentvar"
+                                  header="Online Payment Details" dynamic="true" modal="true">                        
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">
+                                    <h:outputText value="#{feeRegisteredvehicle.onlineUserCredentialmsg}" styleClass="font-bold"/>
+                                    <br/>
+                                    The above mentioned credentials has been sent to vehicle owner mobile no.
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position bottom-space">                            
+                                    <p:commandButton  value="Ok" oncomplete="PF('onlinePaymentvar').hide();" 
+                                                      action ="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                                </div>
+                            </div>                        
+                        </p:dialog>
+                        <p:blockUI block=":masterLayout" widgetVar="blockVar">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI> 
+                    </div>
+                </div>
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>

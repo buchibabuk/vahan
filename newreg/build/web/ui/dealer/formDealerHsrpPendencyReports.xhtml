@@ -1,0 +1,117 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content22">
+        <h:form id="Dealer_HSRP_Reports">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">Dealer HSRP Reports</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true"></p:messages>
+                        <p:autoUpdate/>
+                    </div>
+                </div>
+
+                <p:panel id="report_HSRP_Inputs" header="HSRP Reports" styleClass="bottom-space">                      
+                    <p:outputPanel id="select_date_change_id">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-2">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel styleClass="field-label-mandate" value="From Date #{label.datePattern}"/>
+                                </label>
+                                <p:calendar readonlyInput="true" value="#{dealerHSRPReportBean.fromDate}" maxdate="#{dealerHSRPReportBean.currentDate}" mindate="#{dealerHSRPReportBean.minDate}"  pattern="dd-MMM-yyyy" required="true" requiredMessage="Please Select From Date">
+                                    <p:ajax event="dateSelect" update="Dealer_HSRP_Reports:report_HSRP_Inputs" listener="#{dealerHSRPReportBean.fromDateChangeListener()}"  />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-2">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  value="To Date #{label.datePattern}"/> 
+                                </label>    
+                                <p:calendar value="#{dealerHSRPReportBean.uptoDate}"  pattern="dd-MMM-yyyy" maxdate="#{dealerHSRPReportBean.currentDate}" disabled="true" required="true" requiredMessage="Please Select Upto Date">
+                                </p:calendar>                          
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space top-space-25">
+                                <p:commandButton value="Get Details" update="Dealer_HSRP_Reports:pendency_report_id" action="#{dealerHSRPReportBean.findHSRPDetils()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"/>
+                            </div>
+                        </div>
+
+                    </p:outputPanel>
+
+                    <p:outputPanel id="pendency_report_id">
+                        <p:dataTable id="dealer_HSRP_Table_id" rendered="#{dealerHSRPReportBean.hsrpDobjList.size() > 0}" value="#{dealerHSRPReportBean.hsrpDobjList}" var="reports" rows="20" 
+                                     paginatorPosition="bottom" paginator="true"
+                                     rowIndexVar="index" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                            <f:facet name="header">  
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 left-position">
+                                        <h:outputText escape="false" value="HSRP Pendency Details for Dealer [#{dealerHSRPReportBean.dealerName}]"/>
+                                    </div>                                
+                                </div>
+                            </f:facet>                            
+                            <p:column styleClass="collumn-width center-position">
+                                <f:facet name="header">
+                                    <h:outputText value="Srl.No." styleClass="font-bold" />
+                                </f:facet>                            
+                                <h:outputText value="#{index +1}"/>
+                            </p:column>                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Office Name" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{reports.offName}" />
+                            </p:column>
+                            <p:column filterBy="#{reports.applNo}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Application No" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{reports.applNo}" />
+                            </p:column>
+                            <p:column filterBy="#{reports.regnNo}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Registration No" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{reports.regnNo}" />
+                            </p:column>
+                            <p:column filterBy="#{reports.regnDate}" filterMatchMode="contains" sortBy="#{reports.regnDate}">
+                                <f:facet name="header">
+                                    <h:outputText value="Registration Date" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{reports.regnDate}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Owner Name" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText value="#{reports.oName}" />
+                            </p:column>                                                                               
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="HSRP Fitted" styleClass="font-bold" />
+                                </f:facet>
+                                <h:outputText styleClass="red font-bold" value="#{reports.isHSRPFitted}" />
+                            </p:column>                             
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </div>
+            <p:blockUI block="Dealer_HSRP_Reports" widgetVar="bui" >
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

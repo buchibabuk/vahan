@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dataTable id="ePayDataTable" styleClass="ePayDataTable"  value="#{ePay.list}" var="epayPurCd">
+        <p:column headerText="Purpose" style="width: 20%;">#{epayPurCd.purCdDescr}</p:column>
+        <p:column headerText="Receipt No" style="width: 10%;">#{epayPurCd.rcpt_no}</p:column>
+        <p:column headerText="Due Date" style="width: 6%;">#{epayPurCd.dueDateString}</p:column>
+
+        <p:column styleClass="none-border">
+            <f:facet name="header">
+                <p:panelGrid columns="1" styleClass="content-position">    
+                    <h:outputText value="Fee/Tax"/>
+                    <p:panelGrid columns="3" styleClass="center-position">    
+                        <h:outputText value="Paid " styleClass="font-bold"/>
+                        <h:outputText value="Actual" styleClass="font-bold"/>
+                        <h:outputText value="Difference" styleClass="font-bold" />  
+                    </p:panelGrid>
+                </p:panelGrid>      
+            </f:facet>
+            <p:panelGrid columns="3">                    
+                <h:outputText value="#{epayPurCd.e_TaxFee}"/>                      
+                <h:outputText value="#{epayPurCd.act_TaxFee}"/>                    
+                <h:outputText value="#{epayPurCd.e_TaxFee-epayPurCd.act_TaxFee}"/>
+            </p:panelGrid>
+        </p:column>
+
+
+        <p:column styleClass="none-border">
+            <f:facet name="header">
+                <p:panelGrid columns="1" styleClass="content-position">    
+                    <h:outputText value="Fine/Penalty"/>
+                    <p:panelGrid columns="3">    
+                        <h:outputText value="Paid " styleClass="font-bold" />
+                        <h:outputText value="Actual" styleClass="font-bold" />
+                        <h:outputText value="Difference"  styleClass="font-bold" />  
+                    </p:panelGrid>
+                </p:panelGrid>      
+            </f:facet>
+            <p:panelGrid columns="3">                    
+                <h:outputText value="#{epayPurCd.e_FinePenalty}"/>                      
+                <h:outputText value="#{epayPurCd.act_FinePenalty}"/>                    
+                <h:outputText value="#{epayPurCd.e_FinePenalty-epayPurCd.act_FinePenalty}"/>
+            </p:panelGrid>
+        </p:column>
+
+
+        <p:column styleClass="none-border">
+            <f:facet name="header">
+                <p:panelGrid columns="1" styleClass="content-position">    
+                    <h:outputText value="Total"/>
+                    <p:panelGrid columns="3">    
+                        <h:outputText value="Paid"  styleClass="font-bold" />
+                        <h:outputText value="Actual"  styleClass="font-bold" />
+                        <h:outputText value="Difference"  styleClass="font-bold" />  
+                    </p:panelGrid>
+                </p:panelGrid>      
+            </f:facet>
+            <p:panelGrid columns="3">                    
+                <h:outputText value="#{epayPurCd.e_TaxFee+epayPurCd.e_FinePenalty}"/>                      
+                <h:outputText value="#{epayPurCd.act_TaxFee+epayPurCd.act_FinePenalty}"/>                    
+                <h:outputText value="#{epayPurCd.e_TaxFee+epayPurCd.e_FinePenalty-epayPurCd.act_TaxFee-epayPurCd.act_FinePenalty }"/>
+            </p:panelGrid>
+        </p:column>
+
+        <p:columnGroup type="footer">
+            <p:row>
+                <p:column colspan="3" footerText="Difference Total:&#160;" styleClass="right-position right-space" />
+                <p:column footerText="#{ePay.e_TaxFee-ePay.act_TaxFee}" />
+                <p:column footerText="#{ePay.e_FinePenalty-ePay.act_FinePenalty }" />
+                <p:column footerText="#{ePay.e_total-ePay.act_total}" />
+            </p:row>
+        </p:columnGroup>
+
+    </p:dataTable>
+
+    <div class="ui-grid-row bottom-space">
+        <div class="ui-grid-col-12 right-position right-space top-space">
+            <h:outputText rendered="#{ePay.verificationCheckBox}" value="I verify that Fee/Tax paid Details are correct: " styleClass="report-header font-bold red"/>
+            <p:selectBooleanCheckbox id="verifyCheckValue"
+                                     required="true"
+                                     rendered="#{ePay.verificationCheckBox}"
+                                     value="#{validateFunction.validateCheckFeeTax}"
+                                     validator="#{validateFunction.validateCheckBoxIsTrue}"
+                                     validatorMessage="Please Verify Fee Tax Details"
+                                     requiredMessage="Please Verify Fee Tax Details"/>
+        </div>
+    </div>
+</html>
+

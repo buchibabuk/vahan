@@ -1,0 +1,66 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_RCtoSmartCardConversion" prependId="false">
+                    <p:tabView styleClass="top-space bottom-space" >
+                        <!--################################# Owner Details ########################################## -->
+                        <p:tab  id="owner_details_tab" title="Owner Details">
+                            <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                <ui:param name="ownerDetail" value="#{rctosmartcardconversion_bean.ownerDetail}"/>
+                            </ui:include>
+                        </p:tab>
+                        <!--########################################################################################## -->
+
+                        <!--################################# Vehicle Details ######################################## -->
+                        <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                            <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                <ui:param name="ownerDetail" value="#{rctosmartcardconversion_bean.ownerDetail}"/>
+                            </ui:include>
+                        </p:tab>
+                        <!--########################################################################################## -->
+
+                        <!--###################### Insurance Details ############################### -->
+                        <p:tab id="insuranceDetails"  title="Insurance Details">      
+                            <ui:include src="/ui/form_ins_dtls.xhtml"/>                                                                  
+                        </p:tab>  
+                        <!--########################################################################################## --> 
+
+                        <!--###################### Hypothecation Details ######################################## -->
+                        <p:tab id="hypothecationDetails"  title="Hypothecation Details">  
+                            <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+                        </p:tab>
+                        <!--########################################################################################## -->
+                    </p:tabView>
+
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:button value="Home" icon="ui-icon-home" outcome="home" />
+                        <p:commandButton value="Approve" icon="ui-icon-disk" action="#{rctosmartcardconversion_bean.approveRCtoSmartcardConversion()}"
+                                         onclick="PF('ajax_status').show()"
+                                         oncomplete="PF('ajax_status').hide()">
+                            <p:confirm header="Confirmation" message="Are you sure? Do You Want to Approve the Transaction?" icon="ui-icon-alert"/>   
+                        </p:commandButton>
+                    </div>
+                </div>
+                <p:blockUI block="form_RCtoSmartCardConversion" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+                <vcomponent:vahanMessages messages="#{rctosmartcardconversion_bean.vahanMessages}"  rendered="#{rctosmartcardconversion_bean.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

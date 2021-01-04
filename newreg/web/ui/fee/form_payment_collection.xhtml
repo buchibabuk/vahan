@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:p="http://primefaces.org/ui"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:pe="http://primefaces.org/ui/extensions"
+       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <body>
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="PaymentPanel">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:panel id="paymentFeeCollectionPanel" header="#{language.payment_coll_panel}" styleClass="top-space bottom-space" rendered="#{paymentBean.paymentCollectionPanelVisibility}">
+                    <div class="ui-grid-row" id="pg_pay_mode">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.sel_pay_mode}"/>
+                            </label>
+                            <p:selectOneMenu id="payment_type" value="#{paymentBean.payment_mode}"  >
+                                <f:selectItem itemValue="C" itemLabel="#{language.cash}" />
+                                <f:selectItem itemValue="M" itemLabel="#{language.otherthanCash}"/>                                
+                                <p:ajax process="payment_type" event="change" listener="#{paymentBean.showTable()}"  
+                                        update="payment_panel paymentFeeCollectionPanel"/>
+                            </p:selectOneMenu>                            
+                        </div>
+                        <div class="ui-grid-col-12">                                                      
+                            <p:outputPanel rendered="#{!(paymentBean.renderColumn) and (paymentBean.payment_mode eq 'M')}">
+                                <h2>#{language.POSRefNo}</h2>
+                            </p:outputPanel>
+                        </div>
+                    </div>
+
+                    <p:outputPanel id="payment_panel" styleClass="top-space bottom-space">                    
+                        <p:dataTable id="pay_table" value="#{paymentBean.paymentlist}" 
+                                     rendered="#{paymentBean.render_payment_table}" editable="true" var="payment" rowIndexVar="index">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    <p:outputLabel value="#{paymentBean.header_name}"/>                        
+                                </div>
+                            </f:facet>
+                            <p:column headerText="#{language.sn}" styleClass="collumn-width center-position">
+                                <p:outputLabel value="#{index +1}."/>
+                            </p:column>
+                            <p:column headerText="#{language.instrument}">
+                                <p:selectOneMenu id="payment_type" value="#{payment.instrument}"  disabled="#{payment.disableInstrument}">                                
+                                    <f:selectItems value="#{paymentBean.instrumentList}"/>  
+                                    <p:ajax event="change" listener="#{paymentBean.validateDraftDate}" onstart="PF('bui').show();" oncomplete="PF('bui').hide();" update="pay_table" />
+                                    <f:attribute name="paymentDobj" value="#{payment}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column headerText="#{language.bank_name}">
+                                <p:selectOneMenu value="#{payment.bank_name}" filter="true" filterMatchMode="contains" disabled="#{payment.disableBankList}">
+                                    <f:selectItems value="#{payment.bank_list}"/>
+                                    <p:ajax/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column headerText="#{language.number}">
+                                <p:inputText value="#{payment.number}" rendered="#{payment.renderDraftInstmnt}" 
+                                             maxlength="10" disabled="#{payment.disableNumber}" 
+                                             style="text-transform: uppercase" size="10"
+                                             autocomplete="off"
+                                             validatorMessage="#{language.MaxLenInstrumentNo}"
+                                             converter="toUpperCaseConverter">
+                                    <p:keyFilter regEx="/[0-9]/"></p:keyFilter>
+                                    <f:validateLength minimum="5"/>
+                                    <p:ajax event="change" listener="#{paymentBean.validateInstrumentNumber}" update="pay_table"/>
+                                    <f:attribute name="paymentDobj" value="#{payment}"/>
+                                </p:inputText>
+
+                                <p:inputText value="#{payment.number}" rendered="#{payment.renderChallanInstmnt}" 
+                                             maxlength="20" disabled="#{payment.disableNumber}" size="10"
+                                             style="text-transform: uppercase" autocomplete="off"
+                                             validatorMessage="#{language.MaxLenInstrumentNo}"
+                                             converter="toUpperCaseConverter">
+                                    <p:keyFilter regEx ="/[a-zA-Z0-9-/]/"></p:keyFilter>
+                                    <p:ajax event="change" listener="#{paymentBean.validateInstrumentNumber}" update="pay_table"/>
+                                    <f:attribute name="paymentDobj" value="#{payment}"/>
+                                    <f:validateLength minimum="5"/>
+                                </p:inputText>
+
+                                <p:inputText value="#{payment.number}" rendered="#{payment.renderPOSInstmnt}"
+                                             disabled="#{payment.disableNumber}"
+                                             autocomplete="off" required="true" requiredMessage="#{language.POSnotBlank}"
+                                             maxlength="20" validatorMessage="#{language.minLenPOS}"
+                                             converter="toUpperCaseConverter" style="text-transform: uppercase">
+                                    <p:ajax event="change" listener="#{paymentBean.validateInstrumentNumber}" update="pay_table"/>
+                                    <f:validateLength minimum="10" maximum="20"/>
+                                    <f:attribute name="paymentDobj" value="#{payment}"/>
+                                    <p:keyFilter mask="alphanum"/>
+                                </p:inputText>
+
+                            </p:column>
+                            <p:column headerText="#{language.dated}">                       
+                                <p:calendar value="#{payment.dated}" pattern="dd-MMM-yyyy" navigator="true" 
+                                            maxdate="#{payment.max_draft_date}" mindate="#{payment.min_draft_date}" disabled="#{payment.disableDate}">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                </p:calendar>                            
+                            </p:column>
+                            <p:column headerText="#{language.amount}" >
+                                <p:inputText id="tfAmt" value="#{payment.amount}"
+                                             autocomplete="off"
+                                             styleClass="right-position" maxlength="8" 
+                                             disabled="#{payment.disableAmt}">                               
+                                    <p:keyFilter mask="num"></p:keyFilter>
+                                    <p:ajax event="change" listener="#{paymentBean.validatePaymentAmt}" update="tfAmt" />
+                                    <f:attribute name="paymentDobj" value="#{payment}"/>
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column headerText="#{language.branch_name}">
+                                <p:inputText value="#{payment.branch}" styleClass="text-uppercase" 
+                                             autocomplete="off" maxlength="30" disabled="#{payment.disableBranch}">
+                                    <p:keyFilter regEx="/[A-Z ]/i"></p:keyFilter></p:inputText>
+                            </p:column>
+                            <p:column rendered="#{payment.instrument eq 'P'}">
+                                <p:commandButton value="#{language.verifyPOSPayment}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"
+                                                 action="#{paymentBean.verifyPosPayment(payment)}" update="pay_table"
+                                                 icon="ui-icon-refresh"/>
+                            </p:column>
+                            <p:column rendered="#{paymentBean.renderColumn}">
+                                <p:commandButton  id="add" action="#{paymentBean.addRow(payment.number,payment.bank_name)}" icon="ui-icon-plusthick" update="pay_table" title="Add new #{paymentBean.header_name} details">
+                                    <f:param name="actionmode" value="add"/>
+                                </p:commandButton>
+                                <p:commandButton id="minus"  action="#{paymentBean.addRow(payment.number,payment.bank_name)}"  icon="ui-icon-minusthick" update="pay_table" rendered="#{payment.showMinusBtn}" title="Remove #{paymentBean.header_name} details">
+                                    <f:param name="actionmode" value="minus"/>
+                                </p:commandButton>
+                                <p:commandButton value="#{language.verify}" action="#{paymentBean.doubleVerification(payment)}" rendered="#{payment.showVerifyBtn}" onclick="PF('bui').show();" update="pay_table" title="Verify" oncomplete="PF('bui').hide();" />
+                                <div>
+                                    <h:outputText value="#{language.verifiedStatus}" styleClass="green font-bold" rendered="#{payment.eGrassStatus == 'Successful' and payment.showEgrassStatus}"/>
+                                    <h:outputText value="#{payment.paymentVerificationMessage}" styleClass="green" rendered="#{payment.eGrassStatus == 'Successful' and payment.showEgrassStatus}"/>
+                                </div>
+                                <div>
+                                    <h:outputText value="#{language.verifiedStatus}" styleClass="red font-bold" rendered="#{payment.eGrassStatus == 'UnSuccessful' and payment.showEgrassStatus}"/>
+                                    <h:outputText value="#{payment.paymentVerificationMessage}" styleClass="red" rendered="#{payment.eGrassStatus == 'UnSuccessful' and payment.showEgrassStatus}"/>
+                                </div>
+                                <!--<h:outputText value="#{payment.showEgrassStatus}"/>-->
+                            </p:column>
+                        </p:dataTable>                        
+                    </p:outputPanel>
+
+                    <p:blockUI block="paymentFeeCollectionPanel" widgetVar="bui">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI> 
+                </p:panel>
+
+            </f:subview>
+        </div>
+    </body>
+</html>
+

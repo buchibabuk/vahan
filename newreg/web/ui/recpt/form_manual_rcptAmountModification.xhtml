@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formModifyManualEntry" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.modify_wrong_manual_rcpt}</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelManualEntry">
+                    <p:panel header="#{language.modify_wrong_manual_rcpt}" id="manualRcptEntryPnl" >
+                        <!--<p:focus context="manualRcptEntryPnl"/>-->
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfApplNo" value="#{language.transApplNo}"/>
+                                </label>
+                                <p:inputText  id="tfApplNo" value="#{manualRcptEntryBean.manualrcptdobj.trans_appl_no}" 
+                                              maxlength="16"
+                                              required="true"
+                                              disabled="#{manualRcptEntryBean.isdisabledTransactionNo}"
+                                              requiredMessage="#{language.apllNoRequiredMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"
+                                              >
+                                    <p:ajax event="blur"  listener="#{manualRcptEntryBean.checkApplicationStatus()}" update="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRcptNo" value="#{language.rcpt_no}"/>
+                                </label>
+                                <p:inputText  id="tfRcptNo" value="#{manualRcptEntryBean.manualrcptdobj.rcptNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="#{language.rcptNoRequiredMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input">
+                                    <p:ajax event="blur" listener="#{manualRcptEntryBean.getManualRcptAmount()}" update="@this tfamount tfPeriodFrom"/>  
+                                </p:inputText>   
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfamount" value="#{language.amount}"/>
+                                </label>
+                                <p:inputText  id="tfamount" value="#{manualRcptEntryBean.manualrcptdobj.amount}" 
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="#{language.amountRequiredMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfPeriodFrom" value="#{language.rcpt_dt}"/>
+                                </label>
+                                <p:calendar id="tfPeriodFrom"  value="#{manualRcptEntryBean.manualrcptdobj.receipt_dt}" 
+                                            maxdate="#{nonUse.maxDate}" pattern="dd-MMM-yyyy" required="true" disabled="true" requiredMessage="#{language.rcpt_requiredMsg}">
+                                </p:calendar>
+                            </div>
+                        </div>
+
+                        <p:outputPanel id="appSavePanel" styleClass="center-position">
+                            <p:commandButton rendered="#{manualRcptEntryBean.saveButton}" value="#{language.modify_amount}" action="#{manualRcptEntryBean.updateManualRcptAmount}" update="op_show_panel_success" >
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton rendered="#{manualRcptEntryBean.saveButton}" immediate="true" 
+                                             icon="ui-icon-arrowreturnthick-1-w" value="#{language.login_back}" action="home" ></p:commandButton>
+                        </p:outputPanel>
+
+                        <p:keyFilter for="tfRcptNo" mask="alphanum"/>
+                        <p:keyFilter regEx="/[0-9]/i" for="tfamount"/>
+
+                        <p:outputPanel id="saveDialog">
+                            <p:dialog header="#{language.home_confirm}!!!" closeOnEscape="false" closable="false" widgetVar="saveMnual" modal="true" dynamic="true" 
+                                      width="300" showEffect="fade" hideEffect="fade" draggable="false" >
+                                <div class="ui-grid-row">                        
+                                    <div class="ui-grid-col-12 center-position">
+                                        <h:outputText value="#{language.manualRcptSaveMsg} :#{manualRcptEntryBean.appl_no} "/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">                        
+                                    <div class="ui-grid-col-12 center-position top-space">
+                                        <p:commandButton value="#{language.ok}" action="seatwork"/>
+                                    </div>
+                                </div>
+                            </p:dialog>
+                        </p:outputPanel>
+                    </p:panel>
+                    <p:outputLabel id="op_show_panel_success" >
+                        <p:dialog widgetVar="successDlgVar" closable="false" modal="true" resizable="false" draggable="false" header="#{language.home_confirm}">
+                            <div class="center-position">
+                                <p:outputLabel escape="false" value="#{manualRcptEntryBean.sucessMessage}"/>
+                                <p:button value="#{language.ok}" outcome="home" icon="ui-icon-check"/>
+                            </div>
+                        </p:dialog>
+                    </p:outputLabel>
+                </p:outputPanel>
+
+                <p:blockUI block="formModifyManualEntry" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

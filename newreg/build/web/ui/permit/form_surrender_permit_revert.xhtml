@@ -1,0 +1,132 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form id="from_surrender_cancel" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1><p:outputLabel id="header_msg" value="#{surren_goods_permit_revert.header_msg}" styleClass="header-main"/></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel styleClass="top-space" >
+                    <p:outputPanel  id="sur_permit">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height" ></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="regn_no" value="Registration Number:" />
+                                </label>
+                                <p:inputText id="regn_no" value="#{surren_goods_permit_revert.regn_number}" maxlength="10" autocomplete="off" size="28"
+                                             style="text-transform:uppercase" required="true" requiredMessage="Please Enter The Registration No.">
+                                    <p:keyFilter regEx="/[a-z0-9_]/i"/>                                                             
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Get Details" action="#{surren_goods_permit_revert.permitDetail()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" ajax="true" update="All_detailpnl All_detailpnlsave"/>
+                            <p:commandButton value="Reset" action="surrender_permit_revert" update="@form"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="All_detailpnl" >
+                            <p:tabView id="All_detail" rendered="#{surren_goods_permit_revert.renderRegdetails}">
+                                <p:tab title="Owner Details">
+                                    <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                                        <ui:param name="Owner_permit_detail" value="#{surren_goods_permit_revert}"/>
+                                    </ui:include>
+                                </p:tab>
+                                <p:tab title="Surrender / Restore Details">
+                                    <p:panel header="Previous Permit Details">
+                                        <ui:include src="/ui/permit/form_permit_dtls.xhtml"/>
+                                    </p:panel>
+                                    <p:outputPanel id="purposeid">
+                                        <p:panel styleClass="top-space"> 
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="purpose" value="Purpose:"/> 
+                                                    </label>
+                                                    <p:selectOneMenu id="purpose" effect="fold" value="#{surren_goods_permit_revert.purpose}" disabled="true" >
+                                                        <f:selectItems value="#{surren_goods_permit_revert.purpose_list}"/>
+                                                    </p:selectOneMenu>  
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="surender_dt" value="Date :"/>
+                                                    </label>
+                                                    <p:calendar id="surender_dt" effect="fold" immediate="true" value="#{surren_goods_permit_revert.surrender_dt}"
+                                                                placeholder="(DD-MM-YYYY)" pattern="dd-MM-yyyy" disabled="true"/>
+                                                </div>
+                                            </div>
+                                        </p:panel>
+                                    </p:outputPanel>
+
+                                </p:tab>
+                            </p:tabView>
+                        </p:outputPanel> 
+                    </div>
+                </div>
+
+                <p:outputPanel id="All_detailpnlsave" >
+                    <p:panel id="panalSave" styleClass="top-space" rendered="#{surren_goods_permit_revert.renderRegdetails}">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Revert" action="#{surren_goods_permit_revert.saveSurrenderDetailsRevert}"  
+                                                 update="app_num_id" disabled="#{surren_goods_permit_revert.disableBut}">
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:commandButton value="Reset" action="surrender_permit_revert" disabled="#{surren_goods_permit_revert.disableBut}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog>
+
+                        <p:dialog id="app_num_id" header="Revert" widgetVar="appNum" modal="true" resizable="false" closable="false">
+                            <h:panelGrid columns="1" cellpadding="5">
+                                <h:outputLabel value="#{surren_goods_permit_revert.app_no_msg}" escape="false"/>
+                                <f:facet name="footer">
+                                    <p:commandButton value="Exit for another Registration Number" 
+                                                     styleClass="ui-selectonemenu-label" action="surrender_permit_revert"/>
+                                </f:facet> 
+                            </h:panelGrid>
+                        </p:dialog>
+
+                        <p:blockUI block="@form" widgetVar="bui">
+                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                        </p:blockUI>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

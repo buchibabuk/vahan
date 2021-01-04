@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style type="text/css">
+            @page {
+                size: landscape;
+            }
+
+            @media print {
+                .reduce-font, .reduce-font th {
+                    font-size: 12px !important;
+                }
+                .reduce-font, .reduce-font td {
+                    font-size: 10px !important;
+                }
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form prependId="false">
+
+            <div class="center-position">
+                <p:button value="Back" id="back" outcome="/ui/eChallan/formListOfPendingChallanReport.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rcpt_heading}" class="font-bold report-subheader bottom-line"/>
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rcpt_sub_heading}" class="font-bold report-subheader bottom-line" escape="false"/>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="(Enforcement Section)"/> </span>
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rto_name}" class="font-bold report-subheader bottom-line"/>
+            </div>
+            <div class="center-position">
+                <h:outputText value="Challan history of particular vehicle" styleClass="report-header font-bold bottom-line text-uppercase" />
+            </div>
+            <br/>
+            <div class="inline-section qrcode-position-absolute left-space ">
+                <pe:qrCode 
+                    renderMethod = "canvas"
+                    text="#{listOfPendingChallanBean.dobj.vehicle_no}"
+                    label="#{listOfPendingChallanBean.dobj.regn_dt}"
+                    size="110"
+                    ecLevel="H"       
+                    radius="0.5"
+                    fillColor="#000000"/>
+            </div>
+            <br/>
+            <br/>
+
+            <div class="table-width-four datatable-panel top-space" style="margin: 0 auto;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 bottom-space reduce-font">
+                    <h:outputLabel value="Vehicle No:" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.vehicle_no}" styleClass="font-bold" />
+                    <h:outputLabel value="Registration Date :" styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.regn_dt}" />
+                </h:panelGrid>
+            </div>
+            <div class="datatable-panel table-width-oneforth" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 bottom-space reduce-font">
+                    <h:outputLabel value="Owner Details : " styleClass="right-space bottom-space font-bold" />
+                    <h:outputText value="#{listOfPendingChallanBean.dobj.owner_name},#{listOfPendingChallanBean.dobj.owner_address}" />
+                </h:panelGrid>
+            </div>
+            <br/>
+            <div class="datatable-panel bottom-space-50"  style="margin: 0 auto;">
+                <p:dataTable styleClass="border-transparent reduce-font" value="#{listOfPendingChallanBean.challanHistoyList}" var="list"
+                             rowIndexVar="rowIndex">
+                    <p:column headerText="Sr No." styleClass="center-position collumn-width">
+                        #{rowIndex+1}  
+                    </p:column>
+                    <p:column headerText="Challan Date" styleClass="center-position" width="8%" >
+                        <h:outputText value="#{list.chal_date}"/>
+                    </p:column>
+                    <p:column headerText="Challan No." styleClass="center-position" width="8%" >
+                        <h:outputText value="#{list.vcr_no}"/>
+                    </p:column>
+                    <p:column headerText="Section" styleClass="center-position" width="12%">
+                        <h:outputText value="#{list.section}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Inspector Code &amp; &lt;br /&gt; name" escape="false" /></f:facet>
+                        <h:outputText value="(#{list.chal_officer_cd}) &lt;br /&gt; #{list.chal_officer}"  escape="false" />
+                    </p:column>
+                    <p:column headerText="Court Name" styleClass="center-position" width="12%">
+                        <h:outputText value="#{list.referCourt}"/>
+                    </p:column>
+                    <p:column headerText="Dispose Date" styleClass="center-position">
+                        <h:outputText value="#{list.dispose_date}"/>
+                    </p:column>
+                    <p:column headerText="Action By" styleClass="center-position">
+                        <h:outputText value=""/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Fine/&lt;br /&gt; Penalty" styleClass="resp-label-section right-position" escape="false" />
+                        </f:facet>
+                        <h:outputLabel value="#{list.chal_amnt}" styleClass="right-space" />  
+
+                    </p:column>
+                    <p:column headerText="Receipt" styleClass="center-position">
+                        <h:outputText value="#{list.reciept_no}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <br/>
+            <div class="table-width-oneforth datatable-panel top-space" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel-100 bottom-space reduce-font">
+                    <h:outputLabel value="Total Records: #{listOfPendingChallanBean.totalecords}" styleClass="right-space bottom-space font-bold" />
+                </h:panelGrid>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

@@ -1,0 +1,294 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form id="rtoWiseTtlCollection">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="center-position" style="top:0px; right:20px; position: absolute; background: #c7dff7; z-index: 9999; width: 280px; border-right: 1px solid #1682ba; border-top-right-radius: 4px;">           
+                    <h:panelGroup id="tinNoPanel" rendered="#{rtoWiseTtlCollectionBean.tinNoPanelVisibility}">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <h2 class="left-space right-space top-space">Tin No:</h2> 
+                                <div>
+                                    <p:outputLabel value="#{rtoWiseTtlCollectionBean.oldTinNo}" styleClass="font-bold red" style="font-size: 250%;"/>
+                                </div>
+                                <div>
+                                    <p:commandButton value ="Edit" immediate="true"  onclick="PF('tinNoDialog_dlg1').show();"/>
+                                </div>
+
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">Dealer Collection</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Search By: " />
+                        </label>
+                        <p:selectOneMenu value="#{rtoWiseTtlCollectionBean.searchByValue}" styleClass="bottom-space">
+                            <f:selectItem itemLabel="Transaction Wise Collection" itemValue="transactionWise" />
+                            <f:selectItem itemLabel="Summary Collection" itemValue="summaryWise" />
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Month"/>
+                                </label>
+                                <p:selectOneMenu id="monthId"  value="#{rtoWiseTtlCollectionBean.month}" required="true" filter="true" styleClass="bottom-space">
+                                    <f:selectItem itemLabel="---------------SELECT---------------" itemValue="-1"/>
+                                    <f:selectItems value="#{rtoWiseTtlCollectionBean.monthList}"/>
+                                    <f:validator validatorId="selectOneValidator"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Year"/>
+                                </label>
+                                <p:inputText id="yearId" value="#{rtoWiseTtlCollectionBean.year}" size="4" maxlength="4" requiredMessage="Please Select Year" required="true"/>
+                                <p:keyFilter mask="pint" for="yearId"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position bottom-space">
+                        <p:commandButton value="Get Details" action="#{rtoWiseTtlCollectionBean.getDetails()}" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" update="dataTable transDataTable" />
+                    </div>
+                </div>
+            </div>
+
+            <p:outputPanel id="dataTable">
+                <p:panel header="Dealer Collection" rendered="#{rtoWiseTtlCollectionBean.formPanelVisibility}">
+                    <p:dataTable id="rtoWiseDataTable"  value="#{rtoWiseTtlCollectionBean.rtoWiseCollectionDobj}" var="rtoTotal"
+                                 styleClass="datatable-third-column-right datatable-fourth-column-right datatable-fifth-column-right datatable-six-column-right"
+                                 rowIndexVar="index" rows="10" paginator="true" paginatorPosition="bottom">
+                        <f:facet name="header">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 left-position">
+                                    Print Dealer Collection 
+                                </div>
+                                <div class="ui-grid-col-4 center-position">
+                                    <p:commandButton  icon="ui-icon-print" action="#{rtoWiseTtlCollectionBean.print()}" rendered="#{rtoWiseTtlCollectionBean.rtoWiseCollectionDobj.size()>0}" onclick="PF('bui_fancy').show();" value="Print"  oncomplete="PF('bui_fancy').hide();"/>
+                                </div>
+                            </div>
+                        </f:facet>
+                        <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index +1}."/></p:column>
+                        <p:column headerText="Dealer Name">
+                            <p:outputLabel value="#{rtoTotal.dealerName}"/> 
+                            <f:facet name="footer">
+                                <p:outputLabel value="GrandTotal"  styleClass="right-position font-bold" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="No. of Vehicles Sold">
+                            <p:outputLabel value="#{rtoTotal.totalRegn}" styleClass="right-space"/> 
+                            <f:facet name="footer" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandTotalRegn}" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="Fee Collected">
+                            <p:outputLabel value="#{rtoTotal.fees}" styleClass="right-space"/> 
+                            <f:facet name="footer" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandFees}" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="Tax Collected" >
+                            <p:outputLabel value="#{rtoTotal.tax}" styleClass="right-space"/> 
+                            <f:facet name="footer" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandTax}" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}"/>
+                            </f:facet>
+                        </p:column>
+                        <p:column headerText="Total Collection">
+                            <p:outputLabel value="#{rtoTotal.totalAmount}" styleClass="right-space"/> 
+                            <f:facet name="footer" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}">
+                                <p:outputLabel value="#{rtoWiseTtlCollectionBean.grandTotalAmount}" rendered="#{rtoWiseTtlCollectionBean.grandTotalVisibility}"/>
+                            </f:facet>
+                        </p:column>                
+                    </p:dataTable>    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <p:commandButton value="Home" action="home"/>
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+
+
+
+            <p:outputPanel id="transDataTable">
+                <p:panel header="Transaction Wise Collection"  rendered="#{rtoWiseTtlCollectionBean.transactionWisePanelVisibility}">
+                    <p:dataTable id="transactionWiseDataTable"  value="#{rtoWiseTtlCollectionBean.rtoWiseCollectionDobj}" var="transactionWise"
+                                 rowIndexVar="index" rows="10" paginator="true" paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                        <f:facet name="header">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 left-position">
+                                    Print Transaction Wise Collection
+                                </div>
+                                <div class="ui-grid-col-4 center-position">
+                                    <p:commandButton id="buttoneDownloadFile" value="Download Excel File" onclick="PF('xlsExportDataDialogWV').show();" update =":formXlsxExport" rendered="#{rtoWiseTtlCollectionBean.rtoWiseCollectionDobj.size()>0}"/>                                    
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <p:column styleClass="collumn-width center-position">
+                            <f:facet name="header">
+                                <h:outputText value="Sr.No" />
+                            </f:facet>
+                            <h:outputText value="#{index +1}." />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Office Name" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.offName}"/>
+                        </p:column>
+                        <p:column rendered="#{rtoWiseTtlCollectionBean.dealerValueVisibilty}">
+                            <f:facet name="header">
+                                <h:outputText value="Dealer Name" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.dealerName}"/>
+                        </p:column>                       
+                        <p:column rendered="#{rtoWiseTtlCollectionBean.dealerValueVisibilty}">
+                            <f:facet name="header">
+                                <h:outputText value="Tin No" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.tinNo}"/>
+                        </p:column>                   
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Transaction No" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.transactionNo}"/>
+                        </p:column>                       
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Application No" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.applNo}"/>
+                        </p:column>                       
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Receipt No" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.rcptNo}"/>
+                        </p:column>                       
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Registration No" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.regnNo}"/>
+                        </p:column>                     
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Chasis No" />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.chasiNo}"/>
+                        </p:column> 
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Receipt Dt." />
+                            </f:facet> 
+                            <h:outputText value="#{transactionWise.rcptDt}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Sale Amount" />
+                            </f:facet> 
+                            <p:outputLabel value="#{transactionWise.saleAmt}"   styleClass="right-position right-space"/>
+                        </p:column>                      
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Fees" />
+                            </f:facet> 
+                            <p:outputLabel value="#{transactionWise.fees}"   styleClass="right-position right-space"/>
+                        </p:column>                     
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Mv Tax" />
+                            </f:facet> 
+                            <p:outputLabel value="#{transactionWise.mvTax}"   styleClass="right-position right-space"/>
+                        </p:column>                 
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Total" />
+                            </f:facet> 
+                            <p:outputLabel value="#{transactionWise.totalAmount}"   styleClass="right-position right-space"/>
+                        </p:column>
+                    </p:dataTable>    
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <p:commandButton value="Home" action="home"/>
+                        </div>
+                    </div>
+                </p:panel>
+            </p:outputPanel>
+
+            <p:dialog id="tinNoDialogId" widgetVar="tinNoDialog_dlg1" header="Tin No Details" dynamic="true">              
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel  value="Tin No"/>
+                        </label>
+                        <p:inputText id="tinNoId" value="#{rtoWiseTtlCollectionBean.tinNo}" autocomplete="off"
+                                     styleClass="input" maxlength="11"
+                                     converter="toUpperCaseConverter" required="true" requiredMessage="Tin No Can't be Blank">                                
+                        </p:inputText>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value ="Update" action="#{rtoWiseTtlCollectionBean.updateTinNo()}" update="tinNoPanel" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();"/>
+                        <p:commandButton value="Close" oncomplete="PF('tinNoDialog_dlg1').hide();"/>
+                    </div>
+                </div>
+            </p:dialog>
+            <p:blockUI block="rtoWiseTtlCollection" widgetVar="bui_fancy">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+        <p:dialog id="xlsExportDataDialog" header="Different File Formate" dynamic="true" closable="true" modal="true" widgetVar="xlsExportDataDialogWV">
+
+            <h:form id="formXlsxExport" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('xlsExportDataDialogWV').hide();">
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":rtoWiseTtlCollection:transactionWiseDataTable" fileName="#{rtoWiseTtlCollectionBean.reportName}" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog> 
+    </ui:define>
+</ui:composition>

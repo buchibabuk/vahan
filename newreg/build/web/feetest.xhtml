@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <h:head/>
+    <f:view id="ca_subview" >
+        <h:form>
+            <p:panel header="Fee Test" >
+
+                <p:messages id="feedetails" closable="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <h:panelGrid columns="2" id="Fee" cellspacing="5">
+                    <p:outputLabel for="vhclass" value="Vehicle Class"/>
+                    <p:selectOneMenu id="vhclass"  binding="#{feetest.vhclass}" filter="true" valueChangeListener="#{feetest.vhclassListener}">
+                        <f:selectItems value="#{feetest.listvhclass}"/>   
+                        <p:ajax event="change" update="vchcatg"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="vchcatg" value="Category"/>
+                    <p:selectOneMenu id="vchcatg" binding="#{feetest.vchcatg}" filter="true"  >
+                        <f:selectItems value="#{feetest.listvchcatg}"/>
+                    </p:selectOneMenu>
+
+
+                    <p:commandButton value="Calculate Fee"  action="#{feetest.displayfee}" id="getfee" update="feetable"/>
+
+                    <p:dataTable value="#{feetest.feelist}" var="fee" id="feetable" styleClass="top-space bottom-space" >  
+
+                        <p:column headerText="Transaction Code">  
+                            <h:outputText value="#{fee.purpose_cd}" />  
+                        </p:column>  
+                        <p:column headerText="Transaction Description">  
+                            <h:outputText value="#{fee.purpose}" />  
+                        </p:column>  
+                        <p:column headerText="Fee amount">  
+                            <h:outputText value="#{fee.fee}" />  
+                        </p:column>  
+                        <p:column headerText="Service Charge">  
+                            <h:outputText value="#{fee.service_charge}" />  
+                        </p:column>  
+                        <p:column headerText=" Cess ">  
+                            <h:outputText value="#{fee.cess}" />  
+                        </p:column>  
+                    </p:dataTable>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </f:view>
+</html>

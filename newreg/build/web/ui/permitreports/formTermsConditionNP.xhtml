@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'KA'}">
+            <br/>
+            <br/>
+            <br/>
+            
+
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <br/>
+            <br/>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-95">
+                    <h:outputLabel value="The vehicle specified in the permit shall be used in accordance with the provisions thereof and subject to the 
+                                   conditions specified in clauses (a) (b) of section 84 of the Motor Vehicles Act 1988 and other conditions."/>
+                </h:panelGrid>
+            </div>
+            <br/>
+
+
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="1)	The vehicle covered by the permit shall not be carried for hire between two points lying solely within other region within the state except the Bengaluru District." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="2)	The maximum mileage separately or number of trips of specified route shall be performed per day commencing within 24 hours of the issue of the permit." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="3)	Tax due in respect of the vehicle covered by the permit shall be paid in accordance with the provisions of the Taxation Act and Rules, in force on the permit." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="4)	The permit shall be carried in the vehicle relating to in a clear and legible condition." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="5)	The vehicle covered by the permit shall not be used to carry any class or description of Goods while in motion or station in contravention of any law or rule by law or order prohibiting or regularising the import, export of transport or such goods." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="6)	Any load in excess of maximum laden weight or load capacity of any axle weight permitted to be carried as specified in the certificate registration of the vehicle in the permit shall not be carried in any of the vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="7)	The vehicle covered by the permit shall not carry in addition to the driver in the drivers cabin, any person or more such persons than authorised by the permit and that under no circumstances such persons shall be carried on the goods vehicle that their body falls outside the vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="8)	The rate of freight charge shall not exceed under any circumstances the maximum fixed portion / km." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="9)	Public carrier board shall be exhibited on the front of the vehicles at the conspicuous place thereof." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="10)	All particulars of registration and ownership of the vehicle as prescribed shall be painted on the left hand side of the vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="11)	Any vehicle covered by the permit shall not be replaced by any other vehicle without the prior permission of the State Transport Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="12)	The permit shall maintain records and the statistics and other information and submit returns of in such forms as may be prescribed or specified by the RTA." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="13)	Change of Address of the permit holder shall be intimated to the Regional Transport Authority which granted or countersigned the permit." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="14)	The vehicle in use under the permit shall be occupied with not less than one spare wheel or replacement in case of breakdown and also are extinguish of the type prescribed or specified by the State Transport Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="15)	Damage or failure of the vehicle covered by the permit shall be intimated to the State Transport Authority which granted or countersigned the permit." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="16)	First Aid Box contain all the prescribed or specified articles than shall in the vehicle covered by the permit." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="17)	The vehicle shall not be used on the public roads unless the Tax due under KMVT Act 1957 is paid." styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div> 
+            <br/>
+            <br/>
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'BR'}">
+            <br/>
+            <br/>
+            <br/>
+            
+            
+
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>
+
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="1)  This pemnt is subject to the condition laid down in section 84 of the act." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="2)  That the vehicle shall bc used only in a specified area. or on a specified route or routes." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="3)  That the gross vehicle weight on any vehicle used shall not exceed a specified maximum ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="4)  That goods of a specified nature shall not be carried ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="5)  That goods shall be carried at specified rates ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="6)  That specified arrangement shall be made for the housing. maintenance and repair or the vehicle and the storage and safe    custody of the goo. carried." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="7)  That fiho holder of the permit shall furnish to the Regional Transport Authority such periodical returns. statistics        and other information as the State Government may, from time to time, prescribe ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="8)  That the Regional Transport Authority may, after giving notice of not less than on month - " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="a)  Vary the condition of the permit," styleClass="right-space bottom-space" />
+                    <h:outputLabel value="b)  Attach to the permit further conditions," styleClass="right-space bottom-space" />
+                    <h:outputLabel value="9)  That the conditions of the permit shall not be departed from, save with the approval of the Regional Transport Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="10) That the vehicle shall not be used for carriage of any article, the transport of which is prohibited by or under any law for the time being force in the State of Bihar." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="11) That the holder of the permit shall cause the permit to be carried in a glazed frame or other suitable container carried in the vehicle in such a way as to maintain it in a clear and legible condition and readily available for inspection 0 any time by any person duly authorized in that behalf." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="12) That the holder of the permit shall maintain the vehicle in a clean and sanitary condition.
+                                   " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="13) That the holder of the permit shall comply with all the requirement of the Act and the rules made there under.
+                                   " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="14) That the permit and all concerned documents shall always ho kept with the vehicle and the driver or other person in charge of a vehicle shall produce the permit. ctc. on demand by any officer to the motor vehicle department of and above the rank of an Assistant Inspector of the motor vehicle department of and above the rank of an Assistant Inspector of Motor Vehicles or any Police Officer not below the rank of a Sub-Inspector of Police.
+                                   " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="15) Any other conditions which may be prescribed." styleClass="right-space bottom-space" />
+
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+    </body>
+</html>

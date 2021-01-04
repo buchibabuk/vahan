@@ -1,0 +1,85 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content22"> 
+        <h:form id="formFitDtls" prependId="false">     
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div> 
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.fitness_office_location_entry}</h1>
+                    </div>
+                </div> 
+                <p:panel id="fitoffDtls" header="#{language.fitness_office_location_entry}" styleClass="bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.location_name}"/>
+                            </label>
+                            <p:inputText id="locationName" value="#{fitoffmobdtls.dobj.locationName}" autocomplete="off"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.latitude}"/>
+                            </label>
+                            <p:inputText id="latitude" value="#{fitoffmobdtls.dobj.latitude}" autocomplete="off" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="#{language.longitude}"/>
+                            </label>
+                            <p:inputText id="longitude" value="#{fitoffmobdtls.dobj.longitude}" autocomplete="off" />
+                        </div>
+                    </div>
+                </p:panel>
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton value="#{language.save}" action="#{fitoffmobdtls.saveFitnessOfficeDtls()}" update="formFitDtls" icon="ui-icon-cancel" />
+                        <p:button  value="#{language.home}" outcome="home" icon="ui-icon-home"/>  
+                    </div>                
+                </div> 
+                <p:outputPanel styleClass="bottom-space" id="locDtlsTable">
+                    <p:dataTable styleClass="top-space" var="dobj" id="locDtlsTable_list" value="#{fitoffmobdtls.officeLocationList}" 
+                                 rowIndexVar="index" 
+                                 rendered="#{fitoffmobdtls.officeLocationList ne null and fitoffmobdtls.officeLocationList.size() > 0}" 
+                                 paginator="true" paginatorPosition="bottom" rows="6">
+                        <f:facet name="header">Saved Location Details</f:facet>
+                        <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                            <p:outputLabel value="#{index+1}."/>
+                        </p:column>
+                        <p:column headerText="#{language.location_name}" >
+                            <h:outputText value="#{dobj.locationName}" />
+                        </p:column>
+                        <p:column headerText="#{language.latitude}"  >
+                            <h:outputText value="#{dobj.latitude}" />
+                        </p:column>
+                        <p:column headerText="#{language.longitude}"  >
+                            <h:outputText value="#{dobj.longitude}" />
+                        </p:column>
+                        <p:column headerText="#{language.action}">
+                            <p:commandButton value="#{language.delete_wrong_entry}" action="#{fitoffmobdtls.deleteLocationEntry(dobj)}" process="@this" update="locDtlsTable" ajax="false"  onclick="PF('block_panel').show()" onsuccess="PF('block_panel').hide()"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </div>
+            <p:blockUI block="formFitDtls" widgetVar="block_panel">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

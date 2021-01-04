@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">    
+
+    <ui:define name="content22">       
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formGenApplNo" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">No Dues Certificate</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="applGenMsg" closable="true"/>
+                    </div>
+                </div>
+                <p:outputPanel id="panelApplInward">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="Registration No"/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{noOfDuesCerificateBean.regn_no}" 
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="Please Enter Registration No."
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Print Report" action="#{noOfDuesCerificateBean.printReport()}"
+                                             update="formGenApplNo applGenMsg" onclick="PF('ajax_status').show()"
+                                             oncomplete="PF('ajax_status').hide()"/>
+                            <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                    <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                </p:outputPanel>
+                <p:blockUI block="formGenApplNo" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title>
+            <ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert>
+        </title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <link href="css/slider.css" rel="stylesheet" type="text/css" />
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+        <h:outputScript library="jquery" name="jquery.marquee.min.js" />
+    </h:head>
+
+    <h:body id="mymain">
+
+        <h:form id="download_form" prependId="false"> 
+            <p:outputPanel id="bodyPanel">              
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <ui:insert name="heading">
+                                <ui:include src="/leftMenuPanel.xhtml"/>
+                            </ui:insert>  
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <ui:insert name="content">
+                                <div class="ui-grid-row center-position">
+                                    <div class="ui-grid-col-12">
+                                        <h1 class="header-main top-space"> Download Forms </h1>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row datatable-panel" style="margin: 0 auto;">
+                                    <div class="ui-grid-col-12">
+                                        <h1 class="report-subheader top-space datatable-panel underline-text">Driving Licence</h1>
+                                    </div>
+                                </div>
+                                <div class="bottom-space">
+                                    <h:panelGrid columns="2" styleClass="left-position datatable-panel box-shadow" style="margin: 0 auto;">
+                                        <h:outputText value="Application-cum-decalration as to physical fitness" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form1.pdf" target="_blank">Form 1</a>
+                                        <h:outputText value="Medical Certificate" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form1a.pdf" target="_blank">Form 1A</a>
+                                        <h:outputText value="Application for the Grant of Learner's License" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form2.pdf" target="_blank">Form 2</a>
+                                        <h:outputText value="Application for Licence to Drive" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form4.pdf" target="_blank">Form 4</a>
+                                        <h:outputText value="Application for the addition of new class of vehicles to a Driving Licence" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form8.pdf" target="_blank">Form 8</a>
+                                        <h:outputText value="Application for the Renewal of Driving Licence" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form9.pdf" target="_blank">Form 9</a>
+                                    </h:panelGrid>
+                                </div>
+                                <div class="ui-grid-row datatable-panel" style="margin: 0 auto;">
+                                    <div class="ui-grid-col-12">
+                                        <h1 class="report-subheader top-space datatable-panel underline-text">Vehicle Registration</h1>
+                                    </div>
+                                </div>
+                                <div class="bottom-space">
+                                    <h:panelGrid columns="2" styleClass="left-position datatable-panel box-shadow" style="margin: 0 auto;">
+                                        <h:outputText value="Application For Registration of a Motor Vehicle" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form20.pdf" target="_blank">Form 20</a>
+                                        <h:outputText value="Intimation of loss or destruction etc. of the certificate of registration and application. For the issue of Duplicate Certificate Of Registration" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form26.pdf" target="_blank">Form 26</a>
+                                        <h:outputText value="Application for Assignment of New Registration Mark" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form27.pdf" target="_blank">Form 27</a>
+                                        <h:outputText value="Application for No Objection Certificate and Grant of Certificate" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form28.pdf" target="_blank">Form 28</a>
+                                        <h:outputText value="Notice of Transfer of Ownership of A Motor Vehicle" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form29.pdf" target="_blank">Form 29</a>
+                                        <h:outputText value="Report of Transfer of Ownership of a Motor Vehicle" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form30.pdf" target="_blank">Form 30</a>
+                                        <h:outputText value="Application for the Transfer of Ownership in the Name of the Person Succeding to the Possession of the Vehicle" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form31.pdf" target="_blank">Form 31</a>
+                                        <h:outputText value="Intimation of change of address to be recorded in the Certificate of Registration" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form33.pdf" target="_blank">Form 33</a>
+                                        <h:outputText value="Application for Making an Entry of an Agreement of Hire-Purchase/Lease/Hypothecation Subsequent to Registration" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form34.pdf" target="_blank">Form 34</a>
+                                        <h:outputText value="Notice of Termination of an Agreement of Hire Purchase /Lease /Hypothecation" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form35.pdf" target="_blank">Form 35</a>
+                                        <h:outputText value="Application for issue of a fresh Certificate of Registration in The name of the Financier" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form36.pdf" target="_blank">Form 36</a>
+                                        <h:outputText value="Declaration to be filled by a person who does not have Permanent Account Number" styleClass="right-space left-space" />
+                                        <a href="https://vahan.nic.in/nrservices/forms/form60.pdf" target="_blank">Form 60</a>
+                                    </h:panelGrid>
+                                </div>
+                            </ui:insert>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <div id="footer_view">
+                                <ui:insert name="footer">
+                                    <ui:include src="/footer.xhtml"/>
+                                </ui:insert>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>
+

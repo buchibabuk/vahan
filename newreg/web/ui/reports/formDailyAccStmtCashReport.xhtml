@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <style type="text/css">
+            @page {
+                size: landscape;
+            }
+        </style>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button id="back_to_daily_stmt_rpt" value="Back" outcome="/ui/reports/formStatementReport.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value="DAILY CASH STATEMENT" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="#{dailyreport.username}, #{dailyreport.offname}, #{dailyreport.statename}"/> </span>
+            </div>
+            <div class="center-position top-space bottom-space datatable-panel" style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position">
+                            <h:outputText value="From Date: #{dailyreport.dobj.fromCashDate}"/>
+                        </td>
+                        <td class="right-position">
+                            <h:outputText value="To Date: #{dailyreport.dobj.toCashDate}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="datatable-panel top-space" style="margin: 0 auto;">
+                <p:dataTable value="#{dailyreport.returnlist}" var="dialy" style="font-size: 10px !important;" styleClass="border-transparent" rowIndexVar="rowkey">
+                    <p:column styleClass="collumn-width center-position">
+                        <f:facet name="header">
+                            <h:outputText value="Sr.No" />
+                        </f:facet>
+                        <h:outputText value="#{dialy.srindex}" rendered="#{dialy.received_dt != null}" />                                
+                    </p:column>
+                    <p:column style="width: 100px;">
+                        <f:facet name="header">
+                            <h:outputText value="Regn No/&lt;br /&gt; Chasi No" styleClass="resp-label-section left-position" escape="false" />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.regn_no}"/>
+                    </p:column>
+                    <p:column style="width: 70px;">
+                        <f:facet name="header">
+                            <h:outputText value="Name/&lt;br /&gt; Vehicle Class" styleClass="resp-label-section left-position" escape="false" />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.name}"/>
+                    </p:column>
+                    <p:column style="width: 88px;">
+                        <f:facet name="header">
+                            <h:outputText value="Receipt No/&lt;br /&gt;Application No" styleClass="resp-label-section left-position" escape="false"   />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.receipt_No}" />
+                    </p:column>
+                    <p:column style="width:40px;">
+                        <f:facet name="header">
+                            <h:outputText value="Transaction" styleClass="resp-label-section left-position" escape="false"   />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.transaction}" escape="false" />
+                    </p:column>
+                    <p:column style="width:40px;">
+                        <f:facet name="header">
+                            <h:outputText value="Fee/&lt;br /&gt; Tax" styleClass="resp-label-section right-position" escape="false"/>
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.amount}" styleClass="right-position right-space" />
+                    </p:column> 
+                    <p:column rendered="#{dailyreport.ispaymentShare}" style="width:40px;">
+                        <f:facet name="header">
+                            <h:outputText value="Vendor&lt;br /&gt; Share" styleClass="resp-label-section right-position" escape="false"/>
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.amountVendor}" styleClass="right-position right-space" />
+                    </p:column> 
+                    <p:column style="width:40px;">
+                        <f:facet name="header">
+                            <h:outputText value="Fine/&lt;br /&gt; Penalty" styleClass="resp-label-section right-position" escape="false" />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.feeCM_Penalty_Tax}" styleClass="right-position right-space" />
+                    </p:column>
+
+                    <p:column style="width:40px;" rendered="#{dailyreport.is_surcharge}">
+                        <f:facet name="header">
+                            <h:outputText value="Surcharge" styleClass="resp-label-section right-position"  />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.surcharge}" styleClass="right-position right-space" />
+                    </p:column>
+
+                    <p:column rendered="#{dailyreport.is_interest}" style="width:40px;">
+                        <f:facet name="header">
+                            <h:outputText value="Interest" styleClass="resp-label-section right-position"  />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.interest}" styleClass="right-position right-space" />
+                    </p:column>
+                    <p:column style="width:50px;" rendered="#{dailyreport.is_amount1}">
+                        <f:facet name="header">
+                            <h:outputText value="#{taxFieldLabel.taxFieldDobj.tax1Label}" styleClass="resp-label-section right-position"  />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.amount1}" styleClass="right-position right-space" />
+                    </p:column> 
+                    <p:column style="width:50px;" rendered="#{dailyreport.is_amount2}">
+                        <f:facet name="header">
+                            <h:outputText value="#{taxFieldLabel.taxFieldDobj.tax2Label}" styleClass="resp-label-section right-position"  />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.amount2}" styleClass="right-position right-space" />
+                    </p:column> 
+
+                    <p:column style="width:60px;">
+                        <f:facet name="header">
+                            <h:outputText value="Total" styleClass="resp-label-section right-position"  />
+                        </f:facet>
+                        <h:outputLabel value="#{dialy.total}" styleClass="right-position right-space" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <hr />
+            </div>
+            <h:outputText value="#{dailyreport.cancel_receipt}" />
+            <div class="datatable-panel" style="margin: 0px auto">
+                <p:dataList value="#{dailyreport.cancelreceiptlist}" var="cancelreceipt" styleClass="border-transparent top-space bottom-space">
+                    <h:outputText value="Cancelled Receipts: " styleClass="font-bold right-space" /> <h:outputText value="#{cancelreceipt.cancel_receipt}" /> 
+                </p:dataList>
+            </div>
+
+            <div class="datatable-panel" style="margin: 0px auto">
+                <p:outputPanel id="DDDetailpanel">
+                    <p:dataTable id="DDDetailListpanel"  var="DDdataList" 
+                                 rendered="#{dailyreport.total !=null ? true : false}" 
+                                 value="#{dailyreport.ddDtlsList}" 
+                                 styleClass="border-transparent" style="width: 400px !important;">
+                        <p:column headerText="Details" styleClass="left-position" style="width: 200px !important;">
+                            <h:outputText value="#{DDdataList.instrumentDeac}" styleClass="inline-section"/>
+                        </p:column>
+                        <p:column headerText="Amount (In Rs)" styleClass="right-position">
+                            <h:outputText value="#{DDdataList.instrumentAmt}" styleClass="right-space inline-section"/>
+                        </p:column>
+                        <p:columnGroup type="footer" rendered="#{dailyreport.total !=null ? true : false}">
+                            <p:row>
+                                <p:column footerText="GRAND TOTAL(in Rs)" styleClass="font-bold left-position" />
+                                <p:column footerText="#{dailyreport.dobj.grandTotal}/- " styleClass="font-bold right-position right-space" />
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </p:outputPanel>
+            </div>
+
+            <div class="top-space  bottom-space">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputText value="GRAND TOTAL (in Words):#{dailyreport.dobj.grandTotal}/- ( #{dailyreport.dobj.grandTotalInwords})" />
+                </h:panelGrid>
+            </div>
+
+            <table class="datatable-panel" style="margin: 0 auto;">
+                <tr>
+                    <td class="left-position top-align" style="width: 33%; font-size: 10px;"> 
+                        <br />
+                        <br />
+                        <br />
+                        Handed over cash Rs. <h:outputText value="#{dailyreport.dobj.grandTotal}"/> to Accountant. </td>
+                    <td class="center-position top-align"  style="width: 33%; font-size: 10px;">
+                        <br />
+                        <br />
+                        <br />
+                        Received cash Rs. <h:outputText value="#{dailyreport.dobj.grandTotal}"/> from Cashier. </td>
+                    <td class="right-position top-align"  style="width: 33%; font-size: 10px;"> 
+                        <br />
+                        <br />
+                        <br />
+                        Verified an amount of Rs. <h:outputText value="#{dailyreport.dobj.grandTotal}"/> with reference to office copy of the challans<br/>
+                        issued by <h:outputText value="value"/> and found correct.
+                    </td>
+                </tr>
+            </table>
+            <div class="table-width-four bottom-space top-space">
+                <br />
+                <br />
+                <br />
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="Signature of #{dailyreport.cashier}"  styleClass="left-position bottom-space"/>
+                    <h:outputLabel value="Signature of #{dailyreport.accountant}"  styleClass="center-position bottom-space"/>
+                    <h:outputLabel value="Signature of #{dailyreport.superintendent}"  styleClass="center-position bottom-space"/>
+                    <h:outputLabel value=" Signature of #{dailyreport.patorto}"  styleClass="right-position bottom-space"/>
+                </h:panelGrid>
+            </div>            
+            <div class="bottom-space top-space">
+                <br />
+                <br />
+                <br />
+                <h:panelGrid columns="1" styleClass="right-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="Signature of  #{dailyreport.rto}"  styleClass="right-position bottom-space"/> 
+                </h:panelGrid>
+            </div>
+
+        </h:form>
+    </h:body>
+</html>

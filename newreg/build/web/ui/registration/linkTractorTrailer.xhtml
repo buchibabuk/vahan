@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <div class="ui-grid-row center-position">
+            <div class="ui-grid-col-12">
+                <h1 class="header-main">Link New Tractor - Trailer</h1>
+            </div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:messages id="msg" closable="true" globalOnly="true" showDetail="true">
+                    <p:autoUpdate/>
+                </p:messages>
+            </div>
+        </div>
+
+        <p:panel id="linking_dtls_pnl" header="Link New Tractor-Trailer">
+            <div class="ui-grid-row top-space">
+                <div class="ui-grid-col-1 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label>
+                        <p:outputLabel for="tractor_regn_no" value="Tractor Registration Number" />
+                    </label>
+                    <p:inputText id="tractor_regn_no" required="true" value="#{linkTractorTrailer.tractorRegnNo}" styleClass="text-uppercase" disabled="#{linkTractorTrailer.disableTractor}"
+                                 requiredMessage="Please enter tractor registration number." autocomplete="off" converter="toUpperCaseConverter" size="10" maxlength="10">
+                        <p:ajax event="blur" listener="#{linkTractorTrailer.tractorRegnFocusLost()}" update="@this tractor_trailer_dtls msg" onstart="PF('block_panel').show();" oncomplete="PF('block_panel').hide();"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label>
+                        <p:outputLabel for="trailer_regn_no" value="Trailer Registration Number" />
+                    </label>
+                    <p:inputText id="trailer_regn_no" required="true" value="#{linkTractorTrailer.trailerRegnNo}" styleClass="text-uppercase" disabled="#{linkTractorTrailer.disableTrailer}"
+                                 requiredMessage="Please enter trailer registration number." autocomplete="off" converter="toUpperCaseConverter" size="10" maxlength="10">
+                        <p:ajax event="blur" listener="#{linkTractorTrailer.trailerRegnFocusLost()}" update="@this tractor_trailer_dtls" onstart="PF('block_panel').show();" oncomplete="PF('block_panel').hide();"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-3">                    
+                    <label>
+                        <p:outputLabel styleClass="resp-blank-height"/>
+                    </label>
+                    <p:commandButton value="LINK VEHICLES" action="#{linkTractorTrailer.linkVehicles}" onclick="PF('block_panel').show();" oncomplete="PF('block_panel').hide();" update="linking_dtls_pnl tractor_trailer_dtls"/>
+                </div>                
+            </div>     
+        </p:panel>
+        <p:panel id="tractor_trailer_dtls" header="Tractor/Trailer Details"  styleClass="top-space bottom-space">
+            <p:dataTable  id="tractor_trailer_dt" value="#{linkTractorTrailer.vehicleDtlsList}" 
+                          var="dtls" rowIndexVar="index" styleClass="panelRowHeight top-space bottom-space">
+                <f:facet name="header">
+                    Tractor/Trailer Details
+                </f:facet>
+
+                <p:column headerText="S.No."  styleClass="collumn-width center-position">
+                    <p:outputLabel value="#{index +1}."/>
+                </p:column>
+                <p:column headerText="Registration No"  styleClass="collumn-width center-position">
+                    <p:outputLabel value="#{dtls.regn_no}"/>
+                </p:column>                
+                <p:column headerText="Owner Name" width="15%">                           
+                    <h:outputText value="#{dtls.owner_name}"/>
+                </p:column>
+                <p:column headerText="Father Name" width="15%">                           
+                    <h:outputText value="#{dtls.f_name}"/>
+                </p:column>
+                <p:column headerText="Chassis No" width="15%">                           
+                    <h:outputText value="#{dtls.chasi_no}"/>
+                </p:column>
+                <p:column headerText="Body Type" width="15%">                           
+                    <h:outputText value="#{dtls.body_type}"/>
+                </p:column>                                           
+            </p:dataTable>
+        </p:panel>
+        <p:blockUI block="linking_dtls_pnl" widgetVar="block_panel">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+    </ui:define>
+</ui:composition>

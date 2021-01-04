@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">
+                <p:panel header="CD Registration Details" id="cd_veh_info" style="margin-top: 10px;">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="cdRegno" value="CD Regno"/>
+                            </label>
+                            <p:inputText id="cdRegno" 
+                                         value="#{owner_bean.ownerDobj.cdDobj.cdRegnNo}" 
+                                         size="20" maxlength="15" autocomplete="off" styleClass="input" 
+                                         converter="toUpperCaseConverter" required="true" >
+                                <f:validateLength maximum="15" for="cdRegno"/>
+                                <p:ajax partialSubmit="true"/>
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="cdSaleDt" value="Date of Sale"/>
+                            </label>
+                            <p:calendar id="cdSaleDt"  value="#{owner_bean.ownerDobj.cdDobj.saleDate}" 
+                                        required="true" 
+                                        requiredMessage="Blank CD Sale Date" pattern="dd-MMM-yyyy" navigator="true" 
+                                        maxdate="#{owner_bean.currentDate}" 
+                                        readonlyInput="true" >
+                                <f:convertDateTime pattern="dd-MMM-yyyy" for="cdSaleDt"/> 
+                                <f:validateRequired for="cdSaleDt"/>
+                                <p:ajax partialSubmit="true"/>
+                            </p:calendar>
+                        </div>
+                    </div>
+                </p:panel>
+            </div>
+        </div>
+    </div>
+</html>
+

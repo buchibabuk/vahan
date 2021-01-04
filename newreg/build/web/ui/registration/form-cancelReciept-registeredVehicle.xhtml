@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formCancelReceipt" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.rcptCancel}</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelCancelReceipt">
+                    <p:panel id="cancelCashPanel" rendered="#{!regVehCancelRecieptBean.render}">
+                        <p:focus context="cancelCashPanel"/>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRcptNo" value="#{language.rcpt_no}"/>
+                                </label>
+                                <p:inputText  id="tfRcptNo" value="#{regVehCancelRecieptBean.rcptNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="#{language.rcptNoRequiredMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" validator="#{validateFunction.validateApplNo}">
+                                    <f:ajax event="blur" render="@this" execute="@this"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="#{language.showDetails}" action="#{regVehCancelRecieptBean.showDetails()}"
+                                                 update="formCancelReceipt:panelOwnerInfo formCancelReceipt msg" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()"/>
+                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()"
+                                          icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfRcptNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{regVehCancelRecieptBean.render}">                    
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-12">
+                                        <div class="font-bold report-header">    
+                                            #{language.cancelRcpt}: <span class="red font-bold"> #{regVehCancelRecieptBean.rcptNo} </span> #{language.fordis} <span class="red font-bold">#{regVehCancelRecieptBean.regn_no}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:selectManyMenu id="requestForPurCD" 
+                                                          value="#{regVehCancelRecieptBean.selectedPurposeCode}" 
+                                                          required="true"
+                                                          disabled="true"                                                           
+                                                          showCheckbox="false"                                                          
+                                                          styleClass="scroll-panel-overflow" style="height: 150px">
+                                            <f:selectItems value="#{regVehCancelRecieptBean.purCodeList}" itemDisabled="true"/> 
+                                        </p:selectManyMenu>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-12">
+                                        <div class="font-bold report-header">    
+                                            #{language.reasonRcptCancel}<span class="red"> *</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12">
+                                        <p:inputTextarea id="reason"  value="#{regVehCancelRecieptBean.reason}" 
+                                                         required="true" requiredMessage="#{language.reasonFieldMsg}"
+                                                         converter="toUpperCaseConverter" maxlength="100"
+                                                         styleClass="input" validator="#{validateFunction.validateReason}">
+                                            <f:ajax event="blur" render="@this" execute="@this"/>
+                                        </p:inputTextarea>
+                                    </div>
+                                </div>
+
+
+                                <div class="ui-grid-row center-position top-space bottom-space">                                    
+                                    <div class="ui-grid-col-12">                                      
+                                        <p:commandButton id="btn_save" value="#{language.cancelRcpt}" 
+                                                         action="#{regVehCancelRecieptBean.sendOtpMailAndCancelReceipt('sendOtp')}"
+                                                         update="panelCancelReceipt formCancelReceipt msg" onclick="PF('ajax_status').show()"
+                                                         onsuccess="PF('ajax_status').hide()">                                    
+                                            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg} #{language.confirmcnclMsg}" icon="ui-icon-alert" />
+                                        </p:commandButton>                            
+                                        <p:commandButton value="#{language.login_back}" action="/ui/registration/form-cancelReciept-registeredVehicle.xhtml?faces-redirect=true" 
+                                                         process="@this" update="formCancelReceipt" immediate="true" onclick="PF('ajax_status').show()"
+                                                         onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-grid-col-9">
+                                <p:tabView styleClass="top-space bottom-space" >
+
+                                    <!--################################# Owner Details ########################################## -->
+                                    <p:tab  id="owner_details_tab" title="Owner Details">
+                                        <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{regVehCancelRecieptBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+
+                                    <!--################################# Vehicle Details ######################################## -->
+                                    <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                        <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{regVehCancelRecieptBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+                                    <!--###################### Insurance Details ############################### -->
+                                    <p:tab id="insuranceDetails"  title="Insurance Details">      
+                                        <ui:include src="/ui/form_ins_dtls.xhtml"/>                                                                  
+                                    </p:tab>  
+                                    <!--########################################################################################## -->     
+
+                                    <!--###################### Hypothecation Details ######################################## -->
+                                    <p:tab id="hypothecationDetails"  title="Hypothecation Details">  
+                                        <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+                                    </p:tab>
+                                    <!--########################################################################################## -->
+
+                                </p:tabView>
+                            </div>
+                        </div>
+
+                    </p:panel>
+                </p:outputPanel>             
+
+                <p:outputPanel id="otp_confirmation">
+                    <p:dialog  widgetVar="otp_confrm" header="OTP for Cancel Receipt" modal="true" closable="false" dynamic="true" >
+                        <p:messages  showDetail="true" showSummary="false">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 red">
+                                OTP has been sent to your registered mobile no.
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label>
+                                    <p:outputLabel value="#{language.login_enter_otp}:"/>
+                                </label>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <p:inputText value="#{regVehCancelRecieptBean.enterRcptOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                            </div>
+
+                            <div class="ui-grid-col-5">
+                                <p:commandLink value="#{language.login_resend_otp}:" action="#{regVehCancelRecieptBean.sendOtpMailAndCancelReceipt('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                               onsuccess="PF('ajax_status').hide()"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="#{language.confirmAndCancelRcpt}" action="#{regVehCancelRecieptBean.sendOtpMailAndCancelReceipt('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()">
+
+                                </p:commandButton>
+
+                                <p:commandButton value="#{language.login_back}" action="/ui/registration/form-cancelReciept-registeredVehicle.xhtml?faces-redirect=true" 
+                                                 process="@this" update="formCancelReceipt" immediate="true" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block="formCancelReceipt" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

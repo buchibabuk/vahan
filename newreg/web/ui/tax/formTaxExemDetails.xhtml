@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<html    xmlns="http://www.w3.org/1999/xhtml"
+         xmlns:h="http://java.sun.com/jsf/html"
+         xmlns:p="http://primefaces.org/ui"    
+         xmlns:f="http://java.sun.com/jsf/core">  
+
+    <h:body>
+        <div class="ui-grid ui-grid-responsive">
+            <!--// Show table for tax detail from VT_TAX-->
+            <p:dataTable id="tb_showTaxDetail" value="#{taxExemptionBean.taxPaidList}" 
+                         paginator="#{taxExemptionBean.taxPaidList.size()>5}" rows="5" paginatorPosition="bottom"
+                         scrollable="false" var="taxDtls" styleClass="bottom-space" rowIndexVar="index">
+                <f:facet name="header">
+                    <div class="left-position">
+                        Tax Paid Details
+                    </div>
+                </f:facet>
+                <p:column headerText="Sl.No" width="5%">
+                    <h:outputText value="#{index+1}" />                                
+                </p:column>
+
+
+                <p:column headerText="Tax Type ">
+                    <h:outputText value="#{taxDtls.descrold}" />                    
+                </p:column>
+
+                <p:column headerText="Receipt No">
+                    <h:outputText value="#{taxDtls.rcpt_noold}" />
+                </p:column>
+
+
+                <p:column headerText="Tax From">
+                    <h:outputText value="#{taxDtls.tax_fromold}" />
+                </p:column>
+                <p:column headerText="Tax Upto">
+                    <h:outputText value="#{taxDtls.tax_uptoold}" />
+                </p:column>                  
+                <p:column headerText="Challan Date">
+                    <h:outputText value="#{taxDtls.rcpt_dtold}" />
+                </p:column>
+                <p:column headerText="Tax Amount">
+                    <h:outputText value="#{taxDtls.tax_amtold}" />
+                </p:column>
+                <p:column headerText="Fine/Penalty">
+                    <h:outputText value="#{taxDtls.tax_fineold}" />
+                </p:column>
+            </p:dataTable>
+
+            <!--// Show table for tax history from VH_TAX_CLEAR-->
+            <p:dataTable id="tb_showTaxHistroryDetail" value="#{taxExemptionBean.taxClearList}" 
+                         paginator="#{taxExemptionBean.taxClearList.size()>5}" rows="5" paginatorPosition="bottom"
+                         scrollable="false" var="taxClear" styleClass="bottom-space" rowIndexVar="index">
+                <f:facet name="header">
+                    <div class="left-position">
+                        Tax Clear Details
+                    </div>
+                </f:facet>
+                <p:column headerText="Sl.No" width="5%">
+                    <h:outputText value="#{index+1}" />                                
+                </p:column>
+                <p:column headerText="Tax Type">
+                    <h:outputText value="#{taxClear.descrHist}" />
+                </p:column>                            
+                <p:column headerText="Tax From">
+                    <h:outputText value="#{taxClear.tax_fromHist}" />
+                </p:column>
+                <p:column headerText="Tax Upto">
+                    <h:outputText value="#{taxClear.tax_uptoHist}" />
+                </p:column>
+                <p:column headerText="Order No">
+                    <h:outputText value="#{taxClear.rcpt_noHist}" />
+                </p:column>
+                <p:column headerText="Order Date">
+                    <h:outputText value="#{taxClear.op_dtHist}" />
+                </p:column>
+            </p:dataTable>
+
+            <!--// Akshay Jain Show table for tax Exemption from VH_TAX_EXEM-->
+            <p:dataTable id="tb_showTaxExemDetail" value="#{taxExemptionBean.taxExemList}" 
+                         paginator="#{taxExemptionBean.taxExemList.size()>5}" rows="5" paginatorPosition="bottom"
+                         scrollable="false" var="taxExem" styleClass="bottom-space" rowIndexVar="index">
+                <f:facet name="header">
+                    <div class="left-position">
+                        Tax Exemption Details
+                    </div>
+                </f:facet>
+                <p:column headerText="SI.No" width="5%">
+                    <h:outputText value="#{index+1}" />                                
+                </p:column>
+                <p:column headerText="Tax Type">
+                    <h:outputText value="#{taxExem.descrHist}" />
+                </p:column>                            
+                <p:column headerText="Exem From">
+                    <h:outputText value="#{taxExem.tax_fromHist}" />
+                </p:column>
+                <p:column headerText="Exem Upto">
+                    <h:outputText value="#{taxExem.tax_uptoHist}" />
+                </p:column>
+                <p:column headerText="Permission No">
+                    <h:outputText value="#{taxExem.rcpt_noHist}" />
+                </p:column>
+                <p:column headerText="Permission Date">
+                    <h:outputText value="#{taxExem.op_dtHist}" />
+                </p:column>
+            </p:dataTable> 
+        </div>
+    </h:body>
+</html>

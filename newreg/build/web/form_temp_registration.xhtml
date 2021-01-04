@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <div class="ui-grid ui-grid-responsive">
+        <h:messages />
+        <p:outputPanel id="renewal_temp">
+            <p:outputPanel id="temp_ren_reg" rendered="#{tempReg_bean.renew_temp_reg}">
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_regn_no" value="Temporary Registration No"/>
+                        </label>
+                        <p:inputText id="temp_regn_no" value="#{tempReg_bean.tempReg_dobj.temp_regn_no}" required="true" disabled="true"
+                                     requiredMessage="Blank: Temporary Registration No." maxlength="12" size="35" autocomplete="off">
+                            <f:validateRequired for="temp_regn_no"/>
+                            <f:validateLength maximum="12" for="temp_regn_no"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="valid_from" value="Valid From"/>
+                        </label>
+                        <p:calendar id="valid_from"  value="#{tempReg_bean.tempReg_dobj.valid_from}" required="true"
+                                    requiredMessage="Blank Date: Valid From" pattern="dd-MMM-yyyy" navigator="true">
+                            <f:convertDateTime pattern="dd-MMM-yyyy" for="valid_from"/> 
+                            <f:validateRequired for="valid_from"/>
+                        </p:calendar>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="valid_upto" value="Valid Upto"/>
+                        </label>
+                        <p:calendar id="valid_upto"  value="#{tempReg_bean.tempReg_dobj.valid_upto}" required="true"
+                                    requiredMessage="Blank Date: Valid Upto" pattern="dd-MMM-yyyy" navigator="true">
+                            <f:convertDateTime pattern="dd-MMM-yyyy" for="valid_upto"/> 
+                            <f:validateRequired for="valid_upto"/>
+                        </p:calendar>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel id="temp_registration">
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_tf_owner_name" value="Owner Name" />
+                        </label>
+                        <p:inputText id="temp_tf_owner_name" value="#{tempReg_bean.tempReg_dobj.owner_name}"  required="true" 
+                                     requiredMessage="Owner Name can not be empty" maxlength="35" size="35" autocomplete="off" 
+                                     style="text-transform: uppercase" converter="toUpperCaseConverter" >
+                            <f:validateRequired for="temp_tf_owner_name"/>
+                            <f:validateLength maximum="35" for="tf_owner_name"/>
+                            <f:validateRegex pattern="([a-zA-Z. ]+)" for="temp_tf_owner_name" />
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_tf_f_name" value="Father/Husband's Name"/>
+                        </label>
+                        <p:inputText id="temp_tf_f_name" value="#{tempReg_bean.tempReg_dobj.f_name}"  required="true" style="text-transform: uppercase"
+                                     requiredMessage="Father/Husband's Name can not be empty" maxlength="35" size="35"
+                                     autocomplete="off" converter="toUpperCaseConverter">
+                            <f:validateRequired for="temp_tf_f_name"/>
+                            <f:validateLength maximum="35" for="temp_tf_f_name"/>
+                            <f:validateRegex pattern="([a-zA-Z. ]+)" for="temp_tf_f_name"/>             
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_state_to" value="State To"/>
+                        </label>
+                        <p:selectOneMenu id="temp_state_to"  value="#{tempReg_bean.tempReg_dobj.state_cd_to}" filter="true" 
+                                         required="true" requiredMessage="State To Can not Be Empty">
+                            <f:selectItems value="#{tempReg_bean.state_list}"/>
+                            <p:ajax event="change" listener="#{tempReg_bean.updateOffToFromStateListener}" update="temp_tf_rto_to"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_tf_rto_to" value="Office To:"/>
+                        </label>
+                        <p:selectOneMenu id="temp_tf_rto_to" value="#{tempReg_bean.tempReg_dobj.off_cd_to}" filter="true"
+                                         required="true" requiredMessage="Office To Can not Be Empty">
+                            <f:selectItems value="#{tempReg_bean.list_office_to}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_purchase_dt" value="Purchase Date"/>
+                        </label>
+                        <p:calendar id="temp_purchase_dt"  value="#{tempReg_bean.tempReg_dobj.purchase_dt}" required="true" 
+                                    requiredMessage="Blank Purchase Date" pattern="dd-MMM-yyyy" navigator="true">
+                            <f:convertDateTime pattern="dd-MMM-yyyy" for="temp_purchase_dt"/> 
+                            <f:validateRequired for="temp_purchase_dt"/>
+                        </p:calendar>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_dob_dt" value="Date Of Birth"/>
+                        </label>
+                        <p:calendar id="temp_dob_dt"  value="#{tempReg_bean.tempReg_dobj.owner_dob}" required="true" 
+                                    requiredMessage="Blank Owner Date Of Bith" pattern="dd-MMM-yyyy" navigator="true">
+                            <f:convertDateTime pattern="dd-MMM-yyyy" for="temp_dob_dt"/> 
+                            <f:validateRequired for="temp_dob_dt"/>
+                        </p:calendar>
+                    </div>
+                </div>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_dealer_cd" value="Dealer"/>
+                        </label>
+                        <p:selectOneMenu id="temp_dealer_cd"  value="#{tempReg_bean.tempReg_dobj.dealer_cd}" filter="true" style="width: 250px">
+                            <f:selectItems value="#{tempReg_bean.list_dealer_cd}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_mob_no" value="#{label.mob_no}"/>
+                        </label>
+                        <p:inputText id="temp_mob_no" value="#{tempReg_bean.tempReg_dobj.mobile_no}" size="10" required="true"
+                                     requiredMessage="Blank: Moblie No." maxlength="10" autocomplete="off">
+                            <f:validateLength maximum="10" for="temp_mob_no"/>
+                            <f:validateRequired for="temp_mob_no"/>                
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="temp_email" value="#{label.email}"/>
+                        </label>
+                        <p:inputText id="temp_email" value="#{tempReg_bean.tempReg_dobj.email_id}" size="30" required="true"
+                                     requiredMessage="Blank: Email ID." maxlength="30" autocomplete="off">
+                            <f:validateLength maximum="30" for="temp_email"/>
+                            <f:validateRequired for="temp_email"/>
+                        </p:inputText>
+                    </div>
+                </div>
+            </p:outputPanel>
+        </p:outputPanel>
+        <p:outputPanel styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-6">
+                    <p:panel id="temp_c_address_panel" header="Current Address" styleClass="datatable-panel">
+                        <p:outputPanel id="temp_caddress">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_c_add1" value="Current Address"/>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <p:inputText  id="temp_tf_c_add1" value="#{tempReg_bean.tempReg_dobj.c_add1}" size="40" required="true"
+                                                  requiredMessage="Blank Current Address" maxlength="35" autocomplete="off"
+                                                  style="text-transform: uppercase" converter="toUpperCaseConverter">
+                                        <f:validateRequired for="temp_tf_c_add1"/>
+                                        <f:validateLength maximum="35" for="temp_tf_c_add1"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <p:inputText id="temp_tf_c_add2" value="#{tempReg_bean.tempReg_dobj.c_add2}" size="40"
+                                                 maxlength="35" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter">
+                                        <f:validateLength maximum="35" for="temp_tf_c_add2"/>
+                                    </p:inputText>
+                                </div>
+                            </div>   
+
+
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_c_district" value="District"/>
+                                    </label>
+                                    <p:selectOneMenu id="temp_tf_c_district"  value="#{tempReg_bean.tempReg_dobj.c_district}" 
+                                                     filter="true">                                  
+                                        <f:selectItems value="#{tempReg_bean.list_c_district}" />  
+                                        <p:ajax event="change" listener="#{tempReg_bean.vehDistListener}" update="temp_tf_c_taluk"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_c_taluk" value="Taluk"/>
+                                    </label>
+                                    <p:selectOneMenu id="temp_tf_c_taluk" value="#{tempReg_bean.tempReg_dobj.c_taluk}" filter="true">
+                                        <f:selectItems value="#{tempReg_bean.list_c_taluk}"/>
+                                        <p:ajax event="change" listener="#{tempReg_bean.vehTalukListener}" update="temp_tf_c_village"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_c_village" value="Village"/>
+                                    </label>
+                                    <p:selectOneMenu id="temp_tf_c_village" value="#{tempReg_bean.tempReg_dobj.c_village}" filter="true" style="width: 200px">
+                                        <f:selectItems value="#{tempReg_bean.list_c_village}"/>
+                                        <p:ajax/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_c_pincode" value="PIN Code"/>
+                                    </label>
+                                    <p:inputText id="temp_tf_c_pincode" value="#{tempReg_bean.tempReg_dobj.c_pincode}" size="10" maxlength="8" autocomplete="off">
+                                        <f:validateRegex pattern="([0-9]+)" for="temp_tf_c_pincode"/>
+                                        <f:validateLength maximum="8" for="temp_tf_c_pincode"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                        </p:outputPanel>
+                    </p:panel>
+                </div>
+                <div class="ui-grid-col-6">
+                    <p:panel id="temp_p_address_panel" header="Permanent Address">
+                        <p:focus context="temp_p_address_panel"/>
+                        <p:outputPanel id="temp_paddress">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_p_add1" value="Permanent Address"/>
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <p:inputText  id="temp_tf_p_add1" value="#{tempReg_bean.tempReg_dobj.p_add1}" size="40" required="true" style="text-transform: uppercase"
+                                                  requiredMessage="Blank Permanent Address" maxlength="35" autocomplete="off" converter="toUpperCaseConverter">
+                                        <f:validateRequired for="temp_tf_p_add1"/>
+                                        <f:validateLength maximum="35" for="temp_tf_p_add1"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <p:inputText id="temp_tf_p_add2" value="#{tempReg_bean.tempReg_dobj.p_add2}" size="40"
+                                                 maxlength="35" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter">                                      
+                                        <f:validateLength maximum="35" for="temp_tf_p_add2"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_p_district" value="District"/>
+                                    </label>
+                                    <p:selectOneMenu id="temp_tf_p_district" value="#{tempReg_bean.tempReg_dobj.p_district}" filter="true" style="width: 200px" >   
+                                        <f:selectItems value="#{tempReg_bean.list_p_district}" />
+                                        <p:ajax event="change" listener="#{tempReg_bean.vehP_DistListener}" update="temp_tf_p_taluk"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_p_taluk" value="Taluk"/>
+                                    </label>
+                                    <p:selectOneMenu id="temp_tf_p_taluk" value="#{tempReg_bean.tempReg_dobj.p_taluk}" filter="true" style="width: 200px">   
+                                        <f:selectItems value="#{tempReg_bean.list_p_taluk}"/>
+                                        <p:ajax event="change" listener="#{tempReg_bean.vehP_TalukListener}" update="temp_tf_p_village"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+
+
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_p_village" value="Village"/>
+                                    </label>
+                                    <p:selectOneMenu id="temp_tf_p_village" value="#{tempReg_bean.tempReg_dobj.p_village}" 
+                                                     filter="true" style="width: 200px">
+                                        <f:selectItems value="#{tempReg_bean.list_p_village}"/>
+                                        <p:ajax/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="temp_tf_p_pincode" value="PIN Code"/>
+                                    </label>
+                                    <p:inputText id="temp_tf_p_pincode" value="#{tempReg_bean.tempReg_dobj.p_pincode}" size="10" 
+                                                 maxlength="8" autocomplete="off">
+                                        <f:validateRegex pattern="([0-9]+)" for="temp_tf_p_pincode"/>
+                                        <f:validateLength maximum="8" for="temp_tf_p_pincode"/>                                
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:panel>
+                </div>
+            </div>
+        </p:outputPanel>
+    </div>
+    <!--##################### KeyFlter for Allowing Particular value in Textbox #####################-->
+    <p:keyFilter mask="pint" for="temp_tf_c_pincode"/>
+    <p:keyFilter mask="pint" for="temp_tf_p_pincode"/>
+    <p:keyFilter mask="pint" for="temp_mob_no"/>
+    <p:keyFilter regEx="/[a-zA-Z ]/i" for="temp_tf_owner_name"/>
+    <p:keyFilter regEx="/[a-zA-Z ]/i" for="temp_tf_f_name"/>
+    <!--#############################################################################################-->
+</html>

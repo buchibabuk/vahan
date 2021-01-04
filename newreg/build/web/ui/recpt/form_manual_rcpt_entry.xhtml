@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formManualEntry" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.manualRcptEntry}</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msg" closable="true"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelManualEntry">
+                    <p:panel header="#{language.manualRcptEntry}" id="manualRcptEntryPnl" >
+                        <!--<p:focus context="manualRcptEntryPnl"/>-->
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfApplNo" value="#{language.transApplNo}"/>
+                                </label>
+                                <p:inputText  id="tfApplNo" value="#{manualRcptEntryBean.manualrcptdobj.trans_appl_no}" 
+                                              maxlength="16"
+                                              required="true"
+                                              disabled="#{manualRcptEntryBean.isdisabledTransactionNo}"
+                                              requiredMessage="#{language.apllNoRequiredMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" validator="#{validateFunction.validateApplNo}">
+                                    <p:ajax event="blur" listener="#{manualRcptEntryBean.checkvalidApplNo()}" update="@this manualRcptRecord"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRcptNo" value="#{language.rcpt_no}"/>
+                                </label>
+                                <p:inputText  id="tfRcptNo" value="#{manualRcptEntryBean.manualrcptdobj.rcptNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="#{language.rcptNoRequiredMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" validator="#{validateFunction.validateRecptNo}">
+                                    <p:ajax event="change" listener="#{manualRcptEntryBean.checkValidRcptNo()}" update="@this tfamount tfPeriodFrom"/>  
+                                </p:inputText>   
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfamount" value="#{language.amount}"/>
+                                </label>
+                                <p:inputText  id="tfamount" value="#{manualRcptEntryBean.manualrcptdobj.amount}" 
+                                              maxlength="10"
+                                              required="true"
+                                              disabled="#{manualRcptEntryBean.isdisabledAmount}"
+                                              requiredMessage="#{language.amountRequiredMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" validator="#{validateFunction.validateAmount}">
+                                    <f:ajax event="blur" render="@this" execute="@this"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfPeriodFrom" value="#{language.rcpt_dt}"/>
+                                </label>
+                                <p:calendar id="tfPeriodFrom"  value="#{manualRcptEntryBean.manualrcptdobj.receipt_dt}" 
+                                            maxdate="#{nonUse.maxDate}" pattern="dd-MMM-yyyy" required="true" requiredMessage="#{language.rcpt_requiredMsg}">
+                                </p:calendar>
+                            </div>
+                        </div>
+
+                        <p:outputPanel id="appSavePanel" styleClass="center-position">
+                            <p:outputPanel rendered="#{!manualRcptEntryBean.saveButton}" styleClass="top-space bottom-space">
+                                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                    <ui:param name="app_disapp" value="#{manualRcptEntryBean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                            <p:commandButton rendered="#{manualRcptEntryBean.saveButton}" value="#{language.save}" action="#{manualRcptEntryBean.save}" >
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton rendered="#{manualRcptEntryBean.saveButton}" immediate="true" 
+                                             icon="ui-icon-arrowreturnthick-1-w" value="#{language.login_back}" action="home" ></p:commandButton>
+                        </p:outputPanel>
+
+                        <p:keyFilter for="tfRcptNo" mask="alphanum"/>
+                        <p:outputPanel id="changedByPrevUser"  rendered="#{manualRcptEntryBean.prevChangedDataList.size()>0}" styleClass="top-space bottom-space">
+                            <p:dataTable value="#{manualRcptEntryBean.prevChangedDataList}" var="data" styleClass="top-space panelRowHeight">
+                                <p:column headerText="#{language.change_by_employee}">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="#{language.changed_on}">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+
+                        <p:outputPanel id="saveDialog">
+                            <p:dialog header="#{language.home_confirm}!!!" closeOnEscape="false" closable="false" widgetVar="saveMnual" modal="true" dynamic="true" 
+                                      width="300" showEffect="fade" hideEffect="fade" draggable="false" >
+                                <div class="ui-grid-row">                        
+                                    <div class="ui-grid-col-12 center-position">
+                                        <h:outputText value="#{language.manualRcptSaveMsg} :#{manualRcptEntryBean.appl_no} "/>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">                        
+                                    <div class="ui-grid-col-12 center-position top-space">
+                                        <p:commandButton value="#{language.ok}" action="seatwork"/>
+                                    </div>
+                                </div>
+                            </p:dialog>
+                        </p:outputPanel>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="manualRcptRecord">
+                    <p:dataTable  styleClass="top-space" var="dob"  
+                                  rendered="#{manualRcptEntryBean.manualRcptRecordList.size()>0}"
+                                  value="#{manualRcptEntryBean.manualRcptRecordList}" 
+                                  paginator="true" paginatorPosition="bottom" filteredValue=""
+                                  rowIndexVar="rowkey" rows="4">
+                        <f:facet name="header"> Approved Manual Receipt Record</f:facet>
+                        <p:column headerText="Transaction Application No." >
+                            <h:outputText value="#{dob.trans_appl_no}"  />
+                        </p:column>
+                        <p:column headerText="Application No."  >
+                            <h:outputText value="#{dob.applno}" />
+
+                        </p:column>
+                        <p:column headerText="Manual Receipt No."  >
+                            <h:outputText value="#{dob.rcptNo}" />
+                        </p:column>
+                        <p:column headerText="Receipt Date"  >
+                            <h:outputText value="#{dob.rcpt_dt}" />
+                        </p:column>
+                        <p:column headerText="Amount"  >
+                            <h:outputText value="#{dob.amount}" />
+                        </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="4" styleClass="right-position" footerText="Grand Total:" />
+                                <p:column  footerText="#{manualRcptEntryBean.grandTotal}" styleClass="left-position"/>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </p:outputPanel>
+                <p:blockUI block="formManualEntry" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

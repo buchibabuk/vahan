@@ -1,0 +1,317 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content22">
+
+        <h:form id="DealerReports">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main">#{language.print_header}</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:panel id="reportInputs" header="#{language.print_header}" styleClass="bottom-space">  
+                    <p:outputPanel rendered="#{!dealerReportsBean.renderForm21Button}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.searchBy} " />
+                                </label>
+                                <p:selectOneMenu value="#{dealerReportsBean.searchByValue}" styleClass="bottom-space">
+                                    <f:selectItem itemLabel="Date Wise" itemValue="dateWise" />
+                                    <f:selectItem itemLabel="Application Wise" itemValue="applicationWise" />
+                                    <p:ajax event="change" listener="#{dealerReportsBean.updateProvRcStatus()}" update="@form"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel rendered="#{dealerReportsBean.dateWisePanelVisibility}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-2">
+                                <label class="field-label">
+                                    <p:outputLabel value="#{language.date} #{language.from} #{label.datePattern}"/>
+                                </label>
+                                <p:calendar value="#{dealerReportsBean.fromDate}" maxdate="#{dealerReportsBean.currentDate}"  pattern="dd-MMM-yyyy" required="true" requiredMessage="Please Select From Date">
+                                    <p:ajax event="dateSelect" update="DealerReports:reportInputs DealerReports:dataTable" listener="#{dealerReportsBean.fromDateChangeListener()}" />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-2">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  value="#{language.date} #{language.upto} #{label.datePattern}"/> 
+                                </label>    
+                                <p:calendar value="#{dealerReportsBean.uptoDate}"  pattern="dd-MMM-yyyy" maxdate="#{dealerReportsBean.currentDate}" disabled="true" required="true" requiredMessage="Please Select Upto Date">
+                                </p:calendar>                          
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label">
+                                    <p:outputLabel value="#{language.report_type}"/>
+                                </label>
+                                <p:selectOneMenu value="#{dealerReportsBean.reportType}" styleClass="bottom-space">
+                                    <f:selectItem itemLabel="---Select Report Type---" itemValue="-1" />
+                                    <f:selectItems value="#{dealerReportsBean.reportTypeList}" />
+                                    <f:validator validatorId="selectOneValidator"/>
+                                    <p:ajax event="change" update="DealerReports:reportInputs DealerReports:dataTable" listener="#{dealerReportsBean.radioButtonAjaxListener()}" />
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <p:outputPanel id="afterApprovalPanelId" rendered="#{dealerReportsBean.renderAffterApprovalInputFields}" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4 bottom-space">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  id="applAfterApproval_id" styleClass="field-label-mandate" value="#{language.home_rightpanelApplno}/#{language.home_rightpanelregno}"/>
+                                    </label>
+                                    <p:inputText value="#{dealerReportsBean.applicationNo}" 
+                                                 maxlength="16"
+                                                 required="true"
+                                                 requiredMessage="#{language.enter_application}"
+                                                 converter="toUpperCaseConverter"
+                                                 autocomplete="off"
+                                                 styleClass="text-uppercase"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="#{language.getDetails}" action="#{dealerReportsBean.getDetails()}" update="dataTable" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{dealerReportsBean.applicationWisePanelVisibility}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfAppNo" value="#{language.home_rightpanelApplno} (#{language.current_receipt})"/>
+                                </label>
+                                <p:inputText  id="tfAppNo" value="#{dealerReportsBean.applicationNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="#{language.enter_application}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="text-uppercase"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="#{language.show} #{language.current_receipt}" action="#{dealerReportsBean.showCurrentReceipt()}" onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();"/>
+                                <p:button value="#{language.login_back}" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfAppNo" mask="alphanum"/>
+                    </p:outputPanel>
+                </p:panel>
+
+                <p:outputPanel id="dataTable">
+                    <p:outputPanel rendered="#{dealerReportsBean.formPanelVisibility}">
+                        <p:dataTable id="form20DataTable"  value="#{dealerReportsBean.printList}" var="form20"
+                                     filteredValue="#{dealerReportsBean.filteredList}" rowIndexVar="index" rows="10" paginator="true">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    #{language.form_2021}
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                <p:outputLabel value="#{index +1}."/></p:column>
+                            <p:column headerText="#{language.home_rightpanelApplno}" filterBy="#{form20.applNo}" filterMatchMode="contains" sortBy="#{form20.applNo}">#{form20.applNo}</p:column>
+                            <p:column headerText="#{language.chasi_no}" filterBy="#{form20.chasiNo}" filterMatchMode="contains" sortBy="#{form20.chasiNo}">#{form20.chasiNo}</p:column>
+                            <p:column headerText="#{language.owner_name}">#{form20.oName}</p:column>
+                            <p:column headerText="#{language.form_20}" styleClass="center-position">
+                                <p:commandButton  icon="ui-icon-print" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.printForm2021(form20,'FORM20')}" value="#{language.print}" oncomplete="PF('bui_fancy').hide();">
+                                </p:commandButton>
+                            </p:column>       
+                            <p:column headerText="#{language.form_21}" styleClass="center-position" rendered="#{!dealerReportsBean.renderForm21Button}">
+                                <p:commandButton  icon="ui-icon-print" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.printForm2021(form20,'FORM21')}" value="#{language.print}" oncomplete="PF('bui_fancy').hide();">
+                                </p:commandButton>
+                            </p:column>      
+                        </p:dataTable>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="#{language.home}" action="home"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{dealerReportsBean.panelVisibilityAfterApproval}">
+                        <p:dataTable id="form2021AfterApprovalDataTable"  value="#{dealerReportsBean.printList}" var="form20"
+                                     filteredValue="#{dealerReportsBean.filteredList}" rowIndexVar="index" rows="10" paginator="true">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    #{language.form_2021}
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                <p:outputLabel value="#{index +1}."/></p:column>
+                            <p:column headerText="#{language.home_rightpanelregno}" filterBy="#{form20.regnNo}" filterMatchMode="contains" sortBy="#{form20.regnNo}">#{form20.regnNo}</p:column>
+                            <p:column headerText="#{language.chasi_no}" filterBy="#{form20.chasiNo}" filterMatchMode="contains" sortBy="#{form20.chasiNo}">#{form20.chasiNo}</p:column>
+                            <p:column headerText="#{language.owner_name}">#{form20.oName}</p:column>
+                            <p:column headerText="#{language.print} #{language.form_20}" styleClass="center-position">
+                                <p:commandButton  icon="ui-icon-print" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.showDetailsAfterApprove(form20.regnNo,'FORM20AfterApproval', form20.purCd)}" value="#{language.print}" oncomplete="PF('bui_fancy').hide();">
+                                </p:commandButton>
+                            </p:column>       
+                            <p:column headerText="#{language.print} #{language.form_21}" styleClass="center-position">
+                                <p:commandButton  icon="ui-icon-print" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.showDetailsAfterApprove(form20.regnNo, 'FORM21AfterApproval', form20.purCd)}" value="#{language.print}" oncomplete="PF('bui_fancy').hide();">
+                                </p:commandButton>
+                            </p:column>      
+                        </p:dataTable>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="#{language.print} #{language.form_20}" action="home"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{dealerReportsBean.receiptPanelVisibility}">
+                        <p:dataTable id="receiptDataTable"  value="#{dealerReportsBean.printList}" var="receipt"
+                                     filteredValue="#{dealerReportsBean.filteredList}" rowIndexVar="index" rows="10" paginator="true">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    #{language.print} #{language.current_receipt}
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="#{language.user_srno}"  styleClass="collumn-width center-position"> 
+                                <p:outputLabel value="#{index +1}."/></p:column>
+                            <p:column headerText="#{language.home_rightpanelApplno}" filterBy="#{receipt.applNo}" filterMatchMode="contains" sortBy="#{receipt.applNo}">#{receipt.applNo}</p:column>
+                            <p:column headerText="#{language.chasi_no}" filterBy="#{receipt.chasiNo}" filterMatchMode="contains" sortBy="#{receipt.chasiNo}">#{receipt.chasiNo}</p:column>
+                            <p:column headerText="#{language.home_rightpanelregno}">#{receipt.regnNo}</p:column>
+                            <p:column headerText="#{language.owner_name}">#{receipt.oName}</p:column>
+                            <p:column headerText="#{language.transactionNo}">#{receipt.transactionNo}</p:column>
+                            <p:column headerText="#{language.ref_no}">#{receipt.bankRefNo}</p:column>
+                            <p:column headerText="#{language.rcpt_dt}">#{receipt.rcptDt}</p:column>
+                            <p:column headerText="#{language.receipt} #{language.amount}">#{receipt.amount}</p:column>
+                            <p:column headerText="#{language.print} #{language.current_receipt}" styleClass="center-position">
+                                <p:commandButton  icon="ui-icon-print" value="#{language.print}" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.printCurrentReceipt(receipt)}" oncomplete="PF('bui_fancy').hide();">                                 
+                                </p:commandButton>
+                            </p:column>       
+                        </p:dataTable>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="#{language.home}" action="home"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{dealerReportsBean.disclaimerPanelVisibility}">
+                        <p:dataTable id="disclaimerDataTable" value="#{dealerReportsBean.printList}" var="disclaimer"
+                                     filteredValue="#{dealerReportsBean.filteredList}" rowIndexVar="index" rows="10" paginator="true">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    #{language.print} #{language.disclaimer}
+                                </div>
+                            </f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                <p:outputLabel value="#{index +1}."/></p:column>
+                            <p:column headerText="#{language.home_rightpanelApplno}" filterBy="#{disclaimer.applNo}" filterMatchMode="contains" sortBy="#{disclaimer.applNo}">#{disclaimer.applNo}</p:column>
+                            <p:column headerText="#{language.chasi_no}" filterBy="#{disclaimer.chasiNo}" filterMatchMode="contains" sortBy="#{disclaimer.chasiNo}">#{disclaimer.chasiNo}</p:column>
+                            <p:column headerText="#{language.owner_name}">#{disclaimer.oName}</p:column>
+                            <p:column headerText="#{language.print} #{language.disclaimer}" styleClass="center-position">
+                                <p:commandButton icon="ui-icon-print" value="#{language.print}" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.printDisclaimer()}"  oncomplete="PF('bui_fancy').hide();">                                
+                                    <f:param name="APPL_NO" value="#{disclaimer.applNo}"/>
+                                    <f:param name="REGN_NO" value="#{disclaimer.regnNo}"/>
+                                    <f:param name="PUR_CD" value="#{disclaimer.purCd}"/>
+                                </p:commandButton>
+                            </p:column>       
+                        </p:dataTable>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="#{language.home}" action="home"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{dealerReportsBean.provRcPanelVisibility}">
+                        <p:dataTable id="provRcDataTable" value="#{dealerReportsBean.printList}" var="provisionalRC"
+                                     filteredValue="#{dealerReportsBean.filteredList}" rowIndexVar="index" rows="10" paginator="true">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    #{language.print} #{language.provisional_rc}
+                                </div>
+                            </f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                <p:outputLabel value="#{index +1}."/></p:column>
+                            <p:column headerText="#{language.home_rightpanelApplno}" filterBy="#{provisionalRC.applNo}" filterMatchMode="contains" sortBy="#{provisionalRC.applNo}">#{provisionalRC.applNo}</p:column>
+                            <p:column headerText="#{language.chasi_no}" filterBy="#{provisionalRC.chasiNo}" filterMatchMode="contains" sortBy="#{provisionalRC.chasiNo}">#{provisionalRC.chasiNo}</p:column>
+                            <p:column headerText="#{language.owner_name}">#{provisionalRC.oName}</p:column>
+                            <p:column headerText="#{language.print} #{language.provisional_rc}" styleClass="center-position">
+                                <p:commandButton icon="ui-icon-print" value="Print" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.printProvisionalRC(provisionalRC)}"  oncomplete="PF('bui_fancy').hide();"/>                                
+                            </p:column>       
+                        </p:dataTable>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="#{language.home}" action="home"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{dealerReportsBean.panelInspCertificateVisibility}">
+                        <p:dataTable id="inspCertDataTable"  value="#{dealerReportsBean.printList}" var="inspCert"
+                                     filteredValue="#{dealerReportsBean.filteredList}" rowIndexVar="index" rows="10" paginator="true">
+                            <f:facet name="header">
+                                <div class="left-position">
+                                    #{language.print} #{language.inspection_certificate}
+                                </div>
+                            </f:facet>
+                            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                                <p:outputLabel value="#{index +1}."/></p:column>
+                            <p:column headerText="#{language.home_rightpanelApplno}" filterBy="#{inspCert.applNo}" filterMatchMode="contains" sortBy="#{inspCert.applNo}">#{inspCert.applNo}</p:column>
+                            <p:column headerText="#{language.chasi_no}" filterBy="#{inspCert.chasiNo}" filterMatchMode="contains" sortBy="#{inspCert.chasiNo}">#{inspCert.chasiNo}</p:column>
+                            <p:column headerText="#{language.owner_name}">#{inspCert.oName}</p:column>
+                            <p:column headerText="#{language.print} #{language.inspection_certificate}" styleClass="center-position">
+                                <p:commandButton  icon="ui-icon-print" onclick="PF('bui_fancy').show();
+                                        this.style.display = 'none';" action="#{dealerReportsBean.printInspectionCertificate(inspCert)}" value="#{language.print}" oncomplete="PF('bui_fancy').hide();">
+                                </p:commandButton>
+                            </p:column>             
+                        </p:dataTable>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="#{language.home}" action="home"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+            <p:blockUI block="DealerReports" widgetVar="bui_fancy" >
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

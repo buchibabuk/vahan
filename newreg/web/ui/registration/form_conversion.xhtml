@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="#{convBean.masterLayout}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="script">
+        <script type="text/javascript">
+            function ShakeUpdate() {
+                window.setTimeout(function () {
+                    $('#fitLabel').addClass('shake');
+                }, 1000)
+                window.setTimeout(function () {
+                    $('#fitLabel').removeClass('shake');
+                }, 5000)
+            }
+            ShakeUpdate();
+        </script>
+    </ui:define>
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{convBean.appl_details}"/>            
+            </ui:include>   
+            <ui:include src="panel_currentinfo.xhtml">
+                <ui:param name="currentinfo" value="#{convBean}"/>            
+            </ui:include> 
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_conv" prependId="false">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>  
+                <p:outputPanel id="adv_ret_panel">
+                    <div class="ui-grid-row"> 
+                        <div class="ui-grid-col-2"></div>
+                        <div class="ui-grid-col-4 right-position right-space">
+                            <p:outputPanel rendered="#{convBean.retAllowed}">    
+                                <p:selectBooleanCheckbox id="adv_regn" value="#{convBean.advRegnCheck}" styleClass="inline-section" disabled="#{convBean.disableAdvRegnCheck}"  >
+                                    <p:ajax update="pd_choice_no" listener="#{convBean.advanceCheckListener}" partialSubmit="true"/>
+                                </p:selectBooleanCheckbox>
+                                <h:outputText value="#{language.advance_no_check}" styleClass="inline-section font-bold red"/>                                    
+                            </p:outputPanel>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <p:outputPanel rendered="#{convBean.retAllowed}">    
+                                <p:selectBooleanCheckbox id="adv_ret"  value="#{convBean.retCheck}" 
+                                                         styleClass="inline-section" disabled="#{convBean.disableRetCheck}">
+                                    <p:ajax update="ret_panel" listener="#{convBean.retCheckListener}" process="@form" partialSubmit="true"/>
+                                </p:selectBooleanCheckbox> 
+                                <h:outputText value="#{language.retention_no_check}" styleClass="inline-section font-bold right-space red"/>
+                            </p:outputPanel>                            
+                        </div>                        
+                    </div>   
+                    <div class="ui-grid-row top-space"> 
+                        <div class="ui-grid-col-12  center-position">
+                            <h:outputText value="#{convBean.regnNumberAllotedMsg}" styleClass="font-bold right-space"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:panel  styleClass="top-space bottom-space">
+                    <f:facet name="header">
+                        #{language.conversion_header}
+                    </f:facet>  
+                    <p:outputPanel id="conv_subview_panelgrid">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <h:panelGroup rendered="#{convBean.fancyRetention}">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="fancyRetention" value="#{language.Fancy_No_Retention}" styleClass="font-bold red" />
+                                    </label>
+                                    <p:selectOneMenu id="fancyRetention" value="#{convBean.selectedFancyRetnetion}" required="true" requiredMessage="">
+                                        <f:selectItem itemLabel="#{language.select_case}" itemValue="-1"/>
+                                        <f:selectItem itemLabel="#{language.yes}" itemValue="YES"/>
+                                        <f:selectItem itemLabel="#{language.no}" itemValue="NO"/>
+                                        <f:validator validatorId="selectOneValidator" for="fancyDetention"/>  
+                                        <p:ajax event="change" update="fancyRetention" process="@this" partialSubmit="true"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="conv_vh_type" value="#{language.conv_veh_catg} :"/>
+                                </label>
+                                <p:selectOneMenu id="conv_vh_type" value="#{convBean.vehType}" filter="true" required="true" disabled="#{convBean.disableVehType}"
+                                                 requiredMessage="#{language.blank}  #{language.user_vehType}">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:selectItems value="#{convBean.vh_type}"/>
+                                    <f:validator validatorId="selectOneValidator" for="conv_vh_type"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="vh_catg" value="#{language.conv_converted} #{language.user_vehClass}:"/>
+                                </label>
+                                <p:selectOneMenu id="vh_catg" required="true" value="#{convBean.conv_dobj.new_vch_class}" disabled="#{convBean.inwardDetailsDisable}"
+                                                 filter="true" requiredMessage="#{language.blank}  #{language.user_vehClass}">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:selectItems value="#{convBean.vh_class}"/>
+                                    <p:ajax event="change" listener="#{convBean.vehClassListener}" update="conv_vh_class conv_vh_type axelDetails permit conv_pushback" partialSubmit="true"/>
+                                    <f:validator validatorId="selectOneValidator" for="vh_catg"/>
+                                </p:selectOneMenu>                                
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="conv_vh_class" value="#{language.conv_converted} #{language.vh_catg}:"/>
+                                </label>                                
+                                <p:selectOneMenu id="conv_vh_class" value="#{convBean.conv_dobj.new_vch_catg}" filter="true" required="true" 
+                                                 disabled="#{convBean.inwardDetailsDisable}" requiredMessage="#{language.blank}  #{language.vh_catg}">
+                                    <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                    <f:selectItems value="#{convBean.vh_category}" />                                    
+                                    <f:validator validatorId="selectOneValidator" for="conv_vh_class"/>
+                                    <p:ajax process="@this" update="@this"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="fit_val" value="#{convBean.fitnessValidLabel}" styleClass="inline-section"/>
+                                    <h:outputText id="fitLabel"  value="Please Verify New Fitness Validity !!"  styleClass="inline-section left-space font-bold red "/>
+                                </label>
+                                <p:calendar id="fit_val" value="#{convBean.conv_dobj.new_fit_dt}" required="true" navigator="true" readonlyInput="true"
+                                            disabled="#{convBean.disable}" requiredMessage="Blank : Fitness Validity" placeholder="Provide Fitness Valid upto date after Conversion." 
+                                            mindate="#{convBean.currentDate}" maxdate="#{convBean.maxDate}" pattern="dd-MMM-yyyy">                                    
+                                </p:calendar>
+                            </div>    
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="newTaxDueFromLabel" for="newTaxDueFrom" value="#{language.conv_new_taxDueFrom}:#{convBean.selectedNewTaxDueFrom}"/>
+                                </label>
+                                <p:selectOneMenu id="newTaxDueFrom" value="#{convBean.conv_dobj.newTaxDueFromFLag}" required="true"
+                                                 requiredMessage="#{language.blank} #{language.conv_new_taxDueFrom}">
+                                    <f:selectItem itemValue="0" itemLabel="-SELECT-"/>
+                                    <f:selectItems value="#{convBean.taxDueFromList}"/>
+                                    <f:validator validatorId="selectOneValidator_0"/>
+                                    <p:ajax event="change" listener="#{convBean.newTaxDueFromListener}" update="newTaxDueFromLabel tax_paid_upto" partialSubmit="true" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="tax_paid_upto" value="#{language.conv_mvTax_clearUpto}:"/>
+                                </label>
+                                <p:calendar id="tax_paid_upto" value="#{convBean.conv_dobj.newTaxPaidUpto}" pattern="dd-MMM-yyyy" 
+                                            disabled="#{convBean.enableTaxClearUpto}" readonlyInput="true" navigator="true" required="true" requiredMessage="#{language.blank} #{language.conv_mvTax_clearUpto}" />
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row"> 
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="taxMode" value="#{language.conv_neMv_tax_payMod}:"/>
+                                </label>
+                                <p:selectOneMenu id="taxMode" value="#{convBean.conv_dobj.newTaxMode}" required="true"
+                                                 requiredMessage="#{language.blank} #{language.conv_neMv_tax_payMod}">
+                                    <f:selectItem itemValue="0" itemLabel="-SELECT-"/>
+                                    <f:selectItems value="#{convBean.listTaxModes}"/>
+                                    <f:validator validatorId="selectOneValidator_0"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="excess_amt" value="#{language.conv_excess_amt_adjust}:"/>
+                                </label>
+                                <p:inputText id="excess_amt" value="#{convBean.conv_dobj.excessAmt}" required="true"
+                                             disabled="#{convBean.disableExcessAmt}" maxlength="9" requiredMessage="#{language.blank} #{language.conv_excess_amt_remark}"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="perm_ref_no" value="#{language.conv_permisiion_ref_no}:"/>
+                                </label>
+                                <p:inputText id="perm_ref_no" value="#{convBean.conv_dobj.perm_ref_no}" required="true" converter="toUpperCaseConverter"
+                                             styleClass="text-uppercase" autocomplete="off" maxlength="15" requiredMessage="#{language.blank} #{language.conv_permisiion_ref_no}">
+                                    <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="perm_dt" value="#{language.conv_permission_date}:"/>
+                                </label>
+                                <p:calendar id="perm_dt" value="#{convBean.conv_dobj.perm_dt}" readonlyInput="true" required="true" navigator="true"
+                                            requiredMessage="#{language.blank} #{language.conv_permission_date}" pattern="dd-MMM-yyyy"/>
+                            </div>                            
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="reason" value="#{language.conv_permission_by}:"/>
+                                </label>                                
+                                <p:selectOneMenu id="reason" value="#{convBean.reasonSelected}" required="true" requiredMessage="#{language.blank} #{language.reason}">
+                                    <f:selectItems value="#{convBean.listReason}" />   
+                                    <f:validator validatorId="selectOneValidator" for="reason"/>
+                                    <p:ajax event="change" listener="#{convBean.reasonChangeListener}" update="tf_reason" partialSubmit="true"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <div>&#160;</div>
+                                </label>
+                                <p:inputText id="tf_reason"  value="#{convBean.conv_dobj.perm_by}" placeholder="#{convBean.reasonPlaceholder}" size="25" converter="toUpperCaseConverter" requiredMessage="Blank : Re-Reg Reason"
+                                             styleClass="text-uppercase" disabled="#{convBean.reasonDisable}" maxlength="25" required="true" autocomplete="off">
+                                    <f:validateLength maximum="25"/>
+                                    <f:validateRequired/>                                  
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <p:outputPanel id="conv_pushback">
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="otherCrit" value="#{language.other_criteria}:"/>
+                                    </label>
+                                    <p:selectOneMenu id="otherCrit" value="#{convBean.conv_dobj.otherCriteria}" filter="true" filterMatchMode="contains">
+                                        <f:selectItem itemLabel="Not Applicable" itemValue="0"/>
+                                        <f:selectItems value="#{convBean.listOtherCriteria}"/>                                      
+                                    </p:selectOneMenu>
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <c:if test="#{convBean.pushBkSeatRender}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="push_back_seat" value="#{language.push_bkS}"/>
+                                        </label>
+                                        <p:inputText id="push_back_seat" value="#{convBean.conv_dobj.push_bk_seat}" required="true"   requiredMessage="#{language.push_bkS_remark}" maxlength="2">
+                                            <p:keyFilter regEx="/[0-9]/i"/>
+                                            <f:validateRequired for="push_back_seat"/>                                
+                                        </p:inputText>
+                                    </c:if>
+                                </div>    
+                                <div class="ui-grid-col-4">
+                                    <c:if test="#{convBean.pushBkSeatRender}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="ordn_seat" value="#{language.ordn_seat}"/>
+                                        </label>
+                                        <p:inputText id="ordn_seat" value="#{convBean.conv_dobj.ordinary_seat}" required="true"   requiredMessage="#{language.ordn_seat_remark}" maxlength="2">
+                                            <p:keyFilter regEx="/[0-9]/i"/>
+                                            <f:validateRequired for="ordn_seat"/>                                
+                                        </p:inputText>
+                                    </c:if>
+                                </div> 
+
+                            </div>
+                        </p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:outputPanel id="permit" >
+                                    <p:outputPanel rendered="#{convBean.permitPanel}" styleClass="top-space bottom-space">   
+                                        <ui:include src="/ui/permit/formPermitTaxParam.xhtml">
+                                            <ui:param name="permit" value="#{convBean}"/>
+                                        </ui:include>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                            </div>
+                        </div>
+
+                    </p:outputPanel>
+                </p:panel>
+
+                <p:outputPanel id="axelDetails">
+                    <p:outputPanel rendered="#{convBean.axleDetail_Visibility_tab}">
+                        <ui:include src="/ui/form_AxleDetails.xhtml"/>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+
+                <p:panel id="changedByPrevUser" styleClass="top-space bottom-space"
+                         rendered="#{convBean.prevChangedDataList.size()>0}" >
+                    <p:dataTable value="#{convBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="#{language.change_by_employee}" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+
+                        <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="#{language.changed_on}" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <p:outputPanel id="outputpanel_appdisapp" rendered="#{!convBean.render}">       
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{convBean}"/>
+                    </ui:include>  
+                </p:outputPanel>
+
+                <p:outputPanel id="outputpanel_eAppSave" rendered="#{convBean.render}">          
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <vahan:vahanCaptcha labelName="Enter Verification Code:"/>
+                        </div>
+                    </div>
+                    <p:panel id="panelMoveCancel"  styleClass="bottom-space center-position top-space">   
+                        <p:commandButton  value="Save" action="#{convBean.saveEApplication()}" 
+                                          ajax="true" update="outputpanel_eAppSave" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" icon="ui-icon-disk">
+                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            <p:blockUI block="outputpanel_eAppSave" widgetVar="bui">
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:commandButton>  
+                        <p:button value="Back" outcome="/masterHome.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                        </p:confirmDialog> 
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:dialog id="pd_choice_no" widgetVar="wd_choiceno" modal="true" visible="#{convBean.advRegnCheckDialogue}"
+                          draggable="false" closable="false" header="#{language.choice_no_details}" dynamic="true">
+                    <p:panel id="pn_adv_app_dtl" header="#{language.advance_no_details}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages id="choiceMsg" closable="true"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_recp_no" value="#{language.rcpt_no}"/>
+                                </label>
+                                <p:inputText  id="tf_recp_no" value="#{convBean.advRegnNoDobj.recp_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase">
+                                    <p:ajax listener="#{convBean.advanceRcptListener}" update="pn_adv_app_dtl pn_adv_cur_add" partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_regn_no" value="#{language.advance_no}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_regn_no" value="#{convBean.advRegnNoDobj.regn_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_owner_name" value="#{language.owner_name}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_owner_name" value="#{convBean.advRegnNoDobj.owner_name}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_mob_no" value="#{language.user_mobileNo}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_mob_no" value="#{convBean.advRegnNoDobj.mobile_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:panel id="pn_adv_cur_add" header="#{language.current_add}" styleClass="top-space bottom-space">
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add1" value="#{language.address1}"/>
+                                </label>
+                                <p:inputText  id="add1" value="#{convBean.advRegnNoDobj.c_add1}"
+                                              maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add2" value="#{language.address2}"/>
+                                </label>
+                                <p:inputText id="add2" value="#{convBean.advRegnNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                             maxlength="35"   autocomplete="off" style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add3" value="#{language.address3}"/>
+                                </label>
+                                <p:inputText  id="add3" value="#{convBean.advRegnNoDobj.c_add3}"
+                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="state" value="#{language.state}"/>
+                                </label>
+                                <p:selectOneMenu id="state" value="#{convBean.advRegnNoDobj.c_state}" filter="true"
+                                                 disabled="true">
+                                    <f:selectItems value="#{convBean.list_c_state}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="district" value="#{language.district}"/>
+                                </label>
+                                <p:selectOneMenu id="district"  value="#{convBean.advRegnNoDobj.c_district}"  filter="true" disabled="true">
+                                    <f:selectItems value="#{convBean.list_adv_district}"/>
+                                    <p:ajax process="@this" update="@this" partialSubmit="true"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pincode" value="#{language.pin}"/>
+                                </label>
+                                <p:inputText id="pincode" value="#{convBean.advRegnNoDobj.c_pincode}" size="10"
+                                             requiredMessage="#{language.blank} #{language.pin}" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="tf_button_save" value="Save" immediate="true"  oncomplete="PF('wd_choiceno').hide();">
+                                <p:ajax listener="#{convBean.advanceSaveListener}" update="adv_regn adv_ret_panel ret_expr" partialSubmit="true"/>
+                            </p:commandButton>
+
+                            <p:commandButton value="Exit" immediate="true" oncomplete="PF('wd_choiceno').hide();">
+                                <p:ajax listener="#{convBean.advanceExitListener}" update="adv_regn" partialSubmit="true"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:dialog>
+                <p:dialog id="ret_panel" widgetVar="ret_no" modal="true" visible="#{convBean.advRetCheckDialogue}"
+                          draggable="false" closable="false" header="#{language.retention_no_details}" dynamic="true">                
+                    <p:panel id="pn_adv_ret_app_dtl" header="#{language.retention_details}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages id="choiceMsgRet" closable="true"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_recp_no_ret" value="#{language.rcpt_no}"/>
+                                </label>
+                                <p:inputText  id="tf_recp_no_ret" value="#{convBean.retenRegNoDobj.recp_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase">
+                                    <p:ajax event="blur" listener="#{convBean.advanceRcptListener}" update="pn_adv_ret_app_dtl pn_adv_ret_cur_add ret_expr" partialSubmit="true"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_regn_no_ret" value="#{language.retention_no}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_regn_no_ret" value="#{convBean.retenRegNoDobj.regn_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_owner_name_ret" value="#{language.owner_name}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_owner_name_ret" value="#{convBean.retenRegNoDobj.owner_name}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_adv_mob_no_ret" value="#{language.user_mobileNo}"/>
+                                </label>
+                                <p:inputText  id="tf_adv_mob_no_ret" value="#{convBean.retenRegNoDobj.mobile_no}"
+                                              maxlength="16" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel id="pn_adv_ret_cur_add" header="#{language.current_add_retention}" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add1_ret" value="#{language.address1}"/>
+                                </label>
+                                <p:inputText  id="add1_ret" value="#{convBean.retenRegNoDobj.c_add1}"
+                                              maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add2_ret" value="#{language.address2}"/>
+                                </label>
+                                <p:inputText id="add2_ret" value="#{convBean.retenRegNoDobj.c_add2}" converter="toUpperCaseConverter"
+                                             maxlength="35" autocomplete="off" style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="add3_ret" value="#{language.address3}"/>
+                                </label>
+                                <p:inputText  id="add3_ret" value="#{convBean.retenRegNoDobj.c_add3}"
+                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                              style="text-transform: uppercase" disabled="true">
+                                </p:inputText>
+                            </div>
+
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="state_ret" value="#{language.state}"/>
+                                </label>
+                                <p:selectOneMenu id="state_ret" value="#{convBean.retenRegNoDobj.c_state}" filter="true"
+                                                 disabled="true">
+                                    <f:selectItems value="#{to_bean.list_c_state}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="district_ret" value="#{language.district}"/>
+                                </label>
+                                <p:selectOneMenu id="district_ret"  value="#{convBean.retenRegNoDobj.c_district}"  filter="true" disabled="true">
+                                    <f:selectItems value="#{to_bean.list_adv_district}"/>
+                                    <p:ajax process="@this" update="@this" partialSubmit="true"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-6">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pincode_ret" value="#{language.pin}"/>
+                                </label>
+                                <p:inputText id="pincode_ret" value="#{convBean.retenRegNoDobj.c_pincode}" size="10"
+                                             requiredMessage="#{language.blank} #{language.pin}" autocomplete="off" maxlength="6" style="text-transform: uppercase" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="tf_button_ret_save" value="Save" immediate="true" oncomplete="PF('ret_no').hide();">
+                                <p:ajax listener="#{convBean.advanceSaveListener}" update="adv_ret adv_ret_panel" partialSubmit="true"/>
+                            </p:commandButton>
+
+                            <p:commandButton value="Exit" immediate="true" oncomplete="PF('ret_no').hide();">
+                                <p:ajax listener="#{convBean.advanceExitListener}" update="adv_ret" partialSubmit="true"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:dialog>
+                <p:dialog id="ret_expr" widgetVar="retExpire" modal="true"
+                          draggable="false" closable="false" header="Retention Receipt Expire Information">
+                    <div class="ui-grid-col-12 center-position">
+                        <h:outputText value="#{convBean.retRcptMsg}"  escape="false" styleClass="red font-bold"/>
+                    </div>
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Do you Want Continue ?"  immediate="true" oncomplete="PF('retExpire').hide();"/>
+                        <p:commandButton value="Cancel" immediate="true" oncomplete="PF('retExpire').hide();" >
+                            <p:ajax listener="#{convBean.advanceExitListener}" update="pd_choice_no adv_ret_panel ret_panel" />
+                        </p:commandButton>
+                    </div>
+
+                </p:dialog>
+                <vahan:vahanMessages messages="#{convBean.vahanMessages}"  rendered="#{convBean.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

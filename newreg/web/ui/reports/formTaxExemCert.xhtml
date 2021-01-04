@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"   
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content">
+        <f:subview id="frm_taxExemCertprint">
+            <div class="ui-grid ui-grid-responsive">
+                <p:outputPanel id="frm_printTaxExemCert" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <h1 class="header-main"><h:outputText value="TAX EXEMPTION CERTIFICATE "/></h1>
+                        </div>
+                    </div> 
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p:messages closable="true">
+                                <p:autoUpdate/>
+                            </p:messages>
+                        </div>
+                    </div>
+                    <p:outputPanel id="regnoutputpanel">
+                        <p:panel id="regnpanel" header="Tax Exemption Certificate by Registration No" styleClass="top-space bottom-space" >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="regn_no" value="Registration No" />
+                                    </label>
+                                    <p:inputText id="regn_no" value="#{taxExemCertBean.regn_no}" maxlength="20" autocomplete="off" converter="toUpperCaseConverter" >
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton id="getDtls" value="Print" action="#{taxExemCertBean.getTaxExemDetails}"/>  
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>                
+                    <p:dialog  id="printTaxExemConfirmationPopup" styleClass="center-position" widgetVar="printTaxExemCertificate" modal="true" draggable="false" 
+                               closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Do you want to continue"/>
+                                </label>
+                                <p:commandButton  value="Confirm Print" 
+                                                  onclick="PF('blockPrintTaxExem').show();"  oncomplete="PF('printTaxExemCertificate').hide(); PF('blockPrintTaxExem').hide();"                                 
+                                                  action="#{taxExemCertBean.printTaxExemCertificate()}"
+                                                  icon="ui-icon-check"/>
+                                <p:commandButton value="Cancel" onsuccess="PF('printTaxExemCertificate').hide();" icon="ui-icon-close" />
+                            </div>
+                        </div>
+                    </p:dialog>
+
+                </p:outputPanel>
+                <p:blockUI block="masterLayout" widgetVar="blockPrintTaxExem">
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </div>
+            <vcomponent:vahanMessages messages="#{CommonCarrierRegnCertBean.vahanMessages}"  rendered="#{CommonCarrierRegnCertBean.vahanMessages ne null}"/>
+        </f:subview>
+    </ui:define>        
+</ui:composition>
+

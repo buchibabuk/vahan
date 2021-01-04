@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content">
+        <f:subview id="frm_fancy_advancewfee">
+            <!--<ui:include src="/ui/recpt/form_current_rcpt_no.xhtml" />-->
+            <!--                        <p:poll interval="10" listener="# {advancefancywFee.reservListener}" update="dtb_reserved_numbers" />-->
+            <p:dialog id="popup" visible="#{not empty facesContext.messageList}"
+                      styleClass="center-position"
+                      widgetVar="dlg1"
+                      modal="true" draggable="false" closable="false">  
+                <p:messages/>
+                <p:commandButton value="Ok" oncomplete="PF('dlg1').hide();"  >
+                    <f:ajax event="click" render="pg_booking popup"   ></f:ajax>
+                </p:commandButton>
+
+            </p:dialog> 
+            <p:dialog id="popup_success" visible="#{advancefancywFee.saved_success}"
+                      styleClass="center-position"
+                      widgetVar="dlg2"
+                      modal="true" draggable="false" closable="false" header="successfully saved">  
+
+                <p:commandButton value="Ok" oncomplete="PF('dlg2').hide();"  >
+                    <p:ajax event="click"    update="pg_booking"
+                            listener="#{advancefancywFee.setSuucessMessageFalse()}" ></p:ajax>
+                </p:commandButton>
+            </p:dialog> 
+
+            <p:blockUI block="pg_booking" widgetVar="bui_fancy_advance">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+
+            <div class="ui-grid-col-6"> 
+
+                <div class="ui-grid-row">
+                    <p:panel header="Choice Number Details" styleClass="datatable-panel bottom-space top-space">
+                        <p:outputPanel id="pg_booking">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <p:outputLabel for="blnAlreadyPay" value="Click If You have already Paid Registration Fees"/>
+                                    <p:selectBooleanCheckbox id="blnAlreadyPay" label="Already Registered" value="#{advancefancywFee.blnCheckAlreadyReg}"   disabled="#{advancefancywFee.blnchkAdvanceRegn}" >
+                                        <p:ajax event="change"  listener="#{advancefancywFee.lsnCheckAlreadyRegistered}" process="@this" update=" pg_booking :frm_fancy_advancewfee:tf_applNo1 :frm_fancy_advancewfee:tf_regnNo1" />
+                                    </p:selectBooleanCheckbox>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_applNo1" value="Application No(New Regn):" rendered="#{advancefancywFee.blnApplNo}"/>
+                                    </label>
+                                    <p:inputText  id="tf_applNo1" value="#{advancefancywFee.regn_appl_no}" size="20" maxlength="16" rendered="#{advancefancywFee.blnApplNo}"
+                                                  autocomplete="off" onblur="PF('bui_fancy_advance').show();" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                        <p:ajax event="blur" listener="#{advancefancywFee.applnoFocusLost}" update="tf_o_name tf_f_name tf_add1 tf_add2 cm_va_c_dist tf_c_pincode tf_mobile dtb_reserved_numbers popup" 
+                                                oncomplete="PF('bui_fancy_advance').hide()" />
+                                    </p:inputText>
+
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_regnNo1" value="Old Registration Number:" rendered="#{advancefancywFee.blnOldReg}"/>
+                                    </label>
+                                    <p:inputText  id="tf_regnNo1" value="#{advancefancywFee.old_regn_no}" size="20" maxlength="#{advancefancywFee.oldRegnSize}" rendered="#{advancefancywFee.blnOldReg}" 
+                                                  autocomplete="off" onblur="PF('bui_fancy_advance').show();" styleClass="text-uppercase" converter="toUpperCaseConverter">
+                                        <p:ajax event="blur" listener="#{advancefancywFee.applnoFocusLost}" update="tf_o_name tf_f_name tf_add1 tf_add2 cm_va_c_dist tf_c_pincode tf_mobile dtb_reserved_numbers popup" 
+                                                oncomplete="PF('bui_fancy_advance').hide()" />
+                                        <p:keyFilter mask="alphanum" for="tf_regnNo1"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_Regn_no" value="Registration Number:" />                  
+                                    </label>
+
+                                    <p:inputText  id="tf_Regn_no" value="#{advancefancywFee.regn_no}"  size="10" maxlength="10" 
+                                                  autocomplete="off" onblur="PF('bui_fancy_advance').show();" styleClass="text-uppercase" converter="toUpperCaseConverter">                                                      
+                                        <p:ajax event="blur"   update="tf_order_no  popup" 
+                                                listener="#{advancefancywFee.regnoFocusLost}"
+                                                oncomplete="PF('bui_fancy_advance').hide()"/>
+                                        <p:keyFilter mask="alphanum" for="tf_Regn_no"/>
+                                    </p:inputText>
+
+                                </div>
+                                <div class="ui-grid-col-6">
+
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_o_name" value="Owner Name"/>
+                                    </label>
+                                    <p:inputText  id="tf_o_name" value="#{advancefancywFee.owner_name}"  
+                                                  maxlength="35" readonly="#{advancefancywFee.blnAlreadyReg}" styleClass="text-uppercase" 
+                                                  converter="toUpperCaseConverter" autocomplete="off"
+                                                  requiredMessage="Please Enter Owner Name" required="true" />
+                                </div>                                            
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_f_name" value="Father Name"/>
+                                    </label>
+                                    <p:inputText  id="tf_f_name" value="#{advancefancywFee.f_name}" 
+                                                  maxlength="35" styleClass="text-uppercase" converter="toUpperCaseConverter" 
+                                                  readonly="#{advancefancywFee.blnAlreadyReg}" autocomplete="off" 
+                                                  requiredMessage="Please Enter Father Name" required="true" />
+
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Reason/Order No/Order Date"/>
+                                    </label>
+                                    <p:inputText  id="tf_order_no" value="#{advancefancywFee.orderNumber}" 
+                                                  styleClass="text-uppercase" converter="toUpperCaseConverter"
+                                                  maxlength="35" autocomplete="off" 
+                                                  requiredMessage="Please Enter Reason/Order No/Order Date" required="true"/>
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_add1" value="Address:"/>
+                                    </label> 
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">                                                   
+                                    <p:inputText  id="tf_add1" value="#{advancefancywFee.c_add1}" 
+                                                  maxlength="35" readonly="#{advancefancywFee.blnAlreadyReg}" styleClass="text-uppercase" 
+                                                  converter="toUpperCaseConverter" autocomplete="off" 
+                                                  requiredMessage="Please Enter Address"
+                                                  required="true" />
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_add2" value=""/>
+                                    </label>
+                                    <p:inputText  id="tf_add2" value="#{advancefancywFee.c_add2}" maxlength="35" readonly="#{advancefancywFee.blnAlreadyReg}" styleClass="text-uppercase" converter="toUpperCaseConverter" autocomplete="off" />
+                                </div>                                            
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">  
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_mobile" value="Mobile Number:" />
+                                    </label>
+                                    <p:inputText  id="tf_mobile" value="#{advancefancywFee.mobile_no}"  size="20" readonly="#{advancefancywFee.blnAlreadyReg}" maxlength="10"  />
+                                    <p:keyFilter mask="pint" for="tf_mobile"/>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tf_c_pincode" value="Pin:"/>
+                                    </label>
+                                    <p:inputText id="tf_c_pincode" value="#{advancefancywFee.c_pincode}"  readonly="#{advancefancywFee.blnAlreadyReg}" maxlength="6" >
+
+                                    </p:inputText>
+                                </div> 
+                                <p:keyFilter mask="pint" for="tf_c_pincode"/>                                          
+                            </div>
+                            <div class="ui-grid-row">
+
+
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="cm_va_c_dist" value="Dist:"/>
+                                    </label>
+                                    <p:selectOneMenu id="cm_va_c_dist"  value="#{advancefancywFee.c_district}" 
+
+                                                     filter="true" immediate="true" disabled="#{advancefancywFee.blnAlreadyReg}">
+                                        <f:selectItems value="#{advancefancywFee.listC_dist}"  />   
+
+                                    </p:selectOneMenu>
+                                </div>
+
+                            </div>
+                            <!--                                        <ui:include src="/ui/fee/form_payment_collection.xhtml">
+                                                                        <ui:param name="paymentBean" value="#{advancefancywFee.paymentBean}"/>
+                                                                    </ui:include>-->
+                            <div class="ui-grid-row">
+
+
+                                <div class="ui-grid-col-6 resp-blank-height">
+                                    <label class="field-label ">
+
+                                    </label>
+                                    <!--<p:inputText id="tf_add3" value="#{advancefancywFee.c_add3}"  readonly="#{advancefancywFee.blnAlreadyReg}" />-->
+                                </div>
+
+
+                            </div>
+                        </p:outputPanel>
+                    </p:panel>
+                </div>                                                       
+            </div>
+
+            <div class="ui-grid-col-4">
+                <p:panel header="Fancy Numbers" styleClass="scroll-panel-overflow scroll-panel-height">
+                    <p:dataTable  id="dtb_reserved_numbers"  value="#{advancefancywFee.availReservedNumbers}" var="list"  styleClass="panelTableHeight">
+                        <p:column headerText="Registration Number" sortBy="#{list.regn_no}">
+                            <p:outputLabel value="#{list.regn_no}"/>
+                        </p:column>
+                        <p:column headerText="Reserve Amount" sortBy="#{list.total_amt}"> 
+                            <p:outputLabel value="#{list.total_amt}"/>
+                        </p:column>
+
+                    </p:dataTable> 
+                </p:panel>
+
+            </div>
+
+
+
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="pg_save">
+                        <p:commandButton  value="Save" action="#{advancefancywFee.saveFancyNo()}" 
+                                          styleClass="button" onclick="PF('bui_fancy_advance').show();" 
+                                          oncomplete="PF('bui_fancy_advance').hide()" 
+                                          update="popup popup_success">
+                            <p:confirm header="Confirmation" message="Are You Sure ?" icon="ui-icon-alert"/> 
+                        </p:commandButton>
+                        <p:commandButton  value="Reset" actionListener="#{advancefancywFee.reset()}" immediate="true" styleClass="button" update="pg_booking">
+                        </p:commandButton>
+                        <!--                                    <p:commandButton  value="Back" styleClass="button" action ="/home.xhtml?faces-redirect=true"/>-->
+                        <p:button value="Back" styleClass="button" outcome="/home.xhtml?faces-redirect=true" />
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:subview>     
+
+    </ui:define>
+
+
+</ui:composition>
+

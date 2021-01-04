@@ -1,0 +1,256 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="rtoLaunch" prependId="false">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <span class="header-main">#{language.launchOffice}</span>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+
+                        <div class="ui-grid-row center-position bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton rendered="#{rto_launch.showBackButton}" value="#{language.ok}" action="seatwork" icon="ui-icon-check"/>
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block="rtoLaunch" widgetVar="bui_fancy">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="som_rto"  value="#{language.user_office}:"/>
+                        </label>
+                        <p:selectOneMenu id="som_rto" value="#{rto_launch.launchRto}"  editable="false"  styleClass="bottom-space" required="true" requiredMessage="#{language.launchRequiredMsg}" >  
+                            <f:selectItems value="#{rto_launch.launchRtoList}"/>  
+                            <p:ajax event="change" listener="#{rto_launch.getRtoDetails()}" process="som_rto" update="panel_launch_details "/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <p:panel id="panel_launch_details" header="#{language.launchDtls}" >
+                    <f:facet name="header"> 
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <p:outputLabel value="#{language.launchDtls}" styleClass="inline-section top-space font-bold"></p:outputLabel>
+                            </div>
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 right-position">
+                                <p:outputPanel>
+                                    <p:autoUpdate/>
+                                    <p:outputLabel rendered="#{rto_launch.dobj.hsrp == 'YES'}"  styleClass="inline-section right-space">
+                                        <h3 class="open-counter counter-button inline-section center-position" title="HSRP: YES">
+                                            <span class="glyphicon glyphicon-ok right-space"></span> #{language.home_hsrp}
+                                        </h3>                        
+                                    </p:outputLabel>
+                                    <p:outputLabel rendered="#{rto_launch.dobj.hsrp == 'NO'}"  styleClass="inline-section right-space">
+                                        <h3 class="close-counter counter-button inline-section center-position" title="HSRP: NO">
+                                            <span class="glyphicon glyphicon-remove right-space"></span>  #{language.home_hsrp}
+                                        </h3>                        
+                                    </p:outputLabel>
+
+                                    <p:outputLabel rendered="#{rto_launch.dobj.smartCard == 'YES'}"  styleClass="inline-section right-space">
+                                        <h3 class="open-counter counter-button inline-section center-position" title="Smart Card: YES">
+                                            <span class="glyphicon glyphicon-ok right-space"></span> #{language.smartCardChipRC}
+                                        </h3>                        
+                                    </p:outputLabel>
+                                    <p:outputLabel rendered="#{rto_launch.dobj.smartCard == 'NO'}"  styleClass="inline-section right-space">
+                                        <h3 class="close-counter counter-button inline-section center-position" title="Smart Card: NO">
+                                            <span class="glyphicon glyphicon-remove right-space"></span> #{language.smartCardChipRC}
+                                        </h3>                        
+                                    </p:outputLabel>
+
+                                    <p:outputLabel rendered="#{rto_launch.dobj.paperRC == 'YES'}"  styleClass="inline-section right-space">
+                                        <h3 class="open-counter counter-button inline-section center-position" title="A4 Paper RC : YES">
+                                            <span class="glyphicon glyphicon-ok right-space"></span> #{language.a4PaperRC}
+                                        </h3>                       
+                                    </p:outputLabel>
+
+                                    <p:outputLabel rendered="#{rto_launch.dobj.plasticCard == 'YES'}"  styleClass="inline-section right-space">
+                                        <h3 class="open-counter counter-button inline-section center-position" title="4 RCs on A4 Paper (92.50mm x 58mm) : YES">
+                                            <span class="glyphicon glyphicon-ok right-space"></span> #{language.RcONA4PAper}(92.50mm x 58mm)
+                                        </h3>                         
+                                    </p:outputLabel>
+                                </p:outputPanel>
+
+                            </div>
+
+                        </div>
+                    </f:facet>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_address1"  value="#{language.address} 1"/>
+                                </label>
+                                <p:inputText id="tf_address1"  maxlength="100" styleClass="text-uppercase" converter="toUpperCaseConverter" value="#{rto_launch.dobj.off_add1}"></p:inputText>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_address2"  value="#{language.address} 2"/>
+                                </label>
+                                <p:inputText id="tf_address2"  maxlength="100"  styleClass="text-uppercase" converter="toUpperCaseConverter" value="#{rto_launch.dobj.off_add2}"></p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="cal_launch_date"  value="#{language.launchDt}"/>
+                                </label>
+                                <p:calendar id="cal_launch_date" navigator="true" value="#{rto_launch.dobj.vow4_launch_date}" pattern="dd-MMM-yyyy" maxdate="#{rto_launch.max_date}" mindate="#{rto_launch.min_date}">
+                                </p:calendar>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="cb_hsrp"  value="#{language.home_hsrp}:"/>
+                                </label>
+                                <p:selectBooleanCheckbox id="cb_hsrp" value="#{rto_launch.dobj.isHsrp}" ></p:selectBooleanCheckbox> 
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="rb_Rc_option"  value="#{language.rcType}:"/>
+                                </label>
+                                <p:selectOneMenu id="rb_Rc_option" value="#{rto_launch.dobj.rcOption}" >
+                                    <f:selectItem itemLabel="#{language.smartcardChipBasedRC}" itemValue="S" ></f:selectItem>  
+                                    <f:selectItem itemLabel="#{language.paperBasedRcA4}" itemValue="R"></f:selectItem>  
+                                    <f:selectItem itemLabel="#{language.paperBasedFrontBackRC} (92.50mm x 58mm)" itemValue="P"></f:selectItem>  
+                                    <f:selectItem itemLabel="#{language.pvcBasedRc} (85.60 mm x 53.98 mm)" itemValue="V"></f:selectItem>  
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="cb_old_hsrp"  value="#{language.oldhsrp}:"/>
+                                </label>
+                                <p:selectBooleanCheckbox id="cb_old_hsrp" value="#{rto_launch.dobj.isOldHsrp}" ></p:selectBooleanCheckbox> 
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-row center-position bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:panel id="save_rto_launch">
+                            <p:commandButton 
+                                id="bt_assign_regn_no" 
+                                value="#{language.launchOffice}"
+                                onclick="PF('bui_fancy').show()" 
+                                oncomplete="PF('bui_fancy').hide()"
+                                action="#{rto_launch.saveLaunchRto()}"
+                                update="msgDialog"
+                                >
+                                <p:confirm header="#{language.home_confirm} "  message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="#{language.login_back}" action="seatwork"/>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="#{language.launchRTO}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/> 
+                            </p:confirmDialog> 
+                        </p:panel>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:dataTable id="runningrto_table" paginator="true" rows="5" var="rl" value="#{rto_launch.runningRtoList}" editable="true">
+                            <f:facet name="header"> 
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6 left-position"><h:outputText value="#{language.launchedOff}" styleClass="inline-section top-space font-bold" /></div>
+                                </div>
+                            </f:facet>
+                            <p:column headerText="#{language.state}" >
+                                <p:outputLabel value="#{rl.state_cd}"/>
+                            </p:column>
+                            <p:column headerText="#{language.user_office}" >
+                                <p:outputLabel value="#{rl.off_name}"/>
+                            </p:column>
+
+                            <p:column headerText="#{language.address} 1" width="8%">
+                                <p:outputLabel value="#{rl.off_add1}"/>
+                            </p:column>
+                            <p:column headerText="#{language.address} 2" >
+                                <p:outputLabel value="#{rl.off_add2}"/>
+                            </p:column>
+                            <p:column headerText="#{language.launchDt}" >
+                                <p:calendar value="#{rl.vow4_launch_date}" pattern="dd-MMM-yyyy" disabled="true"/>
+                            </p:column>
+                            <p:column headerText="#{language.rcType}" >
+                                <p:outputLabel rendered="#{rl.smartCard == 'YES'}"  styleClass="inline-section right-space">
+                                    <h3 class="open-counter counter-button inline-section center-position" title="Smart Card: YES">
+                                        <span class="glyphicon glyphicon-ok right-space"></span> #{language.smartCardChipRC}
+                                    </h3>                        
+                                </p:outputLabel>
+                                <p:outputLabel rendered="#{rl.paperRC == 'YES'}"  styleClass="inline-section right-space">
+                                    <h3 class="open-counter counter-button inline-section center-position" title="A4 Paper RC: YES">
+                                        <span class="glyphicon glyphicon-ok right-space"></span> #{language.a4PaperRC}
+                                    </h3>                       
+                                </p:outputLabel>
+                                <p:outputLabel rendered="#{rl.plasticCard == 'YES'}"  styleClass="inline-section right-space">
+                                    <h3 class="open-counter counter-button inline-section center-position" title="4 RCs on A4 Paper (92.50mm x 58mm): YES">
+                                        <span class="glyphicon glyphicon-ok right-space"></span> #{language.RcONA4PAper} (92.50mm x 58mm)
+                                    </h3>                         
+                                </p:outputLabel>
+                                <p:outputLabel rendered="#{rl.plasticCardpvc == 'YES'}"  styleClass="inline-section right-space">
+                                    <h3 class="open-counter counter-button inline-section center-position" title="PVC RC (85.60mm x 53.98mm)  : YES">
+                                        <span class="glyphicon glyphicon-ok right-space"></span>  #{language.pvcRc}(85.60mm x 53.98mm)
+                                    </h3>                         
+                                </p:outputLabel>
+                                <p:outputLabel rendered="#{rl.smartCard == 'NO'}"  styleClass="inline-section right-space">
+                                    <h3 class="close-counter counter-button inline-section center-position" title="Smart Card: NO">
+                                        <span class="glyphicon glyphicon-remove right-space"></span> #{language.smartCardChipRC}
+                                    </h3>                        
+                                </p:outputLabel> 
+                            </p:column>
+                            <p:column headerText="#{language.home_hsrp}" >
+                                <p:outputLabel rendered="#{rl.hsrp == 'YES'}"  styleClass="inline-section right-space">
+                                    <h3 class="open-counter counter-button inline-section center-position" title="HSRP: YES">
+                                        <span class="glyphicon glyphicon-ok right-space"></span> #{language.home_hsrp}
+                                    </h3>                        
+                                </p:outputLabel>
+                                <p:outputLabel rendered="#{rl.hsrp == 'NO'}"  styleClass="inline-section right-space">
+                                    <h3 class="close-counter counter-button inline-section center-position" title="HSRP: NO">
+                                        <span class="glyphicon glyphicon-remove right-space"></span>  #{language.home_hsrp}
+                                    </h3>                        
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="#{language.oldVehHsrp}" >
+                                <p:outputLabel rendered="#{rl.old_veh_hsrp == 'YES'}"  styleClass="inline-section right-space">
+                                    <h3 class="open-counter counter-button inline-section center-position" title="HSRP: YES">
+                                        <span class="glyphicon glyphicon-ok right-space"></span>#{language.oldhsrp}
+                                    </h3>                        
+                                </p:outputLabel>
+                                <p:outputLabel rendered="#{rl.old_veh_hsrp == 'NO'}"  styleClass="inline-section right-space">
+                                    <h3 class="close-counter counter-button inline-section center-position" title="HSRP: NO">
+                                        <span class="glyphicon glyphicon-remove right-space"></span> #{language.oldhsrp}
+                                    </h3>                        
+                                </p:outputLabel>
+                            </p:column>
+                        </p:dataTable> 
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </ui:define>    
+</ui:composition>

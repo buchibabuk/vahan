@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <ui:define name="content">
+
+        <f:subview id="frm_scrapped_vch_print">
+            <p:outputPanel id="frm_scrapped_vch">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Scrapped Vehicle Print Form </h1>
+                    </div>
+                </div>
+                <p:outputPanel id="panelSearchScrap">
+                    <p:panel id="panelregnno" header="Search" styleClass="bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_usr" value="Enter Old Registration No." styleClass="field-label-mandate" />
+                                </label>
+                                <p:inputText  id="tf_usr"  value="#{scrapBean.old_regn_no}" autocomplete="off" maxlength="10" styleClass="text-uppercase" />
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position bottom-space">
+                                <p:commandButton value="Get Details" onclick="PF('blockScrap').show()" oncomplete="PF('blockScrap').hide()" 
+                                                 process="panelregnno"  action="#{scrapBean.showDetails()}"  update="panelSearchScrap printScrappedVch"/>
+                                <p:commandButton  value="Back" action="home" immediate="true"/> 
+
+                            </div>
+                        </div> 
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable id="printScrappedVch" rendered="#{scrapBean.printScrapDobj.size()>0 ?true:false}"  value="#{scrapBean.printScrapDobj}" var="printSrpvch" rows="10"  
+                                             widgetVar="seatWorkList" filteredValue="#{scrapBean.filteredSeat}" rowIndexVar="rowkey">
+                                    <f:facet name="header">  
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-12 left-position">
+                                                <h:outputText value="Scrapped Vehicles Panel" />
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                    <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                        <h:outputText value="#{rowkey+1}" />                                
+                                    </p:column>
+                                    <p:column headerText="Old Registration No" filterBy="#{printSrpvch.old_regn_no}" filterMatchMode="contains" sortBy="#{printSrpvch.old_regn_no}">#{printSrpvch.old_regn_no}</p:column>
+                                    <p:column headerText="LOI No" filterBy="#{printSrpvch.loi_no}" filterMatchMode="contains" sortBy="#{printSrpvch.loi_no}">#{printSrpvch.loi_no}</p:column>
+                                    <p:column headerText="New Registration No">#{printSrpvch.new_regn_no}</p:column>
+                                    <p:column headerText="Action"> 
+                                        <p:commandButton id ="bt_print" value="Print Certificate"  action="#{scrapBean.confirmprintScrap(printSrpvch)}" immediate="true"> 
+                                            <f:param name="OLD_REGN_NO" value="#{printSrpvch.old_regn_no}"/>
+                                            <f:param name="STATE_CD" value="#{printSrpvch.state_cd}"/>
+                                            <f:param name="OFF_CD" value="#{printSrpvch.off_cd}"/>
+                                        </p:commandButton>                        
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printScrapCert" modal="true" draggable="false" 
+                           closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Do you want to continue"/>
+                            </label>
+                            <p:commandButton  value="Confirm Print" 
+                                              onclick="PF('printScrapCert').show();
+                                        PF('blockScrap').show();"  oncomplete="PF('printScrapCert').hide(); PF('blockScrap').hide();"                                 
+                                              action="#{scrapBean.printScrapCertificate()}"
+                                              icon="ui-icon-check"/>
+                            <p:commandButton value="Cancel" onsuccess="PF('printScrapCert').hide();" icon="ui-icon-close" />
+                        </div>
+                    </div>
+                </p:dialog>
+                <p:blockUI block="frm_scrapped_vch" widgetVar="blockScrap">
+                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </p:outputPanel>
+        </f:subview>
+
+
+    </ui:define>
+</ui:composition>

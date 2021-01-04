@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="trade_cert_merge_subview">
+                <h:form id="tc_merge_form" prependId="false">
+                    <div class="ui-grid ui-grid-responsive">
+
+                        <p:dialog  id="printConfirmationPopup" styleClass="center-position" widgetVar="printRecordsUpdate" modal="true" draggable="false" 
+                                   closable="false" hideEffect="explode" header="Printed Confirmation Panel">  
+                            <p:outputPanel id="confirm_panel3">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position bottom-space">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Do you want to continue"/>
+                                        </label>
+                                        <p:commandButton  value="Confirm Print" onsuccess="PF('printRecordsUpdate').hide();"                                   
+                                                          action="#{mergeTradeCertBean.printRecordsUpdateDetails()}" 
+                                                          icon="ui-icon-check" onclick="PF('bui_dlg').show()" 
+                                                          oncomplete="PF('bui_dlg').hide()"  />
+                                        <p:commandButton value="Cancel" onsuccess="PF('printRecordsUpdate').hide();" icon="ui-icon-close" />
+                                    </div>
+                                </div>
+                            </p:outputPanel>  
+                            <p:blockUI block="confirm_panel3" widgetVar="bui_dlg" >
+                                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                            </p:blockUI>
+                        </p:dialog>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <h1 class="header-main">Merging | Disposing of Multiple/In-consistent Trade Certificates</h1>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages  closable="true" styleClass="red"  showSummary="true" escape="false">
+                                    <p:autoUpdate/>
+                                </p:messages>
+                            </div>
+                        </div>
+                        <p:panel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-1 left-position">
+                                    <p:outputLabel  value="RTO Code : "/>
+                                </div>
+                                <div class="ui-grid-col-1">
+                                    <h:outputText  value="#{mergeTradeCertBean.mergeTradeCertDobj.rtoOfficeCode}" styleClass="font-bold"/>
+                                </div>
+                                <div class="ui-grid-col-2 right-position right-space">
+                                    <p:outputLabel  value="RTO Office Name : "/>
+                                </div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText  value="#{mergeTradeCertBean.mergeTradeCertDobj.rtoOfficeName}" styleClass="font-bold"/>
+                                </div>
+                            </div>
+                        </p:panel>    
+                        <p:outputPanel id="search_query_page_section" rendered="#{mergeTradeCertBean.tcDobjsList eq null 
+                                                                                  or mergeTradeCertBean.tcDobjsList.size() le 0}">
+                            <div class="ui-grid-row top-space-25">
+                                <div class="ui-grid-col-6">
+                                    <div class="ui-grid-row bottom-space-2">
+                                        <div class="ui-grid-col-1 right-position">
+                                            <span class="font-bold red">*</span>
+                                        </div>
+                                        <div class="ui-grid-col-6">
+                                            <p:outputLabel  value="Select Dealer Name : "/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row bottom-space">
+                                        <div class="ui-grid-col-12">
+                                            <p:panel>
+                                                <div class="ui-grid-row bottom-space-25">
+                                                    <div class="ui-grid-col-12">
+                                                        <p:selectOneRadio id="dealer_choice_condition_console" value="#{mergeTradeCertBean.mergeTradeCertDobj.dealerChoiceCondition}" columns="2" layout="responsive"  disabled="#{mergeTradeCertBean.disableField}" >
+                                                            <f:selectItem itemLabel="Admin-Id Found" itemValue="#{mergeTradeCertBean.ADMIN_DEALER}" />
+                                                            <f:selectItem itemLabel="Admin-Id Not Found" itemValue="#{mergeTradeCertBean.NO_ADMIN_DEALER}" />
+                                                            <p:ajax  event="change" listener="#{mergeTradeCertBean.dealerChoiceConditionListener}" update="dealer_Condition_list_outputPnl" onstart="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();"/>
+                                                        </p:selectOneRadio>
+                                                    </div>
+                                                </div>
+                                                <p:outputPanel id="dealer_Condition_list_outputPnl">
+                                                    <p:outputPanel id="dealer_Condition_list_1_outputPnl" rendered="#{mergeTradeCertBean.mergeTradeCertDobj.dealerChoiceCondition eq mergeTradeCertBean.ADMIN_DEALER}">
+                                                        <div class="ui-grid-row">
+                                                            <div class="ui-grid-col-12">
+                                                                <label class="field-label resp-label-section">
+                                                                    <p:outputLabel value="#{label.dealer}"/>
+                                                                </label>
+                                                                <p:selectOneMenu id="cb_dealer_name_condition_1" value="#{mergeTradeCertBean.mergeTradeCertDobj.dealer}" filter="true" filterMatchMode="contains" 
+                                                                                 disabled="#{mergeTradeCertBean.disableField}">
+                                                                    <f:selectItem itemValue="-SELECT-" itemLabel="-SELECT-"/>
+                                                                    <f:selectItems value="#{mergeTradeCertBean.dealerList}"/>
+                                                                    <p:ajax  event="change"  listener="#{mergeTradeCertBean.dealerSelectionListener}" update="cb_veh_catg" onstart="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();"/>
+                                                                </p:selectOneMenu>
+                                                            </div>
+                                                        </div>
+                                                    </p:outputPanel>
+                                                    <p:outputPanel id="dealer_Condition_list_2_outputPnl" rendered="#{mergeTradeCertBean.mergeTradeCertDobj.dealerChoiceCondition eq mergeTradeCertBean.NO_ADMIN_DEALER}">
+                                                        <div class="ui-grid-row">
+                                                            <div class="ui-grid-col-12 ">
+                                                                <label class="field-label resp-label-section">
+                                                                    <p:outputLabel value="#{label.dealer}"/>
+                                                                </label>
+                                                                <p:selectOneMenu id="cb_dealer_name_condition_2" value="#{mergeTradeCertBean.mergeTradeCertDobj.dealer}" filter="true" filterMatchMode="contains" 
+                                                                                 disabled="#{mergeTradeCertBean.disableField}">
+                                                                    <f:selectItem itemValue="-SELECT-" itemLabel="-SELECT-"/>
+                                                                    <f:selectItems value="#{mergeTradeCertBean.dealerList}"/>
+                                                                    <p:ajax  event="change"  listener="#{mergeTradeCertBean.dealerSelectionListener}" update="cb_veh_catg" onstart="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();"/>
+                                                                </p:selectOneMenu>
+                                                            </div>
+                                                        </div>
+                                                    </p:outputPanel>   
+                                                </p:outputPanel> 
+                                            </p:panel>
+                                        </div>
+                                    </div>  
+                                </div>
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-5">
+                                    <div class="ui-grid-row bottom-space-2">
+                                        <div class="ui-grid-col-1 right-position">
+                                            <span class="font-bold red">*</span>
+                                        </div>
+                                        <div class="ui-grid-col-4 left-position right-space">
+                                            <p:outputLabel  value="Select Vehicle Category :"/>
+                                        </div>
+                                    </div>
+                                    <p:panel>
+                                        <div class="ui-grid-row top-space-25">
+                                            <div class="ui-grid-col-12">
+                                                <div class="ui-grid-row top-space">
+                                                    <div class="ui-grid-col-1 resp-blank-height"></div>
+                                                    <div class="ui-grid-col-11">
+                                                        <label class="field-label resp-label-section">
+                                                            <p:outputLabel value="#{label.vh_catg}"/>
+                                                        </label>
+                                                        <p:selectOneMenu id="cb_veh_catg" value="#{mergeTradeCertBean.mergeTradeCertDobj.vehCatg}" filter="true" filterMatchMode="contains" 
+                                                                         disabled="#{mergeTradeCertBean.disableField}"
+                                                                         required="true"
+                                                                         requiredMessage="Please select 'dealer' and 'vehicle category' to proceed.">
+                                                            <f:selectItems value="#{mergeTradeCertBean.vehCatgList}"/>
+                                                        </p:selectOneMenu>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p:panel>    
+                                </div>
+                            </div>
+                            <div class="ui-grid-row top-space-25">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Proceed" update="@form"
+                                                     action="#{mergeTradeCertBean.proceed}" 
+                                                     disabled="#{mergeTradeCertBean.disableField}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();"/>
+                                    <p:commandButton value="Reset" update="@form" 
+                                                     action="#{mergeTradeCertBean.reset}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();"/>
+                                    <p:button value="Back" outcome="home" onclick="PF('bui_fancy').show();"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <!--############################### END OF SEARCH QUERY PAGE SECTION ######################## -->
+
+                        <!--############################### START OF TRADE CERTIFICATE RECORDS DISPLAY TABLE SECTION ######################## -->
+                        <p:outputPanel id="tcRecords_display_table_section" styleClass="top-space">
+                            <p:panel header="Trade Certificate Records" rendered="#{mergeTradeCertBean.tcDobjsList.size()>0}">
+
+                                <p:outputLabel value="#{mergeTradeCertBean.tcRecordsDisplayTableHeading}" escape="false" />
+
+                                <p:dataTable var="mergeTradeCertDobj" styleClass="top-space bottom-space" 
+                                             value="#{mergeTradeCertBean.tcDobjsList}"  paginator="true" rows="5">
+                                    <p:column headerText="No." width="2%" styleClass="collumn-width center-position">
+                                        <h:outputText   value="#{mergeTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <p:column headerText="Appl No.">
+                                        <h:outputText  value="#{mergeTradeCertDobj.applNo}"/>
+                                    </p:column>
+                                    <p:column headerText="T.C No.">
+                                        <h:outputText   value="#{mergeTradeCertDobj.certNo}" />
+                                    </p:column>
+                                    <p:column headerText="Issue Dt." >
+                                        <h:outputText   value="#{mergeTradeCertDobj.issueDtStr}" />
+                                    </p:column>
+                                    <p:column headerText="No. of Certificates" width="15%" styleClass="center-position font-bold">
+                                        <h:outputText   value="#{mergeTradeCertDobj.noOfVeh}"/>
+                                    </p:column>
+                                    <p:column headerText="#{label.valid_from}" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.validFromStr}"/>
+                                    </p:column>
+                                    <p:column headerText="#{label.valid_upto}" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.validUptoStr}"/>
+                                    </p:column>
+                                    <p:column headerText="#{label.reciept}" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.receiptNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Receipt Dt." >
+                                        <h:outputText   value="#{mergeTradeCertDobj.receiptDtStr}"/>
+                                    </p:column>
+                                    <p:column headerText="T.C Fee" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.fee}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <div class="ui-grid-row top-space-25">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Merge All Trade Certificates" update="@form"
+                                                     action="#{mergeTradeCertBean.merge}" 
+                                                     rendered="#{mergeTradeCertBean.tcDobjsList.size()>0 
+                                                                 and mergeTradeCertBean.mergedTcDobjList.size() le 0
+                                                                 and !(mergeTradeCertBean.mergeTradeCertDobj.stateCd eq 'HR' and mergeTradeCertBean.mergeTradeCertDobj.dealerChoiceCondition eq mergeTradeCertBean.NO_ADMIN_DEALER)}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" >
+                                    </p:commandButton>
+                                    <p:commandButton value="Dispose All Trade Certificates" update="@form"
+                                                     action="#{mergeTradeCertBean.dispose}" 
+                                                     rendered="#{mergeTradeCertBean.tcDobjsList.size()>0 
+                                                                 and mergeTradeCertBean.mergedTcDobjList.size() le 0
+                                                                 and mergeTradeCertBean.mergeTradeCertDobj.dealerChoiceCondition eq mergeTradeCertBean.NO_ADMIN_DEALER}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" >
+                                    </p:commandButton>
+                                    <p:commandButton value="Reset" update="@form" 
+                                                     action="#{mergeTradeCertBean.reset}"
+                                                     rendered="#{mergeTradeCertBean.tcDobjsList.size()>0
+                                                                 and mergeTradeCertBean.mergedTcDobjList.size() le 0}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" />
+                                    <p:button value="Back" 
+                                              outcome="home" 
+                                              onclick="PF('bui_fancy').show();" 
+                                              rendered="#{mergeTradeCertBean.tcDobjsList.size()>0
+                                                          and mergeTradeCertBean.mergedTcDobjList.size() le 0}"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <!--############################### END OF TRADE CERTIFICATE RECORDS DISPLAY TABLE SECTION ######################## -->
+
+                        <!--############################### START OF MERGED TRADE CERTIFICATE RECORD DISPLAY TABLE SECTION ######################## -->
+                        <p:outputPanel id="tcRecord_display_table_section">
+                            <p:panel rendered="#{mergeTradeCertBean.mergedTcDobjList.size()>0}">
+
+                                <p:outputLabel value="#{mergeTradeCertBean.mergedRecordDisplayTableHeading}" escape="false"/>
+
+                                <p:dataTable var="mergeTradeCertDobj" styleClass="top-space bottom-space" 
+                                             value="#{mergeTradeCertBean.mergedTcDobjList}"  paginator="true" rows="5">
+                                    <p:column headerText="No." width="2%" styleClass="collumn-width center-position">
+                                        <h:outputText   value="#{mergeTradeCertDobj.srNo}" />
+                                    </p:column>
+                                    <p:column headerText="Appl No. ">
+                                        <h:outputText  value="#{mergeTradeCertDobj.applNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Merged T.C No." rendered="#{mergeTradeCertBean.toBeMerged}">
+                                        <h:outputText   value="[SYSTEM GENERATED]" />
+                                    </p:column>
+                                    <p:column headerText="Merged T.C No." rendered="#{!mergeTradeCertBean.toBeMerged}">
+                                        <h:outputText   value="#{mergeTradeCertDobj.certNo}" />
+                                    </p:column>
+                                    <p:column headerText="Issue Dt." >
+                                        <h:outputText   value="#{mergeTradeCertDobj.issueDtStr}" />
+                                    </p:column>
+                                    <p:column headerText="No. of Certificates" width="15%" styleClass="center-position font-bold">
+                                        <h:outputText   value="#{mergeTradeCertDobj.noOfVeh}"/>
+                                    </p:column>
+                                    <p:column headerText="#{label.valid_from}" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.validFromStr}"/>
+                                    </p:column>
+                                    <p:column headerText="#{label.valid_upto}" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.validUptoStr}"/>
+                                    </p:column>
+                                    <p:column headerText="#{label.reciept}" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.receiptNo}"/>
+                                    </p:column>
+                                    <p:column headerText="Receipt Dt." >
+                                        <h:outputText   value="#{mergeTradeCertDobj.receiptDtStr}"/>
+                                    </p:column>
+                                    <p:column headerText="T.C Fee" >
+                                        <h:outputText   value="#{mergeTradeCertDobj.fee}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <div class="ui-grid-row top-space-25">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:commandButton value="Update" update="@form"
+                                                     action="#{mergeTradeCertBean.update}"
+                                                     rendered="#{mergeTradeCertBean.mergedTcDobjList.size()>0
+                                                                 and mergeTradeCertBean.toBeMerged
+                                                                 and !mergeTradeCertBean.renderPrintButton}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:commandButton value="Delete" update="@form"
+                                                     action="#{mergeTradeCertBean.delete}"
+                                                     rendered="#{mergeTradeCertBean.mergedTcDobjList.size()>0
+                                                                 and !mergeTradeCertBean.toBeMerged
+                                                                 and !mergeTradeCertBean.renderPrintButton}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:commandButton value="Print Details of Records Updated"
+                                                     icon="ui-icon-print" 
+                                                     action="#{mergeTradeCertBean.confirmRecordsUpdatePrint()}" 
+                                                     onclick="PF('bui_fancy').show();" 
+                                                     rendered="#{mergeTradeCertBean.renderPrintButton}"
+                                                     oncomplete="PF('bui_fancy').hide()"/>
+                                    <p:commandButton value="Cancel" update="@form" 
+                                                     action="#{mergeTradeCertBean.reset}"
+                                                     rendered="#{mergeTradeCertBean.mergedTcDobjList.size()>0}"
+                                                     onclick="PF('bui_fancy').show();" oncomplete="PF('bui_fancy').hide();" onsuccess="PF('bui_fancy').hide();" onerror="PF('bui_fancy').hide();"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                        <!--############################### END OF TRADE CERTIFICATE RECORDS DISPLAY TABLE SECTION ######################## -->
+
+                    </div>
+                    <p:blockUI block="tc_merge_form" widgetVar="bui_fancy" >
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </h:form>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>
+

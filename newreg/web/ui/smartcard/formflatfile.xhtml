@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"> 
+
+    <ui:define name="content22">
+
+        <h:form id="flateFileForm" prependId="false">
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+
+            <p:dialog header="HSRP Disclaimer" widgetVar="dlghsrpltd"
+                      modal="true" closable="false" resizable="false"
+                      draggable="false" visible="#{smartcard.renderSmartCardDialog}" width="50%">
+                <ui:include src="/ui/form_HSRPDisclaimer.xhtml" />
+            </p:dialog>
+            <p:outputPanel id="pnl_myform" >
+                <p:outputPanel id="opn_current">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position top-space bottom-space">
+
+                            <p:button  value="Back" outcome="home" rendered="#{!smartcard.showFileSearchPanel}" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="opn_full_form" rendered="#{!smartcard.showFileSearchPanel}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-5">
+                            <p:dataTable id="tb_old_lis"  value="#{smartcard.oldRecords}" 
+                                         scrollable="true" var="ol" styleClass="datatable-panel" rowIndexVar="index">
+                                <f:facet name="header">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4 top-space">
+                                            <p:calendar value="#{smartcard.oldDate}" pattern="dd-MMM-yyyy" navigator="true" >
+                                                <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                                <p:ajax event="dateSelect"/>   
+                                            </p:calendar>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <p:commandButton value="Show Old Generated Files" immediate="true" update="tb_old_lis">
+                                                <p:ajax event="click" listener="#{smartcard.oldDateListener}"/>
+                                            </p:commandButton>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <p:commandButton  value="Search Vehicle" update="pnl_myform" action="#{smartcard.showVehicle}" rendered="#{smartcard.showSearchVehicle}">
+                                            </p:commandButton>
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                <p:column headerText="Sr.No"  styleClass="collumn-width center-position"> <p:outputLabel value="#{index +1}."/></p:column>
+                                <p:column headerText="File No">
+                                    <h:commandLink value="#{ol.cur_date}" action="#{smartcard.oldSelectSCListener}" > 
+                                        <f:setPropertyActionListener target="#{smartcard.selectedOldSmartcard}" value="#{ol}" />
+                                    </h:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                            <h:outputLabel value="These records were not uploaded due to following reason:" styleClass="center-position red top-space font-bold" />
+                            <p:dataTable id="tb_showpendingsmartcard"  value="#{smartcard.s_card.listHsrpPending}" 
+                                         scrollable="true" var="psc" styleClass="datatable-panel top-space">
+                                <p:column headerText="Application No" exportable="false">
+                                    <h:outputText value="#{psc.pendingApplnoForHsrp}" />
+                                </p:column>
+                                <p:column headerText="Vehicle No" exportable="false">
+                                    <h:outputText value="#{psc.pendingVehnoForHsrp}" />
+                                </p:column>
+                                <p:column headerText="Reason">
+                                    <h:outputText value="#{psc.pendingReason}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                        <div class="ui-grid-col-7">
+                            <p:dataTable id="tb_showsmartcard"  value="#{smartcard.s_card.listSmartCard}" 
+                                         scrollable="true" var="sc" styleClass="datatable-panel">
+                                <f:facet name="header">   
+                                    <p:commandButton id="buttoneDownloadFile" value="Download File" onclick="PF('flatFileDialogWV').show();" update=":formFlatFileFormate" rendered="#{smartcard.showDownLoadButton}"/>
+                                </f:facet>
+
+                                <f:facet name="header">
+                                    <p:commandButton  value="Show Pending Records" action="#{smartcard.showPendingRecords}" onclick="PF('ajax_status').show();" 
+                                                      oncomplete="PF('ajax_status').hide()" rendered="#{smartcard.showPendingButton}"
+                                                      update="tb_showsmartcard :flateFileForm:tb_showpendingsmartcard buttoneDownloadFile"/>
+                                    <p:commandButton  icon="ui-icon-arrowthick-1-w" action="#{smartcard.back}" onclick="PF('ajax_status').show();" 
+                                                      oncomplete="PF('ajax_status').hide()" rendered="#{smartcard.showBack}"
+                                                      update="tb_showsmartcard :flateFileForm:tb_showpendingsmartcard buttoneDownloadFile"/>
+                                    <p:commandButton icon="ui-icon-arrowthick-1-e" action="#{smartcard.next}" onclick="PF('ajax_status').show();" 
+                                                     oncomplete="PF('ajax_status').hide()" rendered="#{smartcard.showNext}"
+                                                     update="tb_showsmartcard :flateFileForm:tb_showpendingsmartcard buttoneDownloadFile"/>
+                                    <p:commandButton  value="Generate File" action="#{smartcard.downLoadListener}" 
+                                                      update="tb_showsmartcard :flateFileForm:tb_showpendingsmartcard " onclick="PF('ajax_status').show();" 
+                                                      oncomplete="PF('ajax_status').hide()" icon="ui-icon-disk" rendered="#{smartcard.blnCurrentPanel}"> 
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        <p:blockUI block="tb_showsmartcard" widgetVar="bui">
+                                            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                        </p:blockUI>
+                                    </p:commandButton>
+
+                                </f:facet>
+
+                                <p:column headerText="Application No" exportable="false" width="30%" styleClass="center-position">
+                                    <h:outputText value="#{sc.rcpt_no}" />
+                                </p:column>
+                                <p:column headerText="Flat File Details">
+                                    <h:outputText value="#{sc.vehregno}#{sc.regdate}#{sc.ownername}#{sc.fname}#{sc.caddress}#{sc.manufacturer}#{sc.modelno}#{sc.colour}#{sc.fuel}#{sc.vehclass}#{sc.bodytype}#{sc.seatcap}#{sc.standcap}#{sc.manufdate}#{sc.unladenwt}#{sc.cubiccap}#{sc.wheelbase}#{sc.noofcylin}#{sc.ownerserial}#{sc.chasisno}#{sc.engineno}#{sc.taxpaidupto}#{sc.regnvalidity}#{sc.approvingauth}#{sc.finname}#{sc.finaddress}#{sc.hypofrom}#{sc.hypoto}#{sc.nocno}#{sc.stateto}#{sc.rtoto}#{sc.ncrbclearno}#{sc.nocissuedt}#{sc.inscompname}#{sc.coverpolicyno}#{sc.instype}#{sc.insvalidupto}#{sc.puccentercode}#{sc.pucvalidupto}#{sc.taxamount}#{sc.fine}#{sc.exemptrecptno}#{sc.paymentdt}#{sc.taxvalidfrom}#{sc.taxvalidto}#{sc.exemption}#{sc.drtocode}#{sc.buflag}#{sc.fitvalidupto}#{sc.fitinsofficer}#{sc.fitlocation}#{sc.grossvehwt}#{sc.semitrailers}#{sc.tyreinfo}#{sc.axleinfo}#{sc.appl_no}#{sc.pur_cd}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+
+                    </div>
+                </p:outputPanel >
+                <p:outputPanel id="pnl_file_serach" rendered="#{smartcard.showFileSearchPanel}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <p:outputLabel value="Registration No"></p:outputLabel>
+                            <p:inputText id="inp_txt_reg" value="#{smartcard.regnNo}"
+                                         maxlength="10"
+                                         converter="toUpperCaseConverter"
+                                         autocomplete="off"
+                                         styleClass="input">
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Search Record" action="#{smartcard.searchVehicle}"
+                                             update="pnl_file_serach id_datatable_single_vehicle"></p:commandButton>
+                            <p:commandButton value="Back" action="#{smartcard.backToFlatFile}"
+                                             update="pnl_myform"></p:commandButton>
+
+                        </div>
+                    </div>
+
+
+                    <p:outputPanel id="id_datatable_single_vehicle" >
+
+                        <p:dataTable id="tb_showsmartcard_regn"  value="#{smartcard.regnRecord.listSmartCard}" 
+                                     scrollable="true" var="reg" styleClass="datatable-panel"
+                                     rendered="#{smartcard.regnRecord.listSmartCard.size()>0}" >
+                            <f:facet name="header">                            
+                                <p:commandButton id="buttoneDownloadFile" value="Download File" onclick="PF('fileDialog').show();" 
+                                                 update=":formFileFormate" rendered="#{smartcard.showDownload}"/>
+                            </f:facet>
+                            <f:facet name="header">
+                                <p:commandButton  value="Generate File" action="#{smartcard.downLoadListenerForSingleVehicle}" 
+                                                  update="pnl_file_serach" onclick="PF('ajax_status').show();" 
+                                                  oncomplete="PF('ajax_status').hide()" icon="ui-icon-disk" rendered="#{smartcard.blnCurrentPanel}"> 
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    <p:blockUI block="tb_showsmartcard_regn" widgetVar="bui">
+                                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                    </p:blockUI>
+                                </p:commandButton>
+
+                            </f:facet> 
+                            <p:column headerText="Application No"  exportable="false" width="20%" styleClass="center-position">
+                                <h:outputText value="#{reg.rcpt_no}" />
+
+                            </p:column>
+                            <p:column headerText="Vehicle Details">
+                                <h:outputText value="#{reg.vehregno}#{reg.regdate}#{reg.ownername}#{reg.fname}#{reg.caddress}#{reg.manufacturer}#{reg.modelno}#{reg.colour}#{reg.fuel}#{reg.vehclass}#{reg.bodytype}#{reg.seatcap}#{reg.standcap}#{reg.manufdate}#{reg.unladenwt}#{reg.cubiccap}#{reg.wheelbase}#{reg.noofcylin}#{reg.ownerserial}#{reg.chasisno}#{reg.engineno}#{reg.taxpaidupto}#{reg.regnvalidity}#{reg.approvingauth}#{reg.finname}#{reg.finaddress}#{reg.hypofrom}#{reg.hypoto}#{reg.nocno}#{reg.stateto}#{reg.rtoto}#{reg.ncrbclearno}#{reg.nocissuedt}#{reg.inscompname}#{reg.coverpolicyno}#{reg.instype}#{reg.insvalidupto}#{reg.puccentercode}#{reg.pucvalidupto}#{reg.taxamount}#{reg.fine}#{reg.exemptrecptno}#{reg.paymentdt}#{reg.taxvalidfrom}#{reg.taxvalidto}#{reg.exemption}#{reg.drtocode}#{reg.buflag}#{reg.fitvalidupto}#{reg.fitinsofficer}#{reg.fitlocation}#{reg.grossvehwt}#{reg.semitrailers}#{reg.tyreinfo}#{reg.axleinfo}#{reg.appl_no}#{reg.pur_cd}" />
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <p:dataTable id="tb_showpending_regn"  value="#{smartcard.regnRecord.listHsrpPending}" 
+                                     scrollable="true" var="singleVehicle" styleClass="datatable-panel top-space"
+                                     rendered="#{smartcard.regnRecord.listHsrpPending.size()>0}" >
+                            <p:column headerText="Application No" exportable="false">
+                                <h:outputText value="#{singleVehicle.pendingApplnoForHsrp}" />
+                            </p:column>
+                            <p:column headerText="Vehicle No" exportable="false">
+                                <h:outputText value="#{singleVehicle.pendingVehnoForHsrp}" />
+                            </p:column>
+                            <p:column headerText="Reason">
+                                <h:outputText value="#{singleVehicle.pendingReason}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+
+                </p:outputPanel>
+            </p:outputPanel>
+            <p:blockUI block="flateFileForm" widgetVar="ajax_status">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+
+        <p:dialog id="flateFileDialog" header="Different File Formate" dynamic="true" closable="true" modal="true" widgetVar="flatFileDialogWV">
+
+            <h:form id="formFlatFileFormate" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('flatFileDialogWV').hide();">
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":flateFileForm:tb_showsmartcard" fileName="#{smartcard.s_card.smartCardFileName}" />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink action="#{smartcard.downloadCSV}" onclick="PF('flatFileDialogWV').hide();">
+                        <p:graphicImage name="csv.png"  width="24" library="images"/>
+                    </h:commandLink>
+
+                </p:panelGrid>
+            </h:form>
+        </p:dialog> 
+
+        <p:dialog id="flateFileDialogSearch" header="Different File Formate" dynamic="true" closable="true" modal="true" widgetVar="fileDialog">
+
+            <h:form id="formFileFormate" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('fileDialog').hide();">
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":flateFileForm:tb_showsmartcard_regn" fileName="fileDownload" />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink action="#{smartcard.downloadCSVForSingleVehicle()}" onclick="PF('flatFileDialogWV').hide();">
+                        <p:graphicImage name="csv.png"  width="24" library="images"/>
+                    </h:commandLink>          
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+
+
+    </ui:define>
+
+
+</ui:composition>

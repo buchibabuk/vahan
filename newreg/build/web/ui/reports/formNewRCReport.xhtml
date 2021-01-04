@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="bootstrap-3.3.1" name="css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form>
+            <div class="center-position">
+                <p:button id="back_to_print_form" value="Back" outcome="/ui/print/form_print.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <ui:repeat var="rcList" value="#{rcRptBean.selectedRclist}" varStatus="status">
+                <table class="datatable-panel-100 position-relative">
+                    <tr>
+                        <td class="left-position" style="width: 70px;">
+                            <p:graphicImage library="images" name="#{rcList.image_logo}" style="width: 100px;" rendered="#{rcList.show_image_logo}" />
+                        </td>
+                        <td class="center-position">
+                            <div class="center-position">
+                                <h:outputText value="#{rcList.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                            </div>
+                            <div class="center-position">
+                                <span class="font-bold report-subheader"> <h:outputText value="#{rcList.subHeader} #{rcList.offName}" escape="false"/> </span>
+                            </div>
+                            <div class="center-position">
+                                <span class="font-bold report-subheader"> <h:outputText value="FORM 23"/> </span>
+                            </div>
+                            <div class="center-position bottom-space">
+                                <span class="font-bold report-subheader text-uppercase"> <h:outputText value="Certificate of Registration"/> </span>
+                            </div>
+                        </td>
+                        <td class="right-position" style="width: 70px;">
+                            <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                                <ui:param name="qrcodevalue" value="#{rcList.qrText}"/> 
+                                <ui:param name="renderqrCode" value="true"/>
+                            </ui:include>
+                        </td>
+                    </tr>
+                </table>
+                <div class="position-relative">
+                    <p:outputPanel  rendered="#{rcList.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{rcList.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+                </div>
+
+                <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Registration No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.regnNo} " styleClass="font-bold"/>
+                        <h:outputText value="Registration Date" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.regnDt} " />
+                        <h:outputText value="Description of Vehicle" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.vchDesc} " />
+                        <h:outputText value="Purpose For Printing RC" styleClass="right-space font-bold" />
+                        <h:outputText value=":#{rcList.purposeDesc}" />
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-oneforth datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Dealer's Name &amp; Address" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.dealerAddress}" />
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Owner Name" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.ownerName} " />
+                        <h:outputText value="Son/wife/daughter of" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.fatherName} " />
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-oneforth datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Full Address: (Permanent)" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.perFullAddr}" />
+                        <h:outputText value="Full Address: (Temporary)" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.currFullAddr}" />
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Fitness UpTo" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.fitUpto} " />
+                        <h:outputText rendered="#{rcList.taxUpto eq null ? false : true}" value="Tax UpTo" styleClass="right-space font-bold" />
+                        <h:outputText  rendered="#{rcList.taxUpto eq null ? false : true}" value=": #{rcList.taxUpto} " />
+                        <h:outputText value="Owner Serial No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.ownerSrno} " />
+                    </h:panelGrid>
+                </div>
+
+
+                <div  class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <span class="font-bold bottom-line left-space"> Detailed Description</span>
+                </div>
+
+                <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Class of Vehicle" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.vchDesc}" />
+                        <h:outputText value="Link Vehicle No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.linkVehicleno}" />
+                        <h:outputText value="Ownership" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.ownership}" />
+                        <h:outputText value="Norms" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.normDesc} " />
+                        <h:outputText value="Maker's Name" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.makerName} " />
+                    </h:panelGrid>
+                </div>
+                <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 " style="word-wrap: break-word; word-break: break-all;">
+                        <h:outputText value="Front HSRP No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.hsrpfront} " />
+                        <h:outputText value="Rear HSRP No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.hsrpback} " />
+                        <h:outputText value="Type of Body" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.bodyType} " />
+                        <h:outputText value="Month/Year of Manuf." styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.manuMnt}/#{rcList.manuYr}" />
+                        <h:outputText value="No of Cylinders" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.noofCyl} " />
+                        <h:outputText value="Chassis No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.chasiNo} " />
+                        <h:outputText value="#{rcList.fuel==4 ? 'Motor No' : 'Engine No'}" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.engNo} " />
+                        <h:outputText value="Fuel" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.fuelDesc} " />
+                        <h:outputText value="#{rcList.fuel==4 ? 'Motor Wattage(kw)' : 'Horse Power(BHP)'}" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.hpower} " />
+                        <h:outputText value="Cubic Capacity" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.cubicCap} " />
+                        <h:outputText value="Maker's Classification" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.modelName} " />
+                        <h:outputText value="Wheel base" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.wheelBase} " />
+                        <h:outputText value="Seating Cap(in all)" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.seatCap} " />
+                        <h:outputText value="Standing Cap" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.standCap} " />
+                        <h:outputText value="Sleepar Cap" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.sleepCap} " />
+                        <h:outputText value="Unladen Wt (kgs)" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.unldwt} " />
+                        <h:outputText value="Colour" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.color} " />
+                        <h:outputText value="Laden/GV Wt (kgs)" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.ldwt} " />
+                        <h:outputText value="Other Criteria" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.otherCriteria} " />
+                        <h:outputText value="Service Type" styleClass="right-space font-bold" rendered="#{rcList.isServiceType}" />
+                        <h:outputText value=": #{rcList.serviceType} " rendered="#{rcList.isServiceType}" />
+                        <h:outputText value="AC Fitted" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.acfitted} " />                        
+                        <h:outputText value="Vehicle Purchase As" styleClass="right-space font-bold" rendered="#{rcList.isvch_purchase_as}" />
+                        <h:outputText value=": #{rcList.vehPurchAS} " rendered="#{rcList.isvch_purchase_as}" />
+                    </h:panelGrid>
+                </div>
+                <table class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <tr>
+                        <td class="top-align">
+                            <p:outputPanel  rendered="true"> <!-- Transport  -->
+                                <div  class="datatable-panel" style="margin: 0 auto;">
+                                    <span class="font-bold bottom-line left-space">Additional Particulars of all transport vehicles other than motor cabs (Gross Vehicle Weight)</span>
+                                </div>
+                                <div class="table-width-four datatable-panel" style="margin: 0 auto;">
+                                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                                        <h:outputText value="By Manuf." styleClass="font-bold"/>
+                                        <h:outputText value=": " />
+                                        <h:outputText value="As Regd." styleClass="font-bold"/>
+                                        <h:outputText value=": " />
+                                    </h:panelGrid>
+                                </div>
+                            </p:outputPanel>
+
+                        </td>
+                        <td class="top-align">
+                            <p:outputPanel  rendered="#{rcList.istransportWithSemTrailler}"><!-- Transport + Semi-Trailer -->
+                                <div  class="datatable-panel" style="margin: 0 auto;">
+                                    <span class="font-bold bottom-line left-space">Additional Particulars of alternative/Additional Semi-Trailer Registered Articulated Vehicle.</span>
+                                </div>
+
+                                <div class="table-width-four datatable-panel" style="margin: 0 auto;">
+                                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                                        <h:outputText value="Chassis No." styleClass="font-bold"/>
+                                        <h:outputText value=": #{rcList.trChasino} " />
+                                        <h:outputText value="Body Type"  styleClass="font-bold"/>
+                                        <h:outputText value=": #{rcList.trBodyType} " />
+                                        <h:outputText value="Unladen Wt." styleClass="font-bold"/>
+                                        <h:outputText value=": #{rcList.trunldwt} " />
+                                    </h:panelGrid>
+                                </div>
+
+
+                            </p:outputPanel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="top-align" colspan="2">
+                            <p:outputPanel  rendered="#{rcList.istransportWithSemTrailler}">
+                                <div class="table-width-two datatable-panel" style="margin: 0px auto;">
+                                    <h:outputText value="Axle Details:" styleClass="font-bold bottom-line left-space" />
+                                    <h:outputText value=" Number, description of size of tyre on (each) axle (In case of Transport vehicle)" styleClass="font-bold" />
+                                </div>
+                            </p:outputPanel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="top-align">
+                            <p:outputPanel  rendered="true">
+                                <div class="table-width-three datatable-panel" style="margin: 0px auto;">
+                                    <h:panelGrid columns="3" styleClass="left-position datatable-panel-100" rendered="true">
+                                        <h:outputLabel value=" " styleClass="right-space" />
+                                        <h:outputLabel value="Description" styleClass="font-bold" />
+                                        <h:outputLabel value="Weight(in kgs)" styleClass="font-bold" />
+
+                                        <h:outputLabel value="a) Front: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.fdesc}"/>
+                                        <h:outputText value="#{rcList.fweight}"/>
+
+                                        <h:outputLabel value="b) Rear: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.rdesc}"/>
+                                        <h:outputText value="#{rcList.rweight}"/>
+
+                                        <h:outputLabel value="c) Other: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.odesc}"/>
+                                        <h:outputText value="#{rcList.oweight}"/>
+
+                                        <h:outputLabel value="d) Tandem: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.tdesc}"/>
+                                        <h:outputText value="#{rcList.tweight}"/>
+                                    </h:panelGrid>
+                                </div>
+                            </p:outputPanel>
+                        </td>
+                        <td class="top-align">
+                            <p:outputPanel  rendered="#{rcList.istransportWithSemTrailler}">
+                                <div class="table-width-three datatable-panel" style="margin: 0px auto;">
+                                    <h:panelGrid columns="3" styleClass="left-position datatable-panel-100" rendered="true">
+                                        <h:outputLabel value=" " styleClass="right-space" />
+                                        <h:outputLabel value="Description" styleClass="font-bold" />
+                                        <h:outputLabel value="Weight(in kgs)" styleClass="font-bold" />
+
+                                        <h:outputLabel value="a) Front: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.trfdesc}"/>
+                                        <h:outputText value="#{rcList.trfweight}"/>
+
+                                        <h:outputLabel value="b) Rear: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.trrdesc}"/>
+                                        <h:outputText value="#{rcList.trrweight}"/>
+
+                                        <h:outputLabel value="c) Other: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.trodesc}"/>
+                                        <h:outputText value="#{rcList.troweight}"/>
+
+                                        <h:outputLabel value="d) Tandem: "  styleClass="right-space font-bold"/>
+                                        <h:outputText value="#{rcList.trtdesc}"/>
+                                        <h:outputText value="#{rcList.trtweight}"/>
+                                    </h:panelGrid>
+                                </div>
+                            </p:outputPanel>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <p:outputPanel  rendered="#{rcList.isfncr}" styleClass="position-relative"><!-- Only for Financial Case -->
+                    <div  class="datatable-panel" style="margin: 0 auto;">
+                        <span class="font-bold">The motor vehicle above described is subject to Hypothecation in favour of </span><h:outputText value="#{rcList.fncrFullAddr} w.e.f. #{rcList.hyptFromdt}." />
+                    </div>
+                </p:outputPanel>
+                <div class="table-width-four datatable-panel position-relative" style="margin: 0 auto;">
+                    <h:panelGrid columns="4" styleClass="left-position datatable-panel-100 ">
+                        <h:outputText value="Purchase dt" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.purchaseDt}" />
+                        <h:outputText value="Sale Amt" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.saleAmt}/-" />
+                        <h:outputText value="OTT Date" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.taxFrom} " />
+                        <h:outputText value="Amount/Rcpt No" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.taxAmt} / #{rcList.rcptno}" />
+                        <h:outputText rendered="#{rcList.taxUpto eq null ? false : true}" value="TaxUpTo" styleClass="right-space font-bold" />
+                        <h:outputText rendered="#{rcList.taxUpto eq null ? false : true}" value=": #{rcList.taxUpto} " />
+                        <h:outputText value="Vehicle is Govt./ Pvt." styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.govVeh} " />
+                        <h:outputText value="Tax Exempted or Not" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.isexempted} " />
+                        <h:outputText value="Date of Approval" styleClass="right-space font-bold" />
+                        <h:outputText value=": #{rcList.opdate} " />
+                    </h:panelGrid>
+                </div>
+
+                <!-- Added By KML on 07-10-2015-->
+
+                <p:outputPanel styleClass="position-relative">
+                    <div class="datatable-panel" style="margin: 0 auto;">
+                        <div class=" font-bold">
+                            Other State/Transfer/Conversion Details
+                        </div>
+                    </div>
+
+                    <div class="table-width-four datatable-panel" style="margin: 0 auto;">
+                        <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                            <h:outputText value="Previous Owner" styleClass="right-space font-bold" />
+                            <h:outputText value=": #{rcList.preOwner} "/> 
+                            <h:outputText value="Previous RegNo" styleClass="right-space font-bold" />
+                            <h:outputText value=": #{rcList.preRegno} "/> 
+                            <h:outputText value="Old State" styleClass="right-space font-bold" />
+                            <h:outputText value=": #{rcList.oldState} "/>                             
+                            <h:outputText value="Entry Date" styleClass="right-space font-bold" />
+                            <h:outputText value=": #{rcList.entryDate} "/> 
+                            <h:outputText value="Transfer Date" styleClass="right-space font-bold" />
+                            <h:outputText value=": #{rcList.transferDate} "/> 
+                            <h:outputText value="Conversion Date" styleClass="right-space font-bold" />
+                            <h:outputText value=": #{rcList.conversionDate} "/> 
+                        </h:panelGrid>
+                    </div>
+
+                </p:outputPanel>
+                <p:outputPanel  rendered="#{!(rcList.stateCD eq 'NL') ? true : false and  !(rcList.istransport)}" styleClass="position-relative">
+                    <div class="datatable-panel" style="margin: 0 auto;">
+                        <div class=" font-bold">
+                            This certificate is valid from <h:outputText value="#{rcList.regnDt}"  styleClass="font-bold" />  to <h:outputText value="#{rcList.regnUpto}"  styleClass="font-bold" />
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <div class="center-position position-relative">                   
+                    <table class="datatable-panel">
+                        <tr>
+                            <td class="left-position">
+                                <div class="left-space">
+                                </div>
+                            </td>
+                            <td class="right-position">
+                                <div class="right-space">
+                                    <p:outputPanel rendered="#{rcList.isUserSignExist}">
+                                        <p class="bottom-space">
+                                            <p:graphicImage id="showUserSign" value="#{rcRptBean.viewUserSign}" cache="false" style="height: 34px !important; width: auto;"/>
+                                        </p>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{!rcList.isUserSignExist}">
+                                        <br/>
+                                    </p:outputPanel>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="left-position">
+                                <div class="left-space">
+                                    <h:outputText value="Date : #{rcList.printedon} "/> <br />
+                                    <h:outputText value="Taxation Particulars / Advance Registration Mark Fee Details"/> <br />
+                                </div>
+                            </td>
+                            <td class="right-position">
+                                <div class="right-space">
+                                    <h:outputText value="Signature of Registering Authority"/> <br />
+                                    <h:outputText value="Date : #{rcList.printedSign} "/> 
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <p:outputPanel id="sloganrc" styleClass="top-space bottom-space" rendered="#{rcList.showRoadSafetySlogan}">
+                    <div class="bottom-space center-position position-relative font-bold" style="font-size: 13px ; margin: 0 auto;">
+                        <div class="center-position" style="display: inline-block;">
+                            <br />
+                            <h:outputText value="#{rcList.roadSafetySloganDobj.english_lang}" /><br/>
+                            <h:outputText value="#{rcList.roadSafetySloganDobj.state_lang}" />
+
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <div class="page-break"></div>
+            </ui:repeat>
+
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+        <p:outputPanel>
+            <p:autoUpdate/>
+            <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+                <p:messages>
+                    <p:autoUpdate/>
+                </p:messages>
+                <div class="center-position">
+                    <p:commandButton value="#{language.close}" immediate="true" >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+                </div>
+
+            </p:dialog>
+        </p:outputPanel>
+        <div class="ui-grid ui-grid-responsive">
+            <p:panel id="regn_no_details" header="#{language.regn_veh_no}">
+                <p:keyFilter regEx="/[a-zA-Z0-9/-]/i" for="regnNo"/>
+                <p:focus for="regnNo"/>
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">              
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel id="regVehTypeLabel" for="regnNo" value="#{language.regn_veh_no}"/>
+                    </label>
+                    <p:inputText id="regnNo" value="#{adminChangeOffice.regnNo}" autocomplete="off"
+                                 styleClass="input" 
+                                 converter="toUpperCaseConverter"  maxlength="10" 
+                                 requiredMessage="#{language.regn_noblank}" 
+                                 disabled="#{adminChangeOffice.disableRegnNo}" >
+                        <p:ajax event="blur"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">              
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel id="chassi_no_id" for="chassi_no" value="#{language.chassis_lastwords}" />
+                    </label>
+                    <p:inputText id="chassi_no" value="#{adminChangeOffice.chassiNo}" autocomplete="off"
+                                 styleClass="input" 
+                                 converter="toUpperCaseConverter"  maxlength="5" 
+                                 requiredMessage="#{language.chssis_noblank}" 
+                                 disabled="#{adminChangeOffice.disableRegnNo}">
+                    </p:inputText>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="#{language.showDetails}" 
+                                         onclick="PF('ajax_status').show()" 
+                                         oncomplete="PF('ajax_status').hide()" 
+                                         update=" pnl_datatable regn_no_details reason_id" action="#{adminChangeOffice.getDetails}" 
+                                         rendered="#{adminChangeOffice.render_vehicle_type}"  />
+                        <p:button value="#{language.login_back}" id="BackButton_id" outcome="home" onclick="PF('ajax_status').show()"  icon="ui-icon-arrowreturnthick-1-w" rendered="#{adminChangeOffice.renderBackButton}"/>
+                    </div>
+                </div>
+            </p:panel>
+            <p:outputPanel id="pnl_datatable">
+                <p:outputPanel id="pnlRegnList" rendered="#{adminChangeOffice.showRegList}" >
+                    <p:dataTable  id="tb_RegnNameList" value="#{adminChangeOffice.regnNameList}" var="regn" rowIndexVar="index" >
+                        <f:facet name="header">
+                            <div class="left-position font-bold">
+                                Registration Details
+                            </div>
+                        </f:facet>
+                        <p:column headerText="#{language.user_srno}" exportable="false" width="7%">
+                            <h:outputText value="#{index+1}" />
+                        </p:column>
+
+                        <p:column  headerText="#{language.home_rightpanelregno}">
+                            <p:outputLabel value="#{regn.regn_no}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.owner_name}">
+                            <p:outputLabel value="#{regn.owner_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.stateName}">
+                            <p:outputLabel value="#{regn.state_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.officeName}">
+                            <p:outputLabel value="#{regn.off_name}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.status}">
+                            <p:outputLabel value="#{regn.statusDescr}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column  headerText="#{language.last_rcptdate}">
+                            <p:outputLabel value="#{regn.lastRcptDt}" styleClass="textUpperCase" />
+                        </p:column>
+                        <p:column >
+                            <p:commandButton value="#{language.show}" action="#{adminChangeOffice.showDetails(regn)}" update="tabviewRender regn_no_details pnl_datatable"
+                                             onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();" ></p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </p:outputPanel>
+        </div>
+        <p:dialog id="pendingFCRC" header="Alert!" widgetVar="FCandRCcheck" 
+                  modal="true" closeOnEscape="false" visible="false" closable="false" dynamic="true">
+            <div class="center-position">
+                <h:outputText value="#{adminChangeOffice.facesMessages}"
+                              styleClass="report-header font-bold red" escape="false"/>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:commandButton value="Yes" onclick="PF('FCandRCcheck').hide()" immediate="true">
+                        <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:button id="noButton" value="No" icon="ui-icon-refresh"/>                  
+                </div>
+            </div>
+        </p:dialog>
+
+        <p:outputPanel id="tabviewRender">
+
+            <p:tabView id="workbench_tabview" styleClass="top-space bottom-space" rendered="#{adminChangeOffice.renderTab}">
+
+                <!--################################# Owner Details ########################################## -->
+                <!--                <p:tab  id="owner_details_tab" title="Owner Details" >
+                                    <ui:include src="/ui/form_owner_dtls.xhtml" >
+                
+                                    </ui:include>
+                                </p:tab>-->
+                <p:tab  id="owner_details_tab" title="Owner Details">
+                    <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                        <ui:param name="ownerDetail" value="#{adminChangeOffice.ownerDetail}"/>
+                    </ui:include>
+                </p:tab>
+                <!--########################################################################################## -->
+
+            </p:tabView>
+            <p:panel rendered="#{adminChangeOffice.renderTab}" id="rmk_id">
+                <p:outputPanel id="reason_id" >
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="off_cd_to" value="#{language.chngeoffcd_modify_office}:"/>
+                            </label>
+
+                            <p:selectOneMenu id="off_cd_to" value="#{adminChangeOffice.off_to}" filter="true" filterMatchMode="contains" required="true" 
+                                             requiredMessage="#{language.blank} #{language.chngeoffcd_modify_office}">
+                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                <f:selectItems value="#{adminChangeOffice.office_list}"/>
+                                <f:validator for="off_cd_to" validatorId="selectOneValidator_0"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  for="reqt_by" value="#{language.reqby} :"/>
+                            </label>
+                            <p:inputText id="reqt_by" value="#{adminChangeOffice.requested_by}" converter="toUpperCaseConverter" required="true"
+                                         requiredMessage="#{language.blank} #{language.reqby}" maxlength="50" autocomplete="off" styleClass="input">
+                                <f:validateLength maximum="50" for="reqt_by"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  for="reqt_on" value="#{language.reqdate}:"/>
+                            </label>
+                            <p:calendar id="reqt_on" value="#{adminChangeOffice.requestedOn}" navigator="true" 
+                                        required="true" requiredMessage="#{language.blank} #{language.reqdate}" pattern="dd-MMM-yyyy" readonlyInput="true" mindate=""
+                                        autocomplete="off" maxdate="#{adminChangeOffice.maxDate}"> 
+                                <f:validateRequired for="reqt_on"/>
+                                <f:convertDateTime pattern="dd-MMM-yyyy" for="reqt_on"/>
+                            </p:calendar>    
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="adminRemarks" value="#{language.remark}" />
+                            </label>
+                            <p:inputTextarea id="adminRemarks" value="#{adminChangeOffice.remark}" styleClass="input"
+                                             required="true" cols="50" rows="1" placeholder="#{language.enter_reason}..."
+                                             maxlength="100" requiredMessage="#{language.rmk_empty}"
+                                             converter="toUpperCaseConverter" >                            
+                            </p:inputTextarea>
+                        </div>
+
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="#{language.save}" action="#{adminChangeOffice.sendOtpMailAndChangeOffice('sendOtp')}" 
+                                             onclick="PF('ajax_status').show()" 
+                                             oncomplete="PF('ajax_status').hide()" 
+                                             icon="ui-icon-disk" update="tabviewRender regn_no_details" 
+                                             >
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()"  icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+            </p:panel>
+        </p:outputPanel>
+        <!-- OTP for Change Vehicle Office-->
+        <p:outputPanel id="otp_confirmation">
+            <p:dialog id="otp_dialog" widgetVar="otp_confrm" header="#{language.chngeoffcd_otpvehicle}"  closable="false"  modal="true" dynamic="true" >
+                <p:messages showDetail="true" showSummary="false" >
+                    <p:autoUpdate/>
+                </p:messages>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 red">
+                        #{language.OTPSentMsg}
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-3">
+                        <label>
+                            <p:outputLabel value="#{language.login_enter_otp}:"/>
+                        </label>  
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <p:inputText value="#{adminChangeOffice.enterOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                    </div>
+                    <div class="ui-grid-col-5">
+                        <p:commandLink value="#{language.login_resend_otp}" action="#{adminChangeOffice.sendOtpMailAndChangeOffice('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                       onsuccess="PF('ajax_status').hide()"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position" >
+                        <p:commandButton value="#{language.chngeoffcd_confirm} " action="#{adminChangeOffice.sendOtpMailAndChangeOffice('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                         onsuccess="PF('ajax_status').hide();" update="tabviewRender regn_no_details" >
+                        </p:commandButton>
+                        <p:commandButton value="Cancel"  
+                                         process="@this"  immediate="true" 
+                                         onclick="PF('otp_confrm').hide()" icon="ui-icon-arrowreturnthick-1-w"/>  
+                    </div>
+                </div>
+            </p:dialog>
+        </p:outputPanel>
+    </ui:define>
+</ui:composition>

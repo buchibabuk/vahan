@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+
+        <h:form id="ReleaseDocumentVehicle" >
+            <p:blockUI block="ReleaseDocumentVehicle:relase_doc_panel" widgetVar="bui_fancy">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class=" header-main">Release Document / Vehicle</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="nitin"/>
+                        <h:outputLabel id="msg" value="#{realedocvehicle.errMsg}"/>
+                    </div>
+                </div>
+                <p:panel header="Release Impounded/Suspended Document/Vehicle" id="relase_doc_panel" styleClass="top-space bottom-space">
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="tf_applicationNo" value="Application No.:" />
+                            </label>
+                            <p:inputText id="tf_applicationNo" 
+                                         value="#{realedocvehicle.applicationNo}" 
+                                         maxlength="50" 
+                                         required="true"
+                                         requiredMessage="Please Enter The Application No.">
+                                <p:ajax 
+                                    event="blur"
+                                    process="tf_applicationNo" 
+                                    listener="#{realedocvehicle.checkchallandata(action_Code)}"
+                                    onstart ="PF('bui_fancy').show();" 
+                                    onerror ="PF('bui_fancy').hide();" 
+                                    oncomplete="PF('bui_fancy').hide()" 
+                                    update="vehcl_no,nitin ,xyz,nitin,release_dov,tf_applicationNo"
+
+                                    />
+                            </p:inputText>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="vehcl_no" value="Vehicle No.:" />
+                            </label>
+                            <p:inputText id="vehcl_no" value="#{realedocvehicle.vehicleNo}" disabled="true" />
+                        </div>
+
+                    </div>
+
+                    <p:tabView id ="xyz">
+                        <p:tab title="Release Documents">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="reldoc_data_table" value="#{realedocvehicle.documentList}" var="item" rowIndexVar="rowkey" reflow="true">
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <p:outputLabel value="S.No."/>
+                                            </f:facet>
+                                            <h:outputText value="#{rowkey+1}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <p:outputLabel value="Document"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.docimpounddobj.docDesc}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <p:outputLabel value="Valid Upto"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.docimpounddobj.validUpto}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <p:outputLabel value="Doc No."/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.docimpounddobj.docNo}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <p:outputLabel value="Issuing Authority"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.docimpounddobj.issueAuth}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </p:tab> 
+
+
+                        <p:tab title="Release Vehicle">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="impdt" value="Impounding Date:" />
+                                    </label>
+                                    <p:inputText id="impdt"   value="#{realedocvehicle.tfImpndDate}" disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="sez_no" value="Sezure No.:" />
+                                    </label>
+                                    <p:inputText id="sez_no"  value="#{realedocvehicle.tfSezNO}" disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="plac_imp" value="Place Of Impounding:" />
+                                    </label>
+                                    <p:inputText id="plac_imp"  value="#{realedocvehicle.tfImpndPlace}"  disabled="true" />
+                                </div>
+                            </div>
+
+
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="cont_off" value="Officer To Contact:" />
+                                    </label>
+                                    <p:inputText id="cont_off" disabled="true"  value="#{realedocvehicle.tfOfficerToContact}" size="14" autocomplete="off"/> 
+                                </div>
+
+                            </div>
+                        </p:tab> 
+                    </p:tabView>
+                    <p:panel styleClass="top-space bottom-space" id="remarks_panel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="reldt" value="Release Date:" />
+                                </label>
+                                <p:calendar id="reldt" 
+                                            value="#{realedocvehicle.tfRealasedate}" 
+                                            maxdate="#{realedocvehicle.maxDate}"
+                                            mindate="#{realedocvehicle.minDate}" 
+                                            pattern="dd-MMM-yyyy"
+                                            >
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="reloff" value="Release Officer.:" />
+                                </label>
+                                <p:inputText id="reloff"  
+                                             value="#{realedocvehicle.tfRealeseoffice}"
+                                             required="true"
+                                             requiredMessage="Please Enter The Release Officer Name"
+                                             styleClass="text-uppercase">
+
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="remk" value="Remarks If Any:" />
+                                </label>
+                                <p:inputText id="remk" 
+                                             value="#{realedocvehicle.tfRemarkany}" 
+                                             required="true"
+                                             requiredMessage="Please Enter The Remark If Any"
+                                             styleClass="text-uppercase"
+                                             >
+
+                                </p:inputText> 
+                            </div>
+                        </div>
+                    </p:panel>
+
+                </p:panel> 
+<!--                <p:panel  rendered="#{realedocvehicle.showApproveDisApprovePanelForSave}"  styleClass="top-space bottom-space">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{realedocvehicle}"/>
+                    </ui:include>
+                </p:panel>-->
+                <p:panel styleClass="top-space bottom-space">
+                    <div class="ui-grid-row center-position bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton id="release_dov" value="Release Document/Vehicle"   rendered="#{realedocvehicle.disableRelaseButton}">
+                                <p:ajax event="click" process="" listener="#{realedocvehicle.saveAndMoveFile()}"  update="release_dov,bt_isprint_Release"/>
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+
+                            <p:commandButton value="Back" action="home" process="@this"  immediate="true" icon="ui-icon-arrowreturnthick-1-w"/> 
+                            <p:commandButton id ="bt_isprint_Release" value="Print Release Report"  action="#{realedocvehicle.confirmprintCertificate()}" immediate="true" rendered="#{realedocvehicle.disablePrintButton}"/>    
+
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog> 
+
+                            <p:dialog id="printConfirmationPopupRelease"  
+                                      widgetVar="printParticularRelease"
+                                      modal="true" draggable="false" closable="false" hideEffect="explode"
+                                      header="Printed Confirmation Panel" styleClass="center-position">  
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position bottom-space">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Do you want to continue"/>
+                                        </label>
+                                        <!--                                        <p:commandButton  value="Print Release Document Report" onclick="PF('printParticularRelease').hide();"                                   
+                                                                                                  actionListener="#{realedocvehicle.printReport()}" immediate="true"
+                                                                                                  icon="ui-icon-check" ajax="false"/>-->
+
+                                        <p:commandButton  value="Print Release Vehicle and Document Report" onclick="PF('printParticularRelease').hide();"                                   
+                                                          action="/ui/reports/formDocumentVehicleReleaseReport.xhtml?faces-redirect=true"  immediate="true"
+                                                          icon="ui-icon-check" ajax="false"/>
+
+                                        <!--                                        <p:commandButton  value="Print Release Vehicle Report" onclick="PF('printParticularRelease').hide();"                                   
+                                                                                                  action="/ui/reports/formVehicleReleaseCertificate.xhtml?faces-redirect=true"  immediate="true"
+                                                                                                  icon="ui-icon-check" ajax="false"/>-->
+
+                                        <p:commandButton value="Cancel" immediate="true" onsuccess="PF('printParticularRelease').hide();" icon="ui-icon-close"/>
+                                    </div>
+                                </div>
+                            </p:dialog>
+
+
+
+                        </div>
+                    </div>
+                </p:panel>
+
+
+
+
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

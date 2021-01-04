@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui">
+    <p:outputPanel rendered="#{doc_status.appl_details.documentUploadShow}" styleClass="inline-section">
+        <p:commandButton icon="ui-icon-folder-open" immediate="true" value="#{language.viewUploadedDocuments}" action="#{doc_status.viewUploadedDocuments()}" rendered="#{!doc_status.appl_details.docVerifyForFacelessAppl}">
+            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+        </p:commandButton>
+        <p:commandButton id="idDoc" styleClass="red" value="Verify Documents"  action="#{doc_status.verifyAndViewUploadedDocuments()}" rendered="#{doc_status.appl_details.docVerifyForFacelessAppl}">
+            <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" />
+        </p:commandButton>
+        <p:dialog id="viewUploadedDmsReg" modal="true" widgetVar="dmsfileUploadedReg" header="#{language.displayingDMSUtility}" closeOnEscape="true" dynamic="true" draggable="false" resizable="false">
+            <iframe  src="#{doc_status.appl_details.dmsFileUploadUrl}"  height="600" width="1290" frameborder="0" scrolling="auto" marginheight="1" marginwidth="1"/>
+        </p:dialog>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+        </p:confirmDialog>
+    </p:outputPanel>
+</html>

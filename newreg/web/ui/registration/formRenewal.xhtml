@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="#{renewalBean.masterLayout}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{renewalBean.appl_details}"/>            
+            </ui:include>   
+            <ui:include src="panel_currentinfo.xhtml">
+                <ui:param name="currentinfo" value="#{renewalBean}"/>            
+            </ui:include> 
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <h:form prependId="false">
+            <div class="ui-grid ui-grid-responsive">            
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>
+                <p:panel  styleClass="top-space bottom-space">
+                    <f:facet name="header">
+                        Renewal of Registration of Vehicle
+                    </f:facet>  
+                    <p:outputPanel id="renewalPanel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="insp_dt" value="Inspection Date:"/>
+                                </label>
+                                <p:calendar id="insp_dt" value="#{renewalBean.renewalDobj.inspectedDt}" required="true" requiredMessage="Blank : Inspection Date"
+                                            mindate="#{renewalBean.minDate}" disabled="#{renewalBean.disableInspectionDetails}" maxdate="#{renewalBean.today}" pattern="dd-MMM-yyyy" navigator="true" readonlyInput="true"
+                                            accesskey="">
+                                    <p:ajax event="dateSelect"  update=" fit_upto " listener="#{renewalBean.fitnessValidUptoDateChangeListener}"/>
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="insp_by" value="Inspected By:"/>
+                                </label>
+                                <p:inputText id="insp_by" value="#{renewalBean.renewalDobj.inspectedBy}" required="true" requiredMessage="Blank : Inspected By"
+                                             style="text-transform: uppercase" disabled="#{renewalBean.disableInspectionDetails}" converter="toUpperCaseConverter" maxlength="35">
+                                    <f:ajax event="blur" execute="@this" render="@this" />
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="fit_upto" value="New Fitness Validity:"/>
+                                </label>
+                                <p:calendar id="fit_upto" value="#{renewalBean.renewalDobj.newFitDt}" required="true" requiredMessage="Blank : Inspection Date"
+                                            disabled="true"  pattern="dd-MMM-yyyy" navigator="true" readonlyInput="true"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+
+
+                <p:panel id="changedByPrevUser" styleClass="top-space bottom-space"
+                         rendered="#{renewalBean.prevChangedDataList.size()>0}" >
+                    <p:dataTable value="#{renewalBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="Changed by Employee" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+
+                        <p:column headerText="Changed Data by Previous Employee" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="Changed on" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                    <ui:param name="app_disapp" value="#{renewalBean}"/>
+                </ui:include>  
+            </div>
+
+            <vahan:vahanMessages messages="#{renewalBean.vahanMessages}"  rendered="#{renewalBean.vahanMessages ne null}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

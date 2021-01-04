@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <f:subview id="subview_special_permit">
+        <ui:composition>
+            <p:dataTable id="table_permit1"
+                         value="#{splPassengerBean.passengerList}"
+                         scrollable="#{splPassengerBean.passengerList.size() > 10}"
+                         scrollHeight="300" scrollRows="10" var="feeDetails">
+                <f:facet name="header">
+                    <div class="left-position">Passenger Details</div>
+                </f:facet>
+                <p:column headerText="S.No."
+                          styleClass="collumn-width center-position">
+                    <h:outputText value="#{feeDetails.srl_no}." />
+                </p:column>
+                <p:column headerText="Name">
+                    <p:inputText id="name" value="#{feeDetails.name}" styleClass="input"
+                                 converter="toUpperCaseConverter">
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="Age">
+                    <p:inputText id="age" value="#{feeDetails.age}" styleClass="input"
+                                 maxlength="3">
+                        <p:keyFilter regEx="/[0-9\s-]/i" />
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="Gender">
+                    <p:selectOneMenu value="#{feeDetails.gender}">
+                        <f:selectItem itemLabel="Select Gender" />
+                        <f:selectItem itemLabel="MALE" itemValue="MALE" />
+                        <f:selectItem itemLabel="FEMALE" itemValue="FEMALE" />
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column headerText="Address">
+                    <p:inputText id="address" value="#{feeDetails.address}"
+                                 styleClass="input" converter="toUpperCaseConverter">
+                    </p:inputText>
+                </p:column>
+                <p:column id="commandButton" headerText="Add/Remove Passenger">
+                    <p:commandButton id="add" icon="ui-icon-plusthick">
+                        <f:param name="mod" value="add" />
+                        <p:ajax event="click" update="table_permit1"
+                                process="table_permit1"
+                                listener="#{splPassengerBean.addNewRow(feeDetails)}"
+                                partialSubmit="true" />
+                    </p:commandButton>
+                    <p:tooltip id="toolTipGrow1" for="add" value="Add new Passenger"
+                               showEffect="clip" hideEffect="clip" />
+                    <p:commandButton id="minus" icon="ui-icon-minusthick">
+                        <f:param name="mod" value="minus" />
+                        <p:ajax event="click" update="table_permit1"
+                                listener="#{splPassengerBean.addNewRow(feeDetails)}"
+                                partialSubmit="true" />
+                    </p:commandButton>
+                    <p:tooltip id="toolTipGrow2" for="minus"
+                               value="Remove Passenger details" showEffect="clip"
+                               hideEffect="clip" />
+                </p:column>
+
+            </p:dataTable>
+        </ui:composition>
+        <p:blockUI block="@form" widgetVar="blockUIWidget">
+            <p:graphicImage name="ajax_loader_blue.gif" library="images"
+                            height="40%" width="30%" />
+        </p:blockUI>
+    </f:subview>
+</html>

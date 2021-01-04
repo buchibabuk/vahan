@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12">                    
+                <p:outputPanel id="bank_output_panel_id" >
+                    <p:panel header="Bank Details" id="bank_panel_id" styleClass="bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="bank_name" value="Bank Name"/>
+                                </label>
+                                <p:selectOneMenu id="bank_name" value="#{bankDetails.bankSubsidyDetail.bankCd}" required="true" filter="true" styleClass="bottom-space" >
+                                    <f:selectItem itemLabel="----SELECT BANK----" itemValue="-1" />
+                                    <f:selectItems value="#{bankDetails.bankNameList}"/>
+                                    <f:validator validatorId="selectOneValidator" for="bank_name" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ifsc_code" value="IFSC Code"/>
+                                </label>
+                                <p:inputText id="ifsc_code" autocomplete="off" placeholder="ABCD0123456" value="#{bankDetails.bankSubsidyDetail.ifscCode}"
+                                             maxlength="11" required="true" requiredMessage="Bank IFSC code can not be blank."
+                                             styleClass="text-uppercase" converter="toUpperCaseConverter" >
+                                    <f:validator validatorId="ifscValidator" />
+                                    <p:keyFilter for="ifsc_code" regEx="/[a-z0-9]/i" />
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4 resp-blank-height">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ac_id" value="Bank A/C No"/>
+                                </label>
+                                <p:inputText id="ac_id" autocomplete="off" value="#{bankDetails.bankSubsidyDetail.accountNo}"
+                                             maxlength="20" required="true" requiredMessage="Bank A/C No. can not be blank." validatorMessage="Account no should not be less then 10 digits."
+                                             styleClass="text-uppercase" converter="toUpperCaseConverter" >
+                                    <f:validateLength maximum="20" minimum="10" />
+                                    <p:keyFilter for="ac_id" regEx="/[0-9]/i" />
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+            </div>                    
+        </div>
+    </div>
+</html>

@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">    
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formGenApplNo" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.inwardApplication}</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="applGenMsg"  closable="true"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="panelMain" rendered="#{!applicationInward.render}">
+
+                        <p:focus context="panelMain"/>
+
+                        <div class="ui-grid-row top-space bottom-space">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable id="seatWork" value="#{applicationInward.seatWork}" var="virtual"
+                                             rowIndexVar="index" rendered="#{applicationInward.seatWork.size()>0}">
+                                    <p:column headerText="Sr.No" width="5%">#{index +1}.</p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">Application <br/> No</f:facet>
+                                            #{virtual.appl_no}
+                                    </p:column>
+
+                                    <p:column width="10%">
+                                        <f:facet name="header">Application <br/> Date</f:facet>
+                                            #{virtual.appl_dt}
+                                    </p:column>
+
+                                    <p:column headerText="Vehicle No">#{virtual.regn_no}</p:column>
+
+                                    <p:column headerText="Purpose">#{virtual.purpose_descr}</p:column>                                   
+
+                                    <p:column width="8%">
+                                        <f:facet name="header">Movement <br/> Sr.No</f:facet>
+                                            #{virtual.file_movement_slno}
+                                    </p:column>
+
+                                    <p:column headerText="Action">
+                                        <p:commandButton value="#{virtual.action_descr}" action="#{applicationInward.selectedSeatWork()}" 
+                                                         ajax="false" immediate="true" onclick="PF('ajax_status').show();">
+                                            <f:param name="appl_no" value="#{virtual.appl_no}"/>
+                                            <f:param name="pur_code" value="#{virtual.pur_cd}"/>
+                                            <f:param name="actionCode" value="#{virtual.action_cd}"/>
+                                            <f:param name="Purpose" value="#{virtual.purpose_descr}"/>
+                                            <f:param name="office_remark" value="#{virtual.office_remark}"/>
+                                            <f:param name="public_remark" value="#{virtual.remark_for_public}"/>
+                                            <f:param name="regn_no" value="#{virtual.regn_no}"/>
+                                            <f:param name="appl_dt" value="#{virtual.appl_dt}"/>
+                                            <f:param name="cur_status" value="#{virtual.status}"/>
+                                            <f:param name="redirect_url" value="#{virtual.redirect_url}"/>
+                                            <f:setPropertyActionListener target="#{applicationInward.selectedSeat}" value="#{virtual}" />
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable> 
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRegNo" value="#{language.home_rightpanelregno}"/>
+                                </label>
+                                <p:inputText  id="tfRegNo" value="#{applicationInward.regn_no}" 
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="#{language.enter_regn_no}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              validator="#{validateFunction.validateRegNo}"
+                                              styleClass="input"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="#{language.showDetails}" action="#{applicationInward.showDetails()}"
+                                                 update="formGenApplNo:panelOwnerInfo formGenApplNo applGenMsg" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()"/>
+                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>               
+
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:outputPanel styleClass="bottom-space" rendered="#{applicationInward.render}">                        
+
+                        <ui:include src="/ui/registration/registrationStatusParameters.xhtml">
+                            <ui:param name="regStatusParam" value="#{applicationInward.regStatus}"/>
+                        </ui:include> 
+                        <div class="center-position right-space top-space">
+                            <h:outputText value="#{language.fitnessInspectionMessagePart1} #{applicationInward.tempFitnessDetails.off_name}, #{applicationInward.tempFitnessDetails.state_name}, click relevant tab for more details...]" rendered="#{applicationInward.tempFitnessDetails!=null}"  styleClass="font-bold header-subheader"/>
+                        </div>
+                        <div class="center-position">
+                            <h3 class="red font-bold">"#{language.blacklistToMsg}"</h3>
+                        </div>
+                        <p:outputPanel rendered="#{applicationInward.renderVehAgeExpireVarfcn}"  styleClass="noupdate">
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-12 center-position right-space top-space">
+                                    <h:outputText value="#{language.vehAgeExpMsg} " styleClass="report-header font-bold red"/>
+                                    <p:selectBooleanCheckbox id="verifyVehAgeExpiry"
+                                                             required="true"
+                                                             value="#{applicationInward.vldtVehAgeExpireVarfcn}"
+                                                             validator="#{validateFunction.validateCheckBoxIsTrue}"
+                                                             validatorMessage="#{language.verifyVehAgeExpDeclaration}"
+                                                             requiredMessage="#{language.verifyVehAgeExpDeclaration}"/>
+
+                                </div>
+                            </div>
+                            <div class="ui-grid-row bottom-space">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4 left-position right-space">
+                                    <p:inputTextarea id="applInwardReason" value="#{applicationInward.officeRemarks}" cols="80" rows="1"
+                                                     placeholder="Please provide your remarks here..."
+                                                     maxlength="80" converter="toUpperCaseConverter" styleClass="bottom-space text-uppercase"
+                                                     required="true" requiredMessage="Please Provide your Remarks for Application Inward"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                        <p:panel id="ownerInfo">
+                            <p:outputPanel rendered="#{applicationInward.renderHpaVarification}">
+                                <div class="ui-grid-row bottom-space">
+                                    <div class="ui-grid-col-12 right-position right-space top-space">
+                                        <h:outputText value="#{language.verifyHypothecated} " styleClass="report-header font-bold red"/>
+                                        <p:selectBooleanCheckbox id="verifyCheckValue"
+                                                                 required="true"
+                                                                 value="#{applicationInward.validateHpaVarification}"
+                                                                 validator="#{validateFunction.validateCheckBoxIsTrue}"
+                                                                 validatorMessage="#{language.verifyHypoAdditionDeclaration}"
+                                                                 requiredMessage="#{language.verifyHypoAdditionDeclaration}"/>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3">
+                                    <div class="ui-grid-row top-space">
+                                        <div class="ui-grid-col-12">
+                                            <div class="font-bold report-header">    
+                                                #{language.requestForRegistrationNo} <span class="red font-bold"> (#{applicationInward.regn_no})</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <p:selectManyMenu id="requestForPurCD" 
+                                                              value="#{applicationInward.selectedPurposeCode}" 
+                                                              showCheckbox="true"
+                                                              styleClass="scroll-panel-height">
+                                                <f:selectItems value="#{applicationInward.purCodeList}"/> 
+                                                <p:ajax event="change" listener="#{applicationInward.skipMobileEntryListener()}" process="@this" update="ownerInfo tabView_id"/>
+                                            </p:selectManyMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row center-position top-space bottom-space">
+                                        <div class="ui-grid-col-12">
+                                            <p:commandButton id="btn_save" value="#{language.inwardApplication}" 
+                                                             action="#{applicationInward.sendOtpAndVerifyOwnerMobileNo('sendOtp')}"
+                                                             update="panelApplInward applGenMsg"  onclick="PF('ajax_status').show()"
+                                                             onsuccess="PF('ajax_status').hide()">                                    
+                                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>   
+                                            </p:commandButton> 
+                                            <p:commandButton value="#{language.login_back}" action="form_applicationInward" process="@this" 
+                                                             update="formGenApplNo" immediate="true" onclick="PF('ajax_status').show()"
+                                                             onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-col-9">
+                                    <p:tabView id="tabView_id" styleClass="top-space bottom-space" >
+
+                                        <!--################################# Owner Details ########################################## -->
+                                        <p:tab  id="owner_details_tab" title="#{language.owner_information}">
+                                            <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">                                             
+                                                <ui:param name="ownerDetail" value="#{applicationInward.ownerDetail}"/>
+                                                <ui:param name="listOwnerCatg" value="#{applicationInward.listOwnerCatg}"/>
+                                            </ui:include>
+                                        </p:tab>
+                                        <!--########################################################################################## -->
+
+
+                                        <!--################################# Vehicle Details ######################################## -->
+                                        <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}">                                
+                                            <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                                <ui:param name="ownerDetail" value="#{applicationInward.ownerDetail}"/>
+                                            </ui:include>
+                                        </p:tab>
+                                        <!--########################################################################################## -->
+                                        <p:tab  id="veh_conv_info_tab" title="Conversion Details"  rendered="#{applicationInward.renConversionTab}">  
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel  for="conv_vh_type" value="Converted to Vehicle Category:"/>
+                                                    </label>
+                                                    <p:selectOneMenu id="conv_vh_type" value="#{applicationInward.vehType}" filter="true" required="true" disabled="#{applicationInward.disableVehType}"
+                                                                     requiredMessage="Blank : Vehicle Type">
+                                                        <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                        <f:selectItems value="#{applicationInward.vh_type}"/>
+                                                        <f:validator validatorId="selectOneValidator" for="conv_vh_type"/>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel  for="vch_catg" value="Converted Vehicle Class:"/>
+                                                    </label>
+                                                    <p:selectOneMenu id="vch_catg" required="true" value="#{applicationInward.conv_dobj.new_vch_class}" 
+                                                                     filter="true" requiredMessage="Blank: Vehicle Class">
+                                                        <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                        <f:selectItems value="#{applicationInward.vh_class}"/>
+                                                        <p:ajax event="change" listener="#{applicationInward.vehClassListener}" update="conv_vh_class conv_vh_type " partialSubmit="true"/>
+                                                        <f:validator validatorId="selectOneValidator" for="vch_catg"/>
+                                                    </p:selectOneMenu>                                
+                                                </div>
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="conv_vh_class" value="Converted Vehicle Category:"/>
+                                                    </label>                                
+                                                    <p:selectOneMenu id="conv_vh_class"  value="#{applicationInward.conv_dobj.new_vch_catg}" filter="true" required="true" 
+                                                                     requiredMessage="Blank : Vehicle Category">
+                                                        <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                        <f:selectItems value="#{applicationInward.vh_category}" />                                    
+                                                        <f:validator validatorId="selectOneValidator" for="conv_vh_class"/>
+                                                    </p:selectOneMenu>
+                                                </div>
+                                            </div>
+
+                                        </p:tab>
+                                        <!--###################### Insurance Details ############################### -->
+                                        <p:tab id="insuranceDetails"  title="#{language.ins_dtls}">      
+                                            <ui:include src="/ui/form_ins_dtls.xhtml"/>                                                                  
+                                        </p:tab>  
+                                        <!--########################################################################################## -->     
+
+                                        <!--###################### Hypothecation Details ######################################## -->
+                                        <p:tab id="hypothecationDetails"  title="#{language.hypothecation}">  
+                                            <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+                                        </p:tab>
+                                        <!--########################################################################################## -->
+
+                                        <!--###################### Fitness Details ######################################## -->
+                                        <p:tab id="fitnessDetails"  title="#{language.fitnessDetails}" rendered="#{applicationInward.fitnessDobj ne null}">  
+                                            <ui:include src="/ui/registration/formFitnessDetails.xhtml">
+                                                <ui:param name="fitnessDobj" value="#{applicationInward.fitnessDobj}"/>
+                                            </ui:include>
+                                        </p:tab>
+                                        <!--########################################################################################## -->
+
+                                        <p:tab id="vt_taxDetail"  title="Tax Details" rendered="#{applicationInward.taxDetaillist ne null}">  
+                                            <p:outputPanel id="vt_taxDetail_outPut">
+                                                <p:panel id="vt_taxDetail_panel">
+                                                    <p:dataTable id="tb_showTaxdetail"  value="#{applicationInward.taxDetaillist}" 
+                                                                 paginator="#{applicationInward.taxDetaillist.size()>10}" rows="10" paginatorPosition="bottom"
+                                                                 scrollable="false" var="sc" styleClass="bottom-space" rowIndexVar="index">
+                                                        <f:facet name="header">
+                                                            <div class="left-position">
+                                                                Tax Paid
+                                                            </div>
+                                                        </f:facet>
+                                                        <p:column headerText="SI.No" width="5%">
+                                                            <h:outputText value="#{index+1}" />                                
+                                                        </p:column>
+                                                        <p:column headerText="Tax Type">
+                                                            <h:outputText value="#{sc.descrold}" />
+                                                        </p:column>
+                                                        <p:column headerText="Receipt No" filterBy="#{sc.rcpt_noold}" filterMatchMode="contains"  sortBy="#{sc.rcpt_noold}">
+                                                            <h:outputText value="#{sc.rcpt_noold}" />
+                                                        </p:column>
+                                                        <p:column headerText="Tax From">
+                                                            <h:outputText value="#{sc.tax_fromold}" />
+                                                        </p:column>
+                                                        <p:column headerText="Tax Upto">
+                                                            <h:outputText value="#{sc.tax_uptoold}" />
+                                                        </p:column>                  
+                                                        <p:column headerText="Challan Date"  filterBy="#{sc.rcpt_dtold}" filterMatchMode="contains">
+                                                            <h:outputText value="#{sc.rcpt_dtold}" />
+                                                        </p:column>
+                                                        <p:column headerText="Tax Amount">
+                                                            <h:outputText value="#{sc.tax_amtold}" />
+                                                        </p:column>
+                                                        <p:column headerText="Fine/Penalty">
+                                                            <h:outputText value="#{sc.tax_fineold}" />
+                                                        </p:column>                   
+                                                        <p:column headerText="Paid at">
+                                                            <h:outputText value="#{sc.off_name}" />
+                                                        </p:column>                   
+                                                    </p:dataTable>
+                                                </p:panel>
+                                            </p:outputPanel>    
+                                        </p:tab>
+                                        <p:tab id="documentUploadView"  title="Documents Details" rendered="#{applicationInward.documentUploadShow}">  
+                                            <ui:include src="/ui/form_doc_upload.xhtml">
+                                                <ui:param name="docUpload" value="#{applicationInward.documentUpload_bean}"/>  
+                                            </ui:include> 
+                                            <p:panel>
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-12 center-position">
+                                                        <p:commandButton value="View Uploaded Documents" immediate="true" action="#{applicationInward.documentUpload_bean.viewUploadedDocuments()}"/>
+                                                    </div>
+                                                </div>
+                                            </p:panel>  
+                                        </p:tab>
+                                    </p:tabView>
+                                </div>
+                            </div>
+                        </p:panel>   
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:dialog id="dialogDupRegNo" header="Application Can't be Inward!" widgetVar="varDupRegNo" 
+                          closable="true" modal="true" dynamic="true" width="90%" style="margin: 0 auto !important">
+                    <!--<h:form id="dupRegNo">-->       
+                    <h:outputLabel value="Please contact to Office Admin to remove duplicate records." rendered="#{applicationInward.renderMoveToHistoryButton}" styleClass="red font-bold" />
+                    <p:dataTable id="duplicateRegn" value="#{applicationInward.dupRegnList}" var="dupRegn"
+                                 rowIndexVar="index" rendered="#{applicationInward.dupRegnList.size()>1}">
+
+                        <f:facet name="header">
+                            <h:outputText value="Duplicate Record Found for Registration No"/>
+                        </f:facet>
+
+                        <p:column headerText="Sr.No" styleClass="center-position collumn-width">#{index +1}.</p:column>
+
+                        <p:column headerText="#{label.regn_no}" style="word-break: keep-all;">#{dupRegn.regn_no}</p:column>
+
+                        <p:column headerText="Owner Sr No." style="word-break: keep-all;" width="6%">#{dupRegn.owner_sr}</p:column>
+
+                        <p:column headerText="#{label.owner_name}" width="12%">#{dupRegn.owner_name}</p:column>
+
+                        <p:column headerText="S/W/D of" width="12%">#{dupRegn.f_name}</p:column>
+
+                        <p:column headerText="#{label.office}" width="13%">#{dupRegn.off_name}(#{dupRegn.state_cd}#{dupRegn.off_cd})</p:column>
+
+                        <p:column headerText="Financier Name" style="word-break: keep-all;">#{dupRegn.hpaDobj.fncr_name}</p:column>  
+
+                        <p:column headerText="Status">#{dupRegn.statusDescr}</p:column>  
+
+                        <p:column headerText="Last Receipt Date" style="word-break: keep-all;">#{dupRegn.lastRcptDt}</p:column>  
+
+                        <p:column headerText="Move to History" rendered="#{!applicationInward.renderMoveToHistoryButton}" style="word-break: keep-all;" width="12%">
+                            <p:commandButton value="Move to History" rendered="#{dupRegn.off_cd != applicationInward.currentOffCd}" update="confirmDialog"
+                                             action="#{applicationInward.delDuplicateVehDetails(dupRegn)}" 
+                                             immediate="true" styleClass="center-position">
+                                <p:confirm header="Confirmation" message="Are you Sure"  icon="ui-icon-alert" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog global="true"   >
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+                    <!--</h:form>-->
+                </p:dialog>
+
+                <p:dialog id="dialogAlreadyInwardedAppl" header="Application Can't be Inward!" widgetVar="varInwardedApplNo" 
+                          closable="true" modal="true" dynamic="true" height="200" width="800" resizable="false">
+                    <h:form id="alreadyInwaredApplNo">
+                        <p:dataTable value="#{applicationInward.statusList}" var="applnInwarded"
+                                     rendered="#{applicationInward.statusList.size()>0}"
+                                     rowIndexVar="srlNo">
+                            <f:facet name="header">
+                                <h:outputText value="Application number(s) which are pending for approval are listed below:"/>
+                            </f:facet>    
+                            <p:column headerText="Sr.No" width="5%">#{srlNo +1}.</p:column>
+                            <p:column headerText="Application No">#{applnInwarded.getAppl_no()}</p:column> 
+                            <p:column headerText="Registration No">#{applnInwarded.regn_no} </p:column>
+                            <p:column headerText="Purpose">#{applnInwarded.purCdDescr}</p:column>
+                            <p:column headerText="Office">#{applnInwarded.offName}</p:column>
+                            <p:column headerText="State">#{applnInwarded.stateName}</p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="eChallanInfo" header="There is a Challan on this Vehicle No" widgetVar="varEchallan" 
+                          closable="true" modal="true" dynamic="true" height="200" width="800" resizable="true">
+                    <p:outputPanel id="eChallanInfoPanel">
+                        <h:outputLabel value="Note: As per the MoRTH notification, the owner can avail the service (except TO/NOC) if Challan is pending for less than 90 days." rendered="#{applicationInward.restrictPurposeforEchallan}" styleClass="red font-bold"></h:outputLabel>
+                        <ui:include src="#{applicationInward.echallanInfoURL}">
+                            <ui:param name="eChallanDetail" value="#{applicationInward.geteChallanInfo()}"/>
+                        </ui:include>
+                    </p:outputPanel>
+                </p:dialog>
+
+                <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true">
+                    <p:messages id="messagesInDialog"/>
+                    <!--<p:button value="OK" onclick="PF('messageDialog').hide();"/>-->
+                </p:dialog>   
+
+                <p:blockUI block="formGenApplNo" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+                <!-- OTP for Owner Mobile Verification-->
+                <p:outputPanel id="otp_confirmation">
+                    <p:dialog id="otp_dialog" widgetVar="otp_confrm" header="OTP for Verify Owner Mobile-No"  closable="true"  modal="true" dynamic="true" >
+                        <p:messages showDetail="true" showSummary="false">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:outputLabel value="#{applicationInward.mobileNoCountMessage}" escape="false"></p:outputLabel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 red">
+                                OTP has been sent to Owner mobile no.#{applicationInward.ownerDetail.ownerIdentity.mobile_no}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-1">
+                            </div>
+                            <div class="ui-grid-col-2">
+                                <label>
+                                    <p:outputLabel value="Enter OTP:"/>
+                                </label>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <p:inputText value="#{applicationInward.enteredOwnerMobVerifyOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <p:commandLink value="Resend OTP" action="#{applicationInward.sendOtpAndVerifyOwnerMobileNo('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                               onsuccess="PF('ajax_status').hide()"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="Confirm And Inward Application " action="#{applicationInward.sendOtpAndVerifyOwnerMobileNo('confirmOtp')}" onclick="PF('ajax_status').show()" ajax="false"
+                                                 update="panelApplInward applGenMsg" onsuccess="PF('ajax_status').hide();" >
+
+                                </p:commandButton>
+                                <p:commandButton value="Cancel"  
+                                                 process="@this"  immediate="true" 
+                                                 onclick="PF('otp_confrm').hide()" icon="ui-icon-arrowreturnthick-1-w"/>  
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:outputPanel id="confirmDialog">
+                    <p:dialog  widgetVar="confirmDialogVar" resizable="false" modal="true"
+                               draggable="false" closable="false" hideEffect="explode" header="Confirmation !!">  
+                        <div class="bottom-space center-position">
+                            <span class="ui-button-icon-left ui-icon ui-c ui-icon-alert inline-section"></span> 
+                            <span>As per the details, the vehicle has been found financed by #{applicationInward.moveToHistoryOwnerDtls.hpaDobj.fncr_name} in office #{applicationInward.moveToHistoryOwnerDtls.off_name}.</span>
+                            <br/>
+                            <span class="font-bold center-position">Do you want to move the financier details to office #{applicationInward.currentOfficeName}?</span>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position top-space">
+                                <p:commandButton value="Yes" action="#{applicationInward.moveHistoryDuplicateVehDetails('true')}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="PF('ajax_status').show();
+                                        PF('confirmDialogVar').hide();"
+                                                 onsuccess="PF('ajax_status').hide();" />
+                                <p:commandButton value="No" action="#{applicationInward.moveHistoryDuplicateVehDetails('false')}" 
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" onclick="PF('ajax_status').show();
+                                                         PF('confirmDialogVar').hide();"
+                                                 onsuccess="PF('ajax_status').hide();" />
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

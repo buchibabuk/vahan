@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'WB' and !printDocXHTML.renderPmtnoAndRoutedtl}">
+            <br/><br/><br/>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="PstP No:#{printDocXHTML.passPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="(1) Whether goods may be carried solely or in addition to passengers and their personal luggage, and conditions subject to which the goods may be so carried:-." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  Passenger’s personal luggage may be carried without causing any discomfort to co-passengers." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(2) Whether persons may be carried standing in the vehicle and, if so, at what times and places
+                                   and subject to what conditions—" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(3) The vehicle above described may be used by the holder of this permit as a contract carriage within the areas hereinafter specified ans subject to the following conditions:--" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="    With prior approval of STA WB." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(4) The fare-table is to be exhibited on the vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(5) The time-table is to be exhibited on the vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(6) The records to be maintained and the dates on which returns are to be made to the Transport Authority—." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(7) Any other conditions—As per attached condition sheets." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(8) This permit shall, to the extent specified in entry 11 above, be deemed to be a public carrier’s permit." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(9) This permit shall, to the extent specified in entry 13 above, be deemed to be a contract carriage permit." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(10)Under the provisions of rule 64 of the Bengal Motor Vehicles Rules 1940, this permit is valid
+                                   also in the regions and subject to the conditions set out below—" styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Secretary .<br/>
+                                State Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+<!--        madhurendra on 10-10-2020-->
+         <p:outputPanel rendered="#{printDocXHTML.renderPmtnoAndRoutedtl and printDocXHTML.ownerPmtDobj.state_cd eq 'WB'}">
+            <br/><br/><br/>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="PstP No:#{printDocXHTML.passPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="(1) Permit holder shall comply, if directed by the authority granting the permit, in the interest of public order, public safety, or in any emergency, use a Stage Carriage on such route or in such area in the region other than that specified in such permit and during such period and at such timings as may be specified in the direction" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(2) Passenger’s personal luggage may be carried without causing any discomfort to co passengers" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(3) The fare table is to be exhibited on the vehicle" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(4) The time table is to be exhibited on the vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(5) Adequate details of permit shall be exhibited on the vehicles such as details of approved route, Permit No and validity of permit etc." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(6) The service shall be regularly operated on the specified route in accordance with the approved time table." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(7) In case of no use of vehicle due to accident, mechanical problem or any unavoidable cause, the permit holder shall intimate in writing about the fact to the permit issuing authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(8) The permit holder shall maintain a complaint book to be carried at all times in each of his stage carriage service vehicles and produce before any passenger, if asked for, for recording any complaint. Such complaint book is to be produced before the higher authority whenever called for." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(9) The conductor or failing him the driver shall report the times of arrival and departure at or from any stations and to any person or authority, if so directed by this Authority. Such stations or such persons or authority will be fixed by this Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(10)The STA,WB may, after giving notice of not less than one month may vary the conditions of the permit and may attach further conditions to the permit." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(11)Permit holder shall maintain the Garage as provided in rule 193" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(12)The permit holder shall comply with provisions of sub-rules (1) and (2) and rule 22 of the West Bengal M.V Rules 1989" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(13)The holder of the Permit shall comply with all the provisions of the Motor Vehicles Act, 1988 and the West Bengal Motor Vehicles Rules, 1989 " styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Secretary .<br/>
+                                State Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'BR'}">
+
+            <br/><br/><br/>
+
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>                
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="1)  As per section - 112 of MVAct , 1988 and Schedule- 1/ 111 , notification no : 1377 dated 06.04.2018 , memo no: 1867 dated 05.03.2019 , it should not exceed the speed limit of 60 KMs per hour , but upon bridges and culverts it should not exceed the limit prescribed by PWD / RCD or District Board."/>
+                    <h:outputLabel value="2)  Passengers Vehicle can be operated as per hire charges fixed by Transport Department , Govt. of Bihar vide its notification no: 907 dated 06.10.2018.
+                                   Classes of Bus and  it’s hire charges per KM , per passenger "/>
+                    <h:outputLabel value=" (a) General Bus - 90 paise"/>
+                    <h:outputLabel value=" (b) Express Bus Service - 95 Paise"/>
+                    <h:outputLabel value=" (c) Semi Deluxe Bus service -114 Paise "/>
+                    <h:outputLabel value=" (d) Deluxe Bus service - 136 Paise"/>
+                    <h:outputLabel value=" (e) Deluxe AC Bus service - 150 Paise"/>
+                    <h:outputLabel value=" (f) Volvo and equivalent luxurious Bus-200 Paise"/>
+                    <h:outputLabel value=" (g) City Bus service. -124 paise per KM, for first 4 KMs and 109 paise for every 2 KMs "/>
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <br/>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> 
+        <p:outputPanel rendered="#{printDocXHTML.renderMnStaSCPmtPrintCond}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>                
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="(a) The permits granted by State Transport Authority of one state shall be countersigned by reciprocating State as provided within the restriction. The counter signature for temporary permit shall b for the full period of validity of the permit for 4 months, but for permanent permit counter signature shall be for one year at a time."/>
+                    <h:outputLabel value="(b) State Transport Authority of either State shall be at liberty to withhold a counter signature giving to a particular service if that service possess any practical difficulty in operation due to time table, road condition, law and order situation and any other factor."/>
+                    <h:outputLabel value="(c) Every bus under this permit system shall carry a Passengers Manifest to be prepared/signed by the authorised Booking Counter concd(holder of Agent or Canvasser  license u/s 93 of the MV Act’1988)"/>
+                    <h:outputLabel value="(d) Every bus operating under this permit system shall also carry all relevant documents of the vehicle."/>                    
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <br/>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> 
+        <p:outputPanel rendered="#{printDocXHTML.renderASPrint}">
+            <div class="page-break"></div>
+
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>                
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="(1)The Bus will strictly follow the Route as per Permit."/>
+                    <h:outputLabel value="(2)Route No., Routes, details and Permit Route Number to be prominently displayed on  front, back and left side of the City Buses as notified vide Notification No.CT-STA/14/2017 Dated Guwahati the 14th Feb, 2020."/>                   
+                    <h:outputLabel value="(3)Door of the City Buses must be closed at the time of running."/>
+                    <h:outputLabel value="(4)The Door will be open only at the Bus Stoppages. The Bus would not move out of the parking slot / Bus lay bay. Untill both the doors are closed."/>
+                    <h:outputLabel value="(5)Rear Door shall be used to ingress and Front Side Door is kept for Exit from the Bus"/>
+                    <h:outputLabel value="(6)Time Card has to be maintained by the Associations."/>
+                    <h:outputLabel value="(7)The Buses will be allowed to wait only for one minute at a stop."/>
+                    <h:outputLabel value="(8)GPS devicemust Be Installed and activated in the Bus."/>
+                    <h:outputLabel value="(9)Police Whatsapp Complain No must be displayed on the back side of the City Buses."/>
+                    <h:outputLabel value="(10)Ticket must be issued to the Passengers."/>
+                    <h:outputLabel value="(11)The Behavior of Driver / Conductor / Staff of the City Buses should be Polite and helpful."/>
+                    <h:outputLabel value="(12)Left side Overtaking is totally prohibited one Bus will not overtake another Bus running on the same route ."/>
+                    <h:outputLabel value="(13)Uniform must be worn by the staff of the City Buses."/>
+                    <h:outputLabel value="(14)Seat Belt use is Mandatory for the Driver of the City Buses."/>
+                    <h:outputLabel value="(15)Smoking by the staff and passengers is totally prohibited inside the City Buses."/>
+                    <h:outputLabel value="(16)Over Loading of Passenger is prohibited."/>
+                    <h:outputLabel value="(17)Driving dangerously and Excessive Speed is Un-Lawful."/>
+                    <h:outputLabel value="(18)Unauthorized Parking of the City Buses is Un-Lawful."/>
+                    <h:outputLabel value="(19)Noise and Air Pollution is an offence."/>
+                    <h:outputLabel value="(20)Blowing Horn near notified areas i.e. School, College, Hospital, Educational Institute, etc, is prohibited."/>
+                    <h:outputLabel value="(21)Driving under influence of Alcohol by the staff is strictly prohibited."/>
+                    <h:outputLabel value="(22)In no case the Buses will divert from the route allowed in the Permit."/><br/>
+                    <h:outputLabel value="(*) Violation of any of the above condition will result in suspension / cancellation of Permit."/>
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <br/>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+    </body>
+</html>

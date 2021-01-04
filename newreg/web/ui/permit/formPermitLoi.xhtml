@@ -1,0 +1,353 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22" >
+        <h:form id="pmtLoiApproval" prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Permit LOI/Offer Approval</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages  showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:growl id="msgs" showDetail="true"  showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-10 top-space left-position">
+                    <p:selectOneRadio  value="#{pmtLoi.searchByValue}"  layout="responsive" columns="2">
+                        <f:selectItem itemLabel="Application No" itemValue="applNo" />
+                        <f:selectItem itemLabel="All Application No" itemValue="allApplNo" />
+                        <p:ajax event="click" listener="#{pmtLoi.booleanRegisterVehicle}" partialSubmit="true" update="actionMsg  pendingWorkId pendingpmtLoi pmtDtlsPanel pendingpmtLoiListPanal"/>
+                    </p:selectOneRadio>
+                </div>
+            </div>
+            <p:panel id="pendingpmtLoi"  visible="#{pmtLoi.renderDaysPanal}" styleClass="datatable-panel" style="margin: 0px auto;">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-2 resp-blank-height"></div>
+                    <div class="ui-grid-col-8">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel   value="Application No:" rendered="#{pmtLoi.searchByValue eq 'applNo'}"/>
+                            <p:outputLabel   value="Part 1 (First Six Chars)" rendered="#{pmtLoi.searchByValue eq 'applNo'}" styleClass="inline-section" style="width: 49% !important; color: #FF0000 !important;" />
+                            <p:outputLabel   value="Part 2 (Next Ten Chars)" rendered="#{pmtLoi.searchByValue eq 'applNo'}" styleClass="inline-section" style="width: 50% !important; color: #FF0000 !important;" />
+                        </label>
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="Owner Name:" rendered="#{pmtLoi.searchByValue == 'ownName'}"/>  
+                        </label>
+
+                        <p:inputText id="firstPartAppNo" styleClass="text-uppercase" maxlength="6" required="true" 
+                                     requiredMessage="Please Enter Application No" 
+                                     converter="toUpperCaseConverter"  title="Application Number Part 1 (First Six Chars)"
+                                     autocomplete="off" value="#{pmtLoi.firstPartApplNo}" 
+                                     style="width: 42% !important; margin-right: 4.5%;" 
+                                     rendered="#{pmtLoi.searchByValue == 'applNo'}">
+                            <p:keyFilter regEx="/[0-9A-Z\s_]/i"/>
+                            <f:validateLength minimum="6" maximum="6"/>  
+                        </p:inputText>  
+                        <p:inputText  id="secondPartAppNo" value="#{pmtLoi.secondPartApplNo}" maxlength="10"
+                                      converter="toUpperCaseConverter"  title="Application Number Part 2 (Next Ten Chars)"
+                                      autocomplete="off" styleClass="text-uppercase"
+                                      style="width: 42% !important;" rendered="#{pmtLoi.searchByValue eq 'applNo'}">
+                            <p:keyFilter regEx="/[0-9A-Z\s_]/i"/>
+                        </p:inputText> 
+                        <!--                        <p:inputText id="ownerName"  maxlength="25" styleClass="text-uppercase"                                          
+                                                             converter="toUpperCaseConverter" 
+                                                             autocomplete="off" value="#{pmtLoi.ownName}" rendered="#{pmtLoi.searchByValue == 'ownName'}" >                               
+                                                    <p:keyFilter regEx="/[a-zA-Z\s_]/i"/>
+                                                </p:inputText>-->
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Get Details" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="actionMsg pendingWorkId pendingpmtLoiListPanal" action="#{pmtLoi.btGetDetailsForRePrint()}" />
+                    </div>
+                </div>
+            </p:panel>
+
+            <h:panelGroup id="actionMsg" styleClass="top-space">
+                <p:outputPanel id="pendingWorkId" rendered="#{pmtLoi.allPendingList.size() > 0}" styleClass="top-space">                                       
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:dataTable id="workDetails"  value="#{pmtLoi.allPendingList}" var="virtual" rows="7"
+                                         paginator="#{pmtLoi.allPendingList.size()>10}" widgetVar="seatWorkList" rowIndexVar="index" reflow="true">
+                                <p:column headerText="Sr.No" width="5%"  styleClass="font-bold"> <h:outputText value="#{index +1}."/></p:column>
+                                <p:column headerText="Application No" filterBy="#{virtual.appl_no}" filterMatchMode="contains" sortBy="#{virtual.appl_no}" styleClass="font-bold">#{virtual.appl_no}</p:column>
+                                <p:column headerText="Vehicle No" filterBy="#{virtual.regn_no}" filterMatchMode="contains"  styleClass="font-bold">#{virtual.regn_no}</p:column>
+                                <p:column headerText="Owner Name"  styleClass="font-bold">#{virtual.owner_name}</p:column>
+                                <p:column headerText="Father Name" width="8%" styleClass="font-bold">#{virtual.f_name}</p:column>
+                                <p:column headerText="Operational Date"  styleClass="font-bold">#{virtual.op_dt}</p:column>
+
+                                <p:column headerText="Action" width="20%" styleClass="font-bold">
+                                    <p:commandButton value="Show Details" action="#{pmtLoi.showGetDetails(virtual.appl_no)}" ajax="false" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"> 
+                                        <f:param name="appl_no" value="#{virtual.appl_no}"/>
+                                        <p:ajax update="pendingpmtLoiListPanal"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </h:panelGroup>
+
+            <p:outputPanel id="pendingpmtLoiListPanal">
+                <p:panel header="Pending List" rendered="#{not empty pmtLoi.pendingList}" styleClass="top-space bottom-space">
+                    <p:dataTable id="pendingpmtLoiList" var="pendingList" value="#{pmtLoi.pendingList}" filteredValue="#{pmtLoi.pendingListFilter}" rows="5" rowIndexVar="index"
+                                 paginator="#{pmtLoi.pendingList.size()>10}">
+                        <p:column headerText="Sr.No" width="2%">#{index + 1}</p:column>
+                        <p:column headerText="Application No." filterBy="#{pendingList.appl_no}" filterMatchMode="contains">#{pendingList.appl_no}</p:column>
+                        <p:column headerText="Owner Name" >#{pendingList.owner_name}</p:column>
+                        <p:column headerText="Father's/Husband's Name" >#{pendingList.f_name}</p:column>
+                        <p:column headerText="Driving Licence" filterBy="#{pendingList.dlNo}" filterMatchMode="contains">#{pendingList.dlNo}</p:column>
+                        <p:column headerText="D.O.B" >#{pendingList.dob}</p:column>
+                        <p:column headerText="PSV No" >#{pendingList.psvNo}</p:column>
+                        <p:column headerText="Permit Type">#{pendingList.pmt_type_descr}</p:column>
+                        <p:column headerText="Permit Category">#{pendingList.pmt_catg_descr}</p:column>
+                        <p:column headerText="Period Mode" width="3%">#{pendingList.period_descr}</p:column>
+                        <p:column headerText="Period" width="2.5%">#{pendingList.period}</p:column>
+                        <p:column headerText="Operation Date" width="6%">#{pendingList.op_dt}</p:column>
+                        <p:column headerText="DL STATUS" width="4.5%">
+                            <p:outputLabel escape="false" value="#{pendingList.dlStatus}" style="font-weight: bold"/>
+                        </p:column>
+                        <p:column headerText="Details" width="5%">
+                            <p:commandButton value="Details" action="#{pmtLoi.showDetails()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();"> 
+                                <f:setPropertyActionListener target="#{pmtLoi.rowDetails}" value="#{pendingList}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </p:outputPanel>
+
+            <p:outputPanel id="pmtDtlsPanel" >
+                <p:outputPanel rendered="#{pmtLoi.pmtOwnDtlsDobj ne null}">
+                    <ui:include src="/ui/permit/formPermitLOIAdditionalDtls.xhtml"/>
+                    <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                        <ui:param name="Owner_permit_detail" value="#{pmtLoi}"/>
+                    </ui:include>
+
+                    <p:panel id="maker_dtls" header="Maker" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="maker" value="Maker"/>                                    
+                                </label>
+                                <p:inputText id="maker" value="#{pmtLoi.rowDetails.maker_descr}" maxlength="100"  disabled="true">                              
+                                </p:inputText>                           
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="model" value="Model"/>                                    
+                                </label>
+                                <p:inputText id="model" value="#{pmtLoi.rowDetails.model_descr}" maxlength="100"  disabled="true">                              
+                                </p:inputText>                           
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel id="area_details" header="Area-Details" styleClass="top-space bottom-space">
+                        <p:pickList id="Area_pickList" styleClass="text-uppercase" filterMatchMode="contains"
+                                    value="#{pmtLoi.areaManage}" showSourceFilter="true" showTargetFilter="true" disabled="true"
+                                    effect="none" var="area_mast" itemLabel="#{area_mast.value}" itemValue="#{area_mast.key}" >                          
+                        </p:pickList>
+                    </p:panel>
+                    <p:panel id="route_details" header="Route-Details" styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <p:pickList id="pickList" styleClass="text-uppercase" filterMatchMode="contains"
+                                            value="#{pmtLoi.routeManage}" showSourceFilter="true" showTargetFilter="true" disabled="true"
+                                            effect="none" var="route_mast" itemLabel="#{route_mast.value}" itemValue="#{route_mast.key}" >
+                                    <p:ajax event="transfer" listener="#{pmtLoi.onTransfer}" partialSubmit="true" update="via"/>
+                                </p:pickList>
+                            </div>
+
+                            <div class="ui-grid-col-8">
+                                <p:outputPanel id="via">
+                                    <div class="route-details-header">Selected Route Direction</div>
+                                    <div class="left-position">
+                                        <p:scrollPanel mode="native" styleClass="route-details-scroll-panel">
+                                            <p:outputLabel escape="false" id="route_via" value="#{pmtLoi.via_route}" />
+                                        </p:scrollPanel>
+                                    </div>
+                                </p:outputPanel>
+                            </div>
+
+                        </div>
+                    </p:panel>
+
+                    <p:panel header="Optional Details"  styleClass="top-space bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tf_replacement_dt" value="Date Of Replacement"/>                                    
+                                </label>
+                                <p:inputText id="tf_replacement_dt" value="#{pmtLoi.permit_dobj.replaceDateInString}" 
+                                             disabled="true" />                                
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Service Type"></p:outputLabel>
+                                </label>
+                                <p:selectOneMenu id="service_type" value="#{pmtLoi.permit_dobj.services_TYPE}" disabled="true" immediate="true" filter="true">                
+                                    <f:selectItems value="#{pmtLoi.pmt_service_type_list}"/>
+                                </p:selectOneMenu> 
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="park_plce" value="Parking Place"/>                                    
+                                </label>
+                                <p:inputTextarea counter="display" id="park_plce" value="#{pmtLoi.permit_dobj.parking}" maxlength="100"
+                                                 counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase" disabled="true">
+                                    <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                </p:inputTextarea>
+                                <h:inputHidden/>
+                                <label class="field-label resp-label-section">
+                                    <h:outputText id="display"/>
+                                </label>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="pup_jour" value="Purpose of Journey"/>
+                                </label>
+                                <p:inputTextarea counter="purJourDisplay" id="pup_jour" value="#{pmtLoi.permit_dobj.joreny_PURPOSE}" maxlength="300"
+                                                 counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase" disabled="true">
+                                    <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                </p:inputTextarea>
+                                <h:inputHidden/>
+                                <label class="field-label resp-label-section">
+                                    <h:outputText id="purJourDisplay"/>
+                                </label>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="good_carry" value="Nature of goods to be carried"/>
+                                </label>
+                                <p:inputTextarea counter="GoodsCarry" id="good_carry" value="#{pmtLoi.permit_dobj.goods_TO_CARRY}" maxlength="40"
+                                                 counterTemplate="{0} characters remaining." cols="50" styleClass="text-uppercase" disabled="true">
+                                    <p:keyFilter regEx="/[\sa-z0-9_]/i"/>
+                                </p:inputTextarea>
+                                <h:inputHidden/>
+                                <label class="field-label resp-label-section">
+                                    <h:outputText id="GoodsCarry"/>
+                                </label>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:panel id="vari_panal" styleClass="top-space bottom-space">
+                        <f:facet name="header">                                        
+                            <p:selectOneRadio id="App_Disapp" value="#{pmtLoi.appDisapp}" >
+                                <f:selectItems value="#{pmtLoi.appDisappList}"/>
+                                <f:ajax render="vari_panal"/>
+                            </p:selectOneRadio>
+                        </f:facet>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="order_by" value="Order By:" rendered="#{pmtLoi.appDisapp == 'A'}"  styleClass="field-label-mandate"/>
+                                </label>
+                                <p:inputText id="order_by" value="#{pmtLoi.orderBy}" autocomplete="off" styleClass="text-uppercase" maxlength="30" disabled="true" rendered="#{pmtLoi.appDisapp == 'A'}" >
+                                    <p:keyFilter regEx="/[a-zA-Z\s_]/i"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="order_no" value="Order No:"  rendered="#{pmtLoi.appDisapp == 'A'}"  styleClass="field-label-mandate"/>
+                                </label>
+                                <p:inputText id="order_no" value="#{pmtLoi.orderNo}" autocomplete="off" 
+                                             styleClass="text-uppercase" maxlength="30" disabled="true" rendered="#{pmtLoi.appDisapp == 'A'}">
+                                    <p:keyFilter regEx="/[\d\-]/"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="order_dt" value="Order Date:" rendered="#{pmtLoi.appDisapp == 'A'}"  styleClass="field-label-mandate"/>
+                                </label>
+                                <p:calendar id="order_dt" value="#{pmtLoi.orderDt}" disabled="true" rendered="#{pmtLoi.appDisapp == 'A'}" pattern="dd-MMM-yyyy" readonly="false"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="lb_reason" value="Reason:" rendered="#{pmtLoi.appDisapp == 'D'}"  styleClass="field-label-mandate"/>
+                                </label>
+                                <p:inputText id="reason" value="#{pmtLoi.reason}" styleClass="text-uppercase" rendered="#{pmtLoi.appDisapp == 'D'}"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel id="lb_Objection" value="Objection" rendered="#{pmtLoi.appDisapp == 'O'}"  styleClass="field-label-mandate"/>
+                                    <p:selectCheckboxMenu id="listObjection"  value="#{pmtLoi.pmtObjection}" filter="true" label="Objection Menu" rendered="#{pmtLoi.appDisapp == 'O'}">
+                                        <f:selectItems value="#{pmtLoi.pmtObjectionList}"/>
+                                    </p:selectCheckboxMenu>
+                                </label>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 top-space-25">
+                                    <p:commandButton value="View/Upload Documents" rendered="#{pmtLoi.pendingList ne null and pmtLoi.pendingList.size() > 0 and pmtLoi.renderDocUploadTab}"
+                                                     icon="ui-icon-check" action="#{pmtLoi.openModifyUploadedDocumentService}"
+                                                     style="margin-top: 0px !important;" update="test_opnFrame"  />
+                                </div>    
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12  center-position">
+                                    <p:commandButton value="Approval" action="#{pmtLoi.approveApplication()}"  rendered="#{pmtLoi.appDisapp == 'A'}" update="appOffer">
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Disapproval" action="#{pmtLoi.reverBackForRectification()}" rendered="#{pmtLoi.appDisapp == 'D'}">
+                                        <p:confirm header="Confirmation" message=" Your application move in entry stage, Please modify the application. \n Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Submit" action="#{pmtLoi.reverBackForRectification()}" rendered="#{pmtLoi.appDisapp == 'O'}">
+                                        <p:confirm header="Confirmation" message=" Your application move in entry stage, Please modify the application. \n Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </div>                                        
+                    </p:panel>
+                </p:outputPanel>
+            </p:outputPanel>
+
+            <p:dialog id="appOffer" header="Offer Letter" widgetVar="offNum" modal="true" resizable="false" closable="false">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <h:outputLabel  escape="false"  value="#{pmtLoi.offerNoGenMsg}"/>
+                        <f:facet name="footer">
+                            <p:button outcome="home" value="Exit for Another Approval"/>
+                        </f:facet>
+                    </div>
+                </div>
+            </p:dialog>
+
+            <p:outputPanel id="test_opnFrame">
+                <p:dialog widgetVar="ifrmDlg" modal="true" header="Upload Document">
+                    <p:ajax event="close" />
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <iframe id="iframeCenter" src="#{pmtLoi.dmsUrl}"
+                                    height="600" width="1200" frameborder="0" scrolling="auto"
+                                    marginheight="1" marginwidth="1"> </iframe>
+                        </div>
+                    </div>
+                </p:dialog>
+            </p:outputPanel>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

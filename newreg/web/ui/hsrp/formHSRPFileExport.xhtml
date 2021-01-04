@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content22">
+        <h:form id="hsrpExportDataForm" prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">HSRP Flat File Generation </h1>
+                </div>
+            </div>
+            <p:messages closable="true" >
+                <p:autoUpdate/>
+            </p:messages>
+            <p:dialog header="HSRP Disclaimer" widgetVar="dlghsrpltd"
+                      modal="true" closable="false" resizable="false" visible="true"
+                      draggable="false" width="50%">
+                <ui:include src="/ui/form_HSRPDisclaimer.xhtml" />
+            </p:dialog>
+
+            <marquee direction="left" speed="25000" duration="10" behavior="alternate" >
+                <h:outputText value="Note- This module has been revoked for the New Registration cases (Registration Date 25-Nov-2019 onwards and OEMs are approved on Homologation Portal) as uploading the Front/Back laser codes have been directly provided to respective OEM/OEMs authorized HSRP vendor." styleClass="report-header font-bold red"/>
+                <!-- HOMOLOGATION MAKER condition -->
+            </marquee>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-10 resp-blank-height"></div>
+                <div class="ui-grid-col-2 right-position ">
+                    <p:button value="Back" outcome="home" style="margin: 0px !important" icon="ui-icon-arrowreturnthick-1-w"/>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-4">
+                    <p:dataTable id="tb_old_lis"  value="#{fileDownloadBean.oldRecords}" 
+                                 scrollable="true" var="ol" styleClass="datatable-panel" rowIndexVar="index">
+                        <f:facet name="header">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <p:calendar value="#{fileDownloadBean.oldDate}" pattern="dd-MMM-yyyy" navigator="true" maxdate="#{fileDownloadBean.curDateForCal}">
+                                        <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                                        <p:ajax event="dateSelect"/>   
+                                    </p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:commandButton value="Show Old Generated Files" immediate="true" update="tb_old_lis" style="margin-top: 0px !important">
+                                        <p:ajax event="click" listener="#{fileDownloadBean.oldDateListener}"/>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Sr.No"  styleClass="collumn-width center-position">
+                            <p:outputLabel value="#{index +1}"/></p:column>
+
+                        <p:column headerText="File No">
+                            <h:commandLink value="#{ol.cur_date}" action="#{fileDownloadBean.oldSelectSCListener}" > 
+                                <f:setPropertyActionListener target="#{fileDownloadBean.selectedOldHsrp}" value="#{ol}" />
+                            </h:commandLink>
+
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                <div class="ui-grid-col-8">
+
+                    <p:dataTable id="tb_filehsrp"  value="#{fileDownloadBean.hsrp.listFileExport}" 
+                                 scrollable="true" var="sc"
+                                 paginator="#{fileDownloadBean.isExceedPage}" rows="50"
+                                 rowIndexVar="index"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                        <f:facet name="header">
+                            <p:commandButton id="buttoneDownloadFile" value="Download File" onclick="PF('hsrpExportDataDialogWV').show();" update=":formHsrpExport" rendered="#{fileDownloadBean.showButton}"/>
+                        </f:facet>
+                        <f:facet name="header">
+                            <p:commandButton  value="Show Pending Records" action="#{fileDownloadBean.showPendingRecords}" 
+                                              update="tb_filehsrp buttoneDownloadFile"/>
+                            <p:commandButton  value="Generate Flat File" action="#{fileDownloadBean.downLoadListener}" 
+                                              update="hsrpExportDataForm" onclick="PF('bui').show();" 
+                                              oncomplete="PF('bui').hide()" icon="ui-icon-disk" rendered="#{fileDownloadBean.blnCurrentPanel}"> 
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                <p:blockUI block="tb_filehsrp" widgetVar="bui">
+                                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                </p:blockUI>
+                            </p:commandButton>
+
+                        </f:facet>
+                        <p:column  headerText="Sr. No" exportable="false"  styleClass="collumn-width center-position" >
+                            <h:outputText value="#{index+1}" />
+                        </p:column>
+                        <p:column headerText="File Details" rendered="#{!fileDownloadBean.forAllStates}">
+                            <h:outputText value="#{sc.regnNo}#{sc.seperator}#{sc.hrspFlag}#{sc.seperator}#{sc.vehicleClass}~#{sc.vehicleCatg}~#{sc.fuelDescr}#{sc.seperator}#{sc.maker}#{sc.seperator}#{sc.model}#{sc.seperator}#{sc.ownerName}#{sc.seperator}#{sc.dealer}(#{sc.purCd})#{sc.seperator}#{sc.reciptNo}#{sc.seperator}#{sc.regnDt}" />
+                        </p:column>
+                        <p:column headerText="File Details" rendered="#{fileDownloadBean.forAllStates}" >
+                            <h:outputText value="#{sc.regnNo}#{sc.seperator}#{sc.hrspFlag}#{sc.seperator}#{sc.vehicleClass}~#{sc.vehicleCatg}~#{sc.fuelDescr}#{sc.seperator}#{sc.maker}#{sc.seperator}#{sc.model}#{sc.seperator}#{sc.ownerName}#{sc.seperator}#{sc.dealer}(#{sc.purCd})#{sc.seperator}#{sc.reciptNo}#{sc.seperator}#{sc.regnDt}#{sc.seperator}#{sc.stateCd}#{sc.offCd}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+
+        <p:dialog id="hsrpExportDataDialog" header="Different File Formate" dynamic="true" closable="true" modal="true" widgetVar="hsrpExportDataDialogWV">
+
+            <h:form id="formHsrpExport" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('hsrpExportDataDialogWV').hide();">
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":hsrpExportDataForm:tb_filehsrp" fileName="#{fileDownloadBean.hsrp.hsrpFileName}" />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink action="#{fileDownloadBean.downloadCSV}" onclick="PF('hsrpExportDataDialogWV').hide();">
+                        <p:graphicImage name="csv.png"  width="24" library="images"/>
+                    </h:commandLink>   
+
+                    <h:outputText value="XML FILE"/>
+                    <h:commandLink onclick="PF('hsrpExportDataDialogWV').hide();">
+                        <p:graphicImage name="xml.png" width="24" library="images"/>
+                        <p:dataExporter type="xml" target=":hsrpExportDataForm:tb_filehsrp" fileName="#{fileDownloadBean.hsrp.hsrpFileName}" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog> 
+
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,611 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form id="DisposalOfChallan">
+            <p:blockUI block="DisposalOfChallan:mainpanel" widgetVar="bui_fancy">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <span class=" header-main">Disposal of Enforcement Case</span>
+                    </div>
+                </div>   
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>
+
+                <p:outputPanel id="panelChallanNo" rendered="#{dispChallan.disableApplicationNoTextBox}">
+                    <p:panel id="panelChallanMain" >
+
+                        <p:focus context="panelChallanMain"/>
+
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfchallanNo" value="Challan No"/>
+                                </label>
+                                <p:inputText  id="tfchallanNo" value="#{dispChallan.chalNo}" 
+                                              maxlength="14"
+                                              required="true"
+                                              requiredMessage="Please Enter Challan No."
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton
+                                    value="Show Details" 
+                                    action="#{dispChallan.getChallanInfo('11204')}"
+                                    onclick="PF('ajax_status').show()"
+                                    oncomplete="PF('ajax_status').hide()"
+                                    update=":DisposalOfChallan:mainpanel:vehcl_no :DisposalOfChallan:mainpanel:ncr_no  :DisposalOfChallan:mainpanel:veh_stat :DisposalOfChallan:mainpanel:chal_dt :DisposalOfChallan:mainpanel:veh_rto :DisposalOfChallan:mainpanel:chal_time :DisposalOfChallan:mainpanel:owns_name :DisposalOfChallan:mainpanel:chal_officer :DisposalOfChallan:mainpanel:chasis :DisposalOfChallan:mainpanel:chal_place :DisposalOfChallan:mainpanel:vhcl_cls :DisposalOfChallan:mainpanel:feul :DisposalOfChallan:mainpanel:std_capacity
+                                    :DisposalOfChallan:mainpanel:seat_capacity :DisposalOfChallan:mainpanel:ladn :DisposalOfChallan:mainpanel:slpr :DisposalOfChallan:mainpanel:clr :DisposalOfChallan:mainpanel:crt_name :DisposalOfChallan:mainpanel:hear_dt :DisposalOfChallan:mainpanel:imp_dt :DisposalOfChallan:mainpanel:imp_place
+                                    :DisposalOfChallan:mainpanel:sez_no :DisposalOfChallan:mainpanel:off_no :DisposalOfChallan:mainpanel:docimp_data_table :DisposalOfChallan:mainpanel:table1 :DisposalOfChallan:mainpanel:table3 :DisposalOfChallan:saveToDispose :DisposalOfChallan:remarks_penal"/>
+
+                                <p:commandButton
+                                    value="Back"
+                                    action="home" 
+                                    immediate="true"
+                                    onclick="PF('ajax_status').show()"
+                                    icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfchallanNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+
+
+
+
+                <p:tabView  id="mainpanel" dynamic="true" cache="false">
+                    <p:tab title="Vehicle Details" id="vehicleDetailsTab">
+                        <p:panel header="Challan Details" styleClass="top-space bottom-space"> 
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="tf_applicationNO" value="Application No.:"  />
+                                    </label>
+                                    <p:inputText id="tf_applicationNO" 
+                                                 value="#{dispChallan.applicationNo}"
+                                                 disabled="true"  
+                                                 size="14"
+                                                 autocomplete="off"
+                                                 maxlength="50"
+                                                 required="true"
+                                                 requiredMessage="Please Enter The Application No.">
+                                        <p:ajax 
+                                            process="tf_applicationNO "
+                                            event="blur" 
+                                            onstart ="PF('bui_fancy').show();" 
+                                            onerror ="PF('bui_fancy').hide();" 
+                                            oncomplete="PF('bui_fancy').hide()" 
+                                            update=" vehcl_no ncr_no  veh_stat chal_dt veh_rto chal_time owns_name chal_officer chasis chal_place vhcl_cls feul std_capacity
+                                            seat_capacity ladn slpr clr crt_name hear_dt imp_dt imp_place
+                                            sez_no off_no :DisposalOfChallan:mainpanel:docimp_data_table :DisposalOfChallan:mainpanel:table1 :DisposalOfChallan:mainpanel:table3 :DisposalOfChallan:saveToDispose"
+                                            listener="#{dispChallan.getChallanInfo}"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="vehcl_no" value="Vehicle No.:"  />
+                                    </label>
+                                    <p:inputText id="vehcl_no"  value="#{dispChallan.vehNo}"  disabled="true" />
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ncr_no" value="N.C/C.R No.:"  />
+                                    </label>
+                                    <p:inputText id="ncr_no" value="#{dispChallan.ncrNo}" disabled="true"   />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="veh_stat" value="State From:"  />
+                                    </label>
+                                    <p:inputText id="veh_stat" value="#{dispChallan.vehState}"  disabled="true"  />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="chal_dt" value="Challan Date:"  />
+                                    </label>
+                                    <p:inputText id="chal_dt"  value="#{dispChallan.chalDate}"  disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="veh_rto" value="RTO From:"  />
+                                    </label>
+                                    <p:inputText id="veh_rto" value="#{dispChallan.vehRto}" disabled="true"  /> 
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="chal_time" value="Challan Time:"  />
+                                    </label>
+                                    <p:inputText id="chal_time" value="#{dispChallan.chalTime}"  disabled="true"  />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="owns_name" value="Owner's Name:"  />
+                                    </label>
+                                    <p:inputText id="owns_name" value="#{dispChallan.ownName}"  disabled="true"  />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="chal_officer" value="Challan_Officer:"  />
+                                    </label>
+                                    <p:inputText id="chal_officer" value="#{dispChallan.chalOfficer}" disabled="true"   />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="chasis" value="#{label.chasi_no}:" />
+                                    </label>
+                                    <p:inputText id="chasis" value="#{dispChallan.chasiNo}"  disabled="true"  />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="chal_place" value="Challan Place:"  />
+                                    </label>
+                                    <p:inputText id="chal_place"  value="#{dispChallan.chalPlace}" disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="vhcl_cls" value="Vehicle Class:"  />
+                                    </label>
+                                    <p:inputText id="vhcl_cls" value="#{dispChallan.vehClass}" disabled="true"  /> 
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="feul" value="Fuel:"  />
+                                    </label>
+                                    <p:inputText id="feul"  value="#{dispChallan.fuel}" disabled="true"  />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="std_capacity" value="Standing:"  />
+                                    </label>
+                                    <p:inputText id="std_capacity" value="#{dispChallan.stdCap}" disabled="true"  />
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="seat_capacity" value="Capacity-Seating:"  />
+                                    </label>
+                                    <p:inputText id="seat_capacity" value="#{dispChallan.seatCap}" disabled="true"  />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="ladn" value="Laden:"  />
+                                    </label>
+                                    <p:inputText id="ladn" value="#{dispChallan.ladn}"  disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="slpr" value="Sleeper Capacity:"  />
+                                    </label>
+                                    <p:inputText id="slpr" value="#{dispChallan.sleeprCap}"  disabled="true" />
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="clr" value="Color:"  />
+                                    </label>
+                                    <p:inputText id="clr" value="#{dispChallan.color}"  disabled="true" />
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="coming_from" value="Coming From:"  rendered="#{not empty dispChallan.coming_from}"/>
+                                    </label>
+                                    <p:inputText id="coming_from" value="#{dispChallan.coming_from}" styleClass="text-uppercase" disabled="true" rendered="#{not empty dispChallan.coming_from}"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="going_to" value="Going To:"  rendered="#{not empty dispChallan.going_to}"/>
+                                    </label>
+                                    <p:inputText id="going_to" value="#{dispChallan.going_to}" styleClass="text-uppercase" disabled="true" rendered="#{not empty dispChallan.going_to}"/>
+                                </div>
+
+                            </div>
+                        </p:panel>
+
+                        <p:outputPanel id="courtDetails">
+                            <p:panel header="Court Details"   styleClass="top-space bottom-space" rendered="#{dispChallan.courtDetailsPanel}" >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="crt_name"  value="Court Name"/>
+                                        </label>
+                                        <p:selectOneMenu id="crt_name" value="#{dispChallan.courtName}" filter="true" disabled="#{dispChallan.courtDetailsPanel}">  
+                                            <f:selectItem itemLabel="--Select Court--"  itemValue="-1" /> 
+                                            <f:selectItems value="#{dispChallan.courtCode}"/>  
+                                            <p:ajax process="crt_name" event="change" listener="#{dispChallan.getSelectedValues('court',dispChallan.courtName)}" update="sm_magistrate_list"></p:ajax>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <p:outputPanel rendered="#{dispChallan.showMagistrateSom}">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sm_magistrate_list"  value="Magistrate:"/>
+                                            </label>
+                                            <p:selectOneMenu id="sm_magistrate_list" value="#{dispChallan.magistrate}"   filter="true" disabled="#{dispChallan.courtDetailsPanel}">  
+                                                <f:selectItem itemLabel="--Select Magistrate--"  itemValue="-1" /> 
+                                                <f:selectItems value="#{dispChallan.magistrateList}"/>  
+                                                <p:ajax process="sm_magistrate_list" event="change" listener="#{dispChallan.getSelectedValues('magistrate',save.magistrate)}" update="crt_name"></p:ajax>
+
+                                            </p:selectOneMenu>
+                                        </p:outputPanel>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section"> 
+                                            <p:outputLabel for="hear_dt" value="Hearing Date"/>
+                                        </label>
+                                        <p:calendar  disabled="#{dispChallan.courtDetailsPanel}"
+                                                     converterMessage="Invalid Date Format"
+                                                     id="hear_dt" 
+                                                     value="#{dispChallan.hearingDt}"
+                                                     pattern="dd-MMM-yyyy"
+                                                     navigator="true"
+                                                     autocomplete="off"
+                                                     mindate="#{dispChallan.maxDate}"
+                                                     >
+                                            <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                                        </p:calendar>
+                                    </div>
+                                </div>                                                               
+                            </p:panel>
+                        </p:outputPanel>
+                        <p:panel header="Vehicle Impounded Details" styleClass="top-space bottom-space" rendered="#{not empty dispChallan.sezureNo}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="imp_dt" value="Impounding Date:"   />
+                                    </label>
+                                    <p:inputText id="imp_dt" value="#{dispChallan.impDt}"  disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="imp_place" value="Place Of Impound:"   />
+                                    </label>
+                                    <p:inputText id="imp_place" value="#{dispChallan.placeOfImp}"  disabled="true" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="sez_no" value="Sezure No.:"   />
+                                    </label>
+                                    <p:inputText id="sez_no" value="#{dispChallan.sezureNo}" disabled="true"  />
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="off_no" value="Officer To Contanct:"   />
+                                    </label>
+                                    <p:inputText id="off_no" value="#{dispChallan.officerNo}" disabled="true"  />
+                                </div>
+                            </div>
+                        </p:panel>
+
+                    </p:tab> 
+
+
+                    <p:tab title="Disposal Challan" id="disposeChallanTab">
+                        <p:panel header="Offence Details On Vehicle"  id="table1" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="offdet_data" value="#{dispChallan.offenceList}" var="offc" 
+                                                 binding="#{ofc}">
+                                        <p:column headerText="S.No" styleClass="collumn-width center-position">
+                                            <p:outputLabel value="#{ofc.rowIndex+1}" />
+                                        </p:column>
+                                        <p:column headerText="Offence Code">
+                                            <p:outputLabel value="#{offc.accusedDescR}"/>
+                                        </p:column>
+                                        <p:column headerText="Offence">
+                                            <p:outputLabel value="#{offc.offenceDesc}"/>
+                                        </p:column>
+                                        <p:column headerText="Section">
+                                            <p:outputLabel value="#{offc.offenceSec}"/>
+                                        </p:column>
+                                        <p:column headerText="Owner Penalty">
+
+                                            <p:outputLabel value="#{offc.penalty}"/>
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                </div>
+                            </div>
+
+                        </p:panel>
+                        <!--///////////////     Additional fee Details///////////-->
+                        <p:panel header="Additional Fee Details"  id="table11" styleClass="top-space bottom-space" rendered="#{dispChallan.additionFeeDetails}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="miscellaneous_fee" value="Miscellaneous Fee:" />
+                                    </label>
+                                    <p:inputText id="miscellaneous_fee" value="#{dispChallan.miscFee}"  disabled="true"  />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="reasonss" value="Miscellaneous Fee Reason:"  />
+                                    </label>
+                                    <p:inputText id="reasonss"  value="#{dispChallan.miscReason}" disabled="true" />
+                                </div>
+                            </div>
+
+                        </p:panel>
+
+                        <p:panel header="Receipt Details"  id="table3" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="recdet_data_table" value="#{dispChallan.listForCompoundigFee}" var="rcptDetail" binding="#{ofc2}">
+                                        <p:column headerText="S.No."  styleClass="collumn-width center-position">
+                                            <p:outputLabel value="#{ofc2.rowIndex+1}" />
+                                        </p:column>
+                                        <p:column headerText="Fee/Tax Details">
+                                            <p:outputLabel value="#{rcptDetail.feetaxDesc}" />
+                                        </p:column>
+                                        <p:column headerText="Receipt Number">
+                                            <p:outputLabel value="#{rcptDetail.recieptNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Receipt Date">
+                                            <p:outputLabel value="#{rcptDetail.recieptDate}"/>
+                                        </p:column>
+                                        <p:column headerText="Tax From">
+                                            <p:outputLabel value="#{rcptDetail.fromDt}"/>
+                                        </p:column>
+                                        <p:column headerText="Tax Upto">
+                                            <p:outputLabel value="#{rcptDetail.uptoDt}"/>
+                                        </p:column>
+                                        <p:column headerText="Amount">
+                                            <p:outputLabel value="#{rcptDetail.amount}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </div>
+                            </div>
+
+                        </p:panel>
+                        <p:outputPanel id="paidAtCourtPanel" >
+                            <p:panel  header="Paid At Court" rendered="#{dispChallan.courtDetailsPanel}" >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for ="tf_recieptNo" value="Court Receipt No:" />
+                                            </label>
+                                            <p:inputText id="tf_recieptNo" required="true" value="#{dispChallan.courtRecieptNo}" styleClass="text-uppercase"  converter="toUpperCaseConverter" />
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for ="cal_CourtRecieptDate"  value="Court Receipt Date:" />
+                                            </label>
+                                            <p:calendar 
+                                                id="cal_CourtRecieptDate" 
+                                                value="#{dispChallan.courtRecieptDate}"
+                                                maxdate="#{dispChallan.maxdate}"
+                                                required="true"
+                                                readonlyInput="true"
+                                                navigator="true"
+                                                pattern="dd-MMM-yyyy"
+                                                /> 
+                                        </div>
+
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for ="tf_AmountPaidAtCourt" value="Amount Paid At Court(Rs):" />
+                                            </label>
+                                            <p:inputText id="tf_AmountPaidAtCourt" maxlength="6" required="true" value="#{dispChallan.courtPaidAmount}" >
+                                            </p:inputText>
+                                            <p:keyFilter for="tf_AmountPaidAtCourt" mask="num"></p:keyFilter>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="tf_CourtDecision" value="Court Decision:" />
+                                        </label>
+                                        <p:inputText id="tf_CourtDecision" required="true" value="#{dispChallan.decisionOfCourt}" styleClass="text-uppercase"  converter="toUpperCaseConverter" />
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:outputPanel>
+                    </p:tab> 
+                    <p:tab title="Document Impounded Details" id="doctetails" rendered="#{dispChallan.documentPanel}">
+                        <p:panel header="Document Impounded Details"  id="table2" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="docimp_data_table"  value="#{dispChallan.docDetails}" var="doc" binding="#{ofc1}">
+                                        <p:column headerText="S.No."  styleClass="collumn-width center-position">
+                                            <p:outputLabel value="#{ofc1.rowIndex+1}" />
+                                        </p:column>
+                                        <p:column headerText="Document">
+                                            <p:outputLabel value="#{doc.documentDesc}"/>
+                                        </p:column>
+                                        <p:column headerText="Other Document">
+                                            <p:outputLabel value="#{doc.docName}"/>
+                                        </p:column>
+                                        <p:column headerText="Valid Upto">
+                                            <p:outputLabel value="#{doc.validity}"/>
+                                        </p:column>
+                                        <p:column headerText="Document No.">
+                                            <p:outputLabel value="#{doc.docNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Issuing Authority">
+                                            <p:outputLabel value="#{doc.issueAuth}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab>
+                    <p:tab title="Witness Details" id="Witness" rendered="#{dispChallan.witnessPanel}">
+                        <p:panel header="Witness Details" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="Witness_data_table" value="#{dispChallan.witnessDetails}" var="witness">
+                                        <p:column headerText="Witness Name">
+                                            <h:outputText value="#{witness.witnessName}"/>
+                                        </p:column>
+                                        <p:column headerText="Witness Contact No">
+                                            <h:outputText value="#{witness.witnessContactNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Witness Address">
+                                            <h:outputText value="#{witness.witnessAddress}"/>
+                                        </p:column>
+                                        <p:column headerText="Witness Police Station">
+                                            <h:outputText value="#{witness.policeStation}"/>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab> 
+                    <p:tab title="Accused Details" id="Accused" rendered="#{dispChallan.accusedPanel}">
+                        <p:panel header="Accused Details" styleClass="top-space bottom-space">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:dataTable id="accused_data_table" value="#{dispChallan.accusedDetails}" var="accused">
+                                        <p:column headerText="Accuse Name">
+                                            <h:outputText value="#{accused.accName}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Type">
+                                            <h:outputText value="#{accused.accCatergory}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Addresss">
+                                            <h:outputText value="#{accused.accAddress}"/>
+                                        </p:column>
+                                        <p:column headerText="DL/Bladge No">
+                                            <h:outputText value="#{accused.accDLBladgeNo}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Police Station">
+                                            <h:outputText value="#{accused.accPoliceStation}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse City">
+                                            <h:outputText value="#{accused.accCity}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Flag">
+                                            <h:outputText value="#{accused.accFlag}"/>
+                                        </p:column>
+                                        <p:column headerText="Accuse Pincode">
+                                            <h:outputText value="#{accused.accPincode}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:tab>
+                </p:tabView>
+                <p:outputPanel id="remarks_penal">
+                    <p:panel header="Remarks" styleClass="top-space bottom-space" rendered="#{dispChallan.showRemarksPanel}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="court_dec" value="Dispose Remarks:"  />
+                                </label>
+                                <p:inputText
+                                    id="court_dec" 
+                                    value="#{dispChallan.remarksOfDispose}" 
+                                    required="true"
+                                    maxlength="200"
+                                    requiredMessage="Please Enter The Dispose Remark" 
+                                    styleClass="text-uppercase" 
+                                    converter="toUpperCaseConverter" >
+                                    <p:ajax event="blur" process="court_dec" update="court_dec "/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="dec_dt" value="Dispose Date:"  />
+                                </label>
+                                <p:calendar 
+                                    id="dec_dt" 
+                                    pattern="dd-MMM-yyyy"
+                                    navigator="true"
+                                    value="#{dispChallan.dateOfDispose}" 
+                                    mindate="#{dispChallan.minDate}"
+                                    maxdate="#{dispChallan.maxDate}"
+                                    required="true"
+                                    requiredMessage="Please Enter The Dispose Date"
+                                    disabled="true"
+                                    >
+                                    <f:convertDateTime pattern="dd-MMM-yyyy"/>
+
+                                </p:calendar>
+                            </div>
+                        </div>
+                    </p:panel> 
+                </p:outputPanel>
+                <p:panel style="margin-top:10px;"  rendered="#{dispChallan.showApproveDisApprovePanelForSave}"  styleClass="top-space bottom-space">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{dispChallan}"/>
+                    </ui:include>
+                </p:panel>
+                <p:panel rendered="#{dispChallan.showPanelForSave}"  styleClass="top-space bottom-space">
+                    <div class="ui-grid-row bottom-space center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton
+                                id="saveToDispose"
+                                value="Save" 
+                                update="panelChallanNo remarks_penal mainpanel"
+                                action="#{dispChallan.saveForDispseChallan}"
+                                disabled="#{dispChallan.disableSaveButton}">
+                                <p:confirm header="Confirmation"  message="Are you sure?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton 
+                                id="reset"
+                                value="Reset"
+                                update="DisposalOfChallan"
+                                action="#{dispChallan.reset}">
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog> 
+                        </div>
+                    </div>
+                </p:panel>
+            </div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+

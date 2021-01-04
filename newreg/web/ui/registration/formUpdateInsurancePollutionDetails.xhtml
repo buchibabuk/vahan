@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+    <ui:define name="content">
+        <h:form id="insPuccForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">            
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Insurance/PUCC/Owner's Contact Details Updation</h1>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true"
+                              visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>
+                <p:outputPanel id="informationPanel">
+                    <p:focus for="regn_no"/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="regn_no" value="Vehicle Registration No."/>
+                            </label>
+                            <p:inputText id="regn_no" value="#{insPuccUpdateBean.regnNo}" maxlength="10" required="true" readonly="#{insPuccUpdateBean.renderCheckboxPanel}"
+                                         requiredMessage="Please Provide Registration Number"
+                                         style="text-transform: uppercase;" 
+                                         styleClass="input"
+                                         autocomplete="off"
+                                         converter="toUpperCaseConverter"/>
+                            <p:keyFilter mask="alphanum" for="regn_no"/>
+                        </div>                        
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                    </div>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details" action="#{insPuccUpdateBean.showDetails}"
+                                             update="insPuccDetails ownerInformationPanel checkBox save_panel puccDetails pn_own_identity ownerIdentification informationPanel" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                            <p:button value="Back" outcome="home" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                    <p:outputPanel id="ownerInformationPanel">
+                        <h:panelGrid rendered="#{insPuccUpdateBean.insuranceExpired}">
+                            <h3 style="color: red">Insurance is Expired for Registration No [#{insPuccUpdateBean.regnNo}], Please Update Insurance to Proceed Application No [#{insPuccUpdateBean.applNo}]</h3>
+                        </h:panelGrid>
+                        <h:panelGrid rendered="#{insPuccUpdateBean.puccExpired}">
+                            <h3 style="color: red">PUCC Validity is Expired or Record is not Available for Registration No [#{insPuccUpdateBean.regnNo}], Please Update PUCC before doing any Transaction</h3>
+                        </h:panelGrid>
+                        <ui:include src="../commonUI/form_owner_dtls_common.xhtml"  >
+                            <ui:param name="containerBean" value="#{insPuccUpdateBean}" />
+                        </ui:include>
+                    </p:outputPanel>
+                    <p:outputPanel id="checkBox">
+                        <p:outputPanel rendered="#{insPuccUpdateBean.renderCheckboxPanel}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <h:outputText value="Please Select Particular CheckBox for Updating Information :" styleClass="inline-section right-space"/>
+                                    <p:selectManyCheckbox id="checkboxCollection" value="#{insPuccUpdateBean.selectedCheckBox}" styleClass="inline-section">
+                                        <f:selectItem itemValue="I" itemLabel="INSURANCE"/>
+                                        <f:selectItem itemValue="P" itemLabel="PUCC"/>
+                                        <f:selectItem itemValue="O" itemLabel="Owner Identification"/>
+
+                                        <p:ajax listener="#{insPuccUpdateBean.checkBoxListener}" update="informationPanel ownerIdentification"/>
+                                    </p:selectManyCheckbox> 
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="ownerIdentification">
+                        <p:outputPanel rendered="#{insPuccUpdateBean.renderOwnerIdDetails}">
+                            <ui:include  src="/ui/form_ownerIdentification.xhtml">
+                                <ui:param name="owner_identification" value="#{insPuccUpdateBean.ownerIdentity}"/>  
+                                <ui:param name="listOwnerCategory" value="#{insPuccUpdateBean.listOwnerCatg}"/>
+                            </ui:include>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="insPuccDetails">
+                        <p:outputPanel id="ins_dtls" rendered="#{insPuccUpdateBean.renderInsDetails}" styleClass="bottom-space">
+                            <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                    <p:outputPanel id="puccDetails">
+                        <p:panel id="pucc_dtls" rendered="#{insPuccUpdateBean.renderPuccDetails}" header="PUCC Details">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="pucc_from" value="PUCC From Date"/>
+                                    </label>
+                                    <p:calendar id="pucc_from" value="#{insPuccUpdateBean.puccDobj.puccFrom}" 
+                                                autocomplete="off" readonlyInput="true" disabled="#{insPuccUpdateBean.disable}"
+                                                pattern="dd-MMM-yyyy" navigator="true" required="true"
+                                                requiredMessage="PUCC From Date Can not be Blank"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="pucc_upto" value="PUCC Upto Date"/>
+                                    </label>
+                                    <p:calendar id="pucc_upto" value="#{insPuccUpdateBean.puccDobj.puccUpto}" 
+                                                style="text-transform: uppercase;" disabled="#{insPuccUpdateBean.disable}"
+                                                navigator="true" pattern="dd-MMM-yyyy" autocomplete="off"
+                                                readonlyInput="true" required="true" requiredMessage="PUCC Upto Date Can not be Blank"/>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="pucc_centreno" value="PUCC Centre No"/>
+                                    </label>
+                                    <p:inputText id="pucc_centreno" maxlength="20" required="true" 
+                                                 autocomplete="off"
+                                                 value="#{insPuccUpdateBean.puccDobj.puccCentreno}"
+                                                 converter="toUpperCaseConverter"
+                                                 requiredMessage="Please Provide PUCC Centre Number"
+                                                 style="text-transform: uppercase;" 
+                                                 disabled="#{insPuccUpdateBean.disable}"/>
+                                </div>                            
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="pucc_no" value="PUCC Number"/>
+                                    </label>
+                                    <p:inputText id="pucc_no" maxlength="25" required="true" autocomplete="off"
+                                                 value="#{insPuccUpdateBean.puccDobj.puccNo}"
+                                                 requiredMessage="Please Provide PUCC Number"
+                                                 converter="toUpperCaseConverter"
+                                                 style="text-transform: uppercase;" 
+                                                 disabled="#{insPuccUpdateBean.disable}">
+                                        <p:ajax listener="#{insPuccUpdateBean.pucc_no_blur_listener}" update="pucc_no" event="blur" partialSubmit="true"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel> 
+                    <p:outputPanel id="save_panel">
+                        <p:panel  styleClass="top-space" rendered="#{insPuccUpdateBean.renderSavePanel}">
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Save" action="#{insPuccUpdateBean.updateInsPuccDetails}"
+                                                     update="insPuccDetails puccDetails ownerInformationPanel regn_no save_panel checkBox ownerIdentification">
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                    </p:confirmDialog>                                    
+                                </div>
+                            </div>
+                        </p:panel>
+                    </p:outputPanel>                                          
+                </p:outputPanel>
+            </div>
+            <p:blockUI block="insPuccForm" widgetVar="ajax_status">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </ui:define>
+</ui:composition>

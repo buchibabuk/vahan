@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="/vahan/home.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{vehicleReleaseBean.rcpt_header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position">
+                <h:outputText value="Vehicle Release Order" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="(Under section 207(2) of M.V.Act 1988)"/> </span>
+            </div>
+
+            <div class="center-position top-space">
+                <span class="font-bold report-subheader">
+                    (Under Section <h:outputText value=" value"/> or <h:outputText value=" value"/> 
+                    Taxation reforms Act.2003 as amended-2012)  
+                </span>
+            </div>
+
+            <div class="center-position bottom-space">
+                <span>(Please Cross is not applicable)</span>
+            </div>
+
+            <div class="datatable-panel bottom-space" style="margin: 0 auto;">
+                To,<br />
+                The SHO<br />
+                Police Station <h:outputText value="value" /> <br />
+                District <h:outputText value="#{vehicleReleaseBean.district}" />
+            </div>
+
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <div class="bottom-space">
+                    On dated <h:outputText value="value" />
+                    I have seized vehicle No. <h:outputText value="#{vehicleReleaseBean.vehicle_no}"/> 
+                    under section <h:outputText value=""/> of above act.
+                </div>
+
+                <div class="bottom-space">
+                    The Compounding fees and taxes realized from vehicle are as follows:
+                </div>
+
+                <div class="table-width-three">
+                    <h:panelGrid columns="3" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                        <h:outputText value="1. Compounding Fess Rs. #{vehicleReleaseBean.cmd_fee}" />
+                        <h:outputText value="Receipt No. #{vehicleReleaseBean.rcpt_no}"/>
+                        <h:outputText value="Date #{vehicleReleaseBean.rcpt_dt}"/>
+
+                        <h:outputText value="2. Taxes Rs. #{vehicleReleaseBean.tax}" />
+                        <h:outputText value="Receipt No. #{vehicleReleaseBean.rcpt_no}"/>
+                        <h:outputText value="Date #{vehicleReleaseBean.rcpt_dt}"/>
+                    </h:panelGrid>
+                </div>
+
+                <div class="bottom-space">
+                    I order you to release the vehicle No. <h:outputText value="#{vehicleReleaseBean.vehicle_no}"/> 
+                    in favour of vehicle owner or authorized agent.
+                </div>
+                <div class="right-position">
+                    <div class="inline-section center-position">
+                        <br />
+                        <br />
+                        <br />
+                        <br /> Signature of officer 
+                        <br /> Date <h:outputText value="value" />
+                        <br /> Seal 
+                    </div>
+                </div>
+                <div class="bottom-space">
+                    Cc: Vehicle owner for n.a
+                </div>
+
+                <div class="right-position">
+                    <div class="inline-section center-position">
+                        <br />
+                        <br />
+                        <br />
+                        <br /> Signature of officer 
+                        <br /> Date <h:outputText value="value" />
+                        <br /> Seal 
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+
+    <p:panel id ="pn_sgDetailsDisplay" header="Speed Governor Details" styleClass="top-space bottom-space">
+        <div class="ui-grid-row">  
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_sg_no" value="Speed Governor Number"/>
+                </label>
+                <p:inputText id="tf_sg_no"  value="#{ownerDobj.speedGovernorDobj.sg_no}" disabled="true" required="true" requiredMessage="Blank: Speed Governor Number"
+                             maxlength="20" autocomplete="off" style="text-transform: uppercase" converter="toUpperCaseConverter"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_sg_fitted_on"  value="Speed Governor Fitted On"/>
+                </label>
+                <p:calendar id="tf_sg_fitted_on"  value="#{ownerDobj.speedGovernorDobj.sg_fitted_on}"
+                            mindate="#{ownerDobj.purchase_dt}" maxdate="#{ownerDobj.currentDate}"
+                            pattern="dd-MMM-yyyy"  navigator="true" autocomplete="off" readonlyInput="true"
+                            disabled="true" required="true" requiredMessage="Blank: Speed Governor Fitted On Date">
+                </p:calendar>                 
+            </div>
+
+
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_sg_fitted_at" value="Speed Governor Manufacturer Name"/>
+                </label>
+                <p:selectOneMenu id="tf_sg_fitted_at"  value="#{ownerDobj.speedGovernorDobj.sg_fitted_at}" 
+                                 style="text-transform: uppercase" editable="true" maxlength="50" 
+                                 converter="toUpperCaseConverter" disabled="true">
+                    <f:selectItem itemLabel="--Select--" itemValue="-1"/>
+                    <f:selectItems id="spdMnList" value="#{ownerDobj.speedGovernerList}"/>                    
+                </p:selectOneMenu>
+            </div>
+
+
+        </div>
+        <div class="ui-grid-row"> 
+
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="ls_sg_type" value="Speed Governor Type"/>
+                </label>
+                <p:selectOneMenu id="ls_sg_type"  value="#{ownerDobj.speedGovernorDobj.sgGovType}" 
+                                 style="text-transform: uppercase" disabled="true">
+                    <f:selectItem itemLabel="--Select--" itemValue="-1"/>
+                    <f:validator validatorId="selectOneValidator" for="maker"/>
+                    <f:selectItems id="lssgtype" value="#{listSpeedGovTypes}"/>                    
+                </p:selectOneMenu>
+            </div>
+
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_sg_type_approval_no" value="Speed Governor Type Approval No"/>
+                </label>
+                <p:inputText id="tf_sg_type_approval_no"  value="#{ownerDobj.speedGovernorDobj.sgTypeApprovalNo}" disabled="true" required="true"
+                             requiredMessage="Blank: Speed Governor Type Approval No"
+                             maxlength="40" autocomplete="off" style="text-transform: uppercase"
+                             converter="toUpperCaseConverter"/>
+            </div>
+
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_sg_test_report_no" value="Speed Governor Test Report No"/>
+                </label>
+                <p:inputText id="tf_sg_test_report_no"  value="#{ownerDobj.speedGovernorDobj.sgTestReportNo}" disabled="true"  required="true"
+                             requiredMessage="Blank: Speed Test Report No"
+                             maxlength="40" autocomplete="off" style="text-transform: uppercase"
+                             converter="toUpperCaseConverter"/>
+            </div>
+
+
+        </div>
+        <div class="ui-grid-row"> 
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="tf_sg_fitment_cert_no" value="Speed Governor Fitment Cert No"/>
+                </label>
+                <p:inputText id="tf_sg_fitment_cert_no"  value="#{ownerDobj.speedGovernorDobj.sgFitmentCerticateNo}" disabled="true" required="true"
+                             requiredMessage="Blank: Speed Governor Fitment Cert No"
+                             maxlength="40" autocomplete="off" style="text-transform: uppercase"
+                             converter="toUpperCaseConverter"/>
+            </div>
+
+        </div>
+    </p:panel>
+</html>

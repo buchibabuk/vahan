@@ -1,0 +1,483 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content" >
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">Fancy Number Auction </h1>
+                </div>
+            </div>
+            <p:panel id="fancyNmberAcution" header="Fancy Number Auction">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="errormsg" >
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+            </p:panel>
+        </div>
+        <p:panel  styleClass="center-position">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <p:panel  id="autctiondetailentryform"  >
+                            <p:dialog widgetVar="dlg" modal="true" id="dialogAucDetEntryForm" header="Auction Deatils Entry Form " height="400" width="600" >
+                                <f:facet name="header">
+                                    <p:row>
+                                        <p:column colspan="7">[ Application No - #{fancynumberauctionbean.regn_appl_no.value } ] [ Owner Name - #{fancynumberauctionbean.owner_name.value} ]</p:column>
+                                    </p:row>
+
+                                </f:facet>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Attandance" />
+                                        </label>
+                                        <p:selectOneRadio  id="attandence" binding="#{fancynumberauctionbean.attendance_at_auction}"
+                                                           valueChangeListener="#{fancynumberauctionbean.auctionDetailsEntryAttendanceChanged}"  >
+                                            <f:selectItem  itemLabel="Present" itemValue="P"/>
+                                            <f:selectItem  itemLabel="Absent" itemValue="A" />
+                                            <p:ajax event="change" update="auction_amt"/>
+                                        </p:selectOneRadio>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Reserve Amount" />
+                                        </label>
+                                        <p:inputText  disabled="true" id="reserve_amt" binding="#{fancynumberauctionbean.reserve_amt}" styleClass="text-uppercase" />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value=" Offer Amount" />
+                                        </label>
+                                        <p:inputText  id="offer_amt"  binding="#{fancynumberauctionbean.offer_amt}"  styleClass="text-uppercase" />
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Draft Amount" />
+                                        </label>
+                                        <p:inputText  id="draft_amt" binding="#{fancynumberauctionbean.draft_amt}" />
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel value="Auction Amount" />
+                                        </label>
+                                        <p:inputText binding="#{fancynumberauctionbean.auction_amt}" id="auction_amt" />
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton id="draft_add" value="Add Draft Details" onclick="PF('dialogDraftEntry').show();" icon="ui-icon-transferthick-e-w" immediate="true" update="listofdraft individualDraft"/>
+                                        <p:commandButton value="Save as Draft" actionListener="#{fancynumberauctionbean.saveAsDraft}"  update="@form"/></div>
+                                </div>
+                            </p:dialog>
+                        </p:panel>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p:dialog widgetVar="dialogLotterydlg" modal="true" id="dialogLottery" >
+                            <p:panel header=" -- Lottery --" id="listofapplicationLottery"  >
+                                <p:dataTable value="#{fancynumberauctionbean.listCommonHighest}" var="listApplications"  >
+                                    <p:columnGroup type="header">
+                                        <p:row>
+                                            <p:column headerText="Details" />
+                                            <p:column headerText="Amount Details" />
+                                            <p:column headerText="Status" />
+                                            <p:column headerText="Action" />
+                                        </p:row>
+                                    </p:columnGroup>
+                                    <p:column styleClass="top-align">
+                                        <table style="border-color: #ffffff;">
+                                            <tr>
+                                                <td >
+                                                    <strong> Application No </strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.regn_appl_no}           
+                                                </td>
+                                                <td>
+                                                    <strong> Date</strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.recp_dt}           
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong> Receipt No</strong>            
+                                                </td>
+                                                <td>
+                                                    #{listApplications.recp_no}          
+                                                </td>
+                                                <td>
+                                                    <strong> Date</strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.recp_dt}           
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong> Owner Name    </strong>        
+                                                </td>
+                                                <td>
+                                                    #{listApplications.owner_name}          
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </p:column>
+                                    <p:column style="vertical-align: top; ">
+                                        <table style="border-color: #ffffff">
+                                            <tr>
+                                                <td>
+                                                    <strong>  Reserve </strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.reserve_amt}  
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong> Offer </strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.offer_amt}
+                                                </td>
+                                                <td>
+                                                    <strong> DD </strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.draft_amt}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong> Auction</strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.auction_amt}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong> Total </strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.total_amt} 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <strong>Balance</strong>
+                                                </td>
+                                                <td>
+                                                    #{listApplications.bal_amt}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </p:column>
+                                    <p:column>
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    Attendance
+                                                </td>
+                                                <td>
+                                                    #{listApplications.attendance_at_auction}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Auction Winner
+                                                </td>
+                                                <td>
+                                                    #{listApplications.status}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandButton value="Set Lottery Winner"  actionListener="#{fancynumberauctionbean.auctionDetailsSetLotteryWinner}"> 
+                                            <f:param name="selected_appl_no" value="#{listApplications.regn_appl_no}"/>
+                                            <f:param name="selected_regn_no" value="#{listApplications.regn_no}"/>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </p:dialog>
+                        <p:dialog widgetVar="dialogDraftEntry" modal="true" id="dialogDraft" height="600" width="800">
+                            <p:panel header=" -- Draft Details --" id="listofdraft">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            Draft Number   
+                                        </td>
+                                        <td>
+                                            <p:inputText id="dd_draft_num" value="#{fancynumberauctionbean.currect_draft.draft_num}" />
+                                            <p:message for="dd_draft_num"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Draft Date
+                                        </td>
+                                        <td>
+                                            <p:calendar id="dd_draft_date" value="#{fancynumberauctionbean.currect_draft.dated}" pattern="dd-MMM-yyyy"/>
+                                            <p:message for="dd_draft_date"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Draft Amount
+                                        </td>
+                                        <td>
+                                            <p:inputText id="dd_draft_amt" value="#{fancynumberauctionbean.currect_draft.amount}"/>
+                                            <p:message for="dd_draft_num"/> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Bank
+                                        </td>
+                                        <td>
+                                            <p:selectOneMenu id = "dd_draft_bank" value="#{fancynumberauctionbean.currect_draft.bank_code}">
+                                                <f:selectItems value="#{fancynumberauctionbean.list_bank}"/>
+                                            </p:selectOneMenu>
+                                            <p:message for="dd_draft_bank"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Branch
+                                        </td>
+                                        <td>
+                                            <p:inputText id="dd_draft_bank_branch" value="#{fancynumberauctionbean.currect_draft.branch_name}"/>
+                                            <p:message for="dd_draft_bank_branch"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Remark
+                                        </td>
+                                        <td>
+                                            <p:inputText id="dd_draft_remark" value="#{fancynumberauctionbean.currect_draft.remarks}"/>
+                                            <p:message for="dd_draft_remark"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="10" class="center-position">
+                                            <p:commandButton id="dd_btn_draft_add" binding="#{fancynumberauctionbean.btn_draft_add}" action="#{fancynumberauctionbean.addAction()}" update="listofdraft individualDraft">
+
+                                            </p:commandButton>
+                                            <p:commandButton id="dd_btn_draft_reset" value="Reset" action="#{fancynumberauctionbean.resetDraftDetails()}" update="listofdraft individualDraft">
+
+                                            </p:commandButton>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="10" class="center-position">
+                                            <p:dataTable 
+                                                id="individualDraft"
+                                                value="#{fancynumberauctionbean.listDraftNoBeingAdded}"
+                                                var="draft_list" rowIndexVar="draftRowIndex">
+
+                                                <p:column headerText="Sr. No">
+                                                    <h:outputText value="#{draftRowIndex+1}"/>
+                                                </p:column>
+                                                <p:column headerText="Draft Number">
+                                                    #{draft_list.draft_num}
+                                                </p:column>
+                                                <p:column headerText="Draft Date">
+                                                    #{draft_list.dated}
+                                                </p:column>
+                                                <p:column headerText="Draft Amount">
+                                                    #{draft_list.amount}
+                                                </p:column>
+                                                <p:column headerText="Bank Code">
+                                                    #{draft_list.bank_code}
+                                                </p:column>
+                                                <p:column headerText="Branch Name">
+                                                    #{draft_list.branch_name}
+                                                </p:column>
+                                                <p:column headerText="Remark">
+                                                    #{draft_list.remarks}
+                                                </p:column>
+                                                <p:column headerText="Options" style="width:50px">  
+                                                    <f:facet name="header">Action</f:facet>
+                                                    <p:commandLink value="Delete" action="#{fancynumberauctionbean.deleteDraftRecord(draft_list)}" update="@this :masterLayout:listofdraft" />
+                                                    <h:outputText value="&#160;&#160;&#160;" />  <p:commandLink value="Edit" action="#{fancynumberauctionbean.editDraftRecord(draft_list)}" update="@this :masterLayout:listofdraft" />
+                                                </p:column> 
+                                            </p:dataTable>      
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p:panel>
+                        </p:dialog>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="center-position">
+                        <p:commandButton value="Lottery" action="#{fancynumberauctionbean.auctionWinner}"  ajax="true"  disabled="#{!fancynumberauctionbean.btn_save.disabled}" update="dialogLottery listofapplication btn_save" />
+                    </td>
+                    <td class="center-position">
+                        <p:commandButton  action="#{fancynumberauctionbean.auctionDetailsSaveEntry}" binding="#{fancynumberauctionbean.btn_save}" update="@form" id="btn_save"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="top-align" colspan="5">
+                        <p:panel header="List Of Application " id="listofapplication"  >
+                            <p:dataTable value="#{fancynumberauctionbean.listAuctionApplicationNumbers}" var="listApplications"  rowIndexVar="rowIndex">
+
+                                <p:columnGroup type="header">
+                                    <p:row>
+                                        <p:column headerText="Sr. No" />
+                                        <p:column headerText="Details" />
+                                        <p:column headerText="Amount Details" />
+                                        <p:column headerText="Status" />
+                                        <p:column headerText="Action" />
+                                    </p:row>
+                                </p:columnGroup>
+                                <p:column headerText="Sr. No">
+                                    <h:outputText value="#{rowIndex+1}"/>
+                                </p:column>
+                                <p:column class="top-align">
+                                    <table style="border: #ffffff">
+                                        <tr >
+                                            <td >
+                                                Application No 
+                                            </td>
+                                            <td>
+                                                #{listApplications.regn_appl_no}           
+                                            </td>
+
+                                            <td colspan="2">
+                                                #{listApplications.recp_dt}           
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong> Receipt No</strong>            
+                                            </td>
+                                            <td>
+                                                #{listApplications.recp_no}          
+                                            </td>
+
+                                            <td colspan="2">
+                                                #{listApplications.recp_dt}           
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong> Owner Name    </strong>        
+                                            </td>
+                                            <td colspan="3">
+                                                #{listApplications.owner_name}          
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p:column>
+                                <p:column style="vertical-align: top; ">
+                                    <table style="border-color: #ffffff">
+                                        <tr>
+                                            <td>
+                                                <strong>  Reserve </strong>
+                                            </td>
+                                            <td>
+                                                #{listApplications.reserve_amt}  
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong> Offer </strong>
+                                            </td>
+                                            <td>
+                                                #{listApplications.offer_amt}
+                                            </td>
+                                            <td>
+                                                <strong> DD </strong>
+                                            </td>
+                                            <td>
+                                                #{listApplications.draft_amt}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <strong> Auction</strong>
+                                            </td>
+                                            <td>
+                                                #{listApplications.auction_amt}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <hr/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Total
+                                            </td>
+                                            <td>
+                                                #{listApplications.total_amt} 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Balance
+                                            </td>
+                                            <td>
+                                                #{listApplications.bal_amt}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p:column>
+                                <p:column>
+                                    <table>
+                                        <tr>
+                                            <td colspan="2" style="background-color: #{listApplications.attendance_at_auction eq 'A' or listApplications.attendance_at_auction eq 'P'? (listApplications.attendance_at_auction eq 'A'? 'red':'green') :'#D358F7'};">
+                                                #{listApplications.attendance_at_auction eq 'A' or listApplications.attendance_at_auction eq 'P'? (listApplications.attendance_at_auction eq 'A'? 'Absent':'Present') :'Attendance Pending'}
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="background-color: #{listApplications.status eq 'A' or listApplications.status eq 'R'?listApplications.status eq 'A'?'#81F79F':'#FA5858':'#F3F781'};" >
+                                                                    #{ listApplications.status eq 'A' or listApplications.status eq 'R'?listApplications.status eq 'A'?'Allocated':'Rejected':listApplications.status}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton value="Payment Entry"  
+                                                     actionListener="#{fancynumberauctionbean.auctionDetailsPaymentEntry}" 
+                                                     oncomplete="dlg.show()" 
+                                                     update=":masterLayout:autctiondetailentryform"> 
+                                        <f:param name="selected_appl_no" value="#{listApplications.regn_appl_no}"/>
+                                        <f:param name="selected_regn_no" value="#{listApplications.regn_no}"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </td>
+                </tr>
+            </table>
+            <p:spacer width="30"/>
+            <p:commandButton value="Back" action="seatwork"/>
+        </p:panel>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,149 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formNocEndorse"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.nocEndorsement}</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputLabel id="showNocEndorMessg">
+                    <p:dialog widgetVar="successNocEndorDialog" id="successNocEndorMessage"  modal="true" closable="false" resizable="false" draggable="false" header="Success Message">
+                        <h:outputText value="#{nocEndorBean.successNocEndorsementMessg}" escape="false"/>
+                        <div class="center-position">
+                            <p:button value="#{language.ok}" onclick="PF('successNocEndorDialog').hide();"                                              
+                                      icon="ui-icon-check" outcome="home"/>
+                        </div>
+                    </p:dialog>
+                </p:outputLabel>
+
+                <p:outputPanel id="nocVehDtls" rendered="#{nocEndorBean.regnNoPanelShow}">
+                    <p:panel id="nocVehDtlsPanel">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRegNo" value="#{language.vehicleRegistrationNo}."/>
+                                </label>
+                                <p:inputText  id="tfRegNo" value="#{nocEndorBean.regnNo}" 
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="Please Enter Registration No."
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="#{language.showDetails}" action="#{nocEndorBean.showDetails()}"
+                                                 update="@form" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                                <p:button value="#{language.login_back}" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="OwnerPanel" rendered="#{nocEndorBean.detailsPanelShow}">
+
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space"> 
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-6">
+                                <ui:include src="/ui/registration/registrationStatusParameters.xhtml">
+                                    <ui:param name="regStatusParam" value="#{nocEndorBean.regStatus}"/>
+                                </ui:include>
+
+                            </div>  
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                        </div>
+
+                        <p:tabView styleClass="top-space bottom-space" >
+
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="#{language.ownerDetails}">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{nocEndorBean.ownerDetail}"/>
+                                    <ui:param name="listOwnerCatg" value="#{nocEndorBean.listOwnerCatg}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{nocEndorBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <!--###################### Hypothecation and Insurance Details ############################### -->
+                            <p:tab id="HypothecationOwner"  title="#{language.hypothecation_InsuranceInformation}">      
+                                <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                                <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>                                
+                            </p:tab>  
+                            <!--########################################################################################## --> 
+
+                            <!--###################### Commercial Trailer Details ######################################## -->
+                            <p:tab id="CommercialTrailerDetails"  title="#{language.attachedTrailerDetails}">  
+                                <ui:include src="/ui/form_commercial_trailer_dtls.xhtml"/>
+                            </p:tab>
+
+                            <!--###################### Fitness Details ######################################## -->
+                            <p:tab id="fitnessDetails"  title="#{language.fitnessDetails}" rendered="#{nocEndorBean.fitnessDobj ne null}">  
+                                <ui:include src="/ui/registration/formFitnessDetails.xhtml">
+                                    <ui:param name="fitnessDobj" value="#{nocEndorBean.fitnessDobj}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <p:tab id="HSRPDetails"  title="#{language.hsrpDetails}" rendered="#{nocEndorBean.hsrpDetailsBean.ishsrp}">  
+                                <ui:include src="/ui/formHSRPDetails.xhtml"/>
+                            </p:tab>
+                            <!--########################################################################################## -->
+                            <p:tab id="SmartCardDetails" title="#{nocEndorBean.scDetailsBean.tabTitle}" rendered="#{nocEndorBean.smartcardStatus}">  
+                                <ui:include src="/ui/formSmartCardDetails.xhtml"/>
+                            </p:tab>
+
+                            <!--########################################################################################## -->
+                        </p:tabView>
+                    </p:panel>
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="#{language.endorse}" action="#{nocEndorBean.endorse()}"
+                                             update="@form" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();">
+                                <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:button value="#{language.login_back}" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:blockUI block="formNocEndorse" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

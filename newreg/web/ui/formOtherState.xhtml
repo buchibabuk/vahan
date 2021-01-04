@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"     
+      xmlns:f="http://java.sun.com/jsf/core"> 
+
+    <p:panel styleClass="top-space bottom-space">
+        <p:panel header="Registration Details" styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="oldRegNo" value="Old Registration No"/> 
+                    </label>
+                    <p:inputText id="oldRegNo" value="#{workBench.otherStateVehDobj.oldRegnNo}" disabled="true"
+                                 converter="toUpperCaseConverter" required="true" requiredMessage="Blank Old Registration No"
+                                 maxlength="10" autocomplete="off" styleClass="input" validator="#{validateFunction.validateRegNo}">  
+                        <p:ajax partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="entryDate" value="Entry Date"/>
+                    </label>
+                    <p:calendar id="entryDate" value="#{workBench.otherStateVehDobj.stateEntryDate}" navigator="true" disabled="#{owner_bean.renderValidityPanel}"
+                                required="true" requiredMessage="Blank Entry Date" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                maxdate="#{workBench.otherStateVehDobj.maxDate}"  autocomplete="off">                       
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        <p:ajax partialSubmit="true"/>
+                    </p:calendar>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="oldRegDt" value="First Registration Date"/>
+                    </label>
+                    <p:calendar id="oldRegDt" value="#{owner_bean.ownerDobj.regn_dt}" navigator="true" disabled="#{owner_bean.renderValidityPanel}"
+                                required="true" requiredMessage="Blank First Registration Date" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                maxdate="#{workBench.otherStateVehDobj.maxDate}"  autocomplete="off">                       
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        <p:ajax event="dateSelect" update="@this" process="@this" partialSubmit="true"/>
+                    </p:calendar>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="oldRegUpto" value="Registration Valid Upto"/>
+                    </label>
+                    <p:calendar id="oldRegUpto" value="#{owner_bean.ownerDobj.regn_upto}" navigator="true" disabled="#{owner_bean.renderValidityPanel}"
+                                required="true" requiredMessage="Blank Registration Valid Upto" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                autocomplete="off">                       
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        <p:ajax event="dateSelect" update="@this" process="@this" partialSubmit="true"/>
+                    </p:calendar>
+                </div>
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="oldFitUpto" value="Fitness Valid Upto"/>
+                    </label>
+                    <p:calendar id="oldFitUpto" value="#{owner_bean.ownerDobj.fit_upto}" navigator="true" disabled="#{owner_bean.renderValidityPanel}"
+                                required="true" requiredMessage="Blank Fitness Valid Upto" pattern="dd-MMM-yyyy" readonlyInput="true"
+                                autocomplete="off">                       
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        <p:ajax event="dateSelect" update="@this" process="@this" partialSubmit="true"/>
+                    </p:calendar>
+                </div>
+            </div>
+        </p:panel>
+
+
+        <p:panel header="NOC Details" styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel  for="nocNo" value="NOC No"/>
+                    </label>
+                    <p:inputText id="nocNo" value="#{workBench.otherStateVehDobj.nocNo}" required="true" 
+                                 converter="toUpperCaseConverter" disabled="#{owner_bean.disableOtherState}"
+                                 requiredMessage="Blank NOC No" maxlength="30" autocomplete="off" styleClass="input" 
+                                 validator="#{validateFunction.validateNocNo}">
+                        <p:ajax partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="nocDate" value="NOC Issue Date:"/>
+                    </label>
+                    <p:calendar  id="nocDate" value="#{workBench.otherStateVehDobj.nocDate}"
+                                 navigator="true" disabled="#{owner_bean.disableOtherState}"
+                                 required="true" requiredMessage="Blank NOC Issue Date" pattern="dd-MMM-yyyy" 
+                                 maxdate="#{workBench.otherStateVehDobj.maxDate}" readonlyInput="true" autocomplete="off">                       
+                        <f:convertDateTime pattern="dd-MMM-yyyy"/>
+                        <p:ajax partialSubmit="true"/>
+                    </p:calendar> 
+                </div>
+
+            </div>
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel  for="oldState" value="Old State"/>
+                    </label>
+                    <p:selectOneMenu id="oldState" value="#{workBench.otherStateVehDobj.oldStateCD}" 
+                                     disabled="#{owner_bean.disableOtherState}"
+                                     filter="true" filterMatchMode="contains">
+                        <f:selectItems value="#{workBench.stateList}"/>
+                        <p:ajax event="change" listener="#{workBench.updateRtoFromStateListener}" update="oldOffice" partialSubmit="true"/>
+                    </p:selectOneMenu>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="oldOffice" value="Old Office"/>
+                    </label>
+                    <p:selectOneMenu id="oldOffice" value="#{workBench.otherStateVehDobj.oldOffCD}" 
+                                     filter="true" filterMatchMode="contains" required="true" disabled="#{owner_bean.disableOtherState}">
+                        <f:selectItem itemLabel="---SELECT---" itemValue="0"/>
+                        <f:selectItems value="#{workBench.officeList}"/>
+                        <f:validator validatorId="selectOneValidator_0" />
+                        <p:ajax event="change" partialSubmit="true" update="@this" listener="#{workBench.otherStateOffCdListender}" onstart="PF('ajax_status').show();" onsuccess="PF('ajax_status').hide();" />
+                    </p:selectOneMenu> 
+                </div>
+
+            </div>
+        </p:panel>
+
+        <p:panel header="NCRB Details" styleClass="top-space bottom-space">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="ncrbRef" value="Referernce No"/> 
+                    </label>
+                    <p:inputText id="ncrbRef" value="#{workBench.otherStateVehDobj.ncrbRef}"
+                                 converter="toUpperCaseConverter" disabled="#{owner_bean.disableOtherState}"
+                                 maxlength="20" autocomplete="off" styleClass="text-uppercase">
+                        <p:ajax partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+                <div class="ui-grid-col-4">
+                    <label class="field-label resp-label-section">
+                        <p:outputLabel for="confirmRef" value="Confirm No"/> 
+                    </label>
+                    <p:inputText id="confirmRef" value="#{workBench.otherStateVehDobj.confirmRef}" converter="toUpperCaseConverter"
+                                 maxlength="15" autocomplete="off"  styleClass="text-uppercase">
+                        <p:ajax partialSubmit="true"/>
+                    </p:inputText>
+                </div>
+            </div>
+        </p:panel>
+    </p:panel>
+</html>

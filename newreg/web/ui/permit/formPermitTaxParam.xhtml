@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">  
+
+    <p:panel id ="permitDtls" header="#{language.permitDetails}" styleClass="top-space bottom-space">
+        <div class="ui-grid-row">  
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="permit_type" value="#{language.user_permitType}"/>
+                </label>
+                <p:selectOneMenu id="permit_type" value="#{permit.ownerDobj.pmt_type}" filter="true" filterMatchMode="contains" validator="#{permit.validatePermitType}">                
+                    <f:selectItem itemLabel="--SELECT PERMIT TYPE--" itemValue="-1"/>
+                    <f:selectItems value="#{permit.ownerDobj.permitTypeList}"/>
+                    <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                    <p:ajax event="change" listener="#{permit.permitTypeChangeListener}" process="@this" update="permit_catg #{updateComponents}" partialSubmit="true"/>
+                </p:selectOneMenu> 
+            </div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel for="permit_catg" value="#{language.user_permitCatg}"/>
+                </label>
+                <p:selectOneMenu id="permit_catg" value="#{permit.ownerDobj.pmt_catg}" filter="true" filterMatchMode="contains" validator="#{permit.validatePermitCatg}">                
+                    <f:selectItem itemLabel="--SELECT PERMIT CATEGORY--" itemValue="-1"/>
+                    <f:selectItems value="#{permit.ownerDobj.permitCategoryList}"/>
+                    <f:selectItem itemLabel="NOT APPLICABLE" itemValue="0"/>
+                    <p:ajax event="change" listener="#{permit.permitCatgChangeListener}" process="@this" update="#{updateComponents}" partialSubmit="true"/>
+                </p:selectOneMenu>                 
+            </div>
+
+            <div class="ui-grid-col-4">
+                <p:outputPanel id="pnl_service">
+                    <p:outputPanel >
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{language.pmt_service_type}:"/>
+                        </label>
+                        <p:selectOneMenu id="service_type" value="#{permit.ownerDobj.servicesType}" filter="true" filterMatchMode="contains" >                
+                            <f:selectItems value="#{permit.ownerDobj.pmtServiceTypeList}"/>
+                            <p:ajax event="change"/>
+                        </p:selectOneMenu> 
+                    </p:outputPanel>
+                </p:outputPanel>
+            </div>
+
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section" >
+                    <p:outputLabel for="area" value="Region" rendered="#{permit.renderMultiRegionList}"/>
+                </label>
+                <p:selectCheckboxMenu id="area" value="#{permit.ownerDobj.region_covered}" label="" filter="true" filterMatchMode="contains" rendered="#{permit.renderMultiRegionList}" disabled="#{permit.disableMultiRegionList}">                                   
+                    <f:selectItems value="#{permit.ownerDobj.regionList}"/>  
+                     <p:ajax event="change"/>
+                </p:selectCheckboxMenu>                 
+            </div>
+            
+        </div>
+    </p:panel>
+    
+</html>

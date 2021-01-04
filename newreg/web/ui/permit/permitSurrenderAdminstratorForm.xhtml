@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22" >
+        <h:form id="permitForm" prependId="false">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <h1 class="header-main"><p:outputLabel value="Permit Surrender Administrator Form" /></h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="top-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Registration/Permit No. :" />
+                            </label>
+                            <p:inputText id="uer_regn_no" styleClass="text-uppercase" value="#{adminSurrenderBean.userInfo}" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Get Details" action="#{adminSurrenderBean.getPmtSurrenderDetails()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="All_detail"/>
+                            <p:button value="Reset" outcome="/ui/permit/permitSurrenderAdminstratorForm.xhtml?faces-redirect=true"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:tabView id="All_detail" styleClass="top-space bottom-space">
+                    <p:tab id="Owner_Details" title="Owner Detail">
+                        <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                            <ui:param name="Owner_permit_detail" value="#{adminSurrenderBean}"/>
+                        </ui:include>
+                    </p:tab>
+                    <p:tab id="Permit_Details" title="Permit Detail">
+                        <p:panel header="Permit Details">
+                            <p:outputPanel id="permit_ratification_details">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="regn_no" value="Regestration No."/>
+                                        </label>
+                                        <p:inputText id="regn_no" value="#{adminSurrenderBean.permitDetailsDobj.regnNo}" readonly="true" maxlength="10" autocomplete="off" styleClass="text-uppercase">                                           
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="appl_no" value="Application No."/>
+                                        </label>
+                                        <p:inputText id="appl_no" value="#{adminSurrenderBean.permitDetailsDobj.applNo}" readonly="true" maxlength="16" autocomplete="off" styleClass="text-uppercase">
+                                        </p:inputText>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="pmt_no" value="Permit No."/>
+                                        </label>
+                                        <p:inputText  id="pmt_no" value="#{adminSurrenderBean.permitDetailsDobj.pmt_no}" readonly="true" maxlength="25" autocomplete="off" styleClass="text-uppercase">
+                                        </p:inputText>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="order_dt" value="Order Date"/>
+                                        </label>
+                                        <p:inputText  id="order_dt" value="#{adminSurrenderBean.permitDetailsDobj.orderDtInString}" readonly="true" maxlength="25" autocomplete="off" styleClass="text-uppercase">
+                                        </p:inputText>
+
+                                    </div>
+
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="order_no" value="Order No"/>
+                                        </label>                                        
+                                        <p:inputText  id="order_no" value="#{adminSurrenderBean.permitDetailsDobj.order_no}" readonly="true" maxlength="25" autocomplete="off" styleClass="text-uppercase"/>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="purpose" value="Purpose"/>
+                                        </label>
+                                        <p:inputText  id="purpose" value="#{adminSurrenderBean.permitDetailsDobj.paction}" readonly="true" maxlength="25" autocomplete="off" styleClass="text-uppercase"/>
+                                    </div>
+                                </div>
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="remarks" value="Remarks"/>
+                                        </label>
+                                        <p:inputText id="remarks" value="#{adminSurrenderBean.permitDetailsDobj.remarks}" readonly="true" maxlength="16" autocomplete="off" styleClass="text-uppercase">
+                                        </p:inputText>
+                                    </div>                                    
+                                </div>
+                            </p:outputPanel>
+                        </p:panel>
+                    </p:tab>
+                </p:tabView>
+                <p:panel styleClass="top-space bottom-space center-position">
+                    <p:outputPanel>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">                                                           
+                                <p:commandButton value="Move to History" action="#{adminSurrenderBean.deletePmtTransDetails()}">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                                <p:commandButton value="Reset" action="/ui/permit/permitSurrenderAdminstratorForm.xhtml?faces-redirect=true"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:dialog id="pendingApplicationID" header="Application Number" widgetVar="pendingAppication" modal="true" resizable="false" closable="false">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:outputLabel  escape="false"  value="#{adminSurrenderBean.errorMsg}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Exit for Another Application" immediate="true" action="/ui/permit/permitSurrenderAdminstratorForm.xhtml?faces-redirect=true"/>
+                            </f:facet>
+                        </div>
+                    </div>
+                </p:dialog>
+
+                <p:dialog id="permit_details_Dlg" dynamic="true" styleClass="otp_dialog"
+                          widgetVar="permit_details_Dlg" 
+                          modal="true" draggable="false" closable="false" resizable="false"
+                          header="Permit Surrender Details"  width="70%" responsive="true" position="center center">                   
+                    <p:panel id="permit_details_Dlg_pnl" styleClass="bottom-space border-none">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:dataTable value="#{adminSurrenderBean.passList}" var="data">                                   
+                                    <p:column headerText="Office Name">
+                                        #{data.permitOfficeName }
+                                    </p:column>
+                                    <p:column headerText="Purpose">
+                                        #{data.paction}
+                                    </p:column>  
+                                    <p:column headerText="Permit No.">
+                                        #{data.pmt_no}
+                                    </p:column>  
+                                    <p:column headerText="Vehicle Number">
+                                        #{data.regnNo }
+                                    </p:column>
+                                    <p:column headerText="Edit">
+                                        <p:commandButton id="editPermitDetails" value="Show Details"  action="#{adminSurrenderBean.pmtTransGetDetails()}"  update="All_detail" icon="ui-icon-search">
+                                            <f:param name="pmt_no" value="#{data.pmt_no}" />
+                                            <f:param name="app_off_cd" value="#{data.off_cd}" />
+                                            <f:param name="regnNo" value="#{data.regnNo}" />
+                                        </p:commandButton>
+                                    </p:column>  
+                                </p:dataTable>
+                                <br/>                              
+                            </div>
+                        </div>
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:button value="Cancel" outcome="/ui/permit/permitSurrenderAdminstratorForm.xhtml?faces-redirect=true" icon="ui-icon-closethick"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                </p:dialog>
+
+            </div>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

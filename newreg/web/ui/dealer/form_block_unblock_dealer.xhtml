@@ -1,0 +1,90 @@
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+
+        <h:form id="blockUnblockDealer">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">#{language.block_dealer}/#{language.unblock_dealer} #{language.dealer_list}</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+
+            <p:outputLabel id="showMessg">
+                <p:dialog widgetVar="successDialog" id="successBlockUnBlockMessage"  modal="true" closable="false" resizable="false" draggable="false" header="#{language.home_confirm}">
+                    <h:outputText value="#{dealerBlckUnblckBean.successBlockUnBlockMessg}" escape="false"/>
+                    <div class="center-position">
+                        <p:button value="#{language.ok}" onclick="PF('successDialog').hide();"                                              
+                                  icon="ui-icon-check"/>
+                    </div>
+                </p:dialog>
+            </p:outputLabel>
+
+            <p:panel header="#{language.unblock_dealer} #{language.dealer_list}" styleClass="bottom-space">
+                <p:dataTable  id="unblckdealerDataTable" value="#{dealerBlckUnblckBean.dealerUnBlkedList}" var="unBlock"  filteredValue="#{dealerBlckUnblckBean.filteredList}" rowIndexVar="index" rows="10" paginator="true" paginatorPosition="bottom">
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}."/></p:column>
+                    <p:column headerText="#{language.dealer_name}" filterBy="#{unBlock.dealer_name}" filterMatchMode="contains" sortBy="#{unBlock.dealer_name}">#{unBlock.dealer_name}</p:column>
+                    <p:column headerText="#{language.reason}">
+                        <p:inputText  id="reasonId" converter="toUpperCaseConverter" styleClass="input" value="#{unBlock.reason}"/>
+                        <p:keyFilter regEx="/[a-zA-Z0-9-/ ]/i" for="reasonId"/>
+                    </p:column>
+                    <p:column headerText="#{language.block}">
+                        <p:selectBooleanCheckbox value="#{unBlock.blockUnBlockStatus}"/>
+                    </p:column>
+                </p:dataTable> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton  value="#{language.block}" action="#{dealerBlckUnblckBean.blkDlrDetails()}" update="@form" onclick="PF('bui').show();">
+                            <p:confirm header="#{language.home_confirm}" message="#{language.sure_want_to_block}" icon="ui-icon-alert"/>    
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:panel header="#{language.block_dealer} #{language.dealer_list}" styleClass="bottom-space">
+                <p:dataTable id="BlckdealerDataTable" value="#{dealerBlckUnblckBean.dealerBlkedList}" var="blck"  rowIndexVar="index" rows="10" paginator="true"  paginatorPosition="bottom">
+                    <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}."/></p:column>
+                    <p:column headerText="#{language.dealer_name}" filterBy="#{blck.dealer_name}" filterMatchMode="contains" sortBy="#{blck.dealer_name}">#{blck.dealer_name}</p:column>
+                    <p:column headerText="#{language.reason}">
+                        <h:outputText  value="#{blck.reason}"/>
+                    </p:column>
+                    <p:column headerText="#{language.unblock}">
+                        <p:selectBooleanCheckbox  value="#{blck.blockUnBlockStatus}"/>
+                    </p:column>
+                </p:dataTable>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton  value="#{language.unblock}" action="#{dealerBlckUnblckBean.unBlkDlrDetails()}" update="@form" onclick="PF('bui').show();">
+                            <p:confirm header="#{language.home_confirm}" message="#{language.sure_want_to_unblock}" icon="ui-icon-alert"/>    
+                        </p:commandButton>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                <p:commandButton value="#{language.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="#{language.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+
+
+            <p:blockUI block="blockUnblockDealer" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </ui:define>
+</ui:composition>

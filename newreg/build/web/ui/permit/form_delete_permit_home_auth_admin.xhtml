@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <h:form prependId="false">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1><p:outputLabel value="DELETE PERMIT HOME AUTHORIZATION ADMINISTRATOR" styleClass="header-main"/></h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:messages showDetail="true" showSummary="false" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                        <p:autoUpdate/>
+                    </p:growl>
+                </div>
+            </div>
+            <p:outputPanel>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel value="#{label.regn_no}" />
+                        </label>
+                        <p:inputText id="regno" required="true" styleClass="text-uppercase"
+                                     value="#{deleteAuthAdmin.homeAuthDobj.regnNo}" autocomplete="off"
+                                     maxlength="10" size="28">
+                            <p:keyFilter regEx="/[a-zA-Z0-9\s_]/i"/>                                                             
+                        </p:inputText>
+                    </div>                    
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Get Details" action="#{deleteAuthAdmin.get_details()}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="pmtOwnerDtls pmtDtls auth"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel id="pmtOwnerDtls"  styleClass="top-space bottom-space">
+                <ui:include src="/ui/permit/form_permit_owner_dtls.xhtml">
+                    <ui:param name="Owner_permit_detail" value="#{deleteAuthAdmin}"/>
+                </ui:include>
+            </p:outputPanel>
+
+            <p:panel id="pmtDtls" header="Previous Permit Details" styleClass="top-space bottom-space" >
+                <ui:include src="/ui/permit/form_permit_dtls.xhtml"/>
+            </p:panel>
+
+            <p:panel id="auth" header="Permit Authorization Details" styleClass="top-space bottom-space" >
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 left-position">
+                        <p:outputLabel rendered="#{!PasPermitDtls.showHide}" styleClass="inline-section right-space">
+                            <h3 class="open-counter counter-button inline-section center-position" title="Validity">
+                                <span class="glyphicon right-space"></span> #{deleteAuthAdmin.prvAuthValidity}
+                            </h3>                        
+                        </p:outputLabel>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="authNo" value="Authorization No." styleClass="field-label-mandate"/>
+                        </label>
+                        <p:inputText id="authNo" styleClass="text-uppercase" value="#{deleteAuthAdmin.homeAuthDobj.authNo}" maxlength="25" autocomplete="off"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="authValidFrom" value="Auth Valid From" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="authValidFrom" navigator="true"  pattern="dd-MMM-yyyy" value="#{deleteAuthAdmin.homeAuthDobj.authFrom}" mindate="#{deleteAuthAdmin.minDate}" maxdate="#{deleteAuthAdmin.maxDate}"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="authValidUpto" value="Auth Valid UpTo" styleClass="field-label-mandate"/>
+                        </label>
+                        <p:calendar id="authValidUpto" navigator="true"  pattern="dd-MMM-yyyy" value="#{deleteAuthAdmin.homeAuthDobj.authUpto}"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:outputPanel id="bt_function" styleClass="top-space bottom-space center-position">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:commandButton value="Delete" action="#{deleteAuthAdmin.deleteHomeAuth()}">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:button value="Reset" outcome="/ui/permit/form_delete_permit_home_auth_admin.xhtml?faces-redirect=true"  onclick="PF('bui').show();" icon="ui-icon-arrowrefresh-1-w"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <p:blockUI block="@form" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

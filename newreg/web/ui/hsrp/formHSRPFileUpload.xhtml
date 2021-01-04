@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="content22">
+        <h:form id="hsrpfileupload" enctype="multipart/form-data">
+
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <h1 class="header-main">HSRP File Upload </h1>
+                </div>
+            </div>
+            <p:messages closable="true">
+                <p:autoUpdate/>
+            </p:messages>
+            <p:dialog header="HSRP Disclaimer" widgetVar="dlghsrpltd"
+                      modal="true" closable="false" resizable="false"
+                      draggable="false" width="50%" visible="true">
+                <ui:include src="/ui/form_HSRPDisclaimer.xhtml" />
+            </p:dialog>
+
+            <marquee direction="left" speed="25000" duration="10" behavior="alternate" >
+                <h:outputText value="Note- This module has been revoked for the New Registration cases (Registration Date 25-Nov-2019 onwards and OEMs are approved on Homologation Portal) as uploading the Front/Back laser codes have been directly provided to respective OEM/OEMs authorized HSRP vendor." styleClass="report-header font-bold red"/>
+            </marquee>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 right-position right-space">
+                    <p:button value="Back" outcome="home" style="margin: 0px !important" icon="ui-icon-arrowreturnthick-1-w"/>
+                </div>
+            </div>
+            <p:panel header="HSRP File Upload">
+                <h:panelGrid columns="5">
+                    <h:panelGroup>
+                        <h:panelGrid columns="3" >
+                            <h:panelGroup>
+                                File Format
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:spacer height="30px" width="20px"></p:spacer>   :<p:spacer height="30px" width="20px"></p:spacer>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                TXT Format
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                Column Separator
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:spacer height="30px" width="20px"></p:spacer>   :<p:spacer height="30px" width="20px"></p:spacer>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                SemiColon (;)
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                File Name
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:spacer height="30px" width="20px"></p:spacer>   :<p:spacer height="30px" width="20px"></p:spacer>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                AlphaNumeric 
+                            </h:panelGroup>
+
+
+                            <h:panelGroup>
+                                File Size 
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:spacer height="30px" width="20px"></p:spacer>   :<p:spacer height="30px" width="20px"></p:spacer>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                Not more than 400 KB 
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:panelGroup  styleClass="red">
+                                (File Name Format should be unique Alphanumeric (without special chars and spaces) with .txt extension)
+                            </h:panelGroup>
+
+                        </h:panelGrid>
+
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <p:spacer height="30px" width="20px"></p:spacer>   <p:spacer height="30px" width="20px"></p:spacer>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                        |<br/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <p:spacer height="30px" width="20px"></p:spacer>   <p:spacer height="30px" width="20px"></p:spacer>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <h:panelGrid columns="2" style="color: red;text-decoration: underline;">
+
+                            Validation Codes on HSRP File Upload:
+                            <h:panelGroup>
+                                <p:spacer height="30px" width="20px"></p:spacer>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1">
+                            <h:panelGroup>
+                                (a) Registration no cannot be greater than 10.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (b) Transaction not initiated for this Vehicle.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (c) HSRP Flat File has not been generated. 
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (d) The combination of Application no and registration no is not valid.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (e) HSRP Entry has already been done for this vehicle.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (f) For HSRP flag NB/OB Front Laser And Rear Laser should be unique.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (g) For HSRP flag DF Front Laser  should be unique And Rear Laser should exist.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (h) For HSRP flag DR Front Laser should exist And Rear Laser should be unique.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (i) Registration No is repeating in the file.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (j) Front Laser Code is repeating in the file or length greater than 20.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (k) Rear Laser Code is repeating in the file or length greater than 20.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (l) Either HSRP flag DB Front Laser And Rear Laser should be unique or HSRP Flag for this record is not valid.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (m) Fixation date should be less than or equal to current date and in format dd-mm-yyyy.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (n) Amount Taken date should be less than or equal to current date and in format dd-mm-yyyy.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (o) Amount Taken should be numeric and can have 7 digits before decimal and 2 digits after decimal.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (p) Rows cannot have null values.
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (q) No of parameters must be [Application no ; Registration No ; HSRP Flag ; Front Laser Code ; Rear Laser Code ; Fixation Date ; Amount taken ; Amount Taken Date].
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (r) Application no length is greater than 16 
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                (s) Invalid HSRP Flag. 
+                            </h:panelGroup>
+
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel>
+                <p:fileUpload  id="fileUpload"   fileUploadListener="#{fileUploadBean.listener}" 
+                               mode="advanced" dragDropSupport="false" onstart="PF('bui').show();" oncomplete="PF('bui').hide();"
+                               allowTypes="/(\.|\/)(txt)$/" sizeLimit="500000"  multiple="true"> 
+                </p:fileUpload> 
+                <p:growl id="messages" showDetail="true" />
+            </p:panel>
+            <p:blockUI block="hsrpfileupload" widgetVar="bui">
+                <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

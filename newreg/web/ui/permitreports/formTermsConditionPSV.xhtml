@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'KA' and printDocXHTML.passPmtDobj.pmt_catg_code ne '22'}">
+            <br/>
+            <br/>
+            <br/>
+
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>
+
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="1)	The vehicle shall be used only on a specified route." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="2)	The condition of permit shall not be departed from without the approval of the RTA." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="3)	Specified standard of comfort and cleanliness shall be maintained in the vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="4)	The MV shall be used by or on behalf of the owner for the purpose of carry persons for or in connection with his trade or business. Otherwise than for hire or reward and this vehicle shall not be used for Public purpose or required under section         2 (33) of MV Act 1988" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="5)	The Permit holder / driver shall comply with all the provisions of MV Act 1988 and Rules relating under rule 70 (4) of MV Rules 1989." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="6)	The Driver shall be responsible for the purpose for the proper exhibition or production as the case may be or the following documents" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  i)	 Valid Permit" styleClass="right-space bottom-space" />			
+                    <h:outputLabel value="  ii)	 Valid Fitness Certificate" styleClass="right-space bottom-space" />	
+                    <h:outputLabel value="  iii) Valid ETC." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  iv)	 Registration Certificate" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  v)	 Valid Tax Card" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="  vi)	 Valid Insurance Certificate" styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'KA' and printDocXHTML.passPmtDobj.pmt_catg_code eq '21'}">
+            <br/>
+            <br/>
+            <br/>
+
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>
+
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="1) 'School Bus' must be prominently written on the back and front of every
+                                   Bus carrying school children." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="2) If it is a hired Bus, &quot;On School Duty&quot; should be prominently displayed." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="3) No Bus belonging to an Educational Institution should carry children in
+                                   excess of its permitted seating capacity." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="4) Bus must have a First Aid Box." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="5) Windows of the Bus must be fitted with horizontal grills." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="6) There must be a fire extinguisher in every Bus." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="7) School name and telephone number must be written on the Bus." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="8) Doors of the Bus should be fitted with reliable locks." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="9) Every driver of a school Bus must have a minimum of 5 years of experience
+                                   of driving heavy vehicles, and must not have any previous record of traffic
+                                   Offences." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="10) To keep school bags safely, there should be space provided under the seat." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="11) There should be an escort from the School in the Bus preferably a teacher
+                                   to ensure safety norms." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="12) The vehicle shall be fitted with speed governor which shall be maintained
+                                   in good working condition at all times limiting the maximum speed to
+                                   40kmph." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="13) The age of the vehicle shall not be more than fifteen (15) years from the
+                                   date of its initial registration as on the date of entry to transport school
+                                   children." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="14) The body of school cab shall be highway yellow color with horizontal strip
+                                   in green color of 150mm wide in the middle all round of the vehicle and the
+                                   words “School cab” shall be prominently displayed on all four sides of the
+                                   vehicle in white paint. The height of the letter shall not be less than 100
+                                   mm." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="15) Where the age of the children being carried in the vehicle is less than
+                                   twelve years, the number of children carried shall not exceed 1 ½ time the
+                                   permitted seating capacity. In case of children of different ages, a person of
+                                   above twelve years age shall be treated as one person." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="16) In case of the vehicle fitted with LPG kit, the authorized LPG kit to be
+                                   installed and certified by the registering authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="17) No seating arrangement over LPG tank." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="18) No tinted or colored glass permitted. Only plain white glass shall be fitted." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="19) Manufacturers seating capacity shall not be altered." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="20) Doors of the cab shall be fitted with reliable locks." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="21) The driver of a school cab must have valid license to drive LMV –Transport
+                                   Vehicles for period of at least 4 years." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="22) The driver shall wear light blue shirt, light blue trouser and black shoes. His
+                                   nameplate shall also be displayed on the shirt." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="23) There shall be sufficient space provided to keep school bags inside the
+                                   vehicle." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="24) No roof carriers allowed and no bags shall be hanged on the outer portion
+                                   of the body." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="25) The name and address / telephone of the permit holder shall be painted or
+                                   otherwise firmly affixed to the school cab on the rear exterior of the body
+                                   in a color vividly contrasting to the color of the vehicle centered as high as
+                                   practicable, below the window line in bold letters not less than 3cms in size." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="26) Complete list of the children carrying in the school cab indicating the
+                                   name, class, residential address, contact phone / mobile number, blood
+                                   group and the points of stoppage for his/her embarkation and
+                                   disembarkation near his/her residence against his/her name with route
+                                   plan." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="27) In case of emergency, the school cab driver/attendant shall inform the
+                                   school authority about the incidence and make necessary arrangements for
+                                   safety of school children." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="28) In case of kindergarden, if an authorized person recognized mutually by
+                                   the school and parents, does not come to pick the child from the halting
+                                   points and such child shall be taken back to the school and their parents
+                                   should be called to fetch the child." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="29) The vehicle which is to be used as school cab shall be closed body type with
+                                   hard top. No vehicle with canvas hood can be permitted to carry the
+                                   children." styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <br/>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{printDocXHTML.ownerPmtDobj.state_cd eq 'BR'}">
+            <br/>
+            <br/>
+            <br/>
+
+
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br/>
+
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="1)  This pemnt is subject to the condition laid down in section 84 of the act." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="2)  That the vehicle shall bc used only in a specified area. or on a specified route or routes." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="3)  That the gross vehicle weight on any vehicle used shall not exceed a specified maximum ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="4)  That goods of a specified nature shall not be carried ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="5)  That goods shall be carried at specified rates ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="6)  That specified arrangement shall be made for the housing. maintenance and repair or the vehicle and the storage and safe    custody of the goo. carried." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="7)  That fiho holder of the permit shall furnish to the Regional Transport Authority such periodical returns. statistics        and other information as the State Government may, from time to time, prescribe ." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="8)  That the Regional Transport Authority may, after giving notice of not less than on month - " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="a)  Vary the condition of the permit," styleClass="right-space bottom-space" />
+                    <h:outputLabel value="b)  Attach to the permit further conditions," styleClass="right-space bottom-space" />
+                    <h:outputLabel value="9)  That the conditions of the permit shall not be departed from, save with the approval of the Regional Transport Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="10) That the vehicle shall not be used for carriage of any article, the transport of which is prohibited by or under any law for the time being force in the State of Bihar." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="11) That the holder of the permit shall cause the permit to be carried in a glazed frame or other suitable container carried in the vehicle in such a way as to maintain it in a clear and legible condition and readily available for inspection 0 any time by any person duly authorized in that behalf." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="12) That the holder of the permit shall maintain the vehicle in a clean and sanitary condition.
+                                   " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="13) That the holder of the permit shall comply with all the requirement of the Act and the rules made there under.
+                                   " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="14) That the permit and all concerned documents shall always ho kept with the vehicle and the driver or other person in charge of a vehicle shall produce the permit. ctc. on demand by any officer to the motor vehicle department of and above the rank of an Assistant Inspector of the motor vehicle department of and above the rank of an Assistant Inspector of Motor Vehicles or any Police Officer not below the rank of a Sub-Inspector of Police.
+                                   " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="15) Any other conditions which may be prescribed." styleClass="right-space bottom-space" />
+
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+    </body>
+</html>

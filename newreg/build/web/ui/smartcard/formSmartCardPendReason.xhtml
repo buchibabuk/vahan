@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"> 
+
+    <ui:define name="content22">
+
+        <h:form id="formSmartCardPendReason" prependId="false">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Smart Card Pending Reasons </h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:messages closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                </div>
+            </div>
+            <p:outputPanel id="opn_current">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position top-space bottom-space">
+                        <p:commandButton  value="Show Pending Records" action="#{smartcard.showPendingRecords}" onclick="PF('ajax_status').show();" 
+                                          oncomplete="PF('ajax_status').hide()"
+                                          update=":formSmartCardPendReason:tb_showpendingsmartcard  opn_current"/>
+                        <p:commandButton id="buttoneDownloadReason" value="Download Pending Reason List" onclick="PF('flatFileDialogWV').show();" update=":formFlatFileFormate" rendered="#{smartcard.s_card.listHsrpPending.size()>0}"/>
+                        <p:button  value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+
+                    </div>
+                </div>
+            </p:outputPanel>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position bottom-space">
+                    <h:outputText value="These records were not uploaded due to following reason:" styleClass="red font-bold" />
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-2 resp-blank-height"></div>
+                <div class="ui-grid-col-8">
+                    <p:dataTable id="tb_showpendingsmartcard"  value="#{smartcard.s_card.listHsrpPending}" 
+                                 var="psc" paginator="true" rows="20" rowIndexVar="rowkey">
+                        <p:column headerText="Sr No" styleClass="center-position collumn-width">
+                            <f:facet name="header">
+                                <h:outputText value="Sr No" />
+                            </f:facet>
+                            <h:outputText value="#{rowkey + 1}"/>
+                        </p:column>
+                        <p:column headerText="Application No" filterBy="#{psc.pendingApplnoForHsrp}" filterMatchMode="contains" sortBy="#{psc.pendingApplnoForHsrp}">
+                            <f:facet name="header">
+                                <h:outputText value="Application No" />
+                            </f:facet>
+                            <h:outputText value="#{psc.pendingApplnoForHsrp}" />
+                        </p:column>
+                        <p:column headerText="Vehicle No"  filterBy="#{psc.pendingVehnoForHsrp}" filterMatchMode="contains" sortBy="#{psc.pendingVehnoForHsrp}">
+                            <f:facet name="header">
+                                <h:outputText value="Vehicle No" />
+                            </f:facet>
+                            <h:outputText value="#{psc.pendingVehnoForHsrp}" />
+                        </p:column>
+                        <p:column headerText="Reason">
+                            <f:facet name="header">
+                                <h:outputText value="Reason" />
+                            </f:facet>
+                            <h:outputText value="#{psc.pendingReason}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position bottom-space">
+                    <p:blockUI block="formSmartCardPendReason" widgetVar="ajax_status">
+                        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                    </p:blockUI>
+                </div>
+            </div>
+
+        </h:form>
+
+        <p:dialog id="flateFileDialog" header="Different File Formate" dynamic="true" closable="true" modal="true" widgetVar="flatFileDialogWV">
+
+            <h:form id="formFlatFileFormate" prependId="false">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h2> Download File  </h2>
+                    </f:facet>   
+                    <h:outputText value="PDF FILE"/>
+                    <h:commandLink onclick="PF('flatFileDialogWV').hide();">
+                        <p:graphicImage name="pdf.png" width="24" library="images"/>
+                        <p:dataExporter type="pdf" target=":formSmartCardPendReason:tb_showpendingsmartcard" fileName="SmartCardPendingReason" />
+                    </h:commandLink>   
+                    <h:outputText value="EXCEL FILE"/>
+                    <h:commandLink onclick="PF('flatFileDialogWV').hide();">
+                        <p:graphicImage name="excel.png"  width="24" library="images"/>
+                        <p:dataExporter type="xls" target=":formSmartCardPendReason:tb_showpendingsmartcard" fileName="SmartCardPendingReason" />
+                    </h:commandLink>
+
+                    <h:outputText value="CSV FILE"/>
+                    <h:commandLink onclick="PF('flatFileDialogWV').hide();">
+                        <p:graphicImage name="csv.png" width="24" library="images"/>
+                        <p:dataExporter type="csv" target=":formSmartCardPendReason:tb_showpendingsmartcard" fileName="SmartCardPendingReason" />
+                    </h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog> 
+
+    </ui:define>
+
+
+</ui:composition>

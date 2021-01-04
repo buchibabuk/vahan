@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+
+
+
+
+        <div class="position-relative">
+            <div class="center-position">
+                <div class="font-bold report-header text-uppercase">
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.header}" styleClass="bottom-line"/>
+                </div>
+                <div class="font-bold report-subheader">
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.subHeader}"/> 
+                </div>
+                <div class="font-bold report-subheader"> 
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.offname}"/>
+                </div>
+            </div>
+            <div class="inline-section qrcode-position-absolute">
+                <pe:qrCode rendered="#{payCashReceiptBeanOnlineTrade.renderqrCode}"
+                           renderMethod="#{payCashReceiptBeanOnlineTrade.renderMethod}" 
+                           renderMode="#{payCashReceiptBeanOnlineTrade.mode}" 
+                           text="#{payCashReceiptBeanOnlineTrade.text}" 
+                           label="#{payCashReceiptBeanOnlineTrade.label}"
+                           size="#{payCashReceiptBeanOnlineTrade.size}"
+                           fillColor="#000000" 
+                           ecLevel="H" 
+                           radius="0.5"/>
+            </div>
+        </div>
+
+        <p:outputPanel  styleClass="bottom-space datatable-panel" style="margin: 0 auto;">
+            <div class="table-width-oneforth">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="Applicant Code: " styleClass="right-space " />
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.regnNo}" styleClass="right-space " />                                      
+
+                    <h:outputLabel value="Applicant Name: "  styleClass="right-space "/>
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.ownerName}" styleClass="right-space " />
+
+                    <h:outputLabel  value="Bank Ref No: "  styleClass="right-space " rendered="#{payCashReceiptBeanOnlineTrade.dealer}"/>
+                    <h:outputText  value="#{payCashReceiptBeanOnlineTrade.dobj.bankRefNo}" rendered="#{payCashReceiptBeanOnlineTrade.dealer}"/>
+                </h:panelGrid>
+            </div>        
+
+            <div class="table-width-four">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Receipt No: " styleClass="right-space " />
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.receiptNo}" styleClass="right-space " />                                      
+
+                    <h:outputLabel value="Appl No: " styleClass="right-space " />
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.applNo}" styleClass="right-space " />                                      
+
+                    <h:outputLabel value="Receipt Date: "  styleClass="right-space "/>
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.receiptDate}" styleClass="right-space " /> 
+
+                    <h:outputLabel value="Transaction Id: "  styleClass="right-space "  rendered="#{payCashReceiptBeanOnlineTrade.dealer}"/>
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.transactionId}"  rendered="#{payCashReceiptBeanOnlineTrade.dealer}"  />
+                </h:panelGrid>
+            </div>
+
+            <div class="table-width-oneforth">
+                <h:panelGrid columns="2" styleClass="datatable-panel-100">
+                    <h:outputLabel value="Vehicle Category list: "  styleClass="right-space "/>
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.vhCatg}" styleClass="right-space " />  
+                </h:panelGrid>
+            </div>
+
+            <p:outputPanel rendered="#{payCashReceiptBeanOnlineTrade.dobj.isbalFeeRemarks}">
+                <div class="table-width-oneforth ">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel  value="Remarks: "  styleClass="right-space font-bold" />
+                        <h:outputText  value="#{payCashReceiptBeanOnlineTrade.dobj.balFeeRemarks}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+
+            <p:dataTable value="#{payCashReceiptBeanOnlineTrade.dobj.prntRecieptSubList}" var="data" 
+                         styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                         datatable-second-column-right datatable-second-column-header-right 
+                         datatable-third-column-right datatable-third-column-header-right
+                         datatable-fourth-column-right datatable-fourth-column-header-right datatable-panel-100">
+                <p:column headerText="Particular">
+                    <h:outputText value="#{data.purpose} #{data.dateFrom} - #{data.dateUpto}" />
+                </p:column>
+                <p:column headerText="Amount" style="width: 15% !important;">
+                    <h:outputText value="#{data.amount}" styleClass="right-space" />
+                </p:column>
+                <p:column headerText="Penalty" style="width: 15% !important;">
+                    <h:outputText value="#{data.penalty} " styleClass="right-space" />
+                </p:column>
+                <p:column headerText="Total" style="width: 15% !important;">
+                    <h:outputText value="#{data.total} " styleClass="right-space" />
+                </p:column>
+            </p:dataTable>
+
+            <div class="left-position">
+                <h:outputText value="GRAND TOTAL (in Rs): #{payCashReceiptBeanOnlineTrade.dobj.grandTotal}/- (#{payCashReceiptBeanOnlineTrade.dobj.grandTotalInWords})"  />
+            </div>
+
+            <div class="left-position top-space">
+                <span class="font-bold">Note-- </span>This is computer generated slip, no need of signature (https://parivahan.gov.in).
+                <br />
+                <div class="right-position top-space" style="margin: 0px auto;">
+                    <h:outputText value="#{payCashReceiptBeanOnlineTrade.dobj.empName}" />
+                    <br /><h:outputText rendered="#{payCashReceiptBeanOnlineTrade.dealer}" value="#{payCashReceiptBeanOnlineTrade.dobj.ownerName}" />
+                </div>
+            </div>
+        </p:outputPanel>
+    </h:body>
+</html>

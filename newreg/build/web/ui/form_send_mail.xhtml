@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <p:panel>
+        <div class="ui-grid-responsive">
+            <div class="ui-grid-row">
+                <p:messages showDetail="true" showSummary="true" closable="true" >
+                    <p:autoUpdate/>
+                </p:messages>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 bottom-space">
+                    <span class="font-bold">From: </span> <span>nic-vahandl@nic.in</span>
+                </div> 
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 ">
+                    <label class="field-label resp-label-section">
+                        <span class="font-bold field-label-mandate">To: </span>
+                    </label>
+                    <h:inputText value="#{docUpload.emailId}" />
+                    <!--<span class="font-bold">To: </span><span><h:inputText value="# {docUpload.emailId}" /></span>-->
+                </div> 
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <label class="field-label resp-label-section">
+                        <span class="font-bold field-label-mandate">Subject:</span>
+                    </label>
+                    <p:inputText value="#{docUpload.emailSubject}" required="true" requiredMessage="subject is blank." id="subject" />
+                </div> 
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <label class="field-label resp-label-section">
+                        <span class="font-bold field-label-mandate">Message:</span>
+                    </label>
+                    <p:inputTextarea value="#{docUpload.emailMessage}"  required="true" requiredMessage="mail text is blank." id="text" />
+                </div> 
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position">
+                    <p:commandButton value="Send Mail" action="#{docUpload.sentMailToUserToModifyDocuments()}" onclick="PF('buiMaster').show();" onsuccess="PF('buiMaster').hide();" update="workbench_tabview:sent_mail_dialog workbench_tabview:doc_list_panel " >
+                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                    <p:commandButton value="Close" update="dmsFileUpload_panel doc_list_panel workbench_tabview:sent_mail_dialog" immediate="true" onclick="PF('sendMailDialogVar').hide();" action="#{docUpload.sendMailDialogCloseListener}" />
+                </div> 
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12 center-position red font-bold">
+                    Note:- Send mail to dealer to modify the above documents.
+                </div> 
+            </div>
+        </div>
+    </p:panel>
+    <p:blockUI block=":masterLayout" widgetVar="buiMaster">
+        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+    </p:blockUI>
+</html>
+

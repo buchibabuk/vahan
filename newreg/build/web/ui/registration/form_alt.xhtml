@@ -1,0 +1,550 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{alt_bean.appl_details}"/>            
+            </ui:include>  
+            <ui:include src="panel_currentinfo.xhtml">
+                <ui:param name="currentinfo" value="#{alt_bean}"/>            
+            </ui:include> 
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <h:form id="form_alt" prependId="false">
+                        <p:outputPanel>
+                            <p:autoUpdate/>
+                            <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                                <p:messages>
+                                    <p:autoUpdate/>
+                                </p:messages>                        
+                            </p:dialog>
+                        </p:outputPanel>
+                        <p:outputPanel id="inspPanelAlt">
+                            <p:outputPanel rendered="#{alt_bean.renderInspBody}">
+                                <p:tabView id="inspectionTabView" styleClass="top-space bottom-space">
+                                    <p:tab id="inspDtls" title="#{language.inspection_details}">
+                                        <ui:include src="/ui/registration/formInspectionNT.xhtml">
+                                            <ui:param name="inspectionDobj" value="#{alt_bean.inspDobj}"/>
+                                            <ui:param name="ownerDobj" value="#{alt_bean.appl_details.ownerDobj}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                </p:tabView>
+                            </p:outputPanel>
+                        </p:outputPanel>
+                        <p:tabView id="alterationTabview" styleClass="top-space bottom-space" activeIndex="#{alt_bean.activeIndex}">                   
+                            <p:tab title="#{language.vehicleDetails}">
+                                <p:panel header="Vehicle Alteration" id="alt_info" styleClass="top-space bottom-space">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="alt_chasi_no" value="#{language.chasi_no}"/>
+                                            </label>
+                                            <p:inputText id="alt_chasi_no" value="#{alt_bean.alt_dobj.chasi_no}" styleClass="text-uppercase"
+                                                         converter="toUpperCaseConverter" size="15" required="true" maxlength="30" requiredMessage="#{language.blank} #{language.chasi_no}">
+                                                <f:validateRequired />
+                                                <f:validateLength maximum="30"/>                                        
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="vh_class" value="#{language.user_vehClass}"/>
+                                            </label>
+                                            <p:selectOneMenu id="vh_class"  value="#{alt_bean.alt_dobj.vh_class}" filter="true" disabled="true" >
+                                                <f:selectItems value="#{alt_bean.listVhClass}" />  
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="vh_catg" value="#{language.vh_catg}"/>
+                                            </label>
+                                            <p:selectOneMenu id="vh_catg" value="#{alt_bean.alt_dobj.vch_catg}" disabled="true" filter="true">
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                                                <f:selectItems value="#{alt_bean.list_vm_catg}"/>
+                                                <f:validator validatorId="selectOneValidator" for="vh_catg"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="eng_no" value="#{language.engine_MotorNo}"/>
+                                            </label>
+                                            <p:inputText id="eng_no" value="#{alt_bean.alt_dobj.eng_no}" size="15" required="true" styleClass="text-uppercase"
+                                                         maxlength="30" converter="toUpperCaseConverter" requiredMessage="Blank : Engine/Motor No">
+                                                <f:validateRequired />
+                                                <f:validateLength maximum="30"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>                                        
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="body_type" value="#{language.bodyType}"/>
+                                            </label>
+                                            <p:inputText id="body_type"  value="#{alt_bean.alt_dobj.body_type}" styleClass="text-uppercase" maxlength="30"
+                                                         required="true" requiredMessage="#{language.blank} #{language.bodyType}">
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="seat_cap" value="#{language.seatCap}"/>
+                                            </label>
+                                            <p:inputText id="seat_cap"  value="#{alt_bean.alt_dobj.seat_cap}" size="15" maxlength="3" required="true"
+                                                         requiredMessage="#{language.blank} #{language.seatCap}">
+                                                <f:validateLength maximum="3"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>                                
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="stand_cap" value="#{language.standCap}"/>
+                                            </label>
+                                            <p:inputText id="stand_cap"  value="#{alt_bean.alt_dobj.stand_cap}" size="15" maxlength="3" required="true" 
+                                                         requiredMessage="#{language.blank} #{language.standCap}">
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                                <f:validateLength maximum="3"/>                                        
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="sleeper_cap" value="#{language.sleepCap}"/>
+                                            </label>
+                                            <p:inputText id="sleeper_cap"  value="#{alt_bean.alt_dobj.sleeper_cap}" size="15" maxlength="3" required="true"
+                                                         requiredMessage="#{language.blank} #{language.sleepCap}">
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                                <f:validateLength maximum="3"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="no_cyl" value="#{language.noCyl}"/>
+                                            </label>
+                                            <p:inputText id="no_cyl"  value="#{alt_bean.alt_dobj.no_cyl}" size="15" maxlength="2" required="true"
+                                                         requiredMessage="#{language.blank} #{language.noCyl}">
+                                                <f:validateRequired />
+                                                <f:validateLength maximum="2"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="ul_weight" value="#{language.ulWeight}"/>
+                                            </label>
+                                            <p:inputText id="ul_weight"  value="#{alt_bean.alt_dobj.unld_wt}" size="15" maxlength="6" required="true" >
+                                                <f:validateLength maximum="6"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="l_weight" value="#{language.lWeight}"/>
+                                            </label>
+                                            <p:inputText id="l_weight"  value="#{alt_bean.alt_dobj.ld_wt}" size="15" maxlength="6" required="true" 
+                                                         requiredMessage="#{language.blank} #{language.lWeight}">
+                                                <f:validateLength maximum="6"/>
+                                                <p:ajax event="blur" listener="#{alt_bean.validateLadenWeight}" process ="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="hp" value="#{language.hp}"/>
+                                            </label>
+                                            <p:inputText id="hp"  value="#{alt_bean.alt_dobj.hp}" size="15" maxlength="8"
+                                                         requiredMessage="#{language.invalid} #{language.hp}" >
+                                                <f:validateLength maximum="9" for="hp"/>
+                                                <f:validateDoubleRange maximum="999999.99" minimum="0"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>                                
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="fuel" value="#{language.fuel}"/>
+                                            </label>
+                                            <p:selectOneMenu id="fuel"  value="#{alt_bean.alt_dobj.fuel}" filter="true" required="true" 
+                                                             requiredMessage="#{language.blank} #{language.fuel}">
+                                                <f:selectItems value="#{alt_bean.list_fuel}"/>
+                                                <f:validateRequired for="fuel"/> 
+                                                <p:ajax event="change" listener="#{alt_bean.fuel_TypeSelectEvent}" process="@this" update="cngDetails @this" partialSubmit="true"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="color" value="#{language.color}"/>
+                                            </label>
+                                            <p:inputText id="color"  value="#{alt_bean.alt_dobj.color}" styleClass="text-uppercase"
+                                                         converter="toUpperCaseConverter" required="true"
+                                                         size="15" maxlength="20"  requiredMessage="#{language.blank} #{language.color}">
+                                                <f:validateLength maximum="20"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="wheelbase" value="#{language.wheelbase}"/>
+                                            </label>
+                                            <p:inputText id="wheelbase"  value="#{alt_bean.alt_dobj.wheelbase}" size="15" maxlength="6"  requiredMessage="#{language.blank} #{language.wheelbase}">
+                                                <f:validateRequired />
+                                                <f:validateLength maximum="6"/>
+                                            </p:inputText>
+
+                                        </div>                                
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="cubic_cap" value="#{language.cubicCap}" />
+                                            </label>
+                                            <p:inputText id="cubic_cap"  value="#{alt_bean.alt_dobj.cubic_cap}" size="20" maxlength="8"
+                                                         required="true" requiredMessage="#{language.blank} #{language.cubicCap}" autocomplete="off"
+                                                         validatorMessage="Invalid Cubic Capacity.Maximum Value is 999999.99">
+                                                <f:validateRequired for="cubic_cap"/>
+                                                <f:validateLength maximum="9" for="cubic_cap"/>
+                                                <f:validateDoubleRange maximum="999999.99" minimum="0"/>
+                                                <p:ajax event="blur" process="@this" update="@this" partialSubmit="true"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="fit_upto" value="#{language.alt_fitness_upto}" />
+                                            </label>
+                                            <p:calendar id="fit_upto" value="#{alt_bean.alt_dobj.fit_date_upto}" disabled="true"
+                                                        navigator="true" readonlyInput="true" pattern="dd-MMM-yyyy"></p:calendar> 
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="ac_fitted" value="#{language.acFitted}"/>
+                                            </label>
+                                            <p:selectOneMenu id="ac_fitted"  value="#{alt_bean.alt_dobj.ac_fitted}" maxlength="1" required="true">
+                                                <f:validateLength maximum="1" for="ac_fitted"/>
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                                <f:validator validatorId="selectOneValidator_0" for="ac_fitted"/>
+                                                <f:selectItem itemLabel="NO" itemValue="N"/>
+                                                <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="audio_fitted" value="#{language.audioFitted}"/>
+                                            </label>
+                                            <p:selectOneMenu id="audio_fitted"  value="#{alt_bean.alt_dobj.audio_fitted}" maxlength="1" required="true">
+                                                <f:validateLength maximum="1" for="audio_fitted"/>
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                                <f:validator validatorId="selectOneValidator_0" for="audio_fitted"/>
+                                                <f:selectItem itemLabel="NO" itemValue="N"/>
+                                                <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="video_fitted" value="#{language.videoFitted}"/>
+                                            </label>
+                                            <p:selectOneMenu id="video_fitted"  value="#{alt_bean.alt_dobj.video_fitted}" maxlength="1" required="true">
+                                                <f:validateLength maximum="1"  for="video_fitted"/>
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                                <f:validator validatorId="selectOneValidator_0" for="video_fitted"/>
+                                                <f:selectItem itemLabel="NO" itemValue="N"/>
+                                                <f:selectItem itemLabel="YES" itemValue="Y"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="height" value="#{language.height}"/>
+                                            </label>
+                                            <p:inputText id="height"  value="#{alt_bean.alt_dobj.height}" size="20" maxlength="5" autocomplete="off"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="length" value="#{language.length}"/>
+                                            </label>
+                                            <p:inputText id="length"  value="#{alt_bean.alt_dobj.length}" size="20" maxlength="5" autocomplete="off"/>
+                                        </div>
+                                        <div class="ui-grid-col-4">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="width" value="#{language.width}"/>
+                                            </label>
+                                            <p:inputText id="width"  value="#{alt_bean.alt_dobj.width}" size="20"  maxlength="5" autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <p:outputPanel id="pushbackseatfinalalt"  styleClass="border-none">
+                                        <p:outputPanel rendered="#{alt_bean.alt_dobj.pushBkSeatRender}">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="push_back_seat" value="#{language.push_bkS}"/>
+                                                    </label>
+                                                    <p:inputText id="push_back_seat" value="#{alt_bean.alt_dobj.push_bk_seat}" required="true"   requiredMessage="#{language.push_bkS_remark}"  maxlength="2">
+                                                        <p:keyFilter regEx="/[0-9]/i"/>
+                                                        <f:validateRequired for="push_back_seat"/>                                
+                                                    </p:inputText>
+                                                </div>    
+                                                <div class="ui-grid-col-4">
+                                                    <label class="field-label resp-label-section">
+                                                        <p:outputLabel for="ordn_seat" value="#{language.ordn_seat}"/>
+                                                    </label>
+                                                    <p:inputText id="ordn_seat" value="#{alt_bean.alt_dobj.ordinary_seat}" required="true"  requiredMessage="#{language.ordn_seat_remark}" maxlength="2">
+                                                        <p:keyFilter regEx="/[0-9]/i"/>
+                                                        <f:validateRequired for="ordn_seat"/>                                
+                                                    </p:inputText>
+                                                </div> 
+                                            </div>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+
+                                    <!--*****************************************Key Filters****************************************/-->
+                                    <p:keyFilter regEx="#{constant.CHASIS_REG_EXPR}" for="alt_chasi_no"/>
+                                    <p:keyFilter regEx="#{constant.ENG_REG_EXPR}" for="eng_no"/>
+                                    <p:keyFilter mask="pint" for="seat_cap"/>
+                                    <p:keyFilter mask="pint" for="stand_cap"/>
+                                    <p:keyFilter mask="pint" for="sleeper_cap"/>
+                                    <p:keyFilter mask="pint" for="no_cyl"/>
+                                    <p:keyFilter mask="pint" for="ul_weight"/>
+                                    <p:keyFilter mask="pint" for="l_weight"/>
+                                    <p:keyFilter mask="pint" for="wheelbase"/>
+                                    <p:keyFilter regEx="/[a-z ]/i" for="color"/>
+                                    <p:keyFilter mask="pnum" for="hp" />                            
+                                    <!--*****************************************Key Filters****************************************/-->
+                                </p:panel>
+                                <p:outputPanel id="axelDetails">
+                                    <p:outputPanel rendered="#{alt_bean.axleDetail_Visibility_tab}">
+                                        <ui:include src="/ui/form_AxleDetails.xhtml"/>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                                <!-- Speed Governer-->
+                                <p:outputPanel id="op_speed_gov">
+                                    <p:outputPanel id="op_ispeedgov" rendered="#{alt_bean.renderIsSpeedGov}">
+                                        <div class="ui-grid-row">  
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="blnCheck" value="#{language.isSpeedGovernorFitted} ?"/>
+                                                </label>
+                                                <p:selectBooleanCheckbox id="blnCheck" value="#{alt_bean.renderSpeedGovt}">
+                                                    <p:ajax update="op_speed_gov" listener="#{alt_bean.speedGovListener}" partialSubmit="true" process="@this"/>
+                                                </p:selectBooleanCheckbox>
+                                            </div>
+                                        </div>
+
+                                        <p:outputPanel rendered="#{alt_bean.renderSpeedGovt}" styleClass="top-space bottom-space">                            
+                                            <ui:include src="/ui/formSpeedGovernor.xhtml">
+                                                <ui:param name="ownerDobj" value="#{alt_bean.ownerDobj}"/>
+                                                <ui:param name="listSpeedGovTypes" value="#{alt_bean.listSpeedGovTypes}"/>                                    
+                                            </ui:include>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                                <!-- Speed Governer-->
+
+                                <!-- reflective tape-->
+                                <p:outputPanel id="op_reflectivateTape" rendered="#{alt_bean.isReflectiveTapeAllowed}">
+                                    <p:outputPanel id="op_isReflectiveTape" rendered="#{alt_bean.renderIsReflectiveTape}">
+                                        <div class="ui-grid-row">  
+                                            <div class="ui-grid-col-4">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="blnCheckReflectiveTape" value="#{language.isReflectiveTapeAttached} ?"/>
+                                                </label>
+                                                <p:selectBooleanCheckbox id="blnCheckReflectiveTape" value="#{alt_bean.renderReflectiveTape}">
+                                                    <p:ajax update="op_reflectivateTape" listener="#{alt_bean.reflectiveTapeListener}" partialSubmit="true"/>
+                                                </p:selectBooleanCheckbox>
+                                            </div>
+                                        </div>
+
+                                        <p:outputPanel rendered="#{alt_bean.renderReflectiveTape}" styleClass="top-space bottom-space">                            
+                                            <ui:include src="/ui/formReflectiveTape.xhtml">
+                                                <ui:param name="ownerDobj" value="#{alt_bean.ownerDobj}"/>
+                                            </ui:include>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+                                <!-- reflective tape-->                           
+                                <h:panelGroup id="cngDetails">
+                                    <p:outputPanel rendered="#{alt_bean.cng_tab_visibility}">
+                                        <ui:include src="/ui/form_cngDetails.xhtml">
+                                        </ui:include>
+                                    </p:outputPanel>
+                                </h:panelGroup>
+                                <p:dataTable  id="datatabletrailer" value="#{alt_bean.listTrailerDetails}" var="trailer" rowIndexVar="index" styleClass="panelRowHeight top-space bottom-space">
+                                    <f:facet name="header">
+                                        #{language.attach_semi_tailer_detail}
+                                    </f:facet>
+
+                                    <p:column headerText="#{language.user_srno}"  styleClass="collumn-width center-position">
+                                        <p:outputLabel value="#{index +1}."/>
+                                    </p:column>
+                                    <p:column headerText="#{language.linked_regn_no}"  styleClass="collumn-width center-position">
+                                        <p:outputLabel value="#{trailer.linkedRegnNo}."/>
+                                    </p:column>
+                                    <p:column headerText="#{language.chasi_no}" width="15%">                           
+                                        <h:outputText value="#{trailer.chasi_no}"/>
+                                    </p:column>
+                                    <p:column headerText="#{language.bodyType}" width="15%">                           
+                                        <h:outputText value="#{trailer.body_type}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.regLdWt}" width="15%">
+                                        <h:outputText value="#{trailer.ld_wt}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.ulWeight}" width="15%">  
+                                        <h:outputText value="#{trailer.unld_wt}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.dscr_no_size_tyre}" width="50%">
+                                        <h:outputText value="Front :#{trailer.f_axle_descp} &#44; 
+                                                      Rear :#{trailer.r_axle_descp} &#44;
+                                                      Other :#{trailer.o_axle_descp} &#44;
+                                                      Tandem :#{trailer.t_axle_descp} "/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.registered_axle_weight}" width="40%">
+                                        <h:outputText value="Front : #{trailer.f_axle_weight} &#44; 
+                                                      Rear :#{trailer.r_axle_weight} &#44;
+                                                      Other :#{trailer.o_axle_weight} &#44;
+                                                      Tandem :#{trailer.t_axle_weight} "/>
+                                    </p:column>                                                                        
+
+                                    <p:column headerText="#{language.user_modify}" width="10%">
+                                        <p:commandButton icon="ui-icon-pencil" title="Edit Trailer Details" rendered="#{trailer.modifiable}"
+                                                         oncomplete="PF('trailerDtls').show();" immediate="true" >
+                                            <p:ajax listener="#{alt_bean.modifyTrailer(trailer,index)}" update=":form_alt:alterationTabview:subview_commercial_trailer_dtls:trailerPanelInclude" partialSubmit="true" />
+                                            <f:param name="key" value="edit"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.detach}" width="10%">
+                                        <p:commandButton id="cmdDetach" action="#{alt_bean.detachTrailer(trailer,index)}" icon="ui-icon-trash" 
+                                                         title="Detach Trailer" immediate="true" update="datatabletrailer :form_alt:alterationTabview:datatabletrailerDetach" >  
+                                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <f:facet name="footer">
+                                        <p:row>
+                                            <p:column>
+                                                <p:commandButton id="add" immediate="true" action="#{alt_bean.addTrailerListener}"
+                                                                 update=":form_alt:alterationTabview:subview_commercial_trailer_dtls:trailerPanelInclude" oncomplete="PF('trailerDtls').show();" icon="ui-icon-plusthick">      
+                                                    <p:resetInput target=":form_alt:alterationTabview:subview_commercial_trailer_dtls:trailerPanelInclude" />
+                                                    <f:param name="key" value="add"/>
+                                                </p:commandButton>
+                                                <p:tooltip id="toolTipGrow1" for="add" value="Add Trailer"
+                                                           showEffect="clip" hideEffect="clip"  />
+                                            </p:column>            
+                                        </p:row>
+                                    </f:facet>
+                                </p:dataTable>
+
+
+                                <p:dataTable  id="datatabletrailerDetach" value="#{alt_bean.listTrailerDetach}" 
+                                              var="trailer" rowIndexVar="index" styleClass="panelRowHeight top-space bottom-space">
+                                    <f:facet name="header">
+                                        #{language.detach_semi_tailer_detail}
+                                    </f:facet>
+
+                                    <p:column headerText="#{language.user_srno}"  styleClass="collumn-width center-position">
+                                        <p:outputLabel value="#{index +1}."/>
+                                    </p:column>
+                                    <p:column headerText="#{language.linked_regn_no}"  styleClass="collumn-width center-position">
+                                        <p:outputLabel value="#{trailer.linkedRegnNo}."/>
+                                    </p:column>
+                                    <p:column headerText="#{language.chasi_no}" width="15%">                           
+                                        <h:outputText value="#{trailer.chasi_no}"/>
+                                    </p:column>
+                                    <p:column headerText="#{language.bodyType}" width="15%">                           
+                                        <h:outputText value="#{trailer.body_type}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.regLdWt}" width="15%">
+                                        <h:outputText value="#{trailer.ld_wt}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.ulWeight}" width="15%">  
+                                        <h:outputText value="#{trailer.unld_wt}"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.dscr_no_size_tyre}" width="50%">
+                                        <h:outputText value="Front :#{trailer.f_axle_descp} &#44; 
+                                                      Rear :#{trailer.r_axle_descp} &#44;
+                                                      Other :#{trailer.o_axle_descp} &#44;
+                                                      Tandem :#{trailer.t_axle_descp} "/>
+                                    </p:column>
+
+                                    <p:column headerText="#{language.registered_axle_weight}" width="40%">
+                                        <h:outputText value="Front : #{trailer.f_axle_weight} &#44; 
+                                                      Rear :#{trailer.r_axle_weight} &#44;
+                                                      Other :#{trailer.o_axle_weight} &#44;
+                                                      Tandem :#{trailer.t_axle_weight} "/>
+                                    </p:column>                                    
+                                </p:dataTable>
+
+
+                                <p:dialog focus="trailerPanel" id ="trailerPanel" widgetVar="trailerDtls" modal="true" closeOnEscape="true"> 
+                                    <ui:include src="/ui/registration/trailerDetailsPanel.xhtml">
+                                        <ui:param name="controllerBean" value="#{alt_bean}"/>
+                                        <ui:param name="updateId" value=":form_alt:alterationTabview:datatabletrailer"/>
+                                    </ui:include>                                    
+                                </p:dialog>
+                            </p:tab>
+                            <p:tab id="ins_tab" title="Insurance Details">
+                                <p:outputPanel id="ins_dtls">
+                                    <ui:include src="/ui/form_ins_dtls.xhtml">
+                                        <ui:param name="ins_form" value="#{alt_bean}"/>
+                                    </ui:include>
+                                </p:outputPanel> 
+                            </p:tab> 
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog>
+                        </p:tabView>    
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:panel id="changedByPrevUser" rendered="#{alt_bean.prevChangedDataList.size()>0}" styleClass="top-space bottom-space">
+                                    <p:dataTable value="#{alt_bean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                        <p:column headerText="#{language.change_by_employee}" width="15%">
+                                            <h:outputText value="#{data.userName}" />
+                                        </p:column>
+
+                                        <p:column headerText="#{language.change_by_Prev_employee}" width="70%">
+                                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{language.changed_on}" width="15%">
+                                            <h:outputText value="#{data.op_dt}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </div>
+                        </div>
+                        <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                            <ui:param name="app_disapp" value="#{alt_bean}"/>
+                        </ui:include>
+                        <vahan:vahanMessages messages="#{alt_bean.vahanMessages}"  rendered="#{alt_bean.vahanMessages ne null}"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,93 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false" id="rtoWiseTtlCollectionId">
+
+            <div class="center-position bottom-space">
+                <p:button value="Back" outcome="/ui/reports/formRtoWiseTtlCollection.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" onclick="PF('bui').show()"/>
+            </div>
+
+            <div class="center-position">
+                <h:outputText value="#{rtoWiseCollectionReport.header}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> [ <h:outputText value="#{rtoWiseCollectionReport.offName}"/> ]</span>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-header bottom-line text-uppercase"> <h:outputText value="RTO Wise Total Collection"/> </span>
+            </div>
+
+            <table class="datatable-panel" style="margin: 0 auto;">
+                <tr>
+                    <td class="left-position top-align">
+                        <span class="font-bold"> From Date: </span> <h:outputText value="#{rtoWiseCollectionReport.formattedFromDate}"/>
+                    </td>
+                    <td class="right-position top-align">
+                        <span class="font-bold"> To Date: </span> <h:outputText value="#{rtoWiseCollectionReport.formattedUptoDate}"/>
+                    </td>
+                </tr>
+            </table>
+            <table class="datatable-panel" style="margin: 0 auto;">
+                <tr>
+                    <td class="right-position top-align">
+                        <span class="font-bold"> Printed Date: </span> <h:outputText value="#{rtoWiseCollectionReport.printedDate}"/>
+                    </td>
+                </tr>
+            </table>
+
+
+            <p:outputPanel styleClass="datatable-panel" style="margin: 0 auto;">
+                <p:dataTable id="rtoWiseDataTable"  value="#{rtoWiseCollectionReport.rtoWiseCollectionDobj}" var="rtoTotal"  rowIndexVar="index"
+                             styleClass="border-transparent datatable-third-column-right datatable-fourth-column-right datatable-fifth-column-right datatable-six-column-right">
+                    <p:column headerText="Sr.No" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}."/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Dealer &lt;br /&gt;Name" escape="false" /></f:facet>
+                        <p:outputLabel value="#{rtoTotal.dealerName}"/> 
+                        <f:facet name="footer">
+                            <p:outputLabel value="GrandTotal" styleClass="right-position font-bold" />
+                        </f:facet>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="No. of &lt;br /&gt;Vehicles Sold" escape="false" /></f:facet>
+                        <p:outputLabel value="#{rtoTotal.totalRegn}" styleClass="right-space"/> 
+                        <f:facet name="footer">
+                            <p:outputLabel value="#{rtoWiseCollectionReport.grandTotalRegn}" />
+                        </f:facet>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Fee &lt;br /&gt;Collected" escape="false" /></f:facet>
+                        <p:outputLabel value="#{rtoTotal.fees}" styleClass="right-space"/> 
+                        <f:facet name="footer">
+                            <p:outputLabel value="#{rtoWiseCollectionReport.grandFees}" />
+                        </f:facet>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Tax &lt;br /&gt;Collected" escape="false" /></f:facet>
+                        <p:outputLabel value="#{rtoTotal.tax}" styleClass="right-space"/> 
+                        <f:facet name="footer">
+                            <p:outputLabel value="#{rtoWiseCollectionReport.grandTax}" />
+                        </f:facet>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Total &lt;br /&gt;Collection" escape="false" /></f:facet>
+                        <p:outputLabel value="#{rtoTotal.totalAmount}" styleClass="right-space"/> 
+                        <f:facet name="footer">
+                            <p:outputLabel value="#{rtoWiseCollectionReport.grandTotalAmount}" />
+                        </f:facet>
+                    </p:column>                
+                </p:dataTable>  
+            </p:outputPanel>
+            <p:blockUI block="rtoWiseTtlCollectionId" widgetVar="bui">
+                <p:graphicImage name="# {imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+            </p:blockUI> 
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">    
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formNID" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Fitness - Change NID (Next Inspection Date)</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="saveNidMsg"  closable="true"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="panelNID">
+                    <p:panel id="panelMain" rendered="#{!nidChangedBean.render}">
+
+                        <p:focus context="panelMain"/>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRegNo" value="Registration No"/>
+                                </label>
+                                <p:inputText  id="tfRegNo" value="#{nidChangedBean.regn_no}" 
+                                              maxlength="10"
+                                              required="true"
+                                              requiredMessage="Please Enter Registration No."
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Show Details" action="#{nidChangedBean.showDetails()}"
+                                                 update="formNID:panelOwnerInfo formNID saveNidMsg" onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()"/>
+                                <p:button value="Back" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:outputPanel id="ownerInfo" styleClass="bottom-space" rendered="#{nidChangedBean.render}">  
+                        <p:panel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3">
+                                    <div class="ui-grid-row top-space">
+                                        <div class="ui-grid-col-12">
+                                            <div class="font-bold report-header">    
+                                                Registration No: <span class="red font-bold"> (#{nidChangedBean.regn_no})</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12">
+                                            <h:outputText styleClass="field-label-mandate" value="New NID"/>
+                                            <p:calendar id="newNid" value="#{nidChangedBean.nidChangedDobj.new_fit_nid}"
+                                                        mindate="#{nidChangedBean.fitnessDobj.fit_nid}" maxdate="#{nidChangedBean.maxDate}" required="true" 
+                                                        requiredMessage="Blank New NID Date"
+                                                        pattern="dd-MMM-yyyy" navigator="true" readonlyInput="true">
+                                                <f:convertDateTime pattern="dd-MMM-yyyy" for="newNid"/> 
+                                            </p:calendar>
+                                        </div> 
+                                    </div>
+                                    <div class="ui-grid-row top-space">
+                                        <div class="ui-grid-col-12">
+                                            <h:outputText styleClass="field-label-mandate" value="Reason for NID Change"/>
+                                            <p:selectOneMenu id="nidReason" value="#{nidChangedBean.nidChangedDobj.reason}" required="true" styleClass="bottom-space">
+                                                <f:selectItem itemLabel="NID Date was Holiday" itemValue="NID Date was Holiday"/>
+                                                <f:selectItem itemLabel="Vehicle Seized Under Govt.(Election)" itemValue="Vehicle Seized Under Govt.(Election)"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-grid-row center-position top-space bottom-space">
+                                        <div class="ui-grid-col-12">
+                                            <p:commandButton id="btn_save" value="Save " 
+                                                             action="#{nidChangedBean.changeFitnesNID()}"
+                                                             update="panelNID saveNidMsg" onclick="PF('ajax_status').show()"
+                                                             onsuccess="PF('ajax_status').hide()">                                    
+                                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                            </p:commandButton>                            
+                                            <p:commandButton value="Back" action="formChangeNID" process="@this" 
+                                                             update="formNID" immediate="true" onclick="PF('ajax_status').show()"
+                                                             onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-col-9">
+                                    <p:tabView styleClass="top-space bottom-space" >
+
+                                        <!--###################### Fitness Details ######################################## -->
+                                        <p:tab id="fitnessDetails"  title="Fitness Details" rendered="#{nidChangedBean.fitnessDobj ne null}">  
+                                            <ui:include src="/ui/registration/formFitnessDetails.xhtml">
+                                                <ui:param name="fitnessDobj" value="#{nidChangedBean.fitnessDobj}"/>
+                                            </ui:include>
+                                        </p:tab>
+                                        <!--########################################################################################## -->
+
+
+                                        <!--################################# Owner Details ########################################## -->
+                                        <p:tab  id="owner_details_tab" title="Owner Details">
+                                            <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                                <ui:param name="ownerDetail" value="#{nidChangedBean.ownerDetail}"/>
+                                            </ui:include>
+                                        </p:tab>
+                                        <!--########################################################################################## -->
+
+
+                                        <!--################################# Vehicle Details ######################################## -->
+                                        <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                            <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                                <ui:param name="ownerDetail" value="#{nidChangedBean.ownerDetail}"/>
+                                            </ui:include>
+                                        </p:tab>
+                                        <!--########################################################################################## -->         
+
+                                    </p:tabView>
+                                </div>
+                            </div>
+                        </p:panel>   
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true">
+                    <p:messages id="messagesInDialog" />
+                    <!--<p:button value="OK" onclick="PF('messageDialog').hide();"/>-->
+                </p:dialog>   
+
+                <p:blockUI block="formNID" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

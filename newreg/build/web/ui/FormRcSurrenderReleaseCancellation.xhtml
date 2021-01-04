@@ -1,0 +1,417 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="/ui/registration/panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{rcSurrender.appl_details}"/>            
+            </ui:include>   
+        </h:form>
+    </ui:define>
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="RcSurrenderReleaseCancellation" prependId="false">
+                <p:messages id="msg"  showDetail="true" showSummary="true">
+                    <p:autoUpdate/>
+                </p:messages>
+                <p:panel id="vehicleDetails" header="Vehicle Details"  styleClass="bottom-space">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="tfVehicleNo" value="Vehicle No:"/>
+                            </label>
+                            <p:inputText id="tfVehicleNo" value="#{rcSurrender.vehicleNo}" disabled="true" styleClass="text-uppercase" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="tfChasisNo" value="Chassis No:"/>
+                            </label>
+                            <p:inputText id="tfChasisNo" value="#{rcSurrender.chassisNo}" disabled="true"/>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="tfOwnerName" value="Owner Name:"/>
+                            </label>
+                            <p:inputText id="tfOwnerName" value="#{rcSurrender.ownerName}" disabled="true" styleClass="text-uppercase" />
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="tfAddress" value="Address:"/>
+                            </label>
+                            <p:inputText id="tfAddress" value="#{rcSurrender.address}" disabled="true" styleClass="text-uppercase" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="sm_vehicle_class" value="Vehicle Class:"/>
+                            </label>
+                            <p:selectOneMenu id="sm_vehicle_class" value="#{rcSurrender.vehicleClass}" disabled="true">
+                                <f:selectItems value="#{rcSurrender.listVehicleClass}"></f:selectItems>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for ="calFitnessValidity" value="Fitness Validity:"/>
+                            </label>
+                            <p:calendar id="calFitnessValidity" value="#{rcSurrender.fitnessValidity}" disabled="true"></p:calendar>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:outputPanel rendered="#{rcSurrender.renderRcCnclSurrndr}">
+                    <div class="ui-grid-row top-space bottom-space">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>   
+                        <div class="ui-grid-col-4">
+                            <p:selectOneRadio id="selectRCCNCLSUR" value="#{rcSurrender.rcCnclSurrndr}">
+                                <f:selectItem itemLabel="RC Surrender" itemValue="RCSun" itemDisabled="#{rcSurrender.rcSurdisable}" />
+                                <f:selectItem itemLabel="RC Cancel" itemValue="RCCn"  itemDisabled="#{rcSurrender.rcCnclDisable}" />
+                                <f:selectItem itemLabel="RC Suspension" itemValue="RCSus"  itemDisabled="#{rcSurrender.rcSuspdisable}" />
+                                <p:ajax  event="change" listener="#{rcSurrender.rcSuspensionShow()}" update="CancellationDetails documentSurrenderDetails dialog releaseDetails  selectRCCNCLSUR suspensionDetails  surrenderDetails "/>
+                            </p:selectOneRadio>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="surrenderDetails">
+                    <p:panel  header="Surrender Details"  styleClass="bottom-space" rendered="#{rcSurrender.panelSurrenderDetailsDisable}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="calSurrenderDate" value="Surrender Date:"/>
+                                </label>
+                                <p:calendar  id="calSurrenderDate" 
+                                             size="20" 
+                                             pattern="dd/MM/yyyy" 
+                                             navigator="true" 
+                                             autocomplete="off"
+                                             value="#{rcSurrender.surrenderDate}"
+                                             maxdate="#{rcSurrender.maxDate}"
+                                             mindate="#{rcSurrender.minDate}"
+                                             required="true"
+                                             requiredMessage="Please Enter The Date Of RC Surrender"
+                                             readonlyInput="true" 
+                                             >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfApprovedBy" value="Approved By:"/>
+                                </label>
+                                <p:inputText id="tfApprovedBy" value="#{rcSurrender.approvedBy}" converter="toUpperCaseConverter" styleClass="text-uppercase" maxlength="35" required="true" requiredMessage="Please enter the Approval Officer Name"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfFileReferenceNo" value="File Reference No:"/>
+                                </label>
+                                <p:inputText id="tfFileReferenceNo" value="#{rcSurrender.fileReferenceNo}" converter="toUpperCaseConverter" styleClass="text-uppercase"  maxlength="15" required="true" requiredMessage="Please enter the File Refrence No"/>
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfReason" value="Reason:"/>
+                                </label>
+                                <p:inputText id="tfReason" value="#{rcSurrender.reason}" converter="toUpperCaseConverter"  styleClass="text-uppercase" maxlength="50" />
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:keyFilter for="tfApprovedBy" mask="alpha"></p:keyFilter>
+                    <p:keyFilter for="tfFileReferenceNo" mask="alphanum"></p:keyFilter>
+                    <p:keyFilter for="tfReason" mask="alpha "></p:keyFilter>
+                </p:outputPanel>
+                <p:outputPanel id="suspensionDetails">
+                    <p:panel  header="Suspension Details"  styleClass="bottom-space" rendered="#{rcSurrender.panelSuspensionDetailsDisable}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="calSuspensionDate" value="Suspension Date:"/>
+                                </label>
+                                <p:calendar  id="calSuspensionDate" 
+                                             size="20" 
+                                             pattern="dd/MM/yyyy" 
+                                             navigator="true" 
+                                             autocomplete="off"
+                                             value="#{rcSurrender.surrenderDate}"
+                                             maxdate="#{rcSurrender.maxDate}"
+                                             mindate="#{rcSurrender.minDate}"
+                                             required="true"
+                                             requiredMessage="Please Enter The Date Of RC Suspension"
+                                             readonlyInput="true" 
+                                             >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="calSuspensionUptoDate" value="Suspension Upto Date:"/>
+                                </label>
+                                <p:calendar  id="calSuspensionUptoDate" 
+                                             size="20" 
+                                             pattern="dd/MM/yyyy" 
+                                             navigator="true" 
+                                             autocomplete="off"
+                                             value="#{rcSurrender.suspendedUptoDate}"
+                                             mindate="#{rcSurrender.minDate}"
+                                             required="true"
+                                             requiredMessage="Please Enter The Upto Date Of RC Suspension"
+                                             readonlyInput="true" 
+                                             >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfSusApprovedBy" value="Approved By:"/>
+                                </label>
+                                <p:inputText id="tfSusApprovedBy" value="#{rcSurrender.approvedBy}" converter="toUpperCaseConverter" styleClass="text-uppercase" maxlength="35" required="true" requiredMessage="Please enter the Approval Officer Name"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfSusFileReferenceNo" value="File Reference No:"/>
+                                </label>
+                                <p:inputText id="tfSusFileReferenceNo" value="#{rcSurrender.fileReferenceNo}" converter="toUpperCaseConverter" styleClass="text-uppercase"  maxlength="15" required="true" requiredMessage="Please enter the File Refrence No"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfSusReason" value="Reason:"/>
+                                </label>
+                                <p:inputText id="tfSusReason" value="#{rcSurrender.reason}" converter="toUpperCaseConverter"  styleClass="text-uppercase" maxlength="50" />
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:keyFilter for="tfSusApprovedBy" mask="alpha"></p:keyFilter>
+                    <p:keyFilter for="tfSusFileReferenceNo" mask="alphanum"></p:keyFilter>
+                    <p:keyFilter for="tfSusReason" mask="alphanum "></p:keyFilter>
+                </p:outputPanel>
+                <p:outputPanel id="releaseDetails">
+                    <p:panel  header="Release Details"  styleClass="bottom-space" rendered="#{rcSurrender.panelReleaseDetailsDisable}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="calReleaseDate" value="Release Date:"/>
+                                </label>
+                                <p:calendar  id="calReleaseDate" 
+                                             size="20" 
+                                             pattern="dd/MM/yyyy" 
+                                             navigator="true" 
+                                             autocomplete="off"
+                                             value="#{rcSurrender.releaseDate}"
+                                             maxdate="#{rcSurrender.maxDate}"
+                                             mindate="#{rcSurrender.minDate}"
+                                             readonlyInput="true" 
+                                             >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfReleaseApprovedBy" value="Approved By:"/>
+                                </label>
+                                <p:inputText id="tfReleaseApprovedBy" converter="toUpperCaseConverter" value="#{rcSurrender.releaseApprovedBy}" styleClass="text-uppercase" maxlength="35" required="true" requiredMessage="Please enter the Approval Officer Name"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfReleaseFileReferenceNo" value="File Reference No:"/>
+                                </label>
+                                <p:inputText id="tfReleaseFileReferenceNo" converter="toUpperCaseConverter" value="#{rcSurrender.releaseFileReferenceNo}"  styleClass="text-uppercase" maxlength="15" required="true" requiredMessage="Please enter the File Reference No"/>
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <p:commandButton id="surrCnclDetailsBt" value="#{rcSurrender.surrCnclName} Details">
+                                    <p:ajax process="@this"  event="click" listener="#{rcSurrender.showsurrenderDetails()}" update="dialog"  ></p:ajax>
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:keyFilter for="tfReleaseApprovedBy" mask="alpha"></p:keyFilter>
+                    <p:keyFilter for="tfReleaseFileReferenceNo" mask="alphanum"></p:keyFilter>
+                </p:outputPanel>
+                <p:dialog id="dialog" widgetVar="rcSurrenderDetails" modal="true" header="#{rcSurrender.surrCnclName} Details"  showEffect="fade" hideEffect="explode">
+                    <p:dataTable  var="surr_details" value="#{rcSurrender.surr_list}">
+                        <p:column headerText="#{rcSurrender.surrCnclName} Date :">
+                            <h:outputText value="#{surr_details.surrenderDate}"  />
+                        </p:column>
+                        <p:column headerText="#{rcSurrender.surrCnclName} Upto Date :" rendered="#{rcSurrender.panelReleaseSuspensionUpto}">
+                            <h:outputText value="#{surr_details.suspendedUptoDate}"  />
+                        </p:column>
+                        <p:column headerText="File Refrence NO:">
+                            <h:outputText value="#{surr_details.fileReferenceNo}" />
+                        </p:column>
+                        <p:column headerText="Approved By:">
+                            <h:outputText value="#{surr_details.approvedBy}" />
+                        </p:column>
+                        <p:column headerText="#{rcSurrender.surrCnclName} Reason">
+                            <h:outputText value="#{surr_details.reason}" />
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:dialog>
+                <p:outputPanel id="documentSurrenderDetails">
+                    <p:panel  header="Document Surrendered"  styleClass="bottom-space"  rendered="#{rcSurrender.paneldocumentSurrenderDetailsDisable}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2">
+                                <p:selectBooleanCheckbox id="sbcRc" value="#{rcSurrender.cbxRc}" disabled="#{rcSurrender.cbxRcDisabled}" required="true" requiredMessage="Please Select The RC Check Box">
+                                    <p:ajax process="sbcRc" event="change" listener="#{rcSurrender.documentSurrenderDetails()}" update="tfRcSerialNo"></p:ajax>
+                                </p:selectBooleanCheckbox>
+                                <h:outputLabel value=" RC:" for="sbcRc" />
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfRcSerialNo" value="RC SerialNo: "/>
+                                </label>
+                                <p:inputText 
+                                    id="tfRcSerialNo" 
+                                    value="#{rcSurrender.rcNo}"
+                                    disabled="#{rcSurrender.rcNoDisabled}" 
+                                    styleClass="text-uppercase"
+                                    converter="toUpperCaseConverter"
+                                    maxlength="20" 
+                                    required="true"
+                                    requiredMessage="Please enter the RC NO"/>
+                            </div>
+                            <div class="ui-grid-col-2">
+                                <p:selectBooleanCheckbox id="sbcPermit" value="#{rcSurrender.cbxPermit}" disabled="#{rcSurrender.cbxPermitDisabled}" >
+                                    <p:ajax process="sbcPermit" event="change" listener="#{rcSurrender.documentSurrenderDetails()}" update="tfPermitSerialNo"></p:ajax>
+                                </p:selectBooleanCheckbox>
+                                <p:outputLabel value=" Permit:" for="sbcPermit"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel  for="tfPermitSerialNo" value="Permit SerialNo: "/>
+                                </label>
+                                <p:inputText id="tfPermitSerialNo" converter="toUpperCaseConverter" value="#{rcSurrender.permitNo}" disabled="#{rcSurrender.permitNoDisabled}" styleClass="text-uppercase" maxlength="20"/>
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2">
+                                <p:selectBooleanCheckbox id="sbcFitness" value="#{rcSurrender.cbxFitness}"  disabled="#{rcSurrender.cbxFitnessDisabled}">
+                                    <p:ajax process="sbcFitness" event="change" listener="#{rcSurrender.documentSurrenderDetails()}" update="tfFitnessCer"></p:ajax>
+                                </p:selectBooleanCheckbox>
+                                <p:outputLabel for="sbcFitness" value=" Fitness Certificate:"/>
+                            </div>
+
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfFitnessCer" value="Fitness SerialNo: "/>
+                                </label>
+                                <p:inputText id="tfFitnessCer" converter="toUpperCaseConverter" value="#{rcSurrender.fitnessCerNo}" disabled="#{rcSurrender.fitnessCerNoDisabled}" styleClass="text-uppercase" maxlength="20" />
+                            </div>
+                            <div class="ui-grid-col-2">
+                                <p:selectBooleanCheckbox id="sbcTaxExmp" value="#{rcSurrender.cbxTaxExamption}" disabled="#{rcSurrender.cbxTaxExamptionDisabled}"></p:selectBooleanCheckbox>
+                                <p:outputLabel for="sbcTaxExmp" value=" Appling for Tax Exemption:"/>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel id="CancellationDetails">
+                    <p:panel  header="Cancellation Details"  styleClass="bottom-space" rendered="#{rcSurrender.panelCancellationDetailsDisable}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="calCancellationDate" value="Cancellation Date:" />
+                                </label>
+                                <p:calendar  id="calCancellationDate" 
+                                             size="20" 
+                                             pattern="dd/MM/yyyy" 
+                                             navigator="true" 
+                                             autocomplete="off"
+                                             value="#{rcSurrender.surrenderDate}"
+                                             maxdate="#{rcSurrender.maxDate}"
+                                             mindate="#{rcSurrender.minDate}"
+                                             readonlyInput="true" 
+                                             >
+                                    <f:convertDateTime pattern="dd/MM/yyyy"  />
+                                </p:calendar>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfCancleApprovedBy" value="Approved By:"/>
+                                </label>
+                                <p:inputText id="tfCancleApprovedBy" converter="toUpperCaseConverter" value="#{rcSurrender.approvedBy}" styleClass="text-uppercase" maxlength="35" required="true" requiredMessage="Please Enter Approval Officer"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfCancelFileReferenceNo" value="File Reference No:"/>
+                                </label>
+                                <p:inputText id="tfCancelFileReferenceNo" converter="toUpperCaseConverter" value="#{rcSurrender.fileReferenceNo}" styleClass="text-uppercase" maxlength="15" required="true" requiredMessage="Please Enter File Reference NO"/>
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for ="tfCancelReason" value="Reason:"/>
+                                </label>
+                                <p:inputText id="tfCancelReason"  converter="toUpperCaseConverter" value="#{rcSurrender.reason}" styleClass="text-uppercase" maxlength="50" required="true" requiredMessage="Please Enter Cancellation Reason" />
+                            </div>
+                            <c:if test="#{rcSurrender.renderRcCnclBy}" >
+                                <div class="ui-grid-col-4" >
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="RC Cancel By:" />
+                                    </label>
+                                    <p:selectOneRadio id="selectRCCancel" value="#{rcSurrender.rcCnclBy}" disabled="#{rcSurrender.rcCnclByDisable}">
+                                        <f:selectItem itemLabel="RC Cancel By Owner" itemValue="1"  />
+                                        <f:selectItem itemLabel="RC Cancel By Authority" itemValue="0" />
+                                    </p:selectOneRadio>  
+
+                                </div>
+                            </c:if>
+                        </div>
+
+                    </p:panel>
+                    <p:keyFilter for="tfCancleApprovedBy" mask="alpha"></p:keyFilter>
+                    <p:keyFilter for="tfCancelFileReferenceNo" mask="alphanum"></p:keyFilter>
+                    <p:keyFilter for="tfCancelReason" mask="alphanum "></p:keyFilter>
+                </p:outputPanel>
+
+                <p:panel id="changedByPrevUser" rendered="#{rcSurrender.prevChangedDataList.size()>0}" 
+                         styleClass="top-space bottom-space" >
+                    <p:dataTable value="#{rcSurrender.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="Changed by Employee" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+
+                        <p:column headerText="Changed Data by Previous Employee" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="Changed on" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+
+                <p:panel  styleClass="top-space bottom-space">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{rcSurrender}"/>
+                    </ui:include>
+                </p:panel>
+            </h:form>
+        </div>
+    </ui:define>    
+</ui:composition>

@@ -1,0 +1,297 @@
+*,
+h1,
+h2,
+h3 {
+    margin: 0;
+    padding: 0
+}
+
+@font-face {
+    font-family: "San Serif Regular";
+    src: url('../fonts/SansSerif Regular.ttf') format('truetype')
+}
+
+@font-face {
+    font-family: OCR-B-10-BT;
+    src: url(../fonts/ocr-b-10-pitch-bt.ttf) format('truetype')
+}
+
+.smartcard-back-panel,
+.smartcard-front-panel {
+    position: relative;
+    width: 422px!important;
+    height: 264px!important;
+    margin: 0 auto!important;
+    padding: 0!important;
+    box-sizing: border-box
+}
+
+.smartcard-back-panel-side,
+.smartcard-front-panel-side {
+    position: relative;
+    width: 370px!important;
+    height: 233px!important;
+    margin: 0 auto!important;
+    padding: 0!important;
+    box-sizing: border-box
+}
+
+.smartcard-back-panel-side,
+.smartcard-front-panel-side {
+    margin: 15px 10px!important
+}
+
+.smartcard-front-panel,
+.smartcard-front-panel-side {
+    background: url(images/smart-card-front.png) no-repeat!important;
+    background-size: contain!important
+}
+
+.smartcard-back-panel,
+.smartcard-back-panel-side {
+    background: url(images/smart-card-back.png) no-repeat!important;
+    background-size: contain!important
+}
+
+.smartcard-front-panel .front-panel-header-section {
+    margin: 12px 0 0 65px;
+    font-size: 9pt
+}
+
+.smartcard-front-panel-side .front-panel-header-section {
+    margin: 10px 0 0 55px;
+    font-size: 8.5pt
+}
+
+.front-panel-header-section h2 {
+    color: #000;
+    margin-right: 5px;
+    font-family: sans-serif;
+    line-height: 17px
+}
+
+.smartcard-front-panel .front-panel-header-section h2 {
+    font-size: 10pt
+}
+
+.smartcard-front-panel-side .front-panel-header-section h2 {
+    font-size: 9pt
+}
+
+.circled-section {
+    border: 2px solid #000;
+    border-radius: 10pt;
+    line-height: 22px;
+    font-weight: 700!important;
+    display: inline-block;
+    font-family: sans-serif;
+    text-align: center;
+    vertical-align: middle
+}
+
+.smartcard-back-panel .circled-section,
+.smartcard-front-panel .circled-section {
+    font-size: 9pt;
+    width: 22px;
+    height: 22px
+}
+
+.smartcard-back-panel-side .circled-section,
+.smartcard-front-panel-side .circled-section {
+    font-size: 8pt;
+    width: 22px;
+    height: 22px
+}
+
+.smartcard-back-panel-side .circled-section,
+.smartcard-front-panel-side .circled-section {
+    width: 20px;
+    height: 20px
+}
+
+.state-logo {
+    margin-top: -3px;
+    margin-left: 5px;
+    width: 30px;
+    height: auto
+}
+
+.smartcard-left-section {
+    box-sizing: border-box;
+    display: inline-block
+}
+
+.smartcard-front-panel .smartcard-left-section {
+    font-size: 9pt;
+    width: 100px
+}
+
+.smartcard-front-panel-side .smartcard-left-section {
+    font-size: 8.5pt;
+    width: 90px
+}
+
+.smartcard-right-section {
+    margin: 8px 0 0 0;
+    box-sizing: border-box;
+    display: inline-block
+}
+
+.smartcard-front-panel .smartcard-left-section {
+    width: 100px
+}
+
+.smartcard-front-panel-side .smartcard-left-section {
+    width: 90px
+}
+
+.smartcard-front-panel .front-right-section {
+    margin-top: 10px;
+    width: 295px
+}
+
+.smartcard-front-panel-side .front-right-section {
+    width: 260px
+}
+
+.vehicle-type {
+    position: absolute;
+    margin-top: 15px
+}
+
+.front-left-section {
+    margin: 50px 0 0 12px;
+    vertical-align: top
+}
+
+.back-left-section {
+    vertical-align: top;
+    margin: 10px 0 0 12px
+}
+
+.back-middle-section {
+    vertical-align: top;
+    display: inline-block
+}
+
+.smartcard-back-panel .back-middle-section {
+    width: 195px
+}
+
+.smartcard-back-panel-side .back-middle-section {
+    width: 140px
+}
+
+.back-right-section {
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 10px
+}
+
+.smartcard-back-panel .back-right-section {
+    width: 110px
+}
+
+.smartcard-back-panel-side .back-right-section {
+    width: 100px
+}
+
+.smartcard-details-section h2 {
+    font-family: sans-serif;
+    font-weight: 700;
+    color: #094050
+}
+
+.smartcard-back-panel .smartcard-details-section h2,
+.smartcard-back-panel .smartcard-details-section p,
+.smartcard-front-panel .smartcard-details-section h2,
+.smartcard-front-panel .smartcard-details-section p {
+    font-size: 7.5pt
+}
+
+.smartcard-back-panel-side .smartcard-details-section h2,
+.smartcard-back-panel-side .smartcard-details-section p,
+.smartcard-front-panel-side .smartcard-details-section h2,
+.smartcard-front-panel-side .smartcard-details-section p {
+    font-size: 7pt;
+    line-height: 8pt
+}
+
+.smartcard-details-section p {
+    font-family: sans-serif;
+    margin-bottom: 1.25pt;
+    color: #000
+}
+
+.right-absolute-content {
+    position: absolute;
+    font-weight: 700;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    white-space: nowrap
+}
+
+.smartcard-front-panel .front-absolute-position {
+    margin: -80px 0 0 395px;
+    font-size: 10px
+}
+
+.smartcard-front-panel-side .front-absolute-position {
+    margin: -80px 0 0 340px;
+    font-size: 10px
+}
+
+.qr-code-section {
+    margin: 4px 4px 0 0;
+    vertical-align: top
+}
+
+.smartcard-back-panel .back-absolute-position {
+    margin: 140px 0 0 280px;
+    font-size: 10px
+}
+
+.smartcard-back-panel-side .back-absolute-position {
+    margin: 140px 0 0 228px;
+    font-size: 10px
+}
+
+.smartcard-back-panel .reg-authority-position {
+    width: 110px;
+    word-wrap: break-word;
+    word-break: break-all
+}
+
+.smartcard-back-panel-side .reg-authority-position {
+    width: 105px;
+    word-wrap: break-word;
+    word-break: break-all
+}
+
+.back-bottom-content {
+    margin-top: 60px
+}
+
+td {
+    border: 1px solid #999d9e;
+    padding-left: 3px;
+    font-size: 8px
+}
+
+@media print {
+    @page {
+        size: auto;
+        margin: 0
+    }
+}
+
+.fncr-content-rc-position {
+    margin-top: -10px!important
+}
+
+.fncr-content-pvc-position {
+    margin-top: -45px!important
+}

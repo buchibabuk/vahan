@@ -1,0 +1,202 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{hpt_bean.appl_details}"/>            
+            </ui:include>  
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <h:form id="form_hpt" prependId="false">
+
+                        <p:outputPanel>
+                            <p:autoUpdate/>
+                            <p:dialog id="msgDialog" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                                <p:messages>
+                                    <p:autoUpdate/>
+                                </p:messages>
+                            </p:dialog>
+                        </p:outputPanel>
+                        <p:tabView id="details" styleClass="top-space bottom-space" >
+                            <!--################################# Hypothecation Details ########################################## -->
+                            <p:tab id="hypth_details_tab" title="Hypothecation Details">
+                                <p:dataTable  id="datatable_hypth" value="#{hpt_bean.listHypthDetails}"
+                                              rendered="#{hpt_bean.listHypthDetails.size()>0}"
+                                              var="hypth" rowIndexVar="index" styleClass="panelRowHeight top-space bottom-space">
+
+                                    <f:facet name="header">
+                                        Hypothecation Details
+                                    </f:facet>
+
+                                    <p:column headerText="S.No." styleClass="collumn-width center-position">
+                                        <p:outputLabel value="#{index +1}."/>
+                                    </p:column>
+
+                                    <p:column headerText="Type" width="8%">
+                                        <h:outputText value="#{hypth.hp_type_descr}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Financer" width="15%">
+                                        <h:outputText value="#{hypth.fncr_name}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Address" width="40%">
+                                        <h:outputText value="#{hypth.fncr_add1} &#44; 
+                                                      #{hypth.fncr_add2} &#44;
+                                                      #{hypth.fncr_add3} &#44;
+                                                      #{hypth.fncr_district_descr} &#44;                                              
+                                                      #{hypth.fncr_state_name} &#45;
+                                                      #{hypth.fncr_pincode}"/>
+                                    </p:column>
+
+                                    <p:column headerText="From" width="7%">
+                                        <h:outputText value="#{hypth.from_dt_descr}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Action" width="7%">
+                                        <p:commandButton value="Terminate!"                                         
+                                                         action="#{hpt_bean.getHypoTerminatedRow(hypth)}" 
+                                                         update=":openHptDlg"
+                                                         immediate="true">                            
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable> 
+
+                                <p:outputPanel id="output_hpt">
+
+                                    <p:dataTable  id="datatable_hpt" value="#{hpt_bean.listHptDetails}" var="hpt" 
+                                                  rowIndexVar="index" styleClass="panelRowHeight top-space bottom-space" rendered="#{hpt_bean.listHptDetails.size()>0}">
+
+                                        <f:facet name="header">
+                                            Hypothecation Termination Details
+                                        </f:facet>
+
+                                        <p:column headerText="S.No."  styleClass="collumn-width center-position">
+                                            <p:outputLabel value="#{index +1}."/>
+                                        </p:column>
+
+                                        <p:column headerText="Type" width="10%">
+                                            <h:outputText value="#{hpt.hp_type_descr}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Financer" width="20%">
+                                            <h:outputText value="#{hpt.fncr_name}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Address:" width="40%">
+                                            <h:outputText value="#{hpt.fncr_add1} &#44; 
+                                                          #{hpt.fncr_add2} &#44;
+                                                          #{hpt.fncr_add3} &#44;
+                                                          #{hpt.fncr_district_descr} &#44;
+                                                          #{hpt.fncr_state_name} &#45;
+                                                          #{hpt.fncr_pincode}"/>
+                                        </p:column>
+
+                                        <p:column headerText="From" width="8%">
+                                            <h:outputText value="#{hpt.from_dt_descr}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Upto" width="8%">
+                                            <h:outputText value="#{hpt.upto_dt_descr}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Update" width="8%">
+                                            <p:commandButton value="Edit" oncomplete="PF('hptDlg').show();" action="#{hpt_bean.editHPT(hpt,index,'edit')}" update=":openHptDlg"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </p:outputPanel>
+
+                            </p:tab>
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{hpt_bean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+
+
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{hpt_bean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+
+                        <p:panel id="changedByPrevUser" rendered="#{hpt_bean.prevChangedDataList.size()>0}" >
+                            <p:dataTable value="#{hpt_bean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                <p:column headerText="Changed by Employee" width="15%">
+                                    <h:outputText value="#{data.userName}" />
+                                </p:column>
+
+                                <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                    <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                </p:column>
+
+                                <p:column headerText="Changed on" width="15%">
+                                    <h:outputText value="#{data.op_dt}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>                      
+                        <p:outputPanel id="outputpanel_appdisapp" rendered="#{!hpt_bean.render}">   
+                            <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                <ui:param name="app_disapp" value="#{hpt_bean}"/>
+                            </ui:include>
+                        </p:outputPanel>       
+
+                        <vahan:vahanMessages messages="#{hpt_bean.vahanMessages}"  rendered="#{hpt_bean.vahanMessages ne null}"/>
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog  id="openHptDlg" header="Termination Of Hypothecation" height="150" width="400" widgetVar="hptDlg" modal="true" closeOnEscape="true" showEffect="clip" hideEffect="bounce"> 
+            <h:form id="formHptUpdate" prependId="false">
+                <div class="ui-grid-row left-position">
+                    <div class="ui-grid-col-12">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="hpt_upto_dt" value="Upto Date:"/>
+                        </label>
+                        <p:calendar  id="hpt_upto_dt" value="#{hpt_bean.hpt_dobj.upto_dt}" readonlyInput="true"  size="15" 
+                                     navigator="true" pattern="dd-MMM-yyyy" autocomplete="off"  required="true"
+                                     maxdate="#{hpt_bean.maxDate}" mindate="#{hpt_bean.minDate}"
+                                     requiredMessage="Blank : Upto Date">  
+                            <f:validateRequired/>
+                            <f:convertDateTime pattern="dd-MMM-yyyy"/> 
+                        </p:calendar>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 top-space bottom-space center-position">
+                        <p:commandButton value="Save" action="#{hpt_bean.fillHypTerminationList}" onclick="PF('bui').show();" oncomplete="PF('bui').hide();PF('hptDlg').hide();" update=":form_hpt:details:output_hpt">
+                            <p:confirm header="Confirmation!" message="Do you want to Terminate?" icon="ui-icon-alert"/>  
+                        </p:commandButton>
+                    </div>
+                </div>
+
+                <p:blockUI block="formHptUpdate" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

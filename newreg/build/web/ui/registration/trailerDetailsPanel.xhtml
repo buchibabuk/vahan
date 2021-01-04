@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid ui-grid-responsive">
+        <f:subview id="subview_commercial_trailer_dtls">                        
+            <p:panel id="trailerPanelInclude" header="#{language.attach_semi_tailer_detail}" styleClass="top-space">                                
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">                        
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="linked_regn_no" value="#{language.linked_regn_no} #{language.if_any}:" rendered="#{controllerBean.renderLinkedVeh}"/>
+                        </label>
+                        <p:inputText id="linked_regn_no" value="#{controllerBean.trailerDobj.linkedRegnNo}" styleClass="text-uppercase" rendered="#{controllerBean.renderLinkedVeh}"
+                                     disabled="#{controllerBean.trailerDobj.disable}" autocomplete="off" converter="toUpperCaseConverter" size="10" maxlength="10">                            
+                            <f:validateLength maximum="30"/>                                        
+                            <p:ajax event="blur" listener="#{controllerBean.getLinkedTrailerDetails}" update="trailerPanelInclude"/>
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="chasi_no" value="#{language.chasi_no}:"/>
+                        </label>
+                        <p:inputText id="chasi_no" value="#{controllerBean.trailerDobj.chasi_no}" styleClass="text-uppercase"
+                                     disabled="#{controllerBean.trailerDobj.disable}" autocomplete="off" converter="toUpperCaseConverter" size="15" maxlength="30">                            
+                            <f:validateLength maximum="30"/>                                        
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="body_type" value="#{language.bodyType}:" />
+                        </label>
+                        <p:inputText id="body_type" autocomplete="off" value="#{controllerBean.trailerDobj.body_type}" disabled="#{controllerBean.trailerDobj.disable}" maxlength="30" >  
+                        </p:inputText>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_trailer_rlw"  value="#{language.regLdWt}" />
+                        </label>
+                        <p:inputText id="tf_trailer_rlw" autocomplete="off" size="20"  value="#{controllerBean.trailerDobj.ld_wt}" 
+                                     disabled="#{controllerBean.trailerDobj.disable}" maxlength="6"/>
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="tf_trailer_unleden_wt"   value="#{language.ulWeight}:"/>
+                        </label>
+                        <p:inputText id="tf_trailer_unleden_wt" autocomplete="off" size="20"  value="#{controllerBean.trailerDobj.unld_wt}" 
+                                     disabled="#{controllerBean.trailerDobj.disable}" maxlength="6"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                        <p:panel id="no_desc_size_tyre" header="#{language.dscr_no_size_tyre}" styleClass="datatable-panel top-space bottom-space">   
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_f_axle_descp" value="#{language.front}:" />
+                                        </label>
+                                        <p:inputText id="tf_f_axle_descp" value="#{controllerBean.trailerDobj.f_axle_descp}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_r_axle_descp" value="#{language.rear}:" />
+                                        </label>
+                                        <p:inputText id="tf_r_axle_descp" value="#{controllerBean.trailerDobj.r_axle_descp}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_o_axle_descp" value="#{language.other}:" />
+                                        </label>
+                                        <p:inputText id="tf_o_axle_descp" value="#{controllerBean.trailerDobj.o_axle_descp}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="tf_t_axle_descp" value="#{language.tandem}:"/>
+                                        </label>
+                                        <p:inputText id="tf_t_axle_descp" value="#{controllerBean.trailerDobj.t_axle_descp}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" autocomplete="off" size="20" maxlength="16"/>
+                                    </div>
+
+                                </div>
+                            </div>                      
+                        </p:panel>
+                    </div>
+                    <div class="ui-grid-col-6">
+                        <p:panel id="registerd_axle_weight" header="#{language.registeredAxleWeight}" styleClass="top-space bottom-space">  
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_f_axle_weight" value="#{language.front}:" />
+                                        </label>
+                                        <p:inputText id="tf_f_axle_weight" value="#{controllerBean.trailerDobj.f_axle_weight}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" maxlength="6" size="20" autocomplete="off"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_r_axle_weight" value="#{language.rear}:" />
+                                        </label>
+                                        <p:inputText id="tf_r_axle_weight" value="#{controllerBean.trailerDobj.r_axle_weight}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" maxlength="6" size="20" autocomplete="off" />                   
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="tf_o_axle_weight" value="#{language.other}:" />
+                                        </label>
+                                        <p:inputText id="tf_o_axle_weight" value="#{controllerBean.trailerDobj.o_axle_weight}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" maxlength="6" size="20" autocomplete="off"/>
+                                    </div>
+                                    <div class="ui-grid-col-6">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  for="tf_t_axle_weight" value="#{language.tandem}:" />
+                                        </label>
+                                        <p:inputText id="tf_t_axle_weight" value="#{controllerBean.trailerDobj.t_axle_weight}" 
+                                                     disabled="#{controllerBean.trailerDobj.disable}" maxlength="6" size="20" autocomplete="off"/>                                    </div>
+                                </div>
+                            </div>
+                        </p:panel> 
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:commandButton value="Save" action="#{controllerBean.attachTrailer}" update="#{updateId}">
+                            <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                        </p:commandButton>
+                    </div>
+                </div>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+                <!-- keyfilter is used for allowing particular key during typing in the textfield-->
+                <p:keyFilter mask="pint" for="tf_trailer_unleden_wt"/>
+                <p:keyFilter mask="pint" for=" tf_trailer_rlw"/>
+                <p:keyFilter mask="pint" for="tf_f_axle_weight"/>
+                <p:keyFilter mask="pint" for="tf_r_axle_weight"/>
+                <p:keyFilter mask="pint" for="tf_o_axle_weight"/>
+                <p:keyFilter mask="pint" for="tf_t_axle_weight"/>
+            </p:panel>
+        </f:subview>
+
+    </div>
+</html>

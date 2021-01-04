@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="newform">
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Hold Challan Number</h1>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="messages"/>
+                    </div>
+                </div>
+                <p:panel id="mainpanel" header="Active/Hold Challan">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="appl_no" value="Application Number"/>
+
+                            </label>
+                            <p:selectOneMenu id="appl_no" value="#{challanHoldBean.appl_no}" filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="Select Application Number" itemValue="-1"/>
+                                <f:selectItems value="#{challanHoldBean.dobj.applNoList}"/>
+                                <p:ajax event="change" listener="#{challanHoldBean.challanDetails()}"  update="abc"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+
+                </p:panel>
+                <p:outputPanel id="abc"  >
+                    <p:panel header="Challan Details" rendered="#{challanHoldBean.renderPanel}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Challan No"/>
+                                </label>
+                                <p:inputText id="chal_no" value="#{challanHoldBean.dobj.challanNo}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Vehicle No"/>
+                                </label>
+                                <p:inputText id="veh_no"  value="#{challanHoldBean.dobj.vehicleNo}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Challan Place"/>
+                                </label>
+                                <p:inputText id="chal_place" value="#{challanHoldBean.dobj.challanPlace}" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Challan Time"/>
+                                </label>
+                                <p:inputText id="chal_time" value="#{challanHoldBean.dobj.challanTime}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Owner Name"/>
+                                </label>
+                                <p:inputText id="own_name" value="#{challanHoldBean.dobj.ownerName}" disabled="true"/>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Challan Officer"/>
+                                </label>
+                                <p:inputText id="chal_officer" value=" #{challanHoldBean.dobj.challanOfficer}" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Challan Date"/>
+                                </label>
+                                <p:inputText id="chal_dt" value=" #{challanHoldBean.dobj.challanDt}" disabled="true">
+
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                    </p:panel>
+                    <p:panel header="Challan Hold Details" id="challanHold" rendered="#{challanHoldBean.renderPanel}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hold_fee" value="Hold Fee"/>
+                                </label>
+                                <p:inputText id="hold_fee" value="#{challanHoldBean.dobj.holdFee}"  required="true" requiredMessage="Please Enter Hold Fee." >
+                                    <p:ajax event="change" process="@this" update="messages"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hold_active"  value="Hold/Active Status"/>
+                                </label>
+                                <p:selectOneMenu id="hold_active" value="#{challanHoldBean.dobj.challanHoldStatus}" 
+                                                 required="true" requiredMessage="Please Select Status." >
+                                    <f:selectItem itemLabel="Select Status" itemValue="-1" />
+                                    <f:selectItems   value="#{challanHoldBean.statusList}"/>
+                                    <p:ajax event="change" process="@this" update="messages"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hold_reason" value="Hold Reason "/>
+                                </label>
+
+                                <p:inputText id="hold_reason"  value="#{challanHoldBean.dobj.holdReason}"  required="true" requiredMessage="Please Enter Hold Reason." >
+                                    <p:ajax event="change" process="@this" update="messages"/>
+                                </p:inputText>
+                            </div>
+
+
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section"
+                                       ><p:outputLabel for="hold_frm" value="Hold From:"/>
+                                </label>
+                                <p:calendar  id="hold_frm" 
+                                             size="20" 
+                                             navigator="true" 
+                                             autocomplete="off"
+                                             value="#{challanHoldBean.dobj.holdFrom}"
+                                             pattern="dd-MMM-yyyy"
+                                             mindate="#{challanHoldBean.dobj.minDate}"
+                                             required="true" requiredMessage="Please Select Hold From."
+                                             >
+                                    <p:ajax event="change" process="@this" update="messages"/>
+                                    <f:convertDateTime    pattern="dd-MMM-yyyy" />
+                                </p:calendar>
+
+
+
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="hold_upto" value="Hold Upto:"/>
+                                </label>
+                                <p:calendar  id="hold_upto" 
+                                             size="20" 
+                                             pattern="dd-MMM-yyyy"
+                                             mindate="#{challanHoldBean.getTodayPlusThree()}"
+                                             navigator="true" 
+                                             autocomplete="off"
+                                             value="#{challanHoldBean.dobj.holdUpto}"
+                                             required="true" requiredMessage="Please Select Hold Upto."
+                                             >
+                                    <p:ajax event="change" process="@this" update="messages"/>
+                                    <f:convertDateTime   pattern="dd-MMM-yyyy"  />
+                                </p:calendar>
+
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <p:commandButton value="Save" id="save_data" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide()"
+                                                 >
+                                    <p:ajax event="click" process="challanHold"  listener="#{challanHoldBean.holdAndActiveChallan()}" 
+                                            update="abc,appl_no,mainpanel messages, hold_fee, hold_upto, hold_frm ,hold_reason, hold_active"/>
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton value="Back"  process="@this"  action="home"
+                                             immediate="true" onclick="PF('ajax_status').show()"
+                                             onsuccess="PF('ajax_status').hide()" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:blockUI block="newform" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head> 
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body onload="window.print();">
+        <h:form prependId="false">
+            <div class="center-position">
+                <p:commandButton value="Back" action="/ui/reports/formStatementReport.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value= "#{dailyreport.draftlist.size()>0 ? dailyreport.draftlist.get(0).reportHeader : ''}"  styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="#{dailyreport.selusername} #{dailyreport.offname} #{dailyreport.statename}"/> </span>
+            </div>
+            <div class="center-position top-space bottom-space">
+                <table class="datatable-panel">
+                    <tr>
+                        <td class="left-position">
+                            <div class="left-space">
+                                <h:outputText value="From Date:  #{dailyreport.dobj.fromDraftDate}"/>
+                            </div>
+                        </td>
+                        <td class="right-position">
+                            <div class="right-space">
+                                <h:outputText value="To Date: #{dailyreport.dobj.toDraftDate}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="datatable-panel" style="margin: 0px auto;">
+                <div class="center-position">
+                    <h:outputText value= "#{dailyreport.draftlist.size()>0 ? dailyreport.draftlist.get(0).reportHeader : ''}"  styleClass="font-bold report-header text-uppercase"/>
+                </div>
+                <p:dataTable value="#{dailyreport.draftlist}" var="draft"  rowIndexVar="rowkey" styleClass="border-transparent datatable-second-column-right datatable-eight-column-right">
+                    <p:column headerText="Sr. No" styleClass="collumn-width center-position">
+                        <h:outputText value="#{rowkey+1}" />                                
+                    </p:column> 
+                    <p:column headerText="Number">
+                        <h:outputText value="#{draft.instrument_no}" styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Application No">
+                        <h:outputText value="#{draft.application_No}" styleClass="right-space" escape="false"/>
+                    </p:column>
+                    <p:column headerText="Receipt No">
+                        <h:outputText value="#{draft.receipt_No}" styleClass="right-space" escape="false"/>
+                    </p:column>
+                    <p:column headerText="Dated">
+                        <h:outputText value="#{draft.instrumentDate}"/>
+                    </p:column>
+                    <p:column headerText="Bank Name">
+                        <h:outputText value="#{draft.bankName}"/>
+                    </p:column>
+                    <p:column headerText="Branch  Name">
+                        <h:outputText value="#{draft.branchName}" />
+                    </p:column>
+
+                    <p:column headerText="Amount">
+                        <h:outputText value="#{draft.instrument}" styleClass="right-space"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="datatable-panel" style="margin: 0 auto;">
+                <hr />
+            </div>
+            <div class="datatable-panel top-space"  style="margin: 0 auto;">
+                <h:outputText value="Grand Total Rs: #{dailyreport.dobj.grandTotal}/- (#{dailyreport.dobj.grandTotalInwords})" styleClass="font-bold" />
+            </div>
+
+            <div class="table-width-four bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                <br />
+                <br />
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value="Signature of #{dailyreport.cashier}"  styleClass="left-position bottom-space"/>
+                    <h:outputLabel value="Signature of #{dailyreport.accountant} "  styleClass="center-position bottom-space"/>
+                    <h:outputLabel value="Signature of #{dailyreport.superintendent}"  styleClass="center-position bottom-space"/>
+                    <h:outputLabel value=" Signature of #{dailyreport.patorto}"  styleClass="right-position bottom-space"/>
+                </h:panelGrid>
+            </div>
+
+            <div class="bottom-space top-space datatable-panel" style="margin: 0 auto;">
+                <br />
+                <br />
+                <h:panelGrid columns="1" styleClass="right-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel value=" Signature of  #{dailyreport.rto}"  styleClass="center-position-position bottom-space"/>
+                </h:panelGrid>
+            </div>
+            <p:outputPanel id="error_dialog_panel">
+                <p:dialog header="Info!" closeOnEscape="true" closable="true"  
+                          draggable="false" height="20%" width="30%" modal="true" widgetVar="error_dialog_ver">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 red font-bold center-position">
+                            Something Went Wrong, Please Try again.
+                        </div>                        
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:button value="Home" outcome="home"/>
+                        </div>
+                    </div>
+                </p:dialog>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

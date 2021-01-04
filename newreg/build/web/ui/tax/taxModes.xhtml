@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:dataTable id="tableTaxMode" rowIndexVar="index" var="taxMode" 
+                 value="#{taxModeParam.ownerDobj.taxModList}" styleClass="top-space bottom-space">
+        <f:facet name="header">
+            <div class="center-position">
+               #{language.taxModeDetails} 
+            </div>
+        </f:facet>
+        <p:column headerText="#{language.taxType}">
+            <h:outputText value="#{taxMode.taxPurcdDesc}" />
+        </p:column>
+
+        <p:column headerText="#{language.taxMode}">
+            <p:selectOneMenu id="taxModeType" value="#{taxMode.taxMode}" label="#{taxMode.taxPurcdDesc}">
+                <f:selectItems value="#{taxMode.listTaxModes}"/>
+                <f:validator validatorId="selectOneValidator_0" for="taxModeType"/>                             
+            </p:selectOneMenu>
+        </p:column>
+    </p:dataTable>       
+</html>

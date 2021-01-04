@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <body>
+        <p:outputPanel id="payment_panel" rendered="#{printDocXHTML.aitpPaymentdata ne null and printDocXHTML.aitpPaymentdata.size() > 0}" styleClass="top-space bottom-space">            
+            <p:dataTable id="pay_table" value="#{printDocXHTML.aitpPaymentdata}" 
+                         var="payment" rowIndexVar="index" rendered="#{printDocXHTML.aitpPaymentdata ne null and printDocXHTML.aitpPaymentdata.size() > 0 }">                       
+                <p:column headerText="S.No." styleClass="center-position" style="width: 35px">
+                    <p:outputLabel value="#{index +1}."/>
+                </p:column>
+                <p:column headerText="Name of state" >
+                    <h:outputText id="paystate" value="#{payment.pay_state_descr}"                                         
+                                  styleClass="right-position" >                                                                                       
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Amount"  style="width: 40px">
+                    <h:outputText id="Amount" value="#{payment.instrument_amt}"                                        
+                                  styleClass="right-position" >                                                               
+                    </h:outputText>
+                </p:column>                        
+                <p:column headerText="No. and Date of Draft Bank Name">
+                    <h:outputText value="#{payment.instrument_no},#{payment.instrument_dtString},#{payment.bank_name},#{payment.branch_name}" >
+
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Recieved Date of Bank Draft">                       
+                    <h:outputText value="#{payment.recieved_dtString}" >
+
+                    </h:outputText>                            
+                </p:column>
+                <p:column headerText="Payable To">
+                    <h:outputText id="payableTo" value="#{payment.payable_to}"                                         
+                                  styleClass="right-position">                                  
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Period for which paid">
+                    <h:outputText id="authperiod" value="#{payment.periodFromDt} to #{payment.periodToDate}"                                         
+                                  styleClass="right-position">                                  
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Registration Mark">
+                    <h:outputText id="regnNo" value="#{payment.regn_no}"                                        
+                                  styleClass="right-position" style="text-transform: uppercase" converter="toUpperCaseConverter">                                 
+                    </h:outputText>                            
+                </p:column>
+
+            </p:dataTable>  
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div class="top-space bottom-space datatable-panel position-relative"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <p:graphicImage id="showSignImgOff2" value="#{printDocXHTML.viewSignFileOff1}" rendered="#{printDocXHTML.viewSignFileOff1 ne null}" cache="false" style="height: 50px !important; width: auto;"/>
+                                <br/>
+                                <h:outputText value="#{printDocXHTML.footerSignature}"/><br/>
+                                <h:outputText value="#{printDocXHTML.main_footer},"/><br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.off_cd},#{printDocXHTML.passPmtDobj.state_cd}"/>                                                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+    </body>
+</html>
+

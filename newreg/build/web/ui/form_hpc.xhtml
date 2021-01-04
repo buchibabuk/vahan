@@ -1,0 +1,80 @@
+<ui:composition
+    template="#{hpc_bean.masterLayout}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vcomponent="http://xmlns.jcp.org/jsf/composite/vcomponent">
+
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_hpc" prependId="false">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" widgetVar="messageDialog" modal="true" closable="false" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+                        <div class="center-position">
+                            <p:commandButton value="Close" immediate="true">
+                                <p:resetInput target="@form"/>
+                            </p:commandButton>
+                        </div>
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>                        
+                    </p:dialog>
+                </p:outputPanel>
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>  
+                    </div>
+                </div>
+
+                <p:panel header="HPC Information">
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="continuation_dt" value="Continuation Date #{label.datePattern}"/>
+                            </label>
+                            <p:calendar id="continuation_dt"  value="#{hpc_bean.hpaDobj.upto_dt}" navigator="true" pattern="dd-MMM-yyyy" 
+                                        maxdate="#{hpc_bean.maxDate}" autocomplete="off" required="true" requiredMessage="Please select Continuation Date"
+                                        readonlyInput="true">
+                                <f:convertDateTime pattern="dd-MMM-yyyy"/>                                    
+                            </p:calendar>
+                        </div>
+                    </div>
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-12">
+                            <p:selectBooleanCheckbox id="verify" 
+                                                     required="true" 
+                                                     value="#{validateFunction.validateCheckFeeTax}"
+                                                     validator="#{validateFunction.validateCheckBoxIsTrue}"
+                                                     validatorMessage="Please Verify HPC Details"
+                                                     requiredMessage="Please Verify HPC Details" styleClass="right-space"/> 
+                            <h:outputText value="I verify that HPC Information is correct." styleClass="report-header font-bold red"/>
+                        </div>
+                    </div>
+                </p:panel>
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:button value="Home" icon="ui-icon-home" outcome="home" />
+                        <p:commandButton value="Approve" icon="ui-icon-disk" action="#{hpc_bean.approveHPC()}"
+                                         onclick="PF('ajax_status').show()"
+                                         oncomplete="PF('ajax_status').hide()">
+                            <p:confirm header="Confirmation" message="Are you sure? Do You Want to Approve the Transaction?" icon="ui-icon-alert"/>   
+                        </p:commandButton>
+                    </div>
+                </div>
+                <p:blockUI block="form_hpc" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+                <vcomponent:vahanMessages messages="#{hpc_bean.vahanMessages}"  rendered="#{hpc_bean.vahanMessages ne null}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

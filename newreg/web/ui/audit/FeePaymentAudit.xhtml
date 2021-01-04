@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"> 
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formFeePaymentOfAudit" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Fee-Payment of Audit </h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages id="msgs" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:dialog id="onlinePaymentdialog" draggable="false" closable="false" resizable="false" widgetVar="onlinePaymentvar"
+                          header="Online Payment Details" dynamic="true" modal="true">                        
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">
+                            <h:outputText value="#{feePaymentAudit.onlineUserCredentialmsg}" styleClass="font-bold"/>
+                            <br/>
+                            The above mentioned credentials has been sent to vehicle owner mobile no.
+                        </div>
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position bottom-space">                            
+                            <p:commandButton  value="Ok" oncomplete="PF('onlinePaymentvar').hide();" 
+                                              action ="/home.xhtml?faces-redirect=true" icon="ui-icon-check"/>
+                        </div>
+                    </div>                        
+                </p:dialog>
+
+
+                <p:panel id="vehDtlsPanel">
+                    <p:focus context="vehDtlsPanel"/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel for="tfRegNo" value="Vehicle Registration No."/>
+                            </label>
+                            <p:inputText  id="tfRegNo" value="#{feePaymentAudit.regn_no}" disabled="#{feePaymentAudit.regnNoDisabled}"
+                                          maxlength="10"
+                                          required="true"
+                                          requiredMessage="Please Enter Registration No."
+                                          converter="toUpperCaseConverter"
+                                          autocomplete="off"
+                                          styleClass="input"/>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row center-position">
+                        <div class="ui-grid-col-12">
+                            <p:commandButton value="Show Details" action="#{feePaymentAudit.showDetails()}"  disabled="#{feePaymentAudit.showDtlsBtnDisabled}"
+                                             update="formFeePaymentOfAudit" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+
+                        </div>
+                    </div>
+                    <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                </p:panel>
+
+
+
+                <p:panel id="vehDtlsPanel1" header="Audit Cases" rendered="#{feePaymentAudit.showFeePaymentDetails}">
+
+                    <p:outputPanel id="reg" styleClass="bottom-space">
+                        <p:dataTable id="auditRecoveryID" var="auditRecovery" value="#{feePaymentAudit.auditRecoveryList}" selectionMode="single" selection="#{feePaymentAudit.selectedauditRecovery}" rowKey="#{auditRecovery.para_no}">
+
+                            <p:ajax event="rowSelect" listener="#{feePaymentAudit.onRowSelect}" update=":formFeePaymentOfAudit" />
+                            <p:ajax event="rowUnselect" listener="#{feePaymentAudit.onRowUnselect}" update=":formFeePaymentOfAudit" />
+                            <p:column headerText="Audit Type">
+                                <h:outputText value="#{auditRecovery.audit_tyDesc}" />
+                            </p:column>
+                            <p:column headerText="S. No">
+                                <h:outputText value="#{auditRecovery.sl_no}" />
+                            </p:column>
+                            <p:column headerText="Audit Para">
+                                <h:outputText value="#{auditRecovery.para_no}" />
+                            </p:column>
+                            <p:column headerText="Amount">
+                                <h:outputText value="#{auditRecovery.amount}" />
+                            </p:column>
+                            <p:column headerText="Date">
+                                <h:outputText value="#{auditRecovery.op_date}" />
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:outputPanel>
+                </p:panel>
+                <p:panel id="showFeeDetails" header="Audit Recovery Details" rendered="#{feePaymentAudit.showFeeDetails}">
+                    <p:outputPanel id="pnlAuditRecoveryDtls" styleClass="bottom-space">
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfParaNo" value="Amount" />
+                                </label>
+                                <p:inputText id="tfParaNo"  value="#{feePaymentAudit.amount}" disabled="true" />                              
+                            </div>
+
+                        </div>
+
+                        <ui:include src="/ui/fee/form_payment_collection.xhtml">
+                            <ui:param name="paymentBean" value="#{feePaymentAudit.paymentBean}"/>
+                            <ui:param name="headerName" value="payment"/>
+                            <ui:param name="totalPayableAmount" value="#{feeRegisteredvehicle.feePanelBean.totalAmount}"/> 
+                        </ui:include>   
+
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Save" action="#{feePaymentAudit.saveDetails('CashPayment')}"
+                                                 update=":formFeePaymentOfAudit" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();" rendered="#{feePaymentAudit.renderSaveBtn}">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                                <p:commandButton value="Reset" action="#{feePaymentAudit.reset()}"
+                                                 update=":formFeePaymentOfAudit" />
+                                <p:commandButton value="Online Payment" action ="#{feePaymentAudit.saveDetails('OnlinePayment')}"  styleClass="button" 
+                                                 onclick="PF('ajax_status').show();"   update=":formFeePaymentOfAudit" oncomplete="PF('ajax_status').hide()" rendered="#{feePaymentAudit.renderOnlinePayBtn}">
+                                    <p:confirm header="Confirmation" message="Are You Sure ?" icon="ui-icon-alert"/> 
+                                </p:commandButton>
+                                <p:commandButton value="Cancel Online Payment" action ="#{feePaymentAudit.getCancelPayment()}" styleClass="button"  
+                                                 onclick="PF('ajax_status').show();"   update=":formFeePaymentOfAudit"  oncomplete="PF('ajax_status').hide()" rendered="#{feePaymentAudit.renderCancelPaymentBtn}">
+                                    <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel id="userCred">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <h:outputText value="#{feePaymentAudit.onlineUserCredentialmsg}"  rendered="#{feePaymentAudit.renderUserAndPasswored}" class="red font-bold bottom-space right-position"/>
+                                <br/>
+                                <h:outputText value="Note:" class="font-bold top-space right-position" rendered="#{feePaymentAudit.renderOnlinePayBtn}"/>
+                                <h:outputText value=" If Vehicle Owner wants to pay through ONLINE Payment Gateway / DEBIT Card then Cashier can opt for that option. 
+                                              The Owner will get the Credentials on his Registered Mobile No for Online Payment." rendered="#{feePaymentAudit.renderOnlinePayBtn}"  class="red font-bold top-space right-position"/>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:panel>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog> 
+
+
+                <p:blockUI block="@form" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+
+    </ui:define>
+</ui:composition>

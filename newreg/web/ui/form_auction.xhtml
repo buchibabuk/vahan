@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="auctionId"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Vehicle Auction Details</h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel id="outerPanel">
+                    <p:outputPanel id="render_message_appl_no" rendered="#{auctionBean.renderGeneratedApplNo}">
+                        <p:dialog widgetVar="successDialog" closable="false" modal="true" 
+                                  draggable="false" resizable="false" header="Generated Application No">
+                            <p:outputLabel value="#{auctionBean.applNoGenMessage}" escape="false"/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position">
+                                    <p:button value="Ok" onclick="PF('ajax_status').show();"                                              
+                                              outcome="home" icon="ui-icon-check"/>
+                                </div>
+                            </div>
+                        </p:dialog>
+                    </p:outputPanel>
+
+
+                    <p:panel id="selectionPanel" header="Auction By" styleClass="bottom-space" rendered="#{!auctionBean.auctionDetail}">  
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="#{language.searchBy} " />
+                                </label>
+                                <p:selectOneMenu value="#{auctionBean.searchByValue}" styleClass="bottom-space">
+                                    <f:selectItem itemLabel="--Select--" itemValue="-1"/>
+                                    <f:selectItem itemLabel="#{language.home_rightpanelregno}" itemValue="regnNo" />
+                                    <f:selectItem itemLabel="Chassis No(Unregistered Vehicle)" itemValue="chassisNo" />
+                                    <p:ajax event="change" listener="#{auctionBean.doneAuctionBy()}" update="@form"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:outputPanel id="vehRegnPanel" rendered="#{auctionBean.regnNoPanelVisibility}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfRegNo" value="#{language.home_rightpanelregno}"/>
+                                    </label>
+                                    <p:inputText  id="tfRegNo" value="#{auctionBean.auctionDobj.regnNo}"
+                                                  maxlength="10"
+                                                  required="true"
+                                                  requiredMessage="#{language.enter_regn_no}"
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="text-uppercase" validator="#{validateFunction.validateRegNo}"/>
+                                    <p:keyFilter mask="alphanum" for="tfRegNo"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Show Details" action="#{auctionBean.showDetailAction()}"  update="ownerInformationPanel"
+                                                     onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                        <p:outputPanel id="chassisPanel" rendered="#{auctionBean.chassisNoPanelVisibility}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfChasiNo" value="#{language.chasi_no}"/>
+                                    </label>
+                                    <p:inputText  id="tfChasiNo" value="#{auctionBean.auctionDobj.chasiNo}"
+                                                  styleClass="input" maxlength="30"  autocomplete="off"
+                                                  converter="toUpperCaseConverter" required="true" requiredMessage="Chassis No Can't be Blank"
+                                                  validatorMessage="Invalid Chassis No.Minimum Character is 5 and Maximum Character is 30" validator="#{validateFunction.validateChasiNo}"/>
+                                    <!--                                <f: validateLength minimum="5" maximum="30"/>-->
+                                    <p:keyFilter mask="alphanum" for="tfChasiNo"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Show Details" action="#{auctionBean.showDetailAction()}"  update="ownerInformationPanel"
+                                                     onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();">
+                                        <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                    <p:button value="Back" outcome="home" onclick="PF('ajax_status').show();" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:panel>
+                    <p:outputPanel id="ownerInformationPanel">
+                        <p:panel id="innerPanel" rendered="#{auctionBean.renderAuctionPanel}" styleClass="top-space bottom-space">
+                            <p:outputPanel id="innerOwnerPanel"  rendered="#{auctionBean.renderOwnerPanel}" styleClass="top-space bottom-space">
+                                <p:tabView>
+                                    <p:tab  id="owner_details_tab" title="Owner Details">
+                                        <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{auctionBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                    <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                        <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                            <ui:param name="ownerDetail" value="#{auctionBean.ownerDetail}"/>
+                                        </ui:include>
+                                    </p:tab>
+                                </p:tabView>
+                            </p:outputPanel>
+
+                            <p:outputPanel id="auctionInnerPanel" styleClass="top-space bottom-space">
+                                <ui:include src="/ui/form_auction_dtls.xhtml">
+                                    <ui:param name="auctionDobj" value="#{auctionBean.auctionDobj}"/>
+                                </ui:include>
+                                <p:panel header="Details State Authority" rendered="#{auctionBean.searchByValue eq 'chassisNo' and auctionBean.renderUnRegisteredVehPanel}" styleClass="top-space">
+                                    <div class="row left-space">
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="regn_no_unreg" value="Regn No:"/>
+                                            </label>
+                                            <p:inputText  id="regn_no_unreg" value="#{auctionBean.auctionDobj.regnNo}"
+                                                          maxlength="10"                                                 
+                                                          requiredMessage="#{language.enter_regn_no}"
+                                                          converter="toUpperCaseConverter" disabled="#{auctionBean.disableUnRegisteredVehPanel}"
+                                                          autocomplete="off"
+                                                          styleClass="text-uppercase"/>
+                                            <p:keyFilter mask="alphanum" for="tfRegNo"/>
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="regno_date" value="Regn Date:"/>
+                                            </label>
+                                            <p:calendar id="regno_date"  value="#{auctionBean.auctionDobj.regnDt}" 
+                                                        pattern="dd-MMM-yyyy" navigator="true" maxdate="#{auctionBean.auctionDobj.currentDate}"
+                                                        disabled="#{auctionBean.disableUnRegisteredVehPanel}">                                          
+                                                <f:convertDateTime pattern="dd-MMM-yyyy" for="regno_date"/>                                                                        
+                                            </p:calendar>
+
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="state_from" value="#{language.stateFrom}:"/>
+                                            </label>
+                                            <p:selectOneMenu id="state_from" value="#{auctionBean.auctionDobj.stateCdFrom}" filter="true"  disabled="#{auctionBean.disableUnRegisteredVehPanel}">
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="NA"/>
+                                                <f:selectItems value="#{auctionBean.stateList}"/>
+                                                <p:ajax event="change" listener="#{auctionBean.updateRtoFromStateListener}" update="auth_from"/>
+                                                <!--                                                <f:validator for="state_from" validatorId="selectOneValidator_0"/>-->
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel for="auth_from" value="#{language.authorityFrom}:"/>
+                                            </label>
+                                            <p:selectOneMenu id="auth_from" value="#{auctionBean.auctionDobj.offCdFrom}" filter="true" filterMatchMode="contains" 
+                                                             requiredMessage="Authority From Can not Be Empty" disabled="#{auctionBean.disableUnRegisteredVehPanel}">
+                                                <f:selectItem itemLabel="-SELECT-" itemValue="0"/>
+                                                <f:selectItems value="#{auctionBean.officeList}"/>
+                                                <!--                                                <f:validator for="auth_from" validatorId="selectOneValidator_0"/>-->
+                                            </p:selectOneMenu>
+                                        </div>                                       
+                                    </div>
+                                </p:panel>
+                            </p:outputPanel>
+                            <p:panel id="changedByPrevUser" rendered="#{auctionBean.prevChangedDataList.size()>0}"
+                                     toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">
+                                <p:dataTable value="#{auctionBean.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                                    <p:column headerText="Changed by Employee" width="15%">
+                                        <h:outputText value="#{data.userName}" />
+                                    </p:column>
+                                    <p:column headerText="Changed Data by Previous Employee" width="70%">
+                                        <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                                    </p:column>
+                                    <p:column headerText="Changed on" width="15%">
+                                        <h:outputText value="#{data.op_dt}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:outputPanel id="pg_save" styleClass="center-position" rendered="#{!auctionBean.auctionDetail}">
+                                        <p:commandButton value="Save" action="#{auctionBean.saveAuctionData()}" update="outerPanel"  onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();">
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>   
+                                        </p:commandButton>
+                                        <p:button  value="Back" outcome ="/home.xhtml?faces-redirect=true" onclick="PF('ajax_status').show();"/>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                            <p:outputPanel id="outputpanel_appdisapp" rendered="#{auctionBean.auctionDetail}">    
+                                <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                                    <ui:param name="app_disapp" value="#{auctionBean}"/>
+                                </ui:include>
+                            </p:outputPanel>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <p:blockUI block="auctionId" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

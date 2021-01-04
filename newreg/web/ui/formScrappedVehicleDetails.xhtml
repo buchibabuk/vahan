@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define>
+    <ui:define name="contentCommonInformation">
+        <h:form>
+            <ui:include src="/ui/registration/panel_applicationdetails.xhtml">
+                <ui:param name="appl_details" value="#{ScrappedVehicle.appl_details}"/>            
+            </ui:include>   
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="ScrappedVehicle" prependId="false">
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" widgetVar="messageDialog" modal="true" closeOnEscape="true" visible="#{not empty facesContext.messageList}">
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:tabView>
+                    <p:tab title="Noting of Scrapped Vehicle">
+                        <p:panel id="scrappingdetails" header="Scrapping Details"  styleClass="bottom-space">
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="somReasonForScrap" value="Reason For Scrap/Condomotion :"/>
+                                    </label>
+                                    <p:selectOneMenu id="somReasonForScrap" value="#{ScrappedVehicle.scrappedVehicleDobj.scrap_reason}" required="true" filter="true">
+                                        <f:selectItems value="#{ScrappedVehicle.scrapReasonList}"/> 
+                                    </p:selectOneMenu>
+                                </div>
+
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="tfAgencyName" value="Scrapping Agency Name:"/>
+                                    </label>
+                                    <p:inputText id="tfAgencyName" value="#{ScrappedVehicle.scrappedVehicleDobj.agency_name}" 
+                                                 required="true" maxlength="50"  styleClass="text-uppercase"  converter="toUpperCaseConverter" />
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="tfAgencyAddress" value="Scrapping Agency Address:"/>
+                                    </label>
+                                    <p:inputText id="tfAgencyAddress" value="#{ScrappedVehicle.scrappedVehicleDobj.agency_address}" 
+                                                 required="true" maxlength="200" styleClass="text-uppercase" converter="toUpperCaseConverter" />
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="tfNoDuesNo" value="No Dues Certificate No:"/>
+                                    </label>
+                                    <p:inputText id="tfNoDuesNo" value="#{ScrappedVehicle.scrappedVehicleDobj.no_dues_cert_no}" 
+                                                 required="true" maxlength="30" styleClass="text-uppercase" converter="toUpperCaseConverter" />
+
+                                </div>
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="calNoduesIssueDt" value="No Dues Issue Date:"/>
+                                    </label>
+                                    <p:calendar
+                                        id="calNoduesIssueDt" 
+                                        value="#{ScrappedVehicle.scrappedVehicleDobj.no_dues_issue_dt}" 
+                                        required="true"
+                                        maxdate="#{ScrappedVehicle.maxDate}"
+                                        navigator="true"
+                                        pattern="dd-MM-yyyy"></p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="tfScrappingNo" value="Scrapping Certificate No:"/>
+                                    </label>
+                                    <p:inputText id="tfScrappingNo" value="#{ScrappedVehicle.scrappedVehicleDobj.scrap_cert_no}" 
+                                                 required="true" maxlength="30" styleClass="text-uppercase"  converter="toUpperCaseConverter" />
+
+                                </div>
+
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for ="calScrappingDt" value="Scrapping Date:"/>
+                                    </label>
+                                    <p:calendar 
+                                        id="calScrappingDt"
+                                        value="#{ScrappedVehicle.scrappedVehicleDobj.scrap_cert_issue_dt}"
+                                        required="true" 
+                                        maxdate="#{ScrappedVehicle.maxDate}"
+                                        pattern="dd-MM-yyyy"
+                                        navigator="true"
+                                        ></p:calendar>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <p:outputPanel rendered="#{ScrappedVehicle.showCbxRetainVehicleNo}">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for ="cbxRetention" value="Retention Of Registration No.:"/>
+                                        </label>
+                                        <p:selectBooleanCheckbox id="cbxRetention" value="#{ScrappedVehicle.scrappedVehicleDobj.retain_regn_no}" disabled="#{ScrappedVehicle.disableRetention}"></p:selectBooleanCheckbox>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+
+                        </p:panel>
+                    </p:tab>
+
+                    <p:tab title="Owner Details">
+                        <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                            <ui:param name="ownerDetail" value="#{ScrappedVehicle.ownerDetail}"/>
+                        </ui:include>
+                    </p:tab>
+                    <p:tab title="Vehicle Details">
+                        <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                            <ui:param name="ownerDetail" value="#{ScrappedVehicle.ownerDetail}"/>
+                        </ui:include>
+                    </p:tab>
+
+                </p:tabView>
+
+                <p:panel id="changedByPrevUser" rendered="#{ScrappedVehicle.prevChangedDataList.size()>0}" 
+                         styleClass="top-space bottom-space" >
+                    <p:dataTable value="#{ScrappedVehicle.prevChangedDataList}" var="data" styleClass="panelRowHeight">
+                        <p:column headerText="Changed by Employee" width="15%">
+                            <h:outputText value="#{data.userName}" />
+                        </p:column>
+
+                        <p:column headerText="Changed Data by Previous Employee" width="70%">
+                            <h:outputText value="#{data.changed_data}" styleClass="panelTextColor" escape="false"/>
+                        </p:column>
+
+                        <p:column headerText="Changed on" width="15%">
+                            <h:outputText value="#{data.op_dt}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+
+
+                <p:panel  styleClass="top-space bottom-space">
+                    <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                        <ui:param name="app_disapp" value="#{ScrappedVehicle}"/>
+                    </ui:include>
+                </p:panel>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

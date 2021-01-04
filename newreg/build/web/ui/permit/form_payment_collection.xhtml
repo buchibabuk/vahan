@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:p="http://primefaces.org/ui"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title><ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    </h:head>
+    <h:body>
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="PaymentPanel">
+                <p:outputPanel id="pg_pay_mode">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Select Payment Mode:"/>
+                            </label>
+                            <p:selectOneMenu id="payment_type" value="#{paymentBean.payment_mode}" >
+                                <f:selectItem itemValue="0" itemLabel="Select"/>
+                                <f:selectItem itemValue="1" itemLabel="Challan"/>
+                                <f:selectItem itemValue="2" itemLabel="Cheque"/>
+                                <f:selectItem itemValue="3" itemLabel="Draft"/>
+                                <f:selectItem itemValue="4" itemLabel="Cash"/>
+                                <p:ajax process="payment_type" event="change" listener="#{paymentBean.showTable()}"  update="payment_panel" />
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                
+                <div class="ui-grid-row top-space">
+                    <div class="ui-grid-col-12">
+                        <p:outputPanel id="payment_panel">
+                            <p:dataTable id="pay_table" value="#{paymentBean.payment_list}" 
+                                         rendered="#{paymentBean.render_payment_table}" editable="true" var="payment" rowIndexVar="index">
+                                <f:facet name="header">
+                                    <p:outputLabel value="#{paymentBean.header_name}"/>                        
+                                </f:facet>
+                                <p:column headerText="S.No." styleClass="collumn-width center-position">
+                                    <p:outputLabel value="#{index +1}."/>
+                                </p:column>
+                                <p:column headerText="Number" >
+                                    <p:inputText value="#{payment.number}" />
+                                </p:column>
+                                <p:column headerText="Dated">                       
+                                    <p:calendar value="#{payment.dated}"/>
+                                </p:column>
+                                <p:column headerText="Amount">
+                                    <p:inputText value="#{payment.amount}"/>
+                                </p:column>
+                                <p:column headerText="Bank Name">
+                                    <p:selectOneMenu value="#{payment.bank_name}">
+                                        <f:selectItems value="#{paymentBean.bank_list}"/>
+
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column headerText="Branch">
+                                    <p:inputText value="#{payment.branch}"/>
+                                </p:column>
+                                <p:column >
+                                    <p:commandButton action="#{paymentBean.addRow(payment.number)}" icon="ui-icon-plusthick" update="pay_table">
+                                        <f:param name="actionmode" value="add"/>
+                                    </p:commandButton>
+                                    <p:commandButton action="#{paymentBean.addRow(payment.number)}"  icon="ui-icon-minusthick" update="pay_table">
+                                        <f:param name="actionmode" value="minus"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>             
+                        </p:outputPanel>
+                    </div>
+                </div>
+            </f:subview>
+        </div>
+    </h:body>
+</html>
+

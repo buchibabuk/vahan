@@ -1,0 +1,33 @@
+<ui:composition
+    template="/masterLayoutPage_new.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"  
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">         
+        <p:panel id="reloadMaster" header="Reload Master Tables" styleClass="top-space bottom-space">
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <p:button  value="Home" outcome="home" icon="ui-icon-home"/>  
+                    <p:commandButton value="Reload Master Data"  
+                                     action="#{reloadMasters.reloadMasterData()}"
+                                     onclick="PF('block_panel').show();"
+                                     oncomplete="PF('block_panel').hide();">
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </div>                
+            </div>     
+        </p:panel>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+        <p:blockUI block="reloadMaster" widgetVar="block_panel">
+            <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+    </ui:define>
+</ui:composition>

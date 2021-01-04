@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <f:subview id="trade_cancel_application_subview">
+                <p:dialog id="confirmationPopup" visible="#{not empty facesContext.messageList}"
+                          style="text-align:center" widgetVar="confirmationPopup"
+                          modal="true" draggable="false" closable="false" hideEffect="explode"
+                          header="Trade Certificate Application Confirmation Panel"> 
+                    <p:outputPanel id="confirm_panel1">
+                        <p:messages/>
+                        <p:outputLabel value="Do you want to continue"/><br></br>
+                        <br></br>
+
+                        <div style="text-align:center">
+                            <h:panelGrid columns="2">                       
+                                <p:spacer height="5"/><p:spacer height="5"/>
+                                <p:commandButton value="OK" onclick="PF('confirmationPopup').hide()" icon="ui-icon-check" >
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
+                <h:form id="temp_Pmt" prependId="false">
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <h1 class="header-main">Cancellation of Trade Certificate ( <h:outputText value="#{cancelTradeCertBean.headerSection}"/> )</h1>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <p:messages id="lbl_maker_error_msg" closable="true" styleClass="red" showSummary="true">
+                                     <p:autoUpdate/>
+                                </p:messages>
+                            </div>
+                        </div> 
+
+                        <p:outputPanel id="cc_regnNo">
+                            <p:outputPanel >
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel  value="Trade Certificate No:"/>
+                                        </label>
+                                        <p:inputText id="tf_regn_no" 
+                                                     value="#{cancelTradeCertBean.cancelTradeCertDobj.tradeCertNo}"  
+                                                     size="20" maxlength="25"                                                
+                                                     autocomplete="off" styleClass="input" converter="toUpperCaseConverter" requiredMessage="Please Insert Trade Certificate No" required="true" disabled="#{cancelTradeCertBean.disableOwnerName}">   
+                                            <p:keyFilter regEx="/[A-Z0-9/-]/i"/>
+                                        </p:inputText> 
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:outputPanel  id="control_buttons_ok"  styleClass="top-space bottom-space">
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="OK" id="btn_ok" action="#{cancelTradeCertBean.addNewSectionsToApplication()}" rendered="#{cancelTradeCertBean.isOkButtonvisible}" update="branch_sections_panel added_trade_sections_panel control_buttons_ok control_buttons cancel_detail_panel"/>
+                                        <p:commandButton value="Clear Field" action="#{cancelTradeCertBean.setClearField()}" rendered="#{cancelTradeCertBean.isOkButtonvisible}" disabled="#{cancelTradeCertBean.disableClearField}" update="cancel_detail_panel tf_regn_no"/>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+
+                            <p:panel header="Details of Dealer" visible="#{cancelTradeCertBean.visibleDealerDetailPanel}" id="branch_sections_panel" styleClass="top-space">
+                                <p:outputPanel >
+                                    <div class="ui-grid-row top-space">                                
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="tf_DEALER_NAME" value="Dealer Name:" />   
+                                            </label>
+                                            <p:inputText id="tf_DEALER_NAME" 
+                                                         value="#{cancelTradeCertBean.cancelTradeCertDobj.dealerName}" disabled="true" styleClass="input"  
+                                                         autocomplete="off" maxlength="40">
+                                            </p:inputText>
+                                        </div>
+
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="tf_DEALER_ADDRESS" value="Address of Contact :" />   
+                                            </label>
+                                            <p:inputText id="tf_DEALER_ADDRESS" 
+                                                         value="#{cancelTradeCertBean.cancelTradeCertDobj.dealerAddress}" disabled="true" style="text-transform: uppercase" 
+                                                         autocomplete="off" maxlength="40">                                
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="tf_DEALER_LOCATION" value="Location/State:"/>   
+                                            </label>
+
+                                            <p:inputText id="tf_DEALER_LOCATION" 
+                                                         value="#{cancelTradeCertBean.cancelTradeCertDobj.stateName}" disabled="true" style="text-transform: uppercase" 
+                                                         autocomplete="off" maxlength="40">                                
+                                            </p:inputText>
+                                        </div>
+                                    </div> 
+
+                                </p:outputPanel>
+
+                            </p:panel>  
+
+                            <p:panel header="Added Trade Certificate Details" id="added_trade_sections_panel" visible="#{cancelTradeCertBean.visibleTradeDetailPanel}" styleClass="top-space">
+                                <p:dataTable var="cancelTradeCertDobj" id="tc_cancel_sections_data_table" styleClass="top-space bottom-space" value="#{cancelTradeCertBean.listTCDetailsForDealer}"  paginator="false" >
+                                    <p:column headerText="Sr. No." width="8%">
+                                        <h:outputText  value="#{cancelTradeCertDobj.tcSrNo}" styleClass="input" />
+                                    </p:column>
+                                    <p:column headerText="Application No." width="15%">
+                                        <h:outputText  value="#{cancelTradeCertDobj.tcApplNo}" styleClass="input" />
+                                    </p:column>
+
+                                    <p:column headerText="Vehicle Category">
+                                        <h:outputText  value="#{cancelTradeCertDobj.vehCatgName}" styleClass="input" />
+                                    </p:column>
+
+                                    <p:column headerText="No.Of TC" width="10%">
+                                        <h:outputText value="#{cancelTradeCertDobj.noOfAllowedVehicles}" styleClass="input" />
+                                    </p:column>                               
+
+                                    <p:column headerText="Valid from" width="10%">
+                                        <p:calendar value="#{cancelTradeCertDobj.validFrom}" pattern="dd-MMM-yyyy" disabled="#{cancelTradeCertBean.disableDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Valid Upto" width="10%">
+                                        <p:calendar value="#{cancelTradeCertDobj.validUpto}" pattern="dd-MMM-yyyy" disabled="#{cancelTradeCertBean.disableDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Remove" width="8%" rendered="#{cancelTradeCertBean.renderRemoveRow}"> 
+                                        <div class="ui-grid ui-grid-responsive" style="width:150px">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-1">
+                                                    <p:selectBooleanCheckbox value="#{cancelTradeCertDobj.isRowRemove}" id="row_remove">
+                                                        <p:ajax update="@form" listener="#{cancelTradeCertBean.removeInListListener}"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>                         
+                                            </div>
+                                        </div>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+
+                            <p:panel header="Trade Certificate Details To Cancel" id="trade_sections_panel_not_to_remove" visible="#{cancelTradeCertBean.visibleCancelDetailPanel}" styleClass="top-space">
+                                <p:dataTable var="cancelTradeCertDobj" id="tc_not_to-cancel_data_table" styleClass="top-space bottom-space" value="#{cancelTradeCertBean.listTCDetailsToCancel}"  paginator="false" >
+                                    <p:column headerText="Sr. No." width="8%">
+                                        <h:outputText  value="#{cancelTradeCertDobj.tcSrNo}" styleClass="input" />
+                                    </p:column>
+                                    <p:column headerText="Application No." width="15%">
+                                        <h:outputText  value="#{cancelTradeCertDobj.tcApplNo}" styleClass="input" />
+                                    </p:column>
+                                    <p:column headerText="Vehicle Category">
+                                        <h:outputText  value="#{cancelTradeCertDobj.vehCatgName}" styleClass="input" />
+                                    </p:column>
+
+                                    <p:column headerText="No.Of TC" width="10%">
+                                        <h:outputText value="#{cancelTradeCertDobj.noOfAllowedVehicles}" styleClass="input" />
+                                    </p:column>                               
+
+                                    <p:column headerText="Valid from" width="10%">
+                                        <p:calendar value="#{cancelTradeCertDobj.validFrom}" pattern="dd-MMM-yyyy" disabled="#{cancelTradeCertBean.disableDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Valid Upto" width="10%">
+                                        <p:calendar value="#{cancelTradeCertDobj.validUpto}" pattern="dd-MMM-yyyy" disabled="#{cancelTradeCertBean.disableDate}"/>
+                                    </p:column>
+
+                                    <p:column headerText="UNDO/RESET" width="8%" rendered="#{cancelTradeCertBean.renderRemoveRow}"> 
+                                        <div class="ui-grid ui-grid-responsive" style="width:150px">
+                                            <div class="ui-grid-row">
+                                                <div class="ui-grid-col-1">
+                                                    <p:selectBooleanCheckbox id="row_add" value="#{cancelTradeCertDobj.isRowAdd}">
+                                                        <p:ajax update="@form" listener="#{cancelTradeCertBean.addInListListener}"/>
+                                                    </p:selectBooleanCheckbox>
+                                                </div>                         
+                                            </div>
+                                        </div>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+
+                            <p:panel header="Trade Certificate Clearing Details"  id="cancel_detail_panel" styleClass="top-space" visible="#{cancelTradeCertBean.visibleDealerDetailPanel}">
+                                <p:outputPanel >
+                                    <div class="ui-grid-row top-space">                                
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="tf_REASON_TC" value="Reason of cancellation:" />   
+                                            </label>
+                                            <p:inputTextarea id="tf_REASON_TC" 
+                                                             value="#{cancelTradeCertBean.cancelTradeCertDobj.reasonForCancellation}" 
+                                                             disabled="#{cancelTradeCertBean.disableOwnerName}" styleClass="input" maxlength="50">
+                                                <p:keyFilter regEx="/[a-zA-Z0-9 /-]/i"/>
+                                            </p:inputTextarea>                  
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="tf_ORDER_BY" value="Order By:(RTO/ARTO/DTO/MLO/RI)" />   
+                                            </label>                                       
+                                            <p:inputText id="tf_ORDER_BY" 
+                                                         value="#{cancelTradeCertBean.cancelTradeCertDobj.orderBy}" styleClass="input"
+                                                         disabled="#{cancelTradeCertBean.disableOwnerName}" autocomplete="off" maxlength="15"> 
+                                                <p:keyFilter regEx="/[A-Z ]/i"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="tf_ORDER_NO" value="Order No.:" />   
+                                            </label>
+                                            <p:inputText id="tf_ORDER_NO" 
+                                                         value="#{cancelTradeCertBean.cancelTradeCertDobj.orderNo}" styleClass="input"  
+                                                         disabled="#{cancelTradeCertBean.disableOwnerName}" autocomplete="off" maxlength="25">
+                                                <p:keyFilter regEx="/[a-zA-Z0-9/-]/i"/>
+                                            </p:inputText>
+                                        </div>
+                                        <div class="ui-grid-col-3">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="tf_ORDER_DATE" value="Order Date" />   
+                                            </label>
+                                            <p:calendar id="tf_ORDER_DATE" 
+                                                        value="#{cancelTradeCertBean.cancelTradeCertDobj.orderDt}" pattern="dd-MMM-yyyy" readonlyInput="true" navigator="true" 
+                                                        maxdate="#{cancelTradeCertBean.currentDate}" disabled="#{cancelTradeCertBean.disableOwnerName}">
+                                            </p:calendar>
+                                        </div>
+                                    </div>                                  
+                                </p:outputPanel>
+
+                            </p:panel>
+                            <p:outputPanel rendered="#{!cancelTradeCertBean.renderFileMovement}" id="control_buttons"  styleClass="top-space bottom-space">
+                                <div class="ui-grid-row top-space">
+                                    <div class="ui-grid-col-12 center-position">
+                                        <p:commandButton value="Save" id="btn_save" action="#{cancelTradeCertBean.saveForm()}" rendered="#{cancelTradeCertBean.isSaveButtonvisible}" update="app_num_id"/>
+                                        <p:commandButton value="Reset" id="btn_reset" update="@form" action="#{cancelTradeCertBean.setReset()}" rendered="#{!cancelTradeCertBean.isOkButtonvisible}"/>
+                                        <p:button value="Cancel" outcome="home" />
+                                    </div>
+                                </div>
+                            </p:outputPanel>  
+                            <p:dialog id="confirmationSavePopup" widgetVar="confSaveDlgTradeCert"
+                                      modal="true" draggable="false" closable="true" hideEffect="explode" 
+                                      header="Trade Certificate Application Confirmation Panel" closeOnEscape="true">  
+                                <p:outputPanel id="confirm_panel2">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position bottom-space top-space">
+                                            <p:messages/>
+                                            <br/>                                  
+                                            <br/>
+                                            <p:outputLabel value="Do you want to continue ?"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position bottom-space top-space">
+                                            <p:commandButton id="popup_btn_save" value="Save Trade Certificate Application " 
+                                                             oncomplete="PF('appNum').show();PF('bui_dlg').hide();" 
+                                                             onsuccess="PF('appNum').show();PF('bui_dlg').hide();" 
+                                                             actionListener="#{cancelTradeCertBean.save()}" update="postSaveMessage" icon="ui-icon-check" onclick="PF('bui_dlg').show();">
+                                            </p:commandButton>
+                                            <p:commandButton value="Cancel" action="#{cancelTradeCertBean.cancel}" oncomplete="PF('confSaveDlgTradeCert').hide();"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                                <p:blockUI block="confirm_panel2" widgetVar="bui_dlg" >
+                                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                                </p:blockUI> 
+                            </p:dialog>
+                            <p:dialog id="app_num_id" header="Trade Certificate Application Number" widgetVar="appNum" modal="true" closable="false" resizable="false"> 
+                                <p:panel id="popupSaveOutpsnel">
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <h:outputText id="postSaveMessage" value="#{cancelTradeCertBean.postSaveMessage}" />
+                                            <br/>
+                                            <p:button value="OK" outcome="home" />
+                                        </div>
+                                    </div>
+                                </p:panel>
+                            </p:dialog>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:outputPanel rendered="#{cancelTradeCertBean.renderFileMovement}" id="control_buttons_file_mov" styleClass="bottom-space top-space">
+                                        <ui:include src="/ui/role/file_movement_app_disapp.xhtml">
+                                            <ui:param name="app_disapp" value="#{cancelTradeCertBean}"/>
+                                        </ui:include>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </div>
+                </h:form>
+            </f:subview>
+        </div>
+    </ui:define>
+</ui:composition>
+

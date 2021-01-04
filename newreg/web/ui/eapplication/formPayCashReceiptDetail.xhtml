@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:body>
+        <p:outputPanel  styleClass="bottom-space">
+            <div class="position-relative">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position" style="width: 70px;">
+                            <p:graphicImage library="images" name="#{payCashReceiptBean.dobj.image_logo}" style="width: 70px;" rendered="#{payCashReceiptBean.dobj.show_image_logo}" />
+                        </td>
+                        <td class="center-position">
+                            <div>
+                                <h:outputText value="#{payCashReceiptBean.dobj.header}" escape="false" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                            </div>
+                            <div>
+                                <span class="font-bold report-subheader"> <h:outputText escape="false" value="#{payCashReceiptBean.dobj.subHeader}"/> </span>
+                            </div>
+                            <div>
+                                <span class="font-bold report-subheader"> <h:outputText value="#{payCashReceiptBean.dobj.offname}"/> </span>
+                            </div>
+                        </td>
+                        <td class="right-position" style="width: 70px;"></td>
+                    </tr>
+                </table>
+                <div class="inline-section qrcode-position-absolute">
+                    <ui:include src="/ui/reports/form_qr_code_panel.xhtml" >
+                        <ui:param name="qrcodevalue" value="#{payCashReceiptBean.text}"/>   
+                        <ui:param name="renderqrCode" value="#{payCashReceiptBean.renderqrCode}"/>   
+                    </ui:include>
+                </div>
+            </div>
+
+            <div class="table-width-oneforth  datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="RECEIPT/APPL No: " styleClass="right-space bottom-space" />
+                    <h:outputText value="#{payCashReceiptBean.dobj.receiptNo}/#{payCashReceiptBean.dobj.applNo}" styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="Vehicle Class: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.vhClass}" styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="Received From: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.ownerName}" styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="Receipt Date: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.receiptDate}" styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div>
+
+            <div class="table-width-four datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="4" styleClass="left-position datatable-panel-100">
+                    <h:outputLabel value="Vehicle No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.regnNo}" styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="Chassis No: "  styleClass="right-space bottom-space"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.chasino}" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="Regn Date: "  styleClass="right-space bottom-space" rendered="#{payCashReceiptBean.dobj.isregnDate}"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.regnDate}" styleClass="right-space bottom-space" rendered="#{payCashReceiptBean.dobj.isregnDate}"/>
+                    <h:outputLabel value="Sale Amount : "  styleClass="right-space bottom-space" rendered="#{payCashReceiptBean.newRegis and payCashReceiptBean.dobj.saleAmt > 0}"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.saleAmt}/-" rendered="#{payCashReceiptBean.newRegis and payCashReceiptBean.dobj.saleAmt > 0}"/>
+                    <h:outputLabel value = "#{payCashReceiptBean.dobj.financerName.length() > 0 ? 'FinancerName' : ''}  " styleClass="right-space bottom-space"/>
+                    <h:outputText  value="#{payCashReceiptBean.dobj.financerName}" />
+                    <h:outputLabel value="Transaction Id: "  styleClass="right-space bottom-space"  rendered="#{payCashReceiptBean.dealer}"/>
+                    <h:outputText value="#{payCashReceiptBean.dobj.transactionId}"  rendered="#{payCashReceiptBean.dealer}"  />
+                    <h:outputLabel  value="Bank Ref No: "  styleClass="right-space bottom-space" rendered="#{payCashReceiptBean.dealer}"/>
+                    <h:outputText  value="#{payCashReceiptBean.dobj.bankRefNo}" rendered="#{payCashReceiptBean.dealer}"/>
+
+                </h:panelGrid>
+            </div>
+            <p:outputPanel rendered="#{payCashReceiptBean.dobj.isbalFeeRemarks}">
+                <div class="table-width-oneforth datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                        <h:outputLabel  value="Remarks: "  styleClass="right-space bottom-space" />
+                        <h:outputText  value="#{payCashReceiptBean.dobj.balFeeRemarks}" />
+                    </h:panelGrid>
+                </div>
+            </p:outputPanel>
+            <div class="datatable-panel" style="margin: 0px auto;">
+                <p:dataTable value="#{payCashReceiptBean.dobj.prntRecieptSubList}" var="data" 
+                             styleClass="border-transparent datatable-first-column-left datatable-first-column-header-left 
+                             datatable-second-column-right datatable-second-column-header-right 
+                             datatable-third-column-right datatable-third-column-header-right
+                             datatable-fourth-column-right datatable-fourth-column-header-right
+                             datatable-fifth-column-right datatable-fifth-column-header-right
+                             datatable-six-column-right datatable-six-column-header-right
+                             datatable-seven-column-right datatable-seven-column-header-right
+                             datatable-eight-column-right datatable-eight-column-header-right
+                             datatable-nine-column-right datatable-nine-column-header-right">
+                    <p:column headerText="Particular">
+                        <h:outputText value="#{data.purpose}#{data.dateFrom}#{data.dateUpto}" />
+                    </p:column>
+                    <p:column headerText="Amount">
+                        <h:outputText value="#{data.amount} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Surcharge" rendered="#{payCashReceiptBean.showSurcharge}">
+                        <h:outputText value="#{data.surcharge} " styleClass="right-space" />
+                    </p:column>
+
+                    <p:column headerText="#{taxFieldLabel.taxFieldDobj.tax1Label}" rendered="#{payCashReceiptBean.showExcessamt}">
+                        <h:outputText value="#{data.excessAmt} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="#{taxFieldLabel.taxFieldDobj.tax2Label}" rendered="#{payCashReceiptBean.showCash_amt}">
+                        <h:outputText value="#{data.cashAmt} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Rebate" rendered="#{payCashReceiptBean.showRebate}">
+                        <h:outputText value="#{data.rebate} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Previous Adjs" rendered="#{payCashReceiptBean.showPrv_adjst}">
+                        <h:outputText value="#{data.prv_adjustment} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Interest" rendered="#{payCashReceiptBean.showinterest}">
+                        <h:outputText value="#{data.interest} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Exempted" rendered="#{payCashReceiptBean.showexempted}">
+                        <h:outputText value="#{data.exempted} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Penalty" >
+                        <h:outputText value="#{data.penalty} " styleClass="right-space" />
+                    </p:column>
+                    <p:column headerText="Total">
+                        <h:outputText value="#{data.total} " styleClass="right-space" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="table-width-two">
+                <h:panelGrid columns="1" styleClass="left-position datatable-panel" style="margin: 0 auto;">
+                    <h:outputText value="GRAND TOTAL (in Rs): #{payCashReceiptBean.dobj.grandTotal}/- (#{payCashReceiptBean.dobj.grandTotalInWords})"  />
+                </h:panelGrid>
+            </div>
+            <p:outputPanel rendered="#{payCashReceiptBean.dobj.isinstrumentAmt}" styleClass="datatable-panel" style="margin: 0px auto;">
+                <div class="left-position">
+                    <h:outputText value="Cash Amt: " styleClass="font-bold" rendered="#{payCashReceiptBean.dobj.iscashAmt}" /> <h:outputText value="#{payCashReceiptBean.dobj.cashAmt}/-" styleClass="right-space" rendered="#{payCashReceiptBean.dobj.iscashAmt}" />
+                    <h:outputText value="Instrument Amt: " styleClass="font-bold" rendered="#{payCashReceiptBean.dobj.isinstrumentAmt}"  /><h:outputText value="#{payCashReceiptBean.dobj.instrumentAmt}/-" styleClass="right-space" rendered="#{payCashReceiptBean.dobj.isinstrumentAmt}" />
+                    <h:outputText value="Excess Amt:" styleClass="font-bold" rendered="#{payCashReceiptBean.dobj.isecsessAmt}" /> <h:outputText value="#{payCashReceiptBean.dobj.excessAmt}/-" styleClass="right-space" rendered="#{payCashReceiptBean.dobj.isecsessAmt}" />
+                </div>
+                <p:dataList value="#{payCashReceiptBean.dobj.prntInstList}" var="dataList" rendered="#{payCashReceiptBean.dobj.isinstrumentAmt}" styleClass="border-transparent">               
+                    #{dataList.instrumentDtls}
+                </p:dataList>
+            </p:outputPanel>
+            <div class="datatable-panel top-space" style="margin: 0px auto;">
+                <div class="left-position">
+                    <span class="font-bold">Note-- </span>This is computer generated slip, no need of signature (https://parivahan.gov.in).
+                </div>
+                <br />
+                <div class="right-position top-space" style="margin: 0px auto;">
+                    <h:outputText value="#{payCashReceiptBean.dobj.empName}" />
+                    <br /><h:outputText rendered="#{payCashReceiptBean.dealer}" value="#{payCashReceiptBean.dobj.dealerName}" />
+                </div>
+            </div>
+            <p:outputPanel rendered="#{payCashReceiptBean.dobj.isfancyno}" styleClass="datatable-panel reduce-font" style="margin: 0px auto;">
+                <ol>
+                    <li> This number will automatically expire in 30 days if vehicle not registered.</li>
+                    <li> It is mandatory to produce this receipt at the time of data entry of vehicle for linking
+                        the number with vehicle , in any case transport department will not be responsible</li>
+                </ol>
+            </p:outputPanel>
+        </p:outputPanel>
+    </h:body>
+</html>

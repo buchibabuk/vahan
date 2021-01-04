@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <title>
+            <ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert>
+        </title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="grid-css.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <h:outputScript library="bootstrap-3.3.1" name="js/bootstrap.min.js" />
+    </h:head>
+
+    <h:body>
+        <h:panelGroup id="actionMsg" styleClass="top-space">
+            <p:outputPanel id="dateBetweenPanel" rendered="#{dashBoard.renderApplPannel}"  styleClass="top-space"> 
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-2">
+                        <p:commandButton action="#{dashBoard.getPendingWorkDateWisePrev}"
+                                         value="Previous   Pending Appls" icon="ui-icon-seek-prev" iconPos="left" rendered="#{dashBoard.prevApplButton}"
+                                         onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="actionMsg"/>
+                    </div>
+                    <div class="ui-grid-col-8 resp-blank-height"></div>
+                    <div class="ui-grid-col-2">
+                        <p:commandButton action="#{dashBoard.getPendingWorkDateWiseNext}"
+                                         value="Next  Pending Appls" icon="ui-icon-seek-next" iconPos="right"  rendered="#{dashBoard.nxtApplButton}"
+                                         onclick="PF('bui').show();" oncomplete="PF('bui').hide();" update="actionMsg"/>
+                    </div>
+                </div>
+            </p:outputPanel>
+
+            <p:outputPanel id="pendingWorkId" rendered="#{dashBoard.allseatWork.size() > 0}"   styleClass="top-space">                                       
+                <div class="ui-grid-row top-space bottom-space">
+                    <div class="ui-grid-col-12">
+                        <p:dataTable id="workDetails"  value="#{dashBoard.allseatWork}" var="virtual" rows="20" 
+                                     paginator="#{dashBoard.allseatWork.size()>20}" widgetVar="seatWorkList" style="margin-bottom:20px" filteredValue="#{dashBoard.filteredSeat}" rowIndexVar="index" reflow="true">
+                            <f:facet name="header">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4 resp-blank-height"></div>
+                                    <div class="ui-grid-col-4">
+                                        <h:outputText   value="Pending Application for #{dashBoard.offName} ( #{dashBoard.headerDescr} )" styleClass="font-bold " style="margin-top: 4px; font-size: 14px; " />
+                                    </div>
+                                    <div class="ui-grid-col-4 right-position right-space">
+                                        <h:commandLink>
+                                            <p:graphicImage name="excel.png" width="30" library="images" styleClass="left-space" ></p:graphicImage>
+                                            <p:dataExporter type="xls" target="workDetails" fileName="Pending_Application_#{dashBoard.offName}_(#{dashBoard.headerDescr})" />
+                                        </h:commandLink>
+                                        <h:commandLink>
+                                            <p:graphicImage name="pdf.png" width="30" library="images"></p:graphicImage>
+                                            <p:dataExporter type="pdf" target="workDetails" fileName="Pending_Application_#{dashBoard.offName}_(#{dashBoard.headerDescr})"/>
+                                        </h:commandLink>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Sr.No" width="5%"  styleClass="font-bold" >
+                                <h:outputText value="#{index +1}."/>
+                            </p:column>
+
+                            <p:column headerText="Application No" filterBy="#{virtual.appl_no}" filterMatchMode="contains" sortBy="#{virtual.appl_no}" styleClass="font-bold" >
+                                <h:outputText value="#{virtual.appl_no}"/>
+                            </p:column>
+
+                            <p:column styleClass="font-bold">
+                                <f:facet name="header">Application <br/> Date</f:facet>
+                                <h:outputText value="#{virtual.appl_dt}"/>
+                            </p:column>
+
+
+                            <p:column headerText="Vehicle No" filterBy="#{virtual.regn_no}" filterMatchMode="contains"  styleClass="font-bold">
+                                <h:outputText value=" #{virtual.regn_no}"/>
+                            </p:column>
+
+                            <p:column headerText="Purpose" filterBy="#{virtual.purpose_descr}"  filterMatchMode="contains" styleClass="font-bold">
+                                <h:outputText value="#{virtual.purpose_descr}"/>
+                            </p:column>
+
+                            <p:column headerText="Norms "  styleClass="font-bold" rendered="#{dashBoard.regnTypeRender}">
+                                <h:outputText value="#{virtual.nomrs_descr}"/>
+                            </p:column>
+                            <p:column headerText="Vehicle Class"  styleClass="font-bold" rendered="#{dashBoard.regnTypeRender}">
+                                <h:outputText value="#{virtual.vhClass_descr}"/>
+                            </p:column>
+
+                            <p:column headerText="Permit Category"  styleClass="font-bold" rendered="#{dashBoard.permitWiseRender}" >
+                                <h:outputText value="#{virtual.pmtCatg_descr}"/>
+                            </p:column>
+                            <p:column headerText="Pending  At"  styleClass="font-bold">
+                                <h:outputText value="#{virtual.action_descr}"/>
+                            </p:column>
+                            <p:column headerText="Pending  Since" styleClass="font-bold">
+                                <h:outputText value="#{virtual.pendingSince}"/>
+                            </p:column>
+                            <p:column headerText="Action" width="20%" styleClass="font-bold" exportable="false" >
+                                <p:commandButton value="#{virtual.action_descr}" action="#{home_bean.dashBoarSelectedActionOnApplication(virtual)}" ajax="false" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" > 
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:blockUI block="pendingWorkId" widgetVar="bui">
+                <p:graphicImage name="preloader.gif" library="images" width="80px" height="80px"/>
+            </p:blockUI>
+        </h:panelGroup> 
+    </h:body>
+</html>

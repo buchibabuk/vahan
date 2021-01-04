@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:vahan="http://xmlns.jcp.org/jsf/composite/vcomponent">
+    <ui:define name="content22">
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="form_swap" prependId="false">  
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Swapping/Retention of Registration Mark </h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel id="swap_subview_retain_from1">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  for="regnnoone" value="First Vehicle Registration No(OLD)"/>
+                            </label>
+                            <p:inputText id="regnnoone" value="#{swapBean.regn_no_one}" autocomplete="off" readonly="#{swapBean.readOnly}" size="20" maxlength="10" styleClass="text-uppercase" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  for="regnnotwo" value="Second Vehicle Registration No(NEW)"/>
+                            </label>
+                            <p:inputText id="regnnotwo" value="#{swapBean.regn_no_two}" autocomplete="off" size="20" readonly="#{swapBean.readOnly}" maxlength="10" styleClass="text-uppercase" />
+                        </div>                        
+                    </div>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  for="chasinoone" value="Last Five Digit of Chasis No(OLD)"/>
+                            </label>
+                            <p:inputText id="chasinoone" value="#{swapBean.chasi_no_one}" autocomplete="off" readonly="#{swapBean.readOnly}" size="20" maxlength="5" styleClass="text-uppercase" />
+                        </div>
+                        <div class="ui-grid-col-4">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel  for="chasinotwo" value="Last Five Digit of Chasis No(NEW)"/>
+                            </label>
+                            <p:inputText id="chasinotwo" value="#{swapBean.chasi_no_two}" autocomplete="off" size="20" readonly="#{swapBean.readOnly}" maxlength="5" styleClass="text-uppercase" />
+                        </div>                        
+                    </div>
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>                        
+                        <div class="ui-grid-col-4 top-space">
+                            <p:outputPanel id="cb_relationtype" >
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Relation with Old Vehicle Owner:" styleClass="field-label-mandate" for="cb_relation_type"/>
+                                </label>
+                                <p:selectOneMenu id="cb_relation_type" value="#{swapBean.relation_code}" disabled="#{swapBean.readOnly}">
+                                    <f:selectItems value="#{swapBean.relation_list}" /> 
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </div>
+                        <div class="ui-grid-col-4 resp-blank-height"></div>
+                    </div>
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-8 top-space">
+                            <h:outputText value="I verify that there is Blood Relationship between both the vehicle owner's or both the vehicles have same owner: " styleClass="report-header font-bold red"/>
+                            <p:selectBooleanCheckbox id="verifyCheckValue"
+                                                     required="true"
+                                                     value="#{validateFunction.validateCheckFeeTax}"
+                                                     validator="#{validateFunction.validateCheckBoxIsTrue}"
+                                                     validatorMessage="Please tick the Verification message"
+                                                     requiredMessage="Please tick the Verification message"/>
+                        </div>
+                    </div>      
+                    <div class="ui-grid-row bottom-space">
+                        <div class="ui-grid-col-2 resp-blank-height"></div>
+                        <div class="ui-grid-col-8 top-space">
+                            <p:outputPanel id="untRpt" rendered="#{swapBean.renderUntracedCheck}">
+                                <h:outputText value="I verify that the untraced vehicle report is correct : " styleClass="report-header font-bold red"/>
+                                <p:selectBooleanCheckbox id="verifyCheckValue1"                                                         
+                                                         value="#{validateFunction.validateCheckFeeTax}"
+                                                         validator="#{validateFunction.validateCheckBoxIsTrue}"
+                                                         validatorMessage="Please tick the Verification message"
+                                                         requiredMessage="Please tick the Verification message"/>
+                            </p:outputPanel>
+                        </div>
+                    </div>      
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position">
+                            <p:commandButton  value="Show Details" rendered="#{swapBean.btn_showDtl}" action="#{swapBean.showOwnerDetails()}" 
+                                              ajax="true" update="@form,owndtl1,owndtl2,retdtl,pn_adv_cur_add,pn_adv_cur_add2" onclick="PF('bui').show();" oncomplete="PF('bui').hide();">                            
+                                <p:blockUI block="form_swap" widgetVar="bui">
+                                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                                </p:blockUI>
+                            </p:commandButton>  
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <p:outputPanel id="mainpanel" rendered="#{swapBean.swap_dobj.isrendered}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <p:panel id="owndtl1" styleClass="top-space bottom-space datatable-panel">
+                                <f:facet name="header">                       
+                                    Owner Details of Registration No: <h:outputText  value="#{swapBean.swap_dobj.regnNoOne}"/>                                         
+                                </f:facet>  
+                                <p:outputPanel id="swap_subview_retain_from">
+                                    <div class="ui-grid-row">                            
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainOName" value="Owner Name:"/>
+                                            </label>
+                                            <p:inputText id="retainOName" value="#{swapBean.swap_dobj.ownernameone}" readonly="true" styleClass="text-uppercase" /> 
+                                        </div>
+                                        <div class="ui-grid-col-6">                                                             
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainFname" value="Father Name:"/>
+                                            </label>
+                                            <p:inputText id="retainFname" value="#{swapBean.swap_dobj.fathernameone}" readonly="true" styleClass="text-uppercase" />                                    
+                                        </div>                                        
+                                    </div>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainchasi1" value="Chassis No:"/>
+                                            </label>
+                                            <p:inputText id="retainchasi1" value="#{swapBean.swap_dobj.chassi_one}" readonly="true" styleClass="text-uppercase" />                                  
+
+                                        </div>
+                                        <div class="ui-grid-col-6">                                                               
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainEngin1" value="Engine No:"/>
+                                            </label>
+                                            <p:inputText id="retainEngin1" value="#{swapBean.swap_dobj.engine_one}" readonly="true" styleClass="text-uppercase" />                                    
+                                        </div>
+                                    </div>
+
+
+
+                                    <p:panel id="pn_adv_cur_add" header="Current Address" styleClass="top-space bottom-space">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="add1" value="#{label.address1}"/>
+                                                </label>
+                                                <p:inputText  id="add1" value="#{swapBean.swap_dobj.c_add1One}"
+                                                              maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="add2" value="#{label.address2}"/>
+                                                </label>
+                                                <p:inputText id="add2" value="#{swapBean.swap_dobj.c_add2One}" converter="toUpperCaseConverter"
+                                                             maxlength="35"   autocomplete="off" style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="add3" value="#{label.address3}"/>
+                                                </label>
+                                                <p:inputText  id="add3" value="#{swapBean.swap_dobj.c_add3One}"
+                                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                            </div>
+
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="state" value="#{label.state}"/>
+                                                </label>
+                                                <p:inputText  id="state" value="#{swapBean.swap_dobj.c_stateOne}"
+                                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                                <!--                                                <p:selectOneMenu id="state" value="# {swapBean.swap_dobj.c_stateOne}" filter="true"
+                                                                                                                 disabled="true">
+                                                                                                    <f:selectItems value="# {swapBean.list_c_state}"/>
+                                                                                                </p:selectOneMenu>-->
+                                            </div>
+                                        </div>
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="district" value="#{label.district}"/>
+                                                </label>
+                                                <p:inputText  id="district" value="#{swapBean.swap_dobj.c_districtOne}"
+                                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                                <!--                                    <p:selectOneMenu id="district"  value="# {swapBean.swap_dobj.c_districtOne}"  filter="true" disabled="true">
+                                                                                        <f:selectItems value="# {swapBean.list_c_district}"/>
+                                                                                        <f:ajax/>
+                                                                                    </p:selectOneMenu>-->
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="pincode" value="Pin"/>
+                                                </label>
+                                                <p:inputText id="pincode" value="#{swapBean.swap_dobj.c_pincodeOne}" size="10"
+                                                             requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" readonly="true">
+
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                            </p:panel>
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:panel id="owndtl2" styleClass="top-space bottom-space">
+                                <f:facet name="header">                       
+                                    Owner Details of Registration No: <h:outputText  value="#{swapBean.swap_dobj.regnNoTwo}"/>                                        
+                                </f:facet>  
+                                <p:outputPanel id="swap_subview_retain_from2">
+                                    <div class="ui-grid-row">                            
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainOName2" value="Owner Name:"/>
+                                            </label>
+                                            <p:inputText id="retainOName2" value="#{swapBean.swap_dobj.ownernametwo}" readonly="true" styleClass="text-uppercase" />                                  
+
+                                        </div>
+                                        <div class="ui-grid-col-6">                                                               
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainFname2" value="Father Name:"/>
+                                            </label>
+                                            <p:inputText id="retainFname2" value="#{swapBean.swap_dobj.fathernametwo}" readonly="true" styleClass="text-uppercase" />                                    
+                                        </div>
+
+                                    </div>
+                                    <div class="ui-grid-row"> 
+                                        <div class="ui-grid-col-6">
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainchasi2" value="Chassis No:"/>
+                                            </label>
+                                            <p:inputText id="retainchasi2" value="#{swapBean.swap_dobj.chassi_two}" readonly="true" styleClass="text-uppercase" />                                  
+
+                                        </div>
+                                        <div class="ui-grid-col-6">                                                               
+                                            <label class="field-label resp-label-section">
+                                                <p:outputLabel  for="retainEngin2" value="Engine No:"/>
+                                            </label>
+                                            <p:inputText id="retainEngin2" value="#{swapBean.swap_dobj.engine_two}" readonly="true" styleClass="text-uppercase" />                                    
+                                        </div>
+                                    </div>
+
+
+
+                                    <p:panel id="pn_adv_cur_add2" header="Current Address" styleClass="top-space bottom-space">
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="add12" value="#{label.address1}"/>
+                                                </label>
+                                                <p:inputText  id="add12" value="#{swapBean.swap_dobj.c_add1Two}"
+                                                              maxlength="35" autocomplete="off"  converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+
+                                                </p:inputText>
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="add22" value="#{label.address2}"/>
+                                                </label>
+                                                <p:inputText id="add22" value="#{swapBean.swap_dobj.c_add2Two}" converter="toUpperCaseConverter"
+                                                             maxlength="35"   autocomplete="off" style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="add32" value="#{label.address3}"/>
+                                                </label>
+                                                <p:inputText  id="add32" value="#{swapBean.swap_dobj.c_add3Two}"
+                                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                            </div>
+
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="state2" value="#{label.state}"/>
+                                                </label>
+                                                <p:inputText  id="state2" value="#{swapBean.swap_dobj.c_stateTwo}"
+                                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                                <!--                                                <p:selectOneMenu id="state2" value="# {swapBean.swap_dobj.c_stateTwo}" filter="true"
+                                                                                                                 disabled="true">
+                                                                                                    <f:selectItems value="# {swapBean.list_c_state_two}"/>
+                                                                                                </p:selectOneMenu>-->
+                                            </div>
+                                        </div>
+
+
+                                        <div class="ui-grid-row">
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="district2" value="#{label.district}"/>
+                                                </label>
+                                                <p:inputText  id="district2" value="#{swapBean.swap_dobj.c_districtTwo}"
+                                                              maxlength="35" autocomplete="off" converter="toUpperCaseConverter"
+                                                              style="text-transform: uppercase" readonly="true">
+                                                </p:inputText>
+                                                <!--                                    <p:selectOneMenu id="district2"  value="# {swapBean.swap_dobj.c_districtTwo}"  filter="true" disabled="true">
+                                                                                        <f:selectItems value="# {swapBean.list_c_district_two}"/>
+                                                                                        <f:ajax/>
+                                                                                    </p:selectOneMenu>-->
+                                            </div>
+                                            <div class="ui-grid-col-6">
+                                                <label class="field-label resp-label-section">
+                                                    <p:outputLabel for="pincode2" value="Pin"/>
+                                                </label>
+                                                <p:inputText id="pincode2" value="#{swapBean.swap_dobj.c_pincodeTwo}" size="10"
+                                                             requiredMessage="Blank Pin" autocomplete="off" maxlength="6" style="text-transform: uppercase" readonly="true">
+
+                                                </p:inputText>
+                                            </div>
+                                        </div>
+                                    </p:panel>
+                                </p:outputPanel>
+                            </p:panel> 
+                        </div>
+                    </div>
+                    <p:panel id="retdtl"  styleClass="top-space bottom-space" header="Swapping/Retention Order Detail">
+                        <p:outputPanel id="swap_subview_retain_to">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="orderby" value="Order By:"/>
+                                    </label>
+                                    <p:inputText id="orderby" value="#{swapBean.orderby}" required="true" maxlength="40" converter="toUpperCaseConverter"
+                                                 styleClass="text-uppercase" autocomplete="off" requiredMessage="Blank :Order By">
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="orderNo" value="Order No:"/>
+                                    </label>
+                                    <p:inputText id="orderNo" value="#{swapBean.orderno}" maxlength="25" converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase" required="true" requiredMessage="Blank :Order Number"/>  
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="orderDt" value="Order Date:"/>
+                                    </label>                                    
+                                    <p:calendar id="orderDt" value="#{swapBean.orderdt}" autocomplete="off" pattern="dd-MMM-yyyy"  maxdate="#{swapBean.today}" required="true" requiredMessage="Blank :Order Date" >
+                                        <p:ajax event="dateSelect" partialSubmit="true" process="orderDt" listener="#{swapBean.onDateSelect(swapBean.swap_dobj)}" update="orderDt"/>
+                                    </p:calendar>
+                                </div> 
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel  for="reasons" value="Reason:"/>
+                                    </label>
+                                    <p:inputText id="reasons" value="#{swapBean.reason}" maxlength="25" converter="toUpperCaseConverter" autocomplete="off" styleClass="text-uppercase"/>                                  
+                                </div>                          
+                            </div>                        
+                        </p:outputPanel>
+                    </p:panel> 
+
+                    <p:outputPanel id="outputpanel_appdisapp" rendered="#{swapBean.render_appdisp}">       
+                        <ui:include src="/ui/role/app_disapp_new.xhtml" >
+                            <ui:param name="app_disapp" value="#{swapBean}"/>
+                        </ui:include>  
+                    </p:outputPanel>
+
+                    <p:outputPanel id="outputpanel_eAppSave" rendered="#{!swapBean.render_appdisp}">          
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <vahan:vahanCaptcha labelName="Enter Verification Code:"/>
+                            </div>
+                        </div>
+                        <p:panel id="panelMoveCancel"  styleClass="bottom-space center-position top-space">   
+                            <p:commandButton  value="Save" action="#{swapBean.saveRetData()}" 
+                                              ajax="true" update="outputpanel_eAppSave" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" icon="ui-icon-disk">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                                <p:blockUI block="outputpanel_eAppSave" widgetVar="bui">
+                                    <p:graphicImage name="ajax_loader_blue.gif" library="images" height="40%" width="30%"/>
+                                </p:blockUI>
+                            </p:commandButton>  
+                            <p:button id="back_to_swp_home" value="Back" outcome="/ui/registration/formSwappingRegn.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+
+
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                            </p:confirmDialog>
+                            <p:outputLabel id="op_showGenApplNo">
+                                <p:dialog widgetVar="successDialog" modal="true" closable="false" resizable="false" draggable="false" header="Generated Application No">
+                                    <div class="center-position  bottom-space">
+                                        <span class="report-header bottom-line font-bold"> Application Generated Successfully. </span>
+                                    </div>
+                                    <p:outputLabel value="Application No: #{swapBean.appl_no_one} for Registration No: #{swapBean.swap_dobj.regnNoOne}" />
+                                    <p:outputLabel value="Application No: #{swapBean.appl_no_two} for Registration No: #{swapBean.swap_dobj.regnNoTwo}" />
+                                    <div class="center-position">
+                                        <p:button id="back_to_home_from_swp_frm" value="Ok" onclick="PF('successDialog').hide();" outcome="home" icon="ui-icon-check"/>
+                                    </div>
+                                </p:dialog>
+                            </p:outputLabel>
+                        </p:panel>
+                    </p:outputPanel>
+                </p:outputPanel>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

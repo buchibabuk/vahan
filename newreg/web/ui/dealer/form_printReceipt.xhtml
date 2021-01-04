@@ -1,0 +1,263 @@
+
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="content22">
+        <h:form id="PrintReceipt">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12 center-position">
+                        <p:messages closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+                <p:outputPanel id="receipt_panel_id" rendered="#{ereceipt_bean.renderReceipt}">
+                    <div class="position-relative">
+                        <table class="datatable-panel-100">
+                            <tr>
+                                <td class="left-position" style="width: 70px;">
+                                    <p:graphicImage library="images" name="#{ereceipt_bean.stateLogo}" rendered="#{ereceipt_bean.stateLogo ne null and ereceipt_bean.stateLogo != ''}" style="width: 100px;" />
+                                </td>
+                                <td class="center-position">
+                                    <div>
+                                        <h:outputText value="#{ereceipt_bean.mainHeading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold report-subheader"> <h:outputText value="#{ereceipt_bean.subHeading}" escape="false"/> </span>
+                                    </div>
+                                    <div class="top-space">
+                                        <span class="font-bold report-header text-uppercase underline-text">e-Receipt</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold report-subheader text-uppercase"> <h:outputText value="#{ereceipt_bean.officeName}"/> </span>
+                                    </div>
+                                </td>
+                                <td class="right-position" style="width: 70px;">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="position-relative">
+                        <p:outputPanel rendered="#{ereceipt_bean.imageBackground ne null and ereceipt_bean.imageBackground != ''}" styleClass="print-certificate-background double-screen-background-size" style="background: #{ereceipt_bean.imageBackground} no-repeat !important; background-size: contain !important;" ></p:outputPanel>
+                    </div>
+                    <h:panelGrid columns="4" styleClass="table-width-four datatable-panel-100">
+                        <h:outputText value="Payment Id " styleClass="font-bold "/>
+                        <h:outputText value=": #{ereceipt_bean.transactionNo}"  /> 
+                        <h:outputText value="Transaction No " styleClass="font-bold "/>
+                        <h:outputText value=":  #{ereceipt_bean.bankTransactionId}"  /> 
+                        <h:outputText value="Transaction Date " styleClass="font-bold "/>
+                        <h:outputText value=": #{ereceipt_bean.transactionDate}"  /> 
+                        <h:outputText value="Bank Ref. No/GRN No " styleClass="font-bold "/>
+                        <h:outputText value=":  #{ereceipt_bean.bankReferenceNo}"  /> 
+                        <h:outputText value="Dealer Name " styleClass="font-bold "/>
+                        <h:outputText value=": #{ereceipt_bean.dealerName}"  /> 
+                    </h:panelGrid>
+                    <h:panelGrid columns="4" styleClass="table-width-oneforth datatable-panel-100 bottom-space">
+                        <h:outputText value="Status " styleClass="font-bold"/>
+                        <h:outputText value=": #{ereceipt_bean.status}"  />
+                    </h:panelGrid>
+                    <hr class="top-space bottom-space"/>
+                    <ui:repeat value="#{ereceipt_bean.payDobjList}" var="receipts">
+                        <h:panelGrid columns="4" styleClass="table-width-four datatable-panel-100 bottom-space">
+                            <h:outputText value="Application No " styleClass="font-bold"/>
+                            <h:outputText value=": #{receipts.applNo}"  /> 
+                            <h:outputText value="Registration No " styleClass="font-bold"/>
+                            <h:outputText value=": #{receipts.regnNo}"  /> 
+                            <h:outputText value="Chassis No " styleClass="font-bold"/>
+                            <h:outputText value=": #{receipts.chassisNo}"  /> 
+                            <h:outputText value="Vehicle Class " styleClass="font-bold"/>
+                            <h:outputText value=": #{receipts.vhClassDesc}"  /> 
+                            <h:outputText value="Transaction Amount " styleClass="font-bold"/>
+                            <h:outputText value=": Rs. #{receipts.transactionAmount}/-"  /> 
+                        </h:panelGrid>
+                    </ui:repeat>
+                    <hr class="top-space bottom-space"/>
+                    <div class="font-bold">
+                        Total Amount: <h:outputText value="Rs. #{ereceipt_bean.transactionAmount}/-"  /> (<h:outputText value="Rupees #{ereceipt_bean.amountInWords}" styleClass="text-uppercase"  />).
+                    </div>
+                    <div class="right-position">
+                        <h:outputText value="Printed On: " styleClass="font-bold"/> <h:outputText value="#{ereceipt_bean.printDate}"/>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel rendered="#{ereceipt_bean.renderORNotes}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <p class="font-bold">Note:-</p>
+                            <ol class="lists">
+                                <li class="top-space">The registration number generated against your Application no is provisional and can only be valid after approval by RTO.</li>
+                                <li class="top-space">You will take delivery of vehicle only after fixation of High Security Registration Plate by the dealer.</li>
+                                <li class="top-space">Please collect original Form 20, Form 22, Insurance Certificate, Sale Invoice, Chassis Pencil Print or Chassis
+                                    digital photo from the dealer while taking delivery of the vehicle.</li>
+                                <li class="top-space">You shall keep the record under your safe custody and you may be required to produce the same
+                                    before  Registering Authority at any time.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel  id = "tableErrorId" rendered="#{ereceipt_bean.errorTab}">
+                    <p:panel styleClass="vahan-grey-background bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <div class="font-bold red">
+                                    #{ereceipt_bean.failureMessage}
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:outputPanel  id = "tableWalletId" rendered="#{ereceipt_bean.walletSuccessTab}">
+                    <p:panel styleClass="vahan-grey-background bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 table-width-two">
+                                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                                    <h:outputText value="Payment Id " styleClass="font-bold"/>
+                                    <h:outputText value=": #{ereceipt_bean.transactionNo}"  /> 
+                                    <h:outputText value="Application Numbers " styleClass="font-bold"/>
+                                    <h:outputText value=":  #{ereceipt_bean.applNoList}"  /> 
+                                    <h:outputText value="Transaction Amount " styleClass="font-bold"/>
+                                    <h:outputText value=": Rs.#{ereceipt_bean.transactionAmount}/-"  /> 
+                                    <h:outputText value="Amount In Words " styleClass="font-bold"/>
+                                    <h:outputText value=": #{ereceipt_bean.amountInWords}"  /> 
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="font-bold red center-position">
+                                    Mismatch in no of Applications/Amount Against Payment Id  #{ereceipt_bean.transactionNo}.
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel  id = "tableWalletFailId" rendered="#{ereceipt_bean.walletFailureTab}">
+                    <p:panel styleClass="vahan-grey-background bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position">
+                                <div class="font-bold red">
+                                    #{ereceipt_bean.status}
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel  id = "tableRevertId" rendered="#{ereceipt_bean.revertTab}">
+                    <p:panel styleClass="vahan-grey-background bottom-space">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4 table-width-two">
+                                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100">
+                                    <h:outputText value="Payment Id " styleClass="font-bold"/>
+                                    <h:outputText value=": #{ereceipt_bean.transactionNo}"  /> 
+                                    <h:outputText value="Application Numbers " styleClass="font-bold"/>
+                                    <h:outputText value=":  #{ereceipt_bean.applNoList}"  /> 
+                                    <h:outputText value="Transaction Amount " styleClass="font-bold"/>
+                                    <h:outputText value=": Rs.#{ereceipt_bean.transactionAmount}/-"  /> 
+                                    <h:outputText value="Amount In Words " styleClass="font-bold"/>
+                                    <h:outputText value=": #{ereceipt_bean.amountInWords}"  /> 
+                                </h:panelGrid>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <div class="font-bold red center-position">
+                                    Now please go back to Cart Payment and verify again the application against the successful payment Id #{ereceipt_bean.transactionNo}.
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+                <p:outputPanel  id="faliurePending_id" rendered="#{ereceipt_bean.renderPendingPanel or ereceipt_bean.renderFailurePanel}">
+                    <div class="center-position">
+                        <h1 class="header-main">#{ereceipt_bean.renderPendingPanel ? 'Pending' : 'Failed'} Transaction Details</h1>
+                    </div>
+                    <p:panel styleClass="bottom-space">                        
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-8 table-width-oneforth">
+                                <h:panelGrid columns="2" styleClass="left-position datatable-panel-100 bottom-space line-height-gap-2">
+                                    <h:outputText value="Payment Id " styleClass="font-bold"/>
+                                    <h:outputText value=": #{ereceipt_bean.transactionNo}"  /> 
+                                    <h:outputText value="Application Number(s) " styleClass="font-bold"/>
+                                    <h:outputText value=":  #{ereceipt_bean.applNoList}"  /> 
+                                    <h:outputText value="Transaction Amount " styleClass="font-bold"/>
+                                    <h:outputText value=": Rs. #{ereceipt_bean.transactionAmount} /-"  /> 
+                                    <h:outputText value="Amount In Words " styleClass="font-bold inline-section"/>
+                                    <h:outputText styleClass="inline-section" value=": #{ereceipt_bean.amountInWords}"  /> 
+                                </h:panelGrid>
+                            </div>                           
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-8 left-position red report-header">
+                                <span class="font-bold">Status:</span> #{ereceipt_bean.status}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-8 left-position red report-header">
+                                <span class="font-bold">Reason:</span> #{ereceipt_bean.statusReason}
+                            </div>
+                        </div>
+                    </p:panel> 
+                    <p:outputPanel rendered="#{ereceipt_bean.renderFailurePanel}">
+                        <div class="center-position top-space">
+                            <h1 class="header-main">Process Re-verify </h1>
+                        </div>
+                    </p:outputPanel>
+                    <p:panel rendered="#{ereceipt_bean.renderFailurePanel}">
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 left-position font-bold report-subheader">
+                                Note:- If payment has been debited then follow below steps to re-verify your failed transaction.
+                            </div>
+                        </div>
+                        <ol class="lists">
+                            <li class="top-space">Do not initiate Fresh Payment for those Applications whose payment has already been debited from the Bank A/C.</li>
+                            <li class="top-space">All Applications should be in the Cart, do not rollback the applications.</li>
+                            <li class="top-space">Now, Go to Cart Payment.</li>
+                            <li class="top-space">Click on <b>Failed Transaction</b> Button.</li>
+                            <li class="top-space">Re-verify that transaction which was failed but amount has been debited from the Bank A/C.</li>
+                            <li class="top-space">After re-verifying, If <b>Successful</b> message comes then perform the following steps.</li>
+                            <li class="top-space">Now please go back to Cart Payment and verify the Successfully re-verified transaction again.</li>
+                            <li class="top-space">Receipt will be generated.</li>
+                        </ol>
+                    </p:panel>
+                    <p:outputPanel rendered="#{ereceipt_bean.renderPendingPanel}">
+                        <div class="ui-grid-row top-space">
+                            <div class="ui-grid-col-12 left-position font-bold report-subheader">
+                                Note:- Please go back to Cart Payment and verify the transaction.
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:outputPanel id="button_panle_id">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12 center-position red">
+                            <p:commandButton value="Print" type="button" onclick="window.print();" icon="ui-icon-print" styleClass="display-none" rendered="#{ereceipt_bean.renderReceipt}" />
+                            <p:commandButton action="form_add_to_payment_gateway?faces-redirect=true" value="Continue" onclick="PF('bui').show();" rendered="#{ereceipt_bean.revertTab}"/>
+                            <p:button value="Home" outcome="home" icon="ui-icon-home" styleClass="display-none"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <p:blockUI block="PrintReceipt" widgetVar="bui">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI>
+            </div>
+        </h:form>
+
+    </ui:define>   
+</ui:composition>

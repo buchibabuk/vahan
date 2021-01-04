@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+    <ui:define name="content">
+        <script type="text/javascript">
+            function scrollMsgToBottom(elementName) {
+                var el = document.getElementById(elementName);
+                el.scrollTop = el.scrollHeight;
+            }
+        </script>
+
+        <style>
+            .ui-datatable.borderless thead th,
+            .ui-datatable.borderless tbody,
+            .ui-datatable.borderless tbody tr,
+            .ui-datatable.borderless tbody td {
+                border-style:none;
+                background: #ffffff
+            }
+            .ui-datatable-deepred {
+                background: #FF3300;
+                color: #FFFFFF    
+            }
+            .ui-datatable-yellow {
+                background: #FFA500;
+                color: #FFFFFF    
+            }
+
+
+            .ui-datatable-green {
+                background: #33a532;
+                color: #FFFFFF    
+            }
+
+            .ui-datatable.borderless tbody td {
+                padding:5px!important;
+                vertical-align: top!important;
+
+            }
+
+            .ui-chkbox-label {
+                color: #fff!important;
+                background: #227c22!important;
+                border: 1px solid #002900!important;
+                border-radius: 3px;
+                font-family: sans-serif, Verdana;
+                font-weight: bold;
+                font-size: 13px;
+                padding:0px 15px 0px 15px;
+            }
+
+        </style>
+
+        <p:blockUI block=":masterLayout" widgetVar="ajax_status">
+            <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+        </p:blockUI>
+
+
+
+        <div class="ui-grid ui-grid-responsive">
+
+            <div class="ui-grid-row center-position">
+                <div class="ui-grid-col-12">
+                    <h1 class="header-main">Contact State/RTO Administrators</h1>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-10 resp-blank-height"></div>
+                <div class="ui-grid-col-2">
+                    <div class="ui-grid-row left-position">
+
+                        <p:outputPanel id="btn_msg_catg" rendered="#{userMsg.renderUserMsgByCatgButton}">
+                            <p:commandButton  value="Message User Category" icon="ui-icon-pencil" 
+                                              styleClass="open-counter" action="#{userMsg.showUserMsgByCatg()}"/>
+                        </p:outputPanel>
+
+                    </div>
+                    <div class="ui-grid-row left-position bottom-space">
+
+                        <p:outputPanel id="bln_show_closed_msgs" rendered="#{userMsg.showUnclosedMsgsOnly}">
+                            <p:selectBooleanCheckbox value="#{userMsg.showClosedMsgs}" itemLabel="Show Closed Requests">
+                                <p:ajax listener="#{userMsg.handleShowClosedMsgs}" partialSubmit="false"/>
+                            </p:selectBooleanCheckbox>  
+                        </p:outputPanel>
+
+                    </div>
+                </div>
+            </div>    
+
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <p:outputPanel id="pnl_UserMsg">
+                        <p:messages id="msg" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:panel styleClass="scroll-panel-height scroll-panel-overflow">
+                            <p:outputPanel id="pnl_userlist">
+
+                                <p:dataTable  id="tbl_userlist" value="#{userMsg.usersList}" var="user" rowIndexVar="index" 
+                                              styleClass="panelRowHeight top-space bottom-space" sortOrder="descending"
+                                              rows="10" paginator="true" rowStyleClass="#{user.unreadMessages ne 0 ? 'ui-datatable-deepred':(user.unclosedRequests ne 0 ? 'ui-datatable-yellow' : null)}" sortBy="#{user.unclosedRequests + user.unreadMessages}"
+                                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                              rowsPerPageTemplate="5,10,15">
+                                    <f:facet name="header">
+                                        <div class="left-position">
+                                            User Details
+                                        </div>
+                                    </f:facet>
+                                    <f:facet name="header">
+                                        <p:commandButton id="buttonViewMessages" value="View Unread Messages" action="#{userMsg.viewMessages()}" 
+                                                         oncomplete="PF('viewMessagesDialog').show();scrollMsgToBottom('pnl_ViewUnreadMessages');" 
+                                                         update="pnl_ViewMessages msg" rendered="#{userMsg.renderViewUnreadMsgs}"/>
+                                    </f:facet>
+                                    <p:column headerText="Sr.No" styleClass="collumn-width center-position">
+                                        <h:outputText value="#{index+1}" />                                
+                                    </p:column> 
+                                    <p:column headerText="State Admin">
+                                        <h:outputText value="#{user.userName}"/>                                
+                                    </p:column> 
+                                    <p:column headerText="State Name" filterBy="#{user.stateName}">
+                                        <h:outputText value="#{user.stateName}"/>                                
+                                    </p:column> 
+                                    <p:column headerText="Phone">
+                                        <h:outputText value="#{user.phoneOff}"/>                                
+                                    </p:column> 
+                                    <p:column headerText="Email">
+                                        <h:outputText value="#{user.emailId}"/>                                
+                                    </p:column> 
+                                    <p:ajax event="rowToggle" listener="#{userMsg.onRowSelectToggler(user)}" update="rowExpansionID msg"/>
+                                    <p:column headerText="RTO Admins" width="10%">
+                                        <p:rowToggler/>  
+                                    </p:column>
+                                    <p:column headerText="Action">
+                                        <p:commandButton value="Message User"  action="#{userMsg.showMessageDialog(user.userCode,user.stateCd,user.offCd)}"
+                                                         update="pnl_Message pnl_view_docs msg" oncomplete="PF('dlg').show();scrollMsgToBottom('pnl_usermessageslist');">
+                                        </p:commandButton>   
+                                    </p:column>
+                                    <p:rowExpansion id="rowExpansionID">
+                                        <div class="ui-grid-row center-position top-space bottom-space">
+                                            <div class="ui-grid-col-1 resp-blank-height"></div>
+                                            <div class="ui-grid-col-10">
+
+                                                <p:dataTable value="#{userMsg.rtoUsersList}" rowIndexVar="rtouser_index" sortOrder="descending"
+                                                             var="rtouser" id="tbl_rtouserlist" rowStyleClass="#{rtouser.unreadMessages ne 0 ? 'ui-datatable-deepred':(rtouser.unclosedRequests ne 0 ? 'ui-datatable-yellow' : null)}" sortBy="#{rtouser.unclosedRequests + rtouser.unreadMessages}">
+                                                    <p:ajax event="sort"/>
+                                                    <p:column headerText="Sr No." width="10%">                   
+                                                        <h:outputText value="#{rtouser_index+1}" />                                
+                                                    </p:column>
+                                                    <p:column headerText="RTO Admin" width="10%">                   
+                                                        #{rtouser.userName}
+                                                    </p:column>
+                                                    <p:column headerText="State Name" width="10%">                   
+                                                        #{rtouser.stateName}
+                                                    </p:column>
+                                                    <p:column headerText="Office Code" width="10%" sortBy="#{rtouser.offCd}">                  
+                                                        #{rtouser.offCd}
+                                                    </p:column>
+                                                    <p:column headerText="Office Name" width="10%" sortBy="#{rtouser.offName}">                   
+                                                        #{rtouser.offName}
+                                                    </p:column>
+                                                    <p:column headerText="Phone" width="10%">                   
+                                                        #{rtouser.phoneOff}
+                                                    </p:column>
+                                                    <p:column headerText="Email" width="10%">                   
+                                                        #{rtouser.emailId}
+                                                    </p:column>
+                                                    <p:column headerText="Action" width="15%">
+                                                        <p:commandButton value="Message User"  action="#{userMsg.showMessageDialog(rtouser.userCode,rtouser.stateCd,rtouser.offCd)}"
+                                                                         update="pnl_Message pnl_msgbox pnl_view_docs msg" oncomplete="PF('dlg').show();scrollMsgToBottom('pnl_usermessageslist');">
+                                                        </p:commandButton>   
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </div>
+                                        </div>
+                                    </p:rowExpansion>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:panel>
+                        <p:dialog  id="openDlg" header="User Messaging" widgetVar="dlg" modal="true" height="500" width="800">       
+
+                            <p:ajax event="close" listener="#{userMsg.handleClose()}" update="msg" />
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:messages id="dlgmsg"  closable="true">
+                                        <p:autoUpdate/>
+                                    </p:messages>
+                                    <p:panel id="pnl_usermessageslist" style="min-height:300px;max-height:300px;overflow:auto;">
+                                        <p:outputPanel id="pnl_Message">
+                                            <p:dataTable  id="tbl_usermessageslist" value="#{userMsg.allUserMessagesList}" var="message" rowIndexVar="index" emptyMessage=""
+                                                          styleClass="panelRowHeight top-space bottom-space borderless">
+
+
+                                                <p:column styleClass="top-align" width="17%">
+                                                    <p:selectBooleanCheckbox value="#{message.closeRequest}">
+                                                        <p:ajax event="change" listener="#{userMsg.closeRequest(message.messageId)}" update="tbl_usermessageslist"/>
+
+                                                    </p:selectBooleanCheckbox>
+                                                    <span style="font-size:10px;font-weight:bold">Close Request</span>
+                                                </p:column>
+                                                <p:column styleClass="font-bold top-align" width="40%">
+                                                    #{message.fromUser}
+                                                    (<span style="font-size:8px">#{message.messageDate}</span>)
+
+                                                    <h:commandLink value=""  
+                                                                   action="#{userMsg.forwardMessage(message.fromUser,message.messageDate,message.message,message.uploadDocStateCode,message.uploadDocOffCode,message.docRefNo)}">
+                                                        <span style="font-size:8px" class="glyphicon glyphicon-share-alt"></span>
+                                                    </h:commandLink>
+                                                </p:column>
+
+                                                <p:column styleClass="top-align">
+                                                    <span style="overflow-wrap:normal">#{message.copyToUser} #{message.message}</span>
+                                                </p:column>
+
+                                                <p:column style="text-align:right!important;" width="15%">
+                                                    <p:commandLink value="Attachment" rendered="#{message.docRefNo ne ''}"
+                                                                   action="#{userMsg.viewUploadedDocuments(message.uploadDocStateCode,message.uploadDocOffCode,message.docRefNo)}" 
+                                                                   oncomplete="PF('dmsfileUploaded').show();" update="viewUploadedDms msg"
+                                                                   style="font-size:12px!important;font-weight:bold!important;color:#2748EC!important">
+                                                    </p:commandLink>
+                                                </p:column>
+
+
+                                            </p:dataTable>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 left-position" >
+                                    <p:panel id="pnl_view_docs" >
+                                        <p:outputPanel id="view_docs" rendered="#{userMsg.fileAttached}">
+                                            <p:commandLink value="Attachment"  
+                                                           action="#{userMsg.viewUploadedDocuments(userMsg.fileUploadStateCode,userMsg.fileUploadOffCode,userMsg.docRefNo)}" 
+                                                           oncomplete="PF('dmsfileUploaded').show();" update="viewUploadedDms msg"
+                                                           style="font-size:12px!important;font-weight:bold!important;color:#2748EC!important">
+                                            </p:commandLink>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                </div>
+                            </div> 
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:panel id="pnl_msgbox">
+                                        <p:inputTextarea  styleClass="datatable-panel-100" maxlength="500" value="#{userMsg.messageText}">
+                                            <p:keyFilter regEx="/[A-Z0-9\.,-@ ]/i"/>
+                                        </p:inputTextarea>
+                                    </p:panel>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+
+                                    <p:outputPanel id="outpnl_sendmessage">
+                                        <p:commandButton value="Send Message" action="#{userMsg.sendMessage}" id="send_message"
+                                                         update="pnl_Message pnl_msgbox msg" oncomplete="scrollMsgToBottom('pnl_usermessageslist')">
+                                        </p:commandButton>
+                                        <p:commandButton value="Upload File" action="#{userMsg.uploadDocuments()}" id="upload_file" oncomplete="PF('dmsfileUploaded').show();"
+                                                         update="upload_docs view_docs msg" rendered="#{userMsg.renderFileUpload}">
+                                        </p:commandButton>		
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </p:dialog>
+                        <p:dialog  id="viewUploadedDms" widgetVar="dmsfileUploaded" header="-- Uploaded Documents -- " modal="true">       
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:panel id="pnl_upload_docs">
+                                        <p:outputPanel id="upload_docs">
+                                            <iframe  src="#{userMsg.dmsFileServerAPIString}"  height="550" width="1200" frameborder="0" scrolling="auto" marginheight="1" marginwidth="1"/>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                </div>
+                            </div>
+                        </p:dialog>
+
+                        <p:dialog  id="dlg_ViewMessages" header="View Messages" widgetVar="viewMessagesDialog" modal="true" height="320" width="900">       
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12 center-position" >
+                                    <p:panel id="pnl_ViewUnreadMessages" style="min-height:300px;max-height:300px;overflow:auto;">
+                                        <p:outputPanel id="pnl_ViewMessages">
+                                            <p:dataTable  id="tbl_ViewMessages" value="#{userMsg.unreadUserMessages}" var="message" rowIndexVar="index" emptyMessage=""
+                                                          styleClass="panelRowHeight top-space bottom-space borderless">
+
+                                                <p:column styleClass="font-bold top-align">
+                                                    #{message.fromUser}
+                                                    (<span style="font-size:8px">#{message.messageDate}</span>)
+                                                </p:column> 
+                                                <p:column styleClass="top-align">
+                                                    <span style="overflow-wrap:normal">#{message.copyToUser} #{message.message}</span>
+                                                </p:column>
+                                                <p:column style="text-align:right!important;">
+                                                    <p:commandLink value="View Details"  action="#{userMsg.showMessageDialog(message.fromUserCd,message.fromStateCd,message.fromOffCd)}"
+                                                                   update="pnl_Message msg" oncomplete="PF('dlg').show();scrollMsgToBottom('pnl_usermessageslist');" style="font-size:12px!important;font-weight:bold!important;color:#2748EC!important">
+                                                    </p:commandLink>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                </div>
+                            </div>
+                        </p:dialog>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

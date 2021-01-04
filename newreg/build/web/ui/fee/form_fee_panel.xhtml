@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:p="http://primefaces.org/ui"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:pe="http://primefaces.org/ui/extensions"
+       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title><ui:insert name="windowTitle">#{label.vahanTitle}</ui:insert></title>
+    </h:head>
+    <h:body>       
+        <f:subview id="feePaymentPanel" transient="true">           
+            <p:outputPanel id="collectionFeePanel">
+                <p:dataTable id="tablefee" var="fee" value="#{containerBean.feeCollectionLists}" rowIndexVar="index" 
+                             rowKey="#{fee.purCd}">
+                    <f:facet name="header">
+
+                        <p:outputPanel styleClass="bottom-space left-position" rendered="#{containerBean.renderFeePanelLabel}">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-5"> 
+                                    <h:outputText value="Owner Name: " class="report-header font-bold" /> <h:outputText value=" #{containerBean.ownerDetailsDobj.owner_name}" class="report-header font-bold red" />
+                                </div>
+                                <div class="ui-grid-col-5"> 
+                                    <h:outputText value=" Son/Wife/Daughter of:  " class="report-header font-bold" /> <h:outputText value=" #{containerBean.ownerDetailsDobj.f_name}" class="report-header font-bold red"/>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText value="Chassis No: " class="report-header font-bold" /> <h:outputText value=" #{containerBean.ownerDetailsDobj.chasi_no}" class="report-header font-bold red"/>
+                                </div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText value="Engine No: " class="report-header font-bold" /> <h:outputText value=" #{containerBean.ownerDetailsDobj.eng_no}" class="report-header font-bold red" />
+                                    <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{containerBean.ownerDetailsDobj.regn_type_descr} " class="report-header font-bold red"/><h:outputText value=" ) " class="report-header font-bold"/>  
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-1 resp-blank-height"></div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText value="Vehicle: ( " class="report-header font-bold"/><h:outputText value="#{containerBean.ownerDetailsDobj.vch_type}" class="report-header font-bold green"/><h:outputText value=" ) " class="report-header font-bold"/>
+                                    <h:outputText value="#{containerBean.ownerDetailsDobj.vh_class_desc}" class="report-header font-bold red" />
+                                    <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{containerBean.ownerDetailsDobj.vch_catg} " class="report-header font-bold red" /> <h:outputText value=" ) " class="report-header font-bold" />
+                                    <h:outputText value=" ( " class="report-header font-bold"/><h:outputText value=" #{containerBean.ownerDetailsDobj.fuel_descr} " class="report-header font-bold red"/>  <h:outputText value=" ) " class="report-header font-bold" />
+                                </div>
+                                <div class="ui-grid-col-5">
+                                    <h:outputText value="Sale Amount: " class="report-header font-bold" /><h:outputText value="Rs. #{containerBean.ownerDetailsDobj.sale_amt}/-" class="report-header font-bold red"/>
+                                    <h:outputText value="( Purchase Date: " class="report-header font-bold" /><h:outputText value=" #{containerBean.ownerDetailsDobj.purchaseDateDescr} " class="report-header font-bold red"/><h:outputText value=" ) " class="report-header font-bold" />
+                                </div>
+                            </div>
+                            <div class="center-position bottom-space">
+                                <span class="report-header font-bold bottom-line">Fee Selection Panel</span> 
+                            </div>   
+                        </p:outputPanel>
+
+
+                    </f:facet>
+                    <p:column headerText="S.No." id="headerText" styleClass="collumn-width center-position"> 
+                        <p:outputLabel value="#{index +1}."/>
+                    </p:column>
+                    <p:column headerText="Description" id="feeText" >
+                        <p:selectOneMenu  value="#{fee.purCd}" filter="true" disabled="#{fee.disableDropDown}">
+
+                            <f:selectItems value="#{containerBean.feePanelBean.purposeCodeList}"/>
+                            <p:ajax event="change" listener="#{containerBean.calculateFee(fee.purCd,vehClass,vehCatg)}" 
+                                    update="tablefee #{parentTotalPayableAmount}" />
+                        </p:selectOneMenu>
+
+                        <p:outputPanel id="op_dt_frto" rendered="#{fee.renderFromDate}">  
+                            <p:inputText id="op_fr_dt" value="#{fee.fromDateLable} to #{fee.uptoDateLable}" disabled="true"/>
+                        </p:outputPanel>
+                    </p:column>
+                    <p:column headerText="Due Date" id="dueDateCol">
+                        <p:inputText value="#{fee.dueDateString}" styleClass="right-position" disabled="true"/>
+                    </p:column>
+                    <p:column headerText="Fee Amount" id="feeAmount">
+                        <p:selectOneMenu id="tempFeeAmount" value="#{fee.feeAmount}" required="true" rendered="#{containerBean.rendertempFeeAmount}">
+                            <f:selectItem itemLabel="-SELECT-" itemValue="-1"/>
+                            <f:selectItem itemLabel="25" itemValue="25"/>
+                            <f:selectItem itemLabel="50" itemValue="50"/>
+                            <f:validateRequired for="tempFeeAmount"/>
+                            <f:validator validatorId="selectOneValidator" for="tempFeeAmount"/>
+                            <p:ajax event="change" listener="#{containerBean.calculateTotalTemp}" update="tablefee #{parentTotalPayableAmount}"/> 
+                        </p:selectOneMenu>
+                        <p:inputText value="#{fee.feeAmount}" maxlength="8" styleClass="right-position" readonly="#{fee.readOnlyFee}" rendered="#{!containerBean.rendertempFeeAmount}">
+                            <p:keyFilter mask="pint"/>
+                            <p:ajax event="blur" listener="#{containerBean.calculateTotal}" update="tablefee #{parentTotalPayableAmount}"/> 
+                        </p:inputText>
+                    </p:column>
+                    <p:column headerText="Fine Amount" id="fineAmount">  
+                        <p:inputText value="#{fee.fineAmount}" maxlength="8" styleClass="right-position" readonly="#{fee.readOnlyFine}"> 
+                            <p:keyFilter mask="pint"/>
+                            <p:ajax event="blur" listener="#{containerBean.calculateTotal}" update="tablefee #{parentTotalPayableAmount}"/>                            
+                        </p:inputText>
+                    </p:column>
+                    <p:column headerText="Total Amount" id="totalAmount">
+                        <p:inputText value="#{fee.totalAmount}" styleClass="right-position" readonly="true"/>
+                    </p:column>
+
+
+
+                    <p:column id="commandButton">
+                        <p:commandButton id="add" action="#{containerBean.addNewRow(fee.purCd)}" icon="ui-icon-plusthick" update="tablefee #{parentTotalPayableAmount}" rendered="#{containerBean.showInRto}">
+                            <f:param name="actionmode" value="add"/>
+                        </p:commandButton>
+                        <p:tooltip id="toolTipGrow1" for="add" value="Add new Fee details"
+                                   showEffect="clip" hideEffect="clip"  />
+                        <p:commandButton id="minus" action="#{containerBean.addNewRow(fee.purCd)}"  icon="ui-icon-minusthick" 
+                                         update="tablefee #{parentTotalPayableAmount}" disabled="#{fee.disableDropDown}" rendered="#{containerBean.showInRto}">
+                            <f:param name="actionmode" value="minus"/>
+                        </p:commandButton>
+                        <p:tooltip id="toolTipGrow2" for="minus" value="Remove Fee details"
+                                   showEffect="clip" hideEffect="clip" />
+                    </p:column>
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column colspan="3" styleClass="right-position" footerText="Grand Total:" />
+                            <p:column footerText="#{containerBean.feePanelBean.totalFeeAmount}" styleClass="right-position"/>
+                            <p:column footerText="#{containerBean.feePanelBean.totalFineAmount}" styleClass="right-position" />
+                            <p:column footerText="#{containerBean.feePanelBean.totalAmount}" styleClass="right-position" />
+                            <p:column/>
+                        </p:row>
+                    </p:columnGroup>
+
+                </p:dataTable>   
+            </p:outputPanel>                                                    
+        </f:subview>
+    </h:body>
+
+</html>
+
+

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    template="/masterLayoutPage.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"    
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">  
+
+    <ui:define name="content22">        
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formVehDetails" prependId="false"> 
+                <!--                <p:poll interval="3" process="@this" listener="# {vehicleDetails.updateNCRBData}"
+                                        />-->
+                <p:remoteCommand name="ncrb" actionListener="#{vehicleDetails.updateNCRBData}" />
+                <p:remoteCommand name="pucc" actionListener="#{vehicleDetails.updatePuccData}" />
+                <p:remoteCommand name="insurance" actionListener="#{vehicleDetails.updateInsuranceData}" />
+
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">Registered Vehicle Details </h1>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages  closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </div>
+                </div>
+
+                <p:outputPanel id="selectionPanel" rendered="#{!vehicleDetails.render}">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-1">
+                            <label class="field-label resp-label-section">
+                                <p:outputLabel value="Search by :"/>
+                            </label>
+
+                        </div>
+                        <div class="ui-grid-col-11">
+                            <p:selectOneRadio  value="#{vehicleDetails.searchByValue}">
+                                <f:selectItem itemLabel="Registration No" itemValue="regnNo" />
+                                <f:selectItem itemLabel="Engine No" itemValue="engNo" />
+                                <f:selectItem itemLabel="Chassis No" itemValue="chassisNo" />
+                                <f:ajax render="selectionPanel" listener="#{vehicleDetails.showEntryPanel}" />
+                            </p:selectOneRadio> 
+                        </div>
+                    </div>
+                    <p:outputPanel id="panelVehDtls" rendered="#{vehicleDetails.searchByValue eq 'regnNo'}">
+
+                        <p:panel id="vehDtlsPanel" rendered="#{!vehicleDetails.render}">
+                            <p:focus context="vehDtlsPanel"/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfRegNo" value="Vehicle Registration No."/>
+                                    </label>
+                                    <p:inputText  id="tfRegNo" value="#{vehicleDetails.regn_no}" 
+                                                  maxlength="10"
+                                                  required="true"
+                                                  requiredMessage="Please Enter Registration No."
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="input"/>
+                                </div>
+                            </div>
+
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Show Details" action="#{vehicleDetails.showAllRegnNos()}"  oncomplete="pucc(); PF('ajax_status').hide(); insurance(); ncrb();"
+                                                     update="formVehDetails panelOwnerInfo"  onclick="PF('ajax_status').show();" />
+                                    <p:button value="Back" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+                            <p:keyFilter for="tfRegNo" mask="alphanum"/>
+                        </p:panel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="panelEngDtls" rendered="#{vehicleDetails.searchByValue eq 'engNo'}">
+
+                        <p:panel id="engDtlsPanel" rendered="#{!vehicleDetails.render}">
+                            <p:focus context="vehDtlsPanel"/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfEngineNo" value="Engine No."/>
+                                    </label>
+                                    <p:inputText  id="tfEngineNo" value="#{vehicleDetails.engineNo}" 
+                                                  maxlength="30"
+                                                  required="true"
+                                                  requiredMessage="Please Enter Registration No."
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="input"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Show Details" action="#{vehicleDetails.showRegnFromEng()}"
+                                                     update="selectionPanel" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                                    <p:button value="Back" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+
+                            <p:keyFilter for="tfEngineNo" mask="alphanum"/>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:outputPanel id="panelChassisDtls" rendered="#{vehicleDetails.searchByValue eq 'chassisNo'}">
+
+                        <p:panel id="chassisDtlsPanel" rendered="#{!vehicleDetails.render}">
+                            <p:focus context="vehDtlsPanel"/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="tfChassisNo" value="Chassis No."/>
+                                    </label>
+                                    <p:inputText  id="tfChassisNo" value="#{vehicleDetails.chassisNo}" 
+                                                  maxlength="30"
+                                                  required="true"
+                                                  requiredMessage="Please Enter Registration No."
+                                                  converter="toUpperCaseConverter"
+                                                  autocomplete="off"
+                                                  styleClass="input"/>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+                                    <p:commandButton value="Show Details" action="#{vehicleDetails.showRegnFromChassis()}"
+                                                     update="selectionPanel" onclick="PF('ajax_status').show();" oncomplete="PF('ajax_status').hide();"/>
+                                    <p:button value="Back" onclick="PF('ajax_status').show();" outcome="home" icon="ui-icon-arrowreturnthick-1-w"/>
+                                </div>
+                            </div>
+
+
+                            <p:keyFilter regEx="#{constant.CHASIS_REG_EXPR}" for="tfChassisNo"/>
+                        </p:panel>
+                    </p:outputPanel>
+                    <p:outputPanel id="pnlRegnList" >
+                        <p:dataTable  id="tb_RegnNameList" rendered="#{vehicleDetails.showRegList}"
+                                      value="#{vehicleDetails.regnNameList}" var="regn"
+                                      rowIndexVar="index" >
+
+                            <p:column headerText="Sr. No" exportable="false" width="7%">
+                                <h:outputText value="#{index+1}" />
+                            </p:column>
+
+                            <p:column  headerText="Registration No.">
+                                <p:outputLabel value="#{regn.regn_no}" styleClass="textUpperCase" />
+                            </p:column>
+                            <p:column headerText="Owner Sr No." style="word-break: keep-all;" width="6%">#{regn.owner_sr}</p:column>
+                            <p:column  headerText="Owner Name">
+                                <p:outputLabel value="#{regn.owner_name}" styleClass="textUpperCase" />
+                            </p:column>
+                            <p:column  headerText="State Name">
+                                <p:outputLabel value="#{regn.state_name}" styleClass="textUpperCase" />
+                            </p:column>
+                            <p:column  headerText="Office Name">
+                                <p:outputLabel value="#{regn.off_name}" styleClass="textUpperCase" />
+                            </p:column>
+                            <p:column >
+                                <p:commandButton value="Show" action="#{vehicleDetails.getDetails(regn)}" update="formVehDetails panelOwnerInfo"
+                                                 onclick="PF('ajax_status').show();" oncomplete="pucc(); PF('ajax_status').hide(); insurance(); ncrb();" ></p:commandButton>
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <p:outputPanel id="panelOwnerInfo">
+
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{vehicleDetails.render}"> 
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-3 resp-blank-height"></div>
+                            <div class="ui-grid-col-6">
+                                <ui:include src="/ui/registration/registrationStatusParameters.xhtml">
+                                    <ui:param name="regStatusParam" value="#{vehicleDetails.regStatus}"/>
+                                </ui:include>
+
+                            </div>  
+                            <div class="ui-grid-col-2 resp-blank-height"></div>
+                            <div class="ui-grid-col-1">
+                                <p:commandButton value="Back" rendered="#{!vehicleDetails.showBack}" onclick="PF('ajax_status').show();" action="form_vehicleDetails" process="@this" update="formVehDetails" immediate="true" icon="ui-icon-arrowreturnthick-1-w" styleClass="right-position"/>
+                                <p:commandButton value="Back" rendered="#{vehicleDetails.showBack}" onclick="PF('ajax_status').show();" action="#{vehicleDetails.back}" process="@this" update="formVehDetails" immediate="true" icon="ui-icon-arrowreturnthick-1-w" styleClass="right-position"/>
+                            </div>
+                        </div>
+                        <div class="center-position right-space top-space">
+                            <h:outputText value="[Fitness/Inspection (Form-38A) done at #{vehicleDetails.tempFitnessDetails.off_name}, #{vehicleDetails.tempFitnessDetails.state_name}, click relevant tab for more details...]" rendered="#{vehicleDetails.tempFitnessDetails!=null}"  styleClass="font-bold header-subheader"/>
+                        </div>
+
+                        <p:tabView id="ptabid" styleClass="top-space bottom-space" >
+
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="Owner Details">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{vehicleDetails.ownerDetail}"/>
+                                    <ui:param name="listOwnerCatg" value="#{vehicleDetails.listOwnerCatg}"/>
+                                </ui:include>
+                            </p:tab>
+
+
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="Vehicle Details">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{vehicleDetails.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--##################################### Regn.Other.Details##################################################### -->
+                            <p:tab  id="tmp_veh_info_tab" title="Regn.Other.Details"   rendered="#{vehicleDetails.blnRegnTypeTemp}">
+                                <ui:include src="/ui/formRegnOtherDtls_Display.xhtml">
+                                    <ui:param name="vehicleDetails" value="#{vehicleDetails}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <!--###################### Hypothecation and Insurance Details ############################### -->
+                            <p:tab id="HypothecationOwner"  title="Hypothecation/Insurance Information">      
+                                <ui:include src="/ui/form_ins_dtls.xhtml"/>
+                                <ui:include src="/ui/registration/form_hypothecationDetails.xhtml"/>                                
+                            </p:tab>  
+                            <!--########################################################################################## -->     
+
+                            <!--###################### Commercial Trailer Details ######################################## -->
+                            <p:tab id="CommercialTrailerDetails"  title="Attached Trailer Details">  
+                                <ui:include src="/ui/form_commercial_trailer_dtls.xhtml"/>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <!--###################### Fitness Details ######################################## -->
+                            <p:tab id="fitnessDetails"  title="Fitness Details" rendered="#{vehicleDetails.fitnessDobj ne null}">  
+                                <ui:include src="/ui/registration/formFitnessDetails.xhtml">
+                                    <ui:param name="fitnessDobj" value="#{vehicleDetails.fitnessDobj}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+
+                            <!--###################### Commercial Trailer Details ######################################## -->
+                            <p:tab id="HSRPDetails"  title="HSRP Details" rendered="#{vehicleDetails.hsrpStatus}">  
+                                <ui:include src="/ui/formHSRPDetails.xhtml"/>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <!--###################### Commercial Trailer Details ######################################## -->
+                            <p:tab id="SmartCardDetails" title="#{vehicleDetails.scDetailsBean.tabTitle}" rendered="#{vehicleDetails.smartcardStatus}">  
+                                <ui:include src="/ui/formSmartCardDetails.xhtml"/>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <!--###################### Commercial Trailer Details ######################################## -->
+                            <p:tab id="VehicleHistoryDetails"  title="Vehicle History Details">  
+                                <ui:include src="/ui/formVehicleHistoryDetails.xhtml"/>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <p:tab id="PermitDetails"  title="Permit Details" rendered="#{vehicleDetails.isPermitVehicle}">  
+                                <ui:include src="/ui/permitDetails.xhtml"/>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <p:tab id="Tcc"  title="Tax Clearance Certificate" >  
+                                <ui:include src="/ui/formTccReport.xhtml"/>
+                            </p:tab>
+                            <!--########################################################################################## -->
+                            <p:tab id="Challan_Details"  title="Challan Details" >  
+                                <ui:include src="/ui/challanDetails.xhtml">
+                                </ui:include>
+                            </p:tab>
+                            <!--########################################################################################## -->
+                            <p:tab id="Vltd_details" title='VLTD Details' rendered="#{vehicleDetails.renderVltdDialog}">
+                                <ui:include src="/ui/form_vehicle_tracking_details.xhtml">
+                                    <ui:param name="ownerDobj" value="#{vehicleDetails.vltdOwnerDobj}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--###################### Documents Details ######################################## -->
+                            <p:tab id="documentUploadView"  title="Documents Details" rendered="#{vehicleDetails.documentUploadShow}">  
+                                <ui:include src="/ui/form_doc_upload.xhtml">
+                                    <ui:param name="docUpload" value="#{vehicleDetails.documentUpload_bean}"/>  
+                                </ui:include> 
+                                <p:panel>
+                                    <div class="ui-grid-row">
+                                        <div class="ui-grid-col-12 center-position">
+                                            <p:commandButton value="View Uploaded Documents" immediate="true" action="#{vehicleDetails.documentUpload_bean.viewUploadedDocuments()}"/>
+                                        </div>
+                                    </div>
+                                </p:panel>  
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+                            <p:tab  id="puccDetails" title="PUCC Details" rendered="#{vehicleDetails.showPUCCData}" >  
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="puccNo" value="Pucc No"/>
+                                        </label>
+                                        <p:inputText id="puccNo" value="#{vehicleDetails.puccNo}" disabled="true"/>
+                                    </div>   
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="puccFrom" value="Pucc From"/>
+                                        </label>
+                                        <p:inputText id="puccFrom" value="#{vehicleDetails.puccFrom}" disabled="true"/>
+                                    </div>
+                                </div> 
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="puccUpto" value="Pucc Upto"/>
+                                        </label>
+                                        <p:inputText id="puccUpto" value="#{vehicleDetails.puccUpto}" disabled="true"/>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <label class="field-label resp-label-section">
+                                            <p:outputLabel for="puccCentreno" value="Pucc Centre No"/>
+                                        </label>
+                                        <p:inputText id="puccCentreno" value="#{vehicleDetails.puccCentreNo}" disabled="true"/>                                
+                                    </div>
+                                </div>
+                            </p:tab>
+
+                            <!--########################################################################################## -->
+                            <p:tab id="ncrbData"  title="NCRB Data" rendered="#{vehicleDetails.showNCRBData}">  
+                                <outputPanel >
+                                    <p:outputLabel value="#{vehicleDetails.vehicleStatusAsPerNCRBDatabase}" escape="false"></p:outputLabel>
+                                </outputPanel>
+                            </p:tab>
+                            <!--########################################################################################## -->
+
+
+
+                        </p:tabView>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:blockUI block="formVehDetails" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+
+
+            </h:form>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

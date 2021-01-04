@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <f:subview id="subview_permit_timetable">
+        <ui:composition>
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <p:messages showDetail="true" showSummary="false" closable="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <p:growl id="msgs" showDetail="true" showSummary="false" life="3000">
+                            <p:autoUpdate/>
+                        </p:growl>
+                    </div>
+                </div>
+                <p:outputPanel styleClass="bottom-space">
+
+                    <p:panel id="timetable" 
+                             toggleable="true" toggleSpeed="1" widgetVar="panel" styleClass="top-space bottom-space">                  
+
+                        <p:dataTable styleClass="table-no-select-all"
+                                     id="routeSchedule" var="dobj"                                       
+                                     rendered="#{pmttimetable.timeTableList  ne null}"
+                                     value="#{pmttimetable.timeTableList}" 
+                                     reflow="true" rowIndexVar="index"
+                                     emptyMessage="There are no routes to be select related to your vehicle (Against Selected Permit Type and Category)">
+                            <!--                            selectionMode="single" selection="# {pmttimetable.selectTimeTableDobj}" rowKey="# {index+1}"-->
+                            <f:facet name="header">
+                                <p:outputLabel value="Route-Details Schedule" />
+                            </f:facet>
+                            <p:column headerText="Sr. No."
+                                      styleClass="collumn-width center-position">
+                                <p:outputLabel value="#{index+1}" />
+                            </p:column>
+                            <p:column headerText="Stopage">
+                                <p:outputLabel value="#{dobj.stoppage}" />
+                            </p:column>
+                            <p:column headerText="Day" styleClass="center-position" >
+                                <p:inputText value="#{dobj.day}" maxlength="2" disabled="#{dobj.disableDay}">
+                                    <p:keyFilter regEx="/[0-9]/i" />
+
+                                </p:inputText>
+                            </p:column>
+                            <p:column width="15%">
+                                <f:facet name="header">
+                                    <h:outputText escape="false" value="Arrival Time&#10;(24-hour format)&#10;(HH:MM)" style="white-space:pre-line;" />
+                                </f:facet>
+                                <p:calendar id="route_from" value="#{dobj.route_fr_time}" pattern="HH:mm" disabled="#{dobj.disableFromTime}"
+                                            timeOnly="true" maxHour="23" maxMinute="59" maxlength="5" mask="true">
+                                    <f:convertDateTime pattern="HH:mm" timeStyle="short" />
+                                </p:calendar>     
+                            </p:column>
+
+                            <p:column  width="15%" >
+                                <f:facet name="header">
+                                    <h:outputText escape="false" value="Departure Time&#10;(24-hour format)&#10;(HH:MM)" style="white-space:pre-line;" />
+                                </f:facet>
+                                <p:calendar id="route_to" value="#{dobj.route_to_time}" pattern="HH:mm" disabled="#{dobj.disableToTime}"
+                                            timeOnly="true" maxHour="23" maxMinute="59" maxlength="5" mask="true">
+                                    <f:convertDateTime pattern="HH:mm"  timeStyle="short"/>
+                                </p:calendar>     
+                            </p:column>
+<!--                                            mindate=""   minHour="#{slotMaster.minUptoTime.hours}" minMinute="#{slotMaster.minUptoTime.minutes}" -->
+                        </p:dataTable>
+                    </p:panel>
+                </p:outputPanel>
+            </div>
+        </ui:composition>
+    </f:subview>
+
+</html>
+

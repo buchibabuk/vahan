@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition template="/masterLayoutPage.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"    
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="content22"> 
+        <div class="ui-grid ui-grid-responsive">
+            <h:form id="formGenApplNo" prependId="false"> 
+                <div class="ui-grid-row center-position">
+                    <div class="ui-grid-col-12">
+                        <h1 class="header-main">#{language.ltt_modifymsg}</h1>
+                    </div>
+                </div>
+                <p:outputPanel>
+                    <p:autoUpdate/>
+                    <p:dialog id="msgDialog" header="Alert!" closable="false" widgetVar="messageDialog" modal="true" closeOnEscape="false" visible="#{not empty facesContext.messageList}">
+
+                        <div class="center-position">
+                            <p:commandButton value="#{language.close}" immediate="true" >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
+                        </div>
+                        <p:messages>
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:outputPanel id="panelApplInward">
+                    <p:panel id="disposePanel" >
+                        <p:focus context="disposePanel"/>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="tfAppNo" value="#{language.home_rightpanelApplno}"/>
+                                </label>
+                                <p:inputText  id="tfAppNo" value="#{lifeTimeTaxUpdateBean.applNo}" 
+                                              maxlength="16"
+                                              required="true"
+                                              requiredMessage="#{language.applNoMsg}"
+                                              converter="toUpperCaseConverter"
+                                              autocomplete="off"
+                                              styleClass="input" disabled="#{lifeTimeTaxUpdateBean.render}"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="#{language.showDetails}" action="#{lifeTimeTaxUpdateBean.showDetails()}"
+                                                 update="formGenApplNo:panelOwnerInfo formGenApplNo  " onclick="PF('ajax_status').show()"
+                                                 oncomplete="PF('ajax_status').hide()" rendered="#{!lifeTimeTaxUpdateBean.render}"/>
+                                <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" rendered="#{lifeTimeTaxUpdateBean.renderBackBtm}"/>
+                            </div>
+                        </div>
+                        <p:keyFilter for="tfAppNo" mask="alphanum"/>
+                    </p:panel>
+
+                </p:outputPanel>
+                <p:outputPanel id="panelOwnerInfo">
+                    <p:panel id="ownerInfo" styleClass="top-space bottom-space" rendered="#{lifeTimeTaxUpdateBean.render}">                    
+                        <p:tabView styleClass="top-space bottom-space" >
+                            <!--################################# Owner Details ########################################## -->
+                            <p:tab  id="owner_details_tab" title="#{language.ownerDetails}">
+                                <ui:include src="/ui/registration/form_owner_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{lifeTimeTaxUpdateBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                            <!--################################# Vehicle Details ######################################## -->
+                            <p:tab  id="veh_info_tab" title="#{language.vehicleDetails}">                                
+                                <ui:include src="/ui/registration/form_vehicle_dtls_display.xhtml">
+                                    <ui:param name="ownerDetail" value="#{lifeTimeTaxUpdateBean.ownerDetail}"/>
+                                </ui:include>
+                            </p:tab>
+                        </p:tabView>
+                        <p:outputPanel id="reason_id" >
+                            <h:outputLabel value="#{lifeTimeTaxUpdateBean.taxPaidLabel}" rendered="#{lifeTimeTaxUpdateBean.rendertaxPaid}" styleClass="font-bold red"/>
+                            <h:outputLabel value="#{lifeTimeTaxUpdateBean.addTaxPaidLabel}" rendered="#{lifeTimeTaxUpdateBean.renderaddtaxPaid}" styleClass="font-bold red"/>
+                            <h:outputLabel value="#{lifeTimeTaxUpdateBean.taxClearLabel}" rendered="#{lifeTimeTaxUpdateBean.rendertaxClear}" styleClass="font-bold red"/>
+                            <h:outputLabel value="#{lifeTimeTaxUpdateBean.addTaxClearLabel}" rendered="#{lifeTimeTaxUpdateBean.renderaddtaxClear}" styleClass="font-bold red"/>
+                            <h:outputLabel value="#{lifeTimeTaxUpdateBean.taxExempLabel}" rendered="#{lifeTimeTaxUpdateBean.isTaxExemp}" styleClass="font-bold red"/>
+
+                            <div class="ui-grid-row">
+
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="taxllt" value="#{language.ltt_amt}" />
+                                    </label>
+                                    <p:inputText id="taxllt"  styleClass="input" value="#{lifeTimeTaxUpdateBean.taxAmount}"
+                                                 required="true"  placeholder="#{language.ltt_enter_amt}"
+                                                 maxlength="9" requiredMessage="#{language.ltt_plse_enter}"
+                                                 > 
+                                        <p:keyFilter regEx="/[\d\-\.]/"/>
+                                        <p:ajax event="blur" listener="#{lifeTimeTaxUpdateBean.checkTaxAmt}"  onstart="PF('ajax_status').show()" oncomplete="PF('ajax_status').hide()"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="adminRemarks" value="#{language.remark}" />
+                                    </label>
+                                    <p:inputTextarea id="adminRemarks"  styleClass="input" value="#{lifeTimeTaxUpdateBean.remark}"
+                                                     required="true" cols="50" rows="1" placeholder="#{language.enter_reason}..."
+                                                     maxlength="90" requiredMessage="#{language.rmk_empty}"
+                                                     converter="toUpperCaseConverter" >                            
+                                    </p:inputTextarea>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row center-position">
+                                <div class="ui-grid-col-12">
+
+                                    <p:commandButton value="#{language.save}" action="#{lifeTimeTaxUpdateBean.sendOtpMailAndModificationLTT('sendOtp')}"
+                                                     update="formGenApplNo:panelOwnerInfo formGenApplNo" onclick="PF('ajax_status').show()"
+                                                     oncomplete="PF('ajax_status').hide()" >
+                                        <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert" /></p:commandButton>
+                                    <p:button value="#{language.login_back}" outcome="home" onclick="PF('ajax_status').show()" icon="ui-icon-arrowreturnthick-1-w" />
+                                    <p:commandButton  value="#{language.reset}" actionListener="#{lifeTimeTaxUpdateBean.reset()}" immediate="true" styleClass="button" update="formGenApplNo:panelOwnerInfo formGenApplNo panelApplInward  "></p:commandButton>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+
+                    </p:panel>
+                </p:outputPanel>    
+                <!-- OTP for Change Vehicle Office-->
+                <p:outputPanel id="otp_confirmation">
+                    <p:dialog id="otp_dialog" widgetVar="otp_confrm" header="#{language.ltt_otp_mofdify}"  closable="false"  modal="true" dynamic="true" >
+                        <p:messages showDetail="true" showSummary="false">
+                            <p:autoUpdate/>
+                        </p:messages>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 red">
+                                #{language.OTPSentMsg}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-3">
+                                <label>
+                                    <p:outputLabel value="#{language.login_enter_otp}:"/>
+                                </label>  
+                            </div>
+                            <div class="ui-grid-col-4">
+                                <p:inputText value="#{lifeTimeTaxUpdateBean.enterOtp}" id="otp_text" maxlength="6" autocomplete="off"/>
+                            </div>
+                            <div class="ui-grid-col-5">
+                                <p:commandLink value="#{language.login_resend_otp}" action="#{lifeTimeTaxUpdateBean.sendOtpMailAndModificationLTT('resendOtp')}" style="font-size:15px; font-weight: bold;" onclick="PF('ajax_status').show()"
+                                               onsuccess="PF('ajax_status').hide()"/>
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12 center-position" >
+                                <p:commandButton value="#{language.ltt_confirm_modify}" action="#{lifeTimeTaxUpdateBean.sendOtpMailAndModificationLTT('confirmOtp')}" onclick="PF('ajax_status').show()"
+                                                 onsuccess="PF('ajax_status').hide();" update="formGenApplNo:panelOwnerInfo formGenApplNo panelOwnerInfo " >
+                                </p:commandButton>
+                                <p:commandButton value="#{language.cancel}" process="@this"  immediate="true" 
+                                                 onclick="PF('otp_confrm').hide()" icon="ui-icon-arrowreturnthick-1-w"/>  
+                            </div>
+                        </div>
+                    </p:dialog>
+                </p:outputPanel>
+                <p:blockUI block="formGenApplNo" widgetVar="ajax_status">
+                    <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+                </p:blockUI> 
+            </h:form>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

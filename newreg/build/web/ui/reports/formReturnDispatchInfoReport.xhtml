@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+    </h:head>
+    <h:body  onload="window.print();">
+        <h:form id="RcReturnInfo" prependId="false">
+            <div class="center-position">
+                <p:button id="back" value="Back" outcome="/ui/reports/formRCReturnDispatchList.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <table class="datatable-panel-100 position-relative">
+                <tr>
+                    <td class="left-position" style="width: 70px;">
+                        <p:graphicImage library="images" name="#{dispatchReturnReportBean.image_logo}" style="width: 100px;" rendered="#{dispatchReturnReportBean.show_image_logo}" />
+                    </td>
+                    <td class="center-position">
+                        <div class="center-position">
+                            <h:outputText value="#{dispatchReturnReportBean.rcpt_heading}" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                        </div>
+
+                        <div class="center-position bottom-space">
+                            <span class="font-bold report-subheader"> <h:outputText value="#{dispatchReturnReportBean.rcpt_subheading} [ #{dispatchReturnReportBean.officeName} ]" escape="false"/> </span>
+                        </div>
+                    </td>
+                    <td class="right-position" style="width: 70px;">
+                    </td>
+                </tr>
+            </table>
+            <div class="position-relative">
+                <p:outputPanel  rendered="#{dispatchReturnReportBean.show_image_background}" styleClass="print-certificate-background single-screen-background-size" style="background: #{dispatchReturnReportBean.image_background} no-repeat !important; background-size: contain !important;"></p:outputPanel>
+            </div>
+            <p:outputPanel id="rptSrchByDateLbl" rendered="#{dispatchReturnReportBean.retDtWiseReport}">
+                <table class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <tr>
+                        <td class="left-position top-align">
+                            <span class="font-bold"> From Date:  </span> <h:outputText value="#{dispatchReturnReportBean.fromDateStr}"/>
+                            <span class="font-bold"> To Date:  </span> <h:outputText value="#{dispatchReturnReportBean.fromDateTo}"/>
+                        </td>
+                        <td class="right-position top-align">
+                            <span class="font-bold"> Printed On:  </span> <h:outputText value="#{dispatchReturnReportBean.printed_on}"/>
+                        </td>
+                    </tr>
+                </table>
+            </p:outputPanel>
+            <p:outputPanel id="rptSrchByApplOrRegnLbl" rendered="#{dispatchReturnReportBean.applOrRegnWiseReport}">
+                <table class="datatable-panel position-relative" style="margin: 0 auto;">
+                    <tr>
+                        <td class="left-position top-align">
+                            <span class="font-bold"> <h:outputText value="#{dispatchReturnReportBean.rptSearchLabel}"/>:  </span> <h:outputText value="#{dispatchReturnReportBean.enterNo}"/>
+                        </td>
+                        <td class="right-position top-align">
+                            <span class="font-bold"> Printed On:  </span> <h:outputText value="#{dispatchReturnReportBean.printed_on}"/>
+                        </td>
+                    </tr>
+                </table>
+            </p:outputPanel>
+            <div class="ui-grid-row top-space position-relative">
+                <div class="ui-grid-col-12">
+                    <p:dataTable id="dt_rcRetInfo" value="#{dispatchReturnReportBean.returnDispatchInfoReportDobjList}" 
+                                 var="returnList" styleClass="border-transparent" style="font-size: 11px ;"
+                                 rowIndexVar="index">        
+                        <p:column headerText="Sr. No" styleClass="collumn-width center-position">                            
+                            <h:outputText value="#{index+1}" />
+                        </p:column>   
+                        <p:column headerText="Dispatch on" style="width: 80px;">                            
+                            <h:outputLabel value="#{returnList.dispatchdate}"/>
+                        </p:column>                        
+                        <p:column headerText="Owner Name">                            
+                            <h:outputLabel value="#{returnList.ownerName}" />
+                        </p:column>
+                        <p:column headerText="Address">                            
+                            <h:outputLabel value="#{returnList.caddress}" />
+                        </p:column>
+                        <p:column headerText="Reason">                            
+                            <h:outputLabel value="#{returnList.returnReason}" />
+                        </p:column>
+                        <p:column headerText="Regn No" style="width: 55px;">                            
+                            <h:outputLabel value="#{returnList.regnNo}" />
+                        </p:column>
+                        <p:column headerText="Barcode" style="width: 55px;">                            
+                            <h:outputLabel value="#{returnList.dispatch_ref_no}" />
+                        </p:column>                         
+                        <p:column headerText="Return on" style="width: 80px;">                            
+                            <h:outputLabel value="#{returnList.dispatch_rc_return_on}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </h:body>
+</html>

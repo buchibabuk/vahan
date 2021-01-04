@@ -1,0 +1,253 @@
+<html 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4 resp-blank-height"></div>
+            <div class="ui-grid-col-4">
+                <label class="field-label resp-label-section">
+                    <p:outputLabel value="Select Purpose"/>
+                </label>
+
+                <p:selectOneMenu id="pur_cd" value="#{fees_Slab_bean.purpose_code}"  filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="SELECT" itemValue="-1" noSelectionOption="true"/>
+                    <f:selectItems value="#{fees_Slab_bean.purposeLabelValue}" />
+                    <p:ajax event="change" update="pur_cd"/>
+                </p:selectOneMenu>
+            </div>
+        </div>
+        <div class="ui-grid-row center-position">
+            <div class="ui-grid-col-12" >
+                <p:commandButton value="Get Slab Details" immediate="true" onclick="PF('bui').show();" action="#{fees_Slab_bean.onSelectGetDetails()}" oncomplete="PF('bui').hide();" update="panel_fees_slab_new openDlg1"/>
+                <p:button value="Back" outcome="/ui/permit/form_permit_master.xhtml"/>
+            </div>
+        </div>
+
+
+        <p:outputPanel id="panel_fees_slab_new"> 
+            <p:panel id="panelDT" rendered="#{fees_Slab_bean.feesSlabRendered and !fees_Slab_bean.dialogPanel}" styleClass="border-none">
+                <p:dataTable 
+                    id="dT" 
+                    value="#{fees_Slab_bean.fees_slab_list}" 
+                    filteredValue="#{fees_Slab_bean.fees_slab_FilteredList}"
+                    var="fsb"
+                    paginator="true"
+                    rows="10"
+                    rowsPerPageTemplate="10,15,20"
+                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    paginatorPosition="bottom"
+                    > 
+                    <f:facet name="header">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-6 left-position">
+                                <h:outputText value="#{fees_Slab_bean.fees_slab_header}" class="inline-section top-space h5 text-uppercase font-bold underline-text" />
+                            </div>
+                            <div class="ui-grid-col-12 right-position">
+                                <p:commandButton value="Add New Slab" icon="ui-icon-extlink" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" action="#{fees_Slab_bean.onAddNewSlab()}" immediate="true" update ="panel_fees_slab_new openDlg1"/>                               
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="Serial Number"  width="10%">
+                        #{fsb.sr_no}
+                    </p:column>
+                    <p:column headerText="Transaction Purpose" width="10%" filterBy="#{fsb.trans_pur_descr}" filterMatchMode="contains">
+                        #{fsb.trans_pur_descr}
+                    </p:column>
+                    <p:column headerText="Condition Formula" width="20%">
+                        #{fsb.condition_formula}
+                    </p:column>
+                    <p:column headerText="Fee Rate Formula" width="20%">
+                        #{fsb.fee_rate_formula}
+                    </p:column>
+                    <p:column headerText="Fine Rate Formula" width="30%">
+                        #{fsb.fine_rate_formula}
+                    </p:column>
+                    <p:column headerText="Action" width="10%">
+<!--                        <p:commandButton value="Edit" icon="ui-icon-extlink" onclick="PF('bui').show();" oncomplete="PF('bui').hide();PF('dlg').show();" immediate="true" action="#{fees_Slab_bean.onEditSlabDetail(fsb)}" update=":masterForm:test12345 "/>-->
+                        <p:commandButton value="Edit" icon="ui-icon-extlink" onclick="PF('bui').show();" oncomplete="PF('bui').hide();" immediate="true" action="#{fees_Slab_bean.onEditSlabDetail(fsb)}" update="panel_fees_slab_new openDlg1"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </p:outputPanel>
+        <p:outputPanel id="openDlg1">
+            <p:panel  header="Add or Update Record"  rendered="#{fees_Slab_bean.dialogPanel}">
+                <!--                <p:commandLink value="Revert" />-->
+                <p:panel id="test12345" header="#{fees_Slab_bean.descrPurpose}">
+                    <p:outputPanel id="input_save_button" styleClass="center-position bottom-space">
+                        <p:panel styleClass="report-table border-none" rendered="#{fees_Slab_bean.summary}">
+                            <h:outputText  escape="false" value="#{fees_Slab_bean.input_saveButton_textBox}"/>
+                        </p:panel>
+                    </p:outputPanel>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-4">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Serial Number"/>    
+                                    </label>                 
+                                    <p:inputText value="#{fees_Slab_bean.fsbd.sr_no}" readonly="true" />  
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="IF" />    
+                                    </label>
+                                    <p:inputTextarea  maxlength="200" placeholder="Condition Formula"  value="#{fees_Slab_bean.fsbd.condition_formula}">
+                                        <p:ajax event="blur" listener="#{fees_Slab_bean.commonFunction()}" update="input_save_button"/> 
+                                        <p:keyFilter regEx="/[A-Z0-9)(=\u003C\u003e\s,_]/i"/> 
+                                        <!--                                    <p:keyFilter regEx="/[^~`^@#$\u0026\u007D\u007B\u005B\u005D\u003A\u003B\u0027\u0022\u002E\u002F\u005C\u007C\u003F]/i"/>-->
+                                        <!--
+                                            validations for not allowed
+                                            ~`^@#$ &=\u0026 }=\u007D {=\u007B [=\u005B ]=\u005D :=\u003A ;=\u003B '=\u0027 "=\u0022 .=\u002E /=\u002F \=\u005C |=\u007C ?\u003F
+                                        -->
+                                    </p:inputTextarea>   
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="THEN" />    
+                                    </label>
+                                    <p:selectOneMenu id="select_Amount_Fine" value="#{fees_Slab_bean.select_Amount_Fine}">
+                                        <p:ajax listener="#{fees_Slab_bean.onSelect_Amount_Fine()}" update="amount_fine_txtBox input_save_button"/>
+                                        <f:selectItem itemLabel="Amount" itemValue="Amount"/>
+                                        <f:selectItem itemLabel="Fine" itemValue="Fine"/>
+                                    </p:selectOneMenu> 
+                                    <p:inputTextarea  
+                                        placeholder="Amount / Fine" 
+                                        autoResize="true" 
+                                        maxlength="500"
+                                        id="amount_fine_txtBox"
+                                        value="#{fees_Slab_bean.amount_Fine_txtBox}">
+                                        <p:ajax event="blur" listener="#{fees_Slab_bean.commonFunction()}" update="input_save_button"/> 
+                                        <p:keyFilter regEx="/[^~`^@#$\u0026\u007D\u007B\u005B\u005D\u003A\u003B\u0027\u0022\u002E\u005C\u007C\u003F]/i"/>
+                                        <!--                                    <p:keyFilter regEx="/[A-Z0-9)(=\u003C\u003e]/i"/> -->
+                                        <!--                                                                        <p:keyFilter regEx="/[^~`^@#$\u0026\u007D\u007B\u005B\u005D\u003A\u003B\u0027\u0022\u002E\u002F\u005C\u007C\u003F]/i"/>-->
+                                        <!--
+                                            validations for not allowed
+                                            ~`^@#$&}{[]:;'"./\|?
+                                        -->
+                                    </p:inputTextarea> 
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Check Max Amount"/>   
+                                    </label>
+                                    <p:selectOneMenu id="selectCheckMaxAmount" value="#{fees_Slab_bean.fsbd.check_max_amt}">
+                                        <p:ajax listener="#{fees_Slab_bean.onSelectCheckMaxAmount()}" update="maxAmount" />
+                                        <f:selectItem itemLabel="True" itemValue="true"/>
+                                        <f:selectItem itemLabel="False" itemValue="false"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Fine Maximum Amount"/>    
+                                    </label>
+                                    <p:inputText disabled="#{fees_Slab_bean.maxAmountDisabled}" id="maxAmount" value="#{fees_Slab_bean.fsbd.fine_max_amt}" maxlength="8">
+                                        <p:keyFilter regEx="/[0-9]/i"/>
+                                        <p:ajax event="blur" update="maxAmount"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="ui-grid-col-8">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Transaction Purpose"/>    
+                                    </label>                 
+                                    <p:selectOneMenu id="tran_pur_cd" value="#{fees_Slab_bean.fsbd.trans_pur_cd}" filter="true" filterMatchMode="contains">
+                                        <f:selectItem itemDisabled="true" itemLabel="----------SELECT----------" itemValue="-1" noSelectionOption="true"/>
+                                        <f:selectItems value="#{fees_Slab_bean.purposeLabelValue}" />
+                                        <p:ajax listener="#{fees_Slab_bean.trans_des(dobj)}"/>
+                                    </p:selectOneMenu>    
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Period Mode"/>   
+                                    </label>
+                                    <p:selectOneMenu id="periodMode" value="#{fees_Slab_bean.fsbd.period_mode}">
+                                        <f:selectItems value="#{fees_Slab_bean.periodModeList}"/>
+                                        <p:ajax event="change" update="periodMode"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Per Region Count"/>   
+                                    </label>
+                                    <p:selectOneMenu id="perRegionCount" value="#{fees_Slab_bean.fsbd.per_region_count}">
+                                        <f:selectItem itemLabel="True" itemValue="true"/>
+                                        <f:selectItem itemLabel="False" itemValue="false"/>
+                                        <p:ajax event="change" update="perRegionCount"/>
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="ui-grid-col-6">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel value="Per Route Count"/>   
+                                    </label>
+                                    <p:selectOneMenu id="perRouteCount" value="#{fees_Slab_bean.fsbd.per_route_count}">
+                                        <f:selectItem itemLabel="True" itemValue="true"/>
+                                        <f:selectItem itemLabel="False" itemValue="false"/>
+                                        <p:ajax event="change" update="perRouteCount"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <label  class="field-label resp-label-section" >
+                                        <p:outputLabel value="Hint" />    
+                                    </label>
+                                    <p:dataTable id="dt1" value="#{fees_Slab_bean.hintList}" filteredValue="#{fees_Slab_bean.fees_slab_FilteredHlist}"  scrollable="true" scrollHeight="180" var="hlist" styleClass="datatable-panel">
+                                        <p:column headerText="Code" >
+                                            <label class="field-label resp-label-section center-position">
+                                                <p:outputLabel value="#{hlist.key}" />
+                                            </label>
+                                        </p:column>
+                                        <p:column headerText="Description"  filterBy="#{hlist.value}">
+                                            <label  class="field-label resp-label-section">
+                                                <p:outputLabel value="#{hlist.value}" />
+                                            </label>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-grid-row"> 
+                        <div class="ui-grid-col-12" align="center">
+                            <p:commandButton id="saveBTN" value="Save" action="#{fees_Slab_bean.onSave()}" icon="ui-icon-disk" immediate="true" update="panel_fees_slab_new " onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                                <p:confirm header="Confirmation" message="Are You Sure?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+
+                            <p:commandButton id="revertBTN" value="Revert Back" action="#{fees_Slab_bean.closeDialog()}" update="@form" icon=" ui-icon-arrowreturn-1-w" onclick="PF('bui').show();" oncomplete="PF('bui').hide();">
+                            </p:commandButton>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <p:confirmDialog  widgetVar="cfmDialog" global="true" showEffect="fade" hideEffect="explode">  
+                    <p:commandButton value="Yes"  type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </p:panel>
+        </p:outputPanel>
+    </div>
+
+    <p:blockUI block="@form" widgetVar="bui">
+        <p:graphicImage name="#{imageName.ajaxLoader}" library="images" height="40%" width="30%"/>
+    </p:blockUI>
+
+</html>

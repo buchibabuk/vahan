@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE html>
+<ui:composition
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui" 
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    template="/masterLayoutPage.xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+    <ui:define name="windowTitle">
+        #{label.vahanTitle}
+    </ui:define> 
+    <ui:define name="content22">
+        <h:body>
+            <h:form prependId="false">
+                <p:outputPanel id="nonuseReport">
+                    <p:outputPanel styleClass="center-position" >
+                        <h1 class="header-main">NonUse Reports</h1>
+                    </p:outputPanel>
+                    <p:panel header="NonUse Reports">
+
+
+                        <p:outputPanel >
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-4 resp-blank-height"></div>
+                                <div class="ui-grid-col-4">
+                                    <label class="field-label resp-label-section">
+                                        <p:outputLabel for="idForNonReport" value="Select Reprt Type"/>
+                                    </label>
+                                    <p:selectOneRadio id="idForNonReport"  required="true" value="#{nonUseReport.radiobuttonValue}" requiredMessage="Please Select Action" disabled="#{nonUse.disableRadioButton}">
+                                        <f:selectItem itemLabel="NonUse Intimation Report" itemValue="I" ></f:selectItem>  
+                                        <f:selectItem itemLabel="NonUse Shifting Report" itemValue="S"></f:selectItem> 
+                                        <f:selectItem itemLabel="NonUse Restore/Withdrawl Report" itemValue="R"></f:selectItem> 
+                                    </p:selectOneRadio>
+                                </div>
+                            </div>
+                        </p:outputPanel>   
+
+
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4 resp-blank-height"></div>
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel value="Registration Number"/>
+                                </label>
+                                <p:inputText id="regn_no" value="#{nonUseReport.regnNo}" 
+                                             autocomplete="off" maxlength="10" converter="toUpperCaseConverter" 
+                                             styleClass="input" >
+                                    <p:keyFilter regEx="/[A-Z0-9]/i"/> 
+                                </p:inputText>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row center-position">
+                            <div class="ui-grid-col-12">
+                                <p:commandButton value="Submit" action="#{nonUseReport.printDetails()}" update="@form">
+                                    <f:param value="#{nonUseReport}" name="nonUseBean"/>
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:panel>
+                </p:outputPanel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="bootstrap-3.3.1" name="css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+        <script>
+            var formSubmitted = false;
+            function onSubmitButton() {
+                if (!formSubmitted) {
+                    formSubmitted = true;
+                } else {
+                    // disable event propagation if form is already submitted
+                    event.preventDefault();
+                }
+            }
+        </script>
+    </h:head>
+    <h:body>
+        <h:form id="formPrint" prependId="false">
+            <div class="center-position">
+                <p:button value="Back" outcome="home" icon="ui-icon-arrowreturnthick-1-w" />      
+                <p:commandButton onclick="window.print();" icon="ui-icon-print" value="Print" styleClass="display-none" />
+            </div>
+            <p:outputPanel  styleClass="bottom-space">
+                <div class="position-relative">
+                    <table class="datatable-panel-100">
+                        <tr>
+                            <td class="left-position" style="width: 70px;">
+                                <p:graphicImage library="images" name="#{printTaxTokenBean.dobj.image_logo}" style="width: 100px;" rendered="#{printTaxTokenBean.dobj.show_image_logo}" />
+                            </td>
+                            <td class="center-position">
+                                <div>
+                                    <h:outputText value="GOVERNMENT OF KERALA" styleClass="font-bold report-header bottom-line text-uppercase"/>
+                                </div>
+                                <div>
+                                    <span class="font-bold report-subheader text-uppercase"> <h:outputText value="Motor Vehicles Department" escape="false"/> </span>
+                                </div>
+                                <div>
+                                    <span class="font-bold"><h:outputText value="TAX LICENCE"/></span>
+                                </div>
+                                <div>
+                                    <span class="font-bold"><h:outputText value="FORM ETL"/></span>
+                                </div>
+                                <div>
+                                    <span class="font-bold"><h:outputText value="(See Rule 7)"/></span>
+                                </div>
+                                <div>
+                                    <span class="font-bold"> 
+                                        <h:outputText value="Licence granted under Section 4(3)(a) of the Kerala Motor Vehicles Taxation Act, 1976"/> 
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="outer-circle top-space-25">
+                    <div  class="inner-circle" >
+                        <div class="header-border center-position">Govt. of Kerala</div>
+                        <div class="rotation-line left-rotation-line"></div>
+                        <div class="rotation-line right-rotation-line"></div>   
+
+                        <div class="content-style bottom-space left-space-70">
+                            Regn No:  <h:outputText value=":#{printTaxTokenBean.dobj.regnNo}" /><br />
+                            Class: <h:outputText value=":#{printTaxTokenBean.dobj.vhClass}" /><br />
+                            Tax Paid Rs: <h:outputText value=":#{printTaxTokenBean.taxPaidAmount}/-" />
+                        </div>
+                        <div class="line-border bottom-space-25"></div>
+                        <div class="line-border bottom-space"></div>
+                        <div class="content-style left-space-65 bottom-space-25">
+                            From <h:outputText value="#{printTaxTokenBean.taxFrom}" /> <h:outputText value="#{printTaxTokenBean.taxUpto}" /><br />
+                        </div>
+                        <div class="content-style left-space-65 bottom-space">
+                            Signature
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                    <h:panelGrid columns="2" styleClass="left-position top-space-25 datatable-panel-100">
+                        <h:outputLabel  value="TL No: #{printTaxTokenBean.dobj.receiptNo}"  styleClass="right-space bottom-space" />
+                        <h:outputLabel  value="Amount Paid Rs: #{printTaxTokenBean.taxPaidAmount}/- "  styleClass="right-space bottom-space" />
+                        <h:outputLabel  value="Regn.No: #{printTaxTokenBean.dobj.regnNo}"  styleClass="right-space bottom-space" />
+                        <h:outputLabel  value="Period from: #{printTaxTokenBean.taxFrom}#{printTaxTokenBean.taxUpto}"  styleClass="right-space bottom-space" />
+                    </h:panelGrid>
+                </div>
+
+                <div class="datatable-panel" style="margin: 0 auto;">
+                    <h:outputLabel  value="Address: #{printTaxTokenBean.dobj.c_full_add}"  styleClass="right-space bottom-space" />
+                </div>
+                <br /><br />
+                <p:outputPanel styleClass="datatable-panel reduce-font position-relative" style="margin: 0px auto; font-size: 11px;">
+                    <ol>
+                        <li> This is a computer generated document and does not require any signature.</li>
+                        <li> The genuineness  of this TL shall be verified through https://vahan.parivahan.gov.in/vahanservice/.</li>
+                        <li> Any modification or misuse of this receipt is an offence which shall attract legal action and punishment.</li>
+                    </ol>
+                </p:outputPanel>
+            </p:outputPanel>
+        </h:form>
+    </h:body>
+</html>

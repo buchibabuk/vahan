@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images/vahan_icon.ico']}"/>
+        <h:outputStylesheet library="css" name="layout.min.css"/>
+
+    </h:head>
+    <h:body >
+        <h:form prependId="false">
+
+            <div class="center-position">
+                <p:button value="Back" outcome="/ui/eChallan/formListOfPendingChallanReport.xhtml" icon="ui-icon-arrowreturnthick-1-w" styleClass="display-none" />
+                <p:commandButton onclick="window.print();" value="Print" styleClass="display-none" />
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rcpt_heading}" class="font-bold report-subheader bottom-line"/>
+            </div>
+            <div class="center-position">
+                <h:outputText value="#{listOfPendingChallanBean.dobj.rcpt_sub_heading}" class="font-bold report-subheader bottom-line" escape="false"/>
+            </div>
+            <div class="center-position">
+                <span class="font-bold report-subheader"> <h:outputText value="(Enforcement Section)"/> </span>
+            </div>
+            <div class="center-position top-space">
+                <span class="font-bold "> <h:outputText value="List Of Pending Challan And Offences Against Vehicle No.#{listOfPendingChallanBean.dobj.vehicle_no}"/> </span>
+            </div>
+            <div class="inline-section qrcode-position-absolute">
+                <pe:qrCode 
+                    rendered="#{listOfPendingChallanBean.dobj.vcr_no}"
+                    renderMethod = "canvas"
+                    text="#{listOfPendingChallanBean.dobj.vcr_no}"
+                    label="#{listOfPendingChallanBean.dobj.vehicle_no}"
+                    size="110"
+                    ecLevel="H"       
+                    radius="0.5"
+                    fillColor="#000000"/>
+            </div>
+
+            <div class="datatable-panel bottom-space-50" style="margin: 0px auto;">
+                <p:dataTable value="#{listOfPendingChallanBean.pendingChallan}" styleClass="border-transparent" var="list" rowIndexVar="rowIndex">
+                    <p:column headerText="Sr No." styleClass="collumn-width center-position">  
+                        #{rowIndex+1}  
+                    </p:column>  
+                    <p:column headerText="Challan No." styleClass="center-position" width="15%">
+                        <h:outputText value="#{list.vcr_no}" />
+                    </p:column>
+                    <p:column headerText="Challan Date" styleClass="center-position" width="15%">
+                        <h:outputText value="#{list.chal_date}"/>
+                    </p:column>
+                    <p:column headerText="Section" styleClass="center-position" width="19%">
+                        <h:outputText value="#{list.section}" />
+                    </p:column>
+                    <p:column headerText="Court Name" styleClass="center-position">
+                        <h:outputText value="#{list.referCourt}" />
+                    </p:column>
+                    <p:column headerText="Court Date" styleClass="center-position">
+                        <h:outputText value="#{list.hearing_date}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <br/>
+            <br/>
+            <div class="left-position top-space">
+                <span class="font-bold  "> <h:outputText value="End Of Pending Challan And Offences Against Vehicle No. #{listOfPendingChallanBean.dobj.vehicle_no}"/> </span>
+            </div>
+
+            <div class="right-position">
+                <div class="inline-section center-position">
+                    <br />
+                    <br />
+                    <br />
+                    <br /> Signature and Stamp
+                    <br /> Of Issuing Officer(<h:outputText value="" />)
+                </div>
+            </div>
+        </h:form>
+    </h:body>
+</html>

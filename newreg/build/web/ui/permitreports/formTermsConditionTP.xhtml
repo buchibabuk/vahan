@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <body>        
+        <p:outputPanel rendered="#{printDocXHTML.renderMnGoodsPmtPrintCond and !printDocXHTML.renderPmtCatg and !printDocXHTML.renderManipurStaPrintCond}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Conditions prescribed: u/s 74(1) (2) " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">                  
+                    <h:outputLabel value="(i) That the vehicles shall be used only in a specified area ,or on a specified route or routes." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ii) That the gross vehicle weight of any vehicle used shall not exceed a specified maximum." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iv) That goods shall be carried at specified rates." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(vii) That the Regional Transport Authority may, after giving notice of not less than one month." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(a) Vary the conditions of the permit." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(b) Attach to the permit further conditions." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(viii) That the conditions of the permit shall not be departed from, save with the approval of 
+                                   the Regional Transport Authority." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(ix) any other conditions which may be prescribed." styleClass="right-space bottom-space" /> 
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+        <p:outputPanel rendered="#{ printDocXHTML.renderMnGoodsPmtPrintCond and printDocXHTML.renderPmtCatg}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Conditions prescribed: u/s 74(1) (2) " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">                  
+                    <h:outputLabel value="(1) This Permit is valid within the State of Manipur only." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(2) Carrying of labours upon the goods chamber is not allowed." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(3) Labours are to be carried inside the cabin of the vehicle for ensuring their safety." styleClass="right-space bottom-space" />                   
+                    <h:outputLabel value="(4) The vehicles are to be insured including for labours." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(5) Any violation of the prescribed conditions shall lead to cancellation of the Permit." styleClass="right-space bottom-space" /> 
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+
+
+        <p:outputPanel rendered="#{printDocXHTML.renderMnStaSCPmtPrintCond and !printDocXHTML.renderPmtSpecial}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80"> 
+                    <h:outputLabel value=" Conditions prescribed: u/s 72(1) (2)" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(i) That the vehicles shall be used on in a specified area, or on a specified route or routes." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ii) That the operation of the stage carriage shall be commence4d with effect from a specified date." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iii) The minimum and maximum number of daily trips to be provided in relation to any route or area generally or on specified days and occasions." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iv) That copies of the time-table of the stage carriage approved by the State Transport Authority shall be exhibited on the vehicles and at specified stands and halts on the route or within the area." styleClass="right-space bottom-space" />                    
+                    <h:outputLabel value="(v) That the state carriage shall be operated within such margins of deviation from the approved time-table as the State Transport Authority may from time to time specify." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(vi) That within municipal limits and such other areas and places as may be prescribed, passengers or goods shall not be taken up or set down except at specified points." styleClass="right-space bottom-space" />  
+                    <h:outputLabel value="(xi) That specified standards of comfort and cleanliness shall be maintained in the vehicles." styleClass="right-space bottom-space" />  
+                    <h:outputLabel value="(xiii) That fares shall be charged is accordance with the approved fare table." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(xv) That tickets bearing specified particulars shall be issued to passengers and shall show the fares actually charged and that records of tickets issued shall be kept in a specified manner." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(xvi) That mails shall be carried on the vehicle subject to such conditions (including conditions as to the time in which mails are to be carried and the charges which may be levied) as may be specified." styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>      
+        <p:outputPanel rendered="#{printDocXHTML.renderMnGoodsPmtPrintCond and printDocXHTML.renderManipurStaPrintCond and !printDocXHTML.renderPmtCatgInterState}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">                  
+                    <h:outputLabel value="(a) A goods vehicle plying on temporary permits shall be eligible to carry goods from one point in the present State to another point in the reciprocating States or vice versa. It shall not be eligible to carry goods between two points in the reciprocating States i.e. it shall be prohibited for carrying on transport business exclusively within the territory of other State.." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(b) It is also agreed that public carrier permits of reciprocating States shall be countersigned into the agreed numbers of vehicles for operation on any route in the countersigning States." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(c) The Laden Weight limits fixed for roads in the respective States shall not be exceeded." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(d) The freight charges shall be as may be prescribed by each Government in its own territory." styleClass="right-space bottom-space" />                    
+                    <h:outputLabel value="(e) The Vehicle shall carry in all times the bill of loading in the prescribed form besides all relevant documents." styleClass="right-space bottom-space" />             
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> 
+        <p:outputPanel rendered="#{printDocXHTML.renderMnGoodsPmtPrintCond and printDocXHTML.renderManipurStaPrintCond and !printDocXHTML.renderPmtCatgInterState}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">                  
+                    <h:outputLabel value="(a) A goods vehicle plying on temporary permits shall be eligible to carry goods from one point in the present State to another point in the reciprocating States or vice versa. It shall not be eligible to carry goods between two points in the reciprocating States i.e. it shall be prohibited for carrying on transport business exclusively within the territory of other State.." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(b) It is also agreed that public carrier permits of reciprocating States shall be countersigned into the agreed numbers of vehicles for operation on any route in the countersigning States." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(c) The Laden Weight limits fixed for roads in the respective States shall not be exceeded." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(d) The freight charges shall be as may be prescribed by each Government in its own territory." styleClass="right-space bottom-space" />                    
+                    <h:outputLabel value="(e) The Vehicle shall carry in all times the bill of loading in the prescribed form besides all relevant documents." styleClass="right-space bottom-space" />             
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> 
+        <p:outputPanel rendered="#{printDocXHTML.renderManipurStaPrintCond and printDocXHTML.renderPmtSpecial}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Terms and Conditions " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value="(a) This Special Permit granted u/s (8) of MV Act’1988 is meant only for a single round trip in the assigned routes" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(b) In every case where such Special Permit is granted, a special distinguishing mark such as Special Permit granted u/s 88(8) of MV Act’1988 by the STA, Manipur should be displayed on the front windshield glass of the vehicle for due identification by the checking Authorities en-route" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(c) Such Special Permit shall be valid in any other region or State without the countersignature of the Regional Transport Authority of the other region or of the STA of the other State, as the case may be" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(d) Every vehicle under Special Permit shall carry a Passengers Manifest alongwith the contact/mobile no. of Team Leader duly countersigned by the permit issuing Authority of the STA concd." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(e) Every vehicle under Special Permit shall also carry all relevant documents of the vehicle." styleClass="right-space bottom-space" />
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Yours faithfully.<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>
+<!--        <p:outputPanel rendered="#{printDocXHTML.renderManipurPrintCond and !printDocXHTML.renderPmtCatg and !printDocXHTML.renderManipurStaPrintCond and (printDocXHTML.renderMaxiVehicleClass or printDocXHTML.renderMotorVehicleClass)}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Conditions prescribed: u/s 74(2) " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No." styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value=" Conditions prescribed: u/s 74 (2)"  styleClass="font-bold right-space bottom-space" />
+                    <h:outputLabel value="(i)  That the vehicles shall be used on in a specified area or on a specified route or routes" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ii) That except in accordance with specified conditions, no contract of hiring, other than an extension or modification of a subsisting contract, may be entered into outside the specified area." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iii)	The maximum number of passengers and the maximum weight of luggage that may be carried on the vehicles, either generally or on specified occasions or at specified times and seasons" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ix) That the State Transport Authority may, after giving notice of not less than one month" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="   (a) Vary the conditions of the permit" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="   (b) Attach to the permit further conditions." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(x) That the conditions of permit shall not be departed from save with the approval of the State Transport Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(xi) That specified standards of comfort and cleanliness shall be maintained in the vehicles." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(xii)	That except in the circumstances of exceptional nature, the plying of the vehicle or carrying of the passengers shall not be refused." styleClass="right-space bottom-space" />                
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> -->
+        <p:outputPanel rendered="#{printDocXHTML.renderManipurStaPrintCond and printDocXHTML.renderPmtVehicleClass and !printDocXHTML.renderPmtCatg and !printDocXHTML.renderPmtSpecial}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Conditions prescribed: u/s 74(1)(2) " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No." styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value=" Conditions prescribed: u/s 74 (2)"  styleClass="font-bold right-space bottom-space" />
+                    <h:outputLabel value="(i)  That the vehicles shall be used on in a specified area or on a specified route or routes" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ii) That except in accordance with specified conditions, no contract of hiring, other than an extension or modification of a subsisting contract, may be entered into outside the specified area." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iii)	The maximum number of passengers and the maximum weight of luggage that may be carried on the vehicles, either generally or on specified occasions or at specified times and seasons" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(v)	That in the case of motorcabs, specified fares or rates of fares shall be charged and a copy of the fare table shall be exhibited on the vehicle" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(vii)	That in the case of motorcabs, a specified weight of passengers’ luggage shall be carried free of charge, and that the charge, if any, for any luggage in excess thereof shall be at a specified rate" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(viii) That in the case of motorcabs, a taximeter shall be fitted and maintained in the proper working order, if prescribed" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ix) That the State Transport Authority may, after giving notice of not less than one month" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="   (a) Vary the conditions of the permit" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="   (b) Attach to the permit further conditions." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(x) That the conditions of permit shall not be departed from save with the approval of the State Transport Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(xi) That specified standards of comfort and cleanliness shall be maintained in the vehicles." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(xii)	That except in the circumstances of exceptional nature, the plying of the vehicle or carrying of the passengers shall not be refused." styleClass="right-space bottom-space" />                
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> 
+<!--        <p:outputPanel rendered="#{printDocXHTML.renderMnGoodsPmtPrintCond and !printDocXHTML.renderManipurStaPrintCond}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Conditions prescribed: u/s 74(1) (2) " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.passPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">                  
+                    <h:outputLabel value="(i) That the vehicles shall be used only in a specified area ,or on a specified route or routes." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ii) That the gross vehicle weight of any vehicle used shall not exceed a specified maximum." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iv) That goods shall be carried at specified rates." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(vii) That the Regional Transport Authority may, after giving notice of not less than one month." styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="(a) Vary the conditions of the permit." styleClass="right-space bottom-space" /> 
+                        <h:outputLabel value="(b) Attach to the permit further conditions." styleClass="right-space bottom-space" /> 
+                    <h:outputLabel value="(viii) That the conditions of the permit shall not be departed from, save with the approval of 
+                                              the Regional Transport Authority." styleClass="right-space bottom-space" /> 
+                     <h:outputLabel value="(ix) any other conditions which may be prescribed." styleClass="right-space bottom-space" /> 
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel>        -->
+        <p:outputPanel rendered="#{printDocXHTML.renderManipurPrintCond and !printDocXHTML.renderPmtCatg and !printDocXHTML.renderManipurStaPrintCond and (printDocXHTML.renderMaxiVehicleClass or printDocXHTML.renderMotorVehicleClass)}">
+            <div class="page-break"></div>
+            <div class="center-position">
+                <h:outputText value="Conditions prescribed: u/s 74(1)(2) " styleClass="font-bold report-header bottom-line text-uppercase"/>
+            </div>
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Permit No. " styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.tempPmtDobj.pmt_no}"  styleClass="font-bold"/>
+                        </td>
+                        <td class="left-position left-space">
+                            <br/>
+                            <h:outputText value="Vehicle No." styleClass="font-bold report-header text-uppercase"/>
+                            <h:outputText value="#{printDocXHTML.ownerPmtDobj.regn_no}" styleClass="font-bold report-header text-uppercase"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div class="table-width-two datatable-panel" style="margin: 0 auto;">
+                <h:panelGrid columns="1" styleClass="datatable-panel-80">
+                    <h:outputLabel value=" Conditions prescribed: u/s 74 (2)"  styleClass="font-bold right-space bottom-space" />
+                    <h:outputLabel value="(i)  That the vehicles shall be used on in a specified area or on a specified route or routes" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ii) That except in accordance with specified conditions, no contract of hiring, other than an extension or modification of a subsisting contract, may be entered into outside the specified area." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iii)	The maximum number of passengers and the maximum weight of luggage that may be carried on the vehicles, either generally or on specified occasions or at specified times and seasons" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(iv)	The conditions subject to which goods may be carried in any contract carriage in addition to, or to the exclusion of, passengers" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(vi)	That in the case of vehicles other than motorcabs, specified rates of hiring not exceeding specified maximum shall be charged " styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(ix) That the State Transport Authority may, after giving notice of not less than one month" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="   (a) Vary the conditions of the permit" styleClass="right-space bottom-space" />
+                    <h:outputLabel value="   (b) Attach to the permit further conditions." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(x) That the conditions of permit shall not be departed from save with the approval of the State Transport Authority." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(xi) That specified standards of comfort and cleanliness shall be maintained in the vehicles." styleClass="right-space bottom-space" />
+                    <h:outputLabel value="(xii)	That except in the circumstances of exceptional nature, the plying of the vehicle or carrying of the passengers shall not be refused." styleClass="right-space bottom-space" />                
+                </h:panelGrid>
+            </div> 
+            <br/>
+
+            <div class="top-space bottom-space datatable-panel"  style="margin: 0 auto;">
+                <table class="datatable-panel-100">
+                    <tr>
+                        <td class="left-position left-space">
+                            <br/>
+                            Date:  <h:outputText value="#{printDocXHTML.ownerPmtDobj.currentDateInString}" />
+                        </td>
+                        <td class="right-position">
+                            <div class="center-position inline-section">
+                                <br/>
+                                Your's faithfully .<br/>
+                                State/Regional Transport Authority <br/>
+                                <h:outputText value="#{printDocXHTML.passPmtDobj.state_cd}"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </p:outputPanel> 
+    </body>
+</html>

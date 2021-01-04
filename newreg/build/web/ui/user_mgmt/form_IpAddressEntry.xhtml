@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"   
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <div class="ui-grid ui-grid-responsive">
+        <div  class="ui-grid-row ">
+            <div class="ui-grid-col-12 center-position">
+                <h:outputText value="#{IpAddressEntryBean.state_name}" styleClass="font-bold header-main red text-uppercase"/>
+            </div>
+        </div>
+        <div class="ui-grid-row top-space bottom-space">
+            <div class="ui-grid-col-4">
+                <p:commandButton value="#{language.ipAddressMsg}" style="margin-top: 0px !important" onmouseover="PF('dlg1').show();"/>
+            </div>
+            <div class="ui-grid-col-4">
+                <h:outputText value="#{language.officeName}" styleClass="font-bold" />
+                <p:inputText readonly="true" disabled="true"  value="#{IpAddressEntryBean.officeName}" rendered="#{IpAddressEntryBean.officeNameAdmin}"/>
+                <p:selectOneMenu id="off_cd1" value="#{IpAddressEntryBean.offCd}" 
+                                 rendered="#{IpAddressEntryBean.officeListStateAdmin}" requiredMessage="Office Can not Be Empty"
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem itemValue="0" itemLabel="-SELECT-"/>
+                    <f:selectItems value="#{IpAddressEntryBean.officeList}"  />
+                    <f:validator validatorId="selectOneValidator_0" for="off_cd1" />                                        
+                    <p:ajax event="change" update="iptableId" listener="#{IpAddressEntryBean.getOfficeIpList()}" />
+                </p:selectOneMenu>
+            </div>
+        </div> 
+        <p:dialog widgetVar="dlg1" modal="true" header="#{language.instruction}">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <b>Step-1 :</b>
+                    <span>
+                        #{language.ipMsgStepOne} 
+                    </span><br/>
+                    <b>Step-2 :</b>
+                    <span>
+                        #{language.ipmsgStepTwo}
+                    </span>
+                    <br/>
+                    <b>Step-3 :</b>
+                    <span>
+                        #{language.ipMsgStepThree}
+                    </span>
+                    <br/>
+                    <b>Step-4 :</b>
+                    <span>
+                        #{language.ipMsgStepFour}
+                    </span>
+                </div>
+            </div>   
+
+        </p:dialog>
+        <p:dataTable id="iptableId" value="#{IpAddressEntryBean.ip_address_list}" rowIndexVar="index"  var="ip"  paginator="true" paginatorPosition="bottom" rows="7">
+            <f:facet name="header">#{language.user_IPList}
+            </f:facet>
+            <p:column headerText="#{language.user_srno}" styleClass="collumn-width center-position"> 
+                <p:outputLabel value="#{index +1}"/></p:column>
+            <p:column headerText="#{language.user_IPAddress}">
+                <p:inputText value="#{ip.ipAddress}" required="true" requiredMessage="#{language.user_Ipmsg} !!">
+                    <p:keyFilter regEx="/[0-9.]/i"/>
+                </p:inputText>
+            </p:column>
+            <p:column id="commandButton">
+                <p:commandButton id="add"  icon="ui-icon-plusthick" update="iptableId" action="#{IpAddressEntryBean.addRemoveRow(ip)}">
+                    <f:param name="actionmode" value="add"/>
+                </p:commandButton>
+                <p:commandButton id="minus" icon="ui-icon-minusthick" update="iptableId" action="#{IpAddressEntryBean.addRemoveRow(ip)}">
+                    <f:param name="actionmode" value="minus"/>
+                </p:commandButton>
+            </p:column>
+        </p:dataTable>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-12 center-position">
+                <p:commandButton  value="#{language.save}" action="#{IpAddressEntryBean.save()}"   >
+                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}" icon="ui-icon-alert"/>    
+                </p:commandButton>
+                <p:commandButton  value="#{language.user_deleteIP}" action="#{IpAddressEntryBean.deleteIpRecord()}"  update="iptableId" >
+                    <p:confirm header="#{language.home_confirm}" message="#{language.home_confirm_msg}?" icon="ui-icon-alert"/>    
+                </p:commandButton>
+                <p:button  id="back_user_mgmt" value="#{language.login_back}" outcome="/ui/user_mgmt/form_emp_mgmt.xhtml" icon="ui-icon-arrowreturnthick-1-w"/> 
+            </div>
+        </div>
+    </div>
+</html>

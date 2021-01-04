@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <h:body>
+        <div class="ui-grid ui-grid-responsive">
+            <p:panel header="Vehicle Information" id="veh_info" styleClass="top-space bottom-space">
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="maker" value="#{language.maker}"/>
+                        </label>
+                        <p:inputText id="maker" value="#{ownerDetail.maker_name}" label="Maker" disabled="true">
+                        </p:inputText>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="maker_model" value="#{language.makerModel}"/>
+                        </label>
+                        <p:inputText  id="maker_model" value="#{ownerDetail.model_name}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="dealer_cd" value="#{language.dealer}"/>
+                        </label>
+                        <p:inputText id="dealer_cd" value="#{ownerDetail.dlr_name}" disabled="true" styleClass="bottom-space"/>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="chasi_no" value="#{language.chasi_no}"/>
+                        </label>
+                        <p:inputText id="chasi_no" value="#{ownerDetail.chasi_no}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="vh_type" value="#{language.vh_type}"/>
+                        </label>
+                        <p:inputText id="vh_type" value="#{ownerDetail.vehTypeDescr}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="vh_class" value="#{language.vehicleClass}"/>
+                        </label>
+                        <p:inputText id="vh_class" value="#{ownerDetail.vh_class_desc}" disabled="true"/>
+                    </div>
+                </div>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="vh_catg" value="#{language.vh_catg}"/>
+                        </label>
+                        <p:inputText id="vh_catg" value="#{ownerDetail.vch_catg}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="norms" value="#{language.norms}"/>
+                        </label>
+                        <p:inputText id="norms" value="#{ownerDetail.norms_descr}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="eng_no" value="#{language.engine_MotorNo}"/>
+                        </label>
+                        <p:inputText id="eng_no" value="#{ownerDetail.eng_no}" disabled="true"/>
+                    </div>
+                </div>                      
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="seat_cap" value="#{language.seatCap}"/>
+                        </label>
+                        <p:inputText id="seat_cap"  value="#{ownerDetail.seat_cap}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="stand_cap" value="#{language.standCap}"/>
+                        </label>
+                        <p:inputText id="stand_cap"  value="#{ownerDetail.stand_cap}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="sleep_cap" value="#{language.sleepCap}"/>
+                        </label>
+                        <p:inputText id="sleep_cap" value="#{ownerDetail.sleeper_cap}" disabled="true"/>
+                    </div>
+                </div>
+
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="no_cyl" value="#{language.noCyl}"/>
+                        </label>
+                        <p:inputText id="no_cyl" value="#{ownerDetail.no_cyl}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="ul_weight" value="#{language.ulWeight}"/>
+                        </label>
+                        <p:inputText id="ul_weight"  value="#{ownerDetail.unld_wt}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="l_weight" value="#{language.lWeight}"/>
+                        </label>
+                        <p:inputText id="l_weight" value="#{ownerDetail.ld_wt}" disabled="true"/>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="hp" value="#{language.hp}"/>
+                        </label>
+                        <p:inputText id="hp" value="#{ownerDetail.hp}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="fuel" value="#{language.fuel}"/>
+                        </label>
+                        <p:inputText id="fuel" value="#{ownerDetail.fuel_descr}" disabled="true"/>
+                    </div>
+
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="purchase_as" value="#{language.purchaseAs}"/>
+                        </label>
+                        <p:inputText id="purchase_as" value="#{ownerDetail.vch_purchase_as}" disabled="true"/>
+                    </div>
+                </div>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="color" value="#{language.color}"/>
+                        </label>
+                        <p:inputText id="color" value="#{ownerDetail.color}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="wheelbase" value="#{language.wheelbase}"/>
+                        </label>
+                        <p:inputText id="wheelbase" value="#{ownerDetail.wheelbase}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="cubic_cap" value="#{language.cubicCap}"/>
+                        </label>
+                        <p:inputText id="cubic_cap" value="#{ownerDetail.cubic_cap}" disabled="true"/>
+                    </div>
+                </div>
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="f_area" value="#{language.fArea}"/>
+                        </label>
+                        <p:inputText id="f_area" value="#{ownerDetail.floor_area}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="ac_fitted" value="#{language.acFitted}"/>
+                        </label>
+                        <p:inputText id="ac_fitted" value="#{ownerDetail.ac_fitted}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="audio_fitted" value="#{language.audioFitted}"/>
+                        </label>
+                        <p:inputText id="audio_fitted" value="#{ownerDetail.audio_fitted}" disabled="true"/>
+                    </div>
+                </div>
+
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="video_fitted" value="#{language.videoFitted}"/>
+                        </label>
+                        <p:inputText id="video_fitted" value="#{ownerDetail.video_fitted}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="manu_mon" value="#{language.manuMon}"/>
+                        </label>
+                        <p:inputText id="manu_mon"  value="#{ownerDetail.manu_mon}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="manu_yr" value="#{language.manuYr}"/>
+                        </label>
+                        <p:inputText id="manu_yr" value="#{ownerDetail.manu_yr}" disabled="true"/>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="laser_code" value="#{language.laserCode}"/>
+                        </label>
+                        <p:inputText id="laser_code" value="#{ownerDetail.laser_code}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="length" value="#{language.length}"/>
+                        </label>
+                        <p:inputText id="length" value="#{ownerDetail.length}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="width" value="#{language.width}"/>
+                        </label>
+                        <p:inputText id="width" value="#{ownerDetail.width}" disabled="true"/>
+                    </div>
+                </div>
+
+
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="height" value="#{language.height}"/>
+                        </label>
+                        <p:inputText id="height" value="#{ownerDetail.height}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="garage_add" value="#{language.garage_add}"/>
+                        </label>
+                        <p:inputText id="garage_add" value="#{ownerDetail.garage_add}" disabled="true"/>
+                    </div>
+
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="sale_amt" value="#{language.sale_amt}"/>
+                        </label>
+                        <p:inputText id="sale_amt" value="#{ownerDetail.sale_amt}" disabled="true"/>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="annual_income" value="#{language.annualIncome}"/>
+                        </label>
+                        <p:inputText id="annual_income" value="#{ownerDetail.annual_income}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="vm_other_criteria" value="#{language.vmOtherCriteria}"/>
+                        </label>
+                        <p:inputText id="vm_other_criteria" value="#{ownerDetail.other_criteria}" disabled="true"/>
+                    </div>
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="imported_veh" value="#{language.importedVeh}"/>
+                        </label>
+                        <p:inputText id="imported_veh" value="#{ownerDetail.imported_vch}" disabled="true"/>
+                    </div>
+                </div>
+
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-4">
+                        <label class="field-label resp-label-section">
+                            <p:outputLabel for="body_type" value="#{language.bodyType}"/>
+                        </label>
+                        <p:inputText id="body_type" value="#{ownerDetail.body_type}" disabled="true"/>
+                    </div>
+                </div>
+                <p:outputPanel id="pushbackseatFinal"  styleClass="border-none">
+                    <p:outputPanel rendered="#{ownerDetail.pushBkSeatRender}">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="push_back_seat" value="#{language.push_bkS}"/>
+                                </label>
+                                <p:inputText id="push_back_seat" value="#{ownerDetail.push_bk_seat}"   disabled="true"/>                                
+                            </div>    
+                            <div class="ui-grid-col-4">
+                                <label class="field-label resp-label-section">
+                                    <p:outputLabel for="ordn_seat" value="#{language.ordn_seat}"/>
+                                </label>
+                                <p:inputText id="ordn_seat" value="#{ownerDetail.ordinary_seat}"  disabled="true"/>                                
+                            </div> 
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <!--                <p:outputPanel rendered="# {vehicleDetails.renderSpeedGov}" id="op_speed_gov">
+                                    <p:outputPanel rendered="# {vehicleDetails.renderSpeedGov}" id="op_ispeedgov">
+                
+                                        <p:outputPanel rendered="# {vehicleDetails.renderSpeedGov}" styleClass="top-space bottom-space">                            
+                                            <ui:include src="/ui/registration/formSpeedGovernorDisplay.xhtml">
+                                                <ui:param name="ownerDobj" value="# {vehicleDetails.ownerDobj}"/>
+                                                <ui:param name="listSpeedGovTypes" value="# {vehicleDetails.listSpeedGovTypes}"/>                                    
+                                            </ui:include>
+                                        </p:outputPanel>
+                                    </p:outputPanel>
+                                </p:outputPanel>-->
+
+                <p:outputPanel id="axelDetails" rendered="#{ownerDetail.vehTypeDescr eq 'Transport'}">
+                    <ui:include src="/ui/form_AxleDetailsDisplay.xhtml"/>
+                </p:outputPanel>
+
+                <p:outputPanel id="cngDetails_display">
+                    <p:outputPanel rendered="#{vehicleDetails.cngDetails_Visibility_tab}">
+                        <ui:include src="/ui/formCngDetailsDisplay.xhtml">
+                            <ui:param name="retroFittingDetailsBean" value="#{vehicleDetails.retroFittingDetailsBean}"/>
+                        </ui:include>
+                    </p:outputPanel>
+                </p:outputPanel>
+                <!--     <p:outputPanel id="cngDetails" rendered="#{ownerDetail.fuel eq 3 or ownerDetail.fuel eq 6}">
+                    <ui:include src="/ui/form_cngDetails.xhtml"/>
+                </p:outputPanel>
+
+                <p:outputPanel id="importedVehicle" rendered="#{ownerDetail.imported_vch eq 'Y'}">
+                    <ui:include src="/ui/form_ImportedVehicle.xhtml"/>
+                </p:outputPanel>-->
+
+            </p:panel>
+        </div>
+    </h:body>
+</html>
